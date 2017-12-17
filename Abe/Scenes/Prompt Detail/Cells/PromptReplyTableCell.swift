@@ -2,12 +2,20 @@
 import Foundation
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 protocol PromptTableCellDelegate: class {
     func didSelectScore(_ score: String, replyId: String)
 }
 
 final class PromptReplyTableCell: UITableViewCell {
+    
+    private(set) var disposeBag = DisposeBag()
+    
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
+    }
     
     enum Score {
         case one(UIImage, String)
@@ -95,57 +103,44 @@ final class PromptReplyTableCell: UITableViewCell {
         setupLabelsStackView()
     }
     
-    fileprivate func setupCollectionViewProperties() {
-        collectionView = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: PointsGridLayout())
-        collectionView.backgroundColor = UIColor.orange
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(ScoreCollectionCell.self, forCellWithReuseIdentifier: ScoreCollectionCell.reuseIdentifier)
-    }
+  
     
     func configure(with reply: PromptReply) {
         self.selectionStyle = .none
         userNameLabel.text = reply.userName
         replyBodyLabel.text = reply.body
-        //collectionView.reloadData()
-    }
     
-    override func prepareForReuse() { }
-    
-}
-
-extension PromptReplyTableCell: UICollectionViewDataSource {
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return scores.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: indexPath) as! ScoreCollectionCell
-        cell.scoreImageView.image = scores[indexPath.item].getImage
-        return cell
+        Driver.of(scores)
+            .drive(collectionView.rx.items) { collView, index, score in
+                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+                cell.scoreImageView.image = score.getImage
+                return cell
+            }
+            .disposed(by: disposeBag)
+        
+        collectionView.rx.modelSelected(Score.self).asDriver()
+            .drive(onNext: { score in
+                print(score.getScore)
+            })
+            .disposed(by: disposeBag)
     }
     
 }
 
-extension PromptReplyTableCell: UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let score = scores[indexPath.item].getScore
-        delegate?.didSelectScore(score, replyId: replyId)
-    }
-    
-}
 
 //MARK: View Property Setup
 
 extension PromptReplyTableCell {
+    
+    fileprivate func setupCollectionViewProperties() {
+        collectionView = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: PointsGridLayout())
+        collectionView.backgroundColor = UIColor.orange
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        //collectionView.dataSource = self
+        //collectionView.delegate = self
+        collectionView.register(ScoreCollectionCell.self, forCellWithReuseIdentifier: ScoreCollectionCell.reuseIdentifier)
+    }
     
     func setupUserNameLabelProperties() {
         userNameLabel = UILabel()
