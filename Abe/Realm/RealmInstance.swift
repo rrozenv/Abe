@@ -1,47 +1,33 @@
 
 import Foundation
 import RealmSwift
-import PromiseKit
 import RxSwift
 import RxCocoa
 
 enum RealmError: Error {
     case saveFailed(String)
     case updateFailed(String)
-    case createFailed(String?)
+    case createFailed(String)
     case deleteObjectFailed(String)
     case deleteAllObjectsFailed
     
     var description: String {
         switch self {
-        case .saveFailed(let description):
-            return "Realm failed to save object: \(description)."
-        case .updateFailed(let description):
-            return "Realm failed to update object: \(description)"
-        case .createFailed(let description):
-            return "Realm failed to create object: \(String(describing: description))."
-        case .deleteObjectFailed(let description):
-            return "Realm failed to delete object: \(description)."
+        case .saveFailed(let type):
+            return "Realm failed to save object of type: \(type)."
+        case .updateFailed(let type):
+            return "Realm failed to update object of type: \(type)"
+        case .createFailed(let type):
+            return "Realm failed to create objecto of type: \(type)."
+        case .deleteObjectFailed(let type):
+            return "Realm failed to delete object: \(type)."
         case .deleteAllObjectsFailed:
             return "Realm failed to delete all objects."
         }
     }
 }
 
-public struct Sorted {
-    var key: String
-    var ascending: Bool = true
-}
-
-protocol RealmStorageFunctions {
-    func save(object: Object) -> Promise<Void>
-    func create<T: Object>(_ model: T.Type, value: [String: Any]?) -> Promise<T>
-    func fetch<T: Object>(_ model: T.Type, predicate: NSPredicate?, sorted: Sorted?) -> Results<T>
-    func deleteAll() -> Promise<Void>
-    func delete(object: Object) -> Promise<Void>
-}
-
-class RealmInstance {
+class RealmInstance: RealmRepresentable {
     
     private let realm: Realm
     
@@ -49,16 +35,16 @@ class RealmInstance {
         self.realm = try! Realm(configuration: configuration.configuration)
     }
     
-    func create<T: Object>(_ model: T.Type, value: [String: Any]?) -> Observable<Void> {
+    func create<T: Object>(_ model: T.Type, value: [String: Any]) -> Observable<Void> {
         return Observable.create { [weak self] observer in
             do {
                 try self?.realm.write {
-                  self?.realm.create(model as Object.Type, value: value ?? [], update: false) as! T
+                  self?.realm.create(model, value: value, update: false)
                 }
                 observer.onNext(())
                 observer.onCompleted()
             } catch {
-                observer.onError(RealmError.createFailed("create failed"))
+                observer.onError(RealmError.createFailed("\(T.Type.self)"))
             }
             return Disposables.create()
         }
@@ -73,13 +59,12 @@ class RealmInstance {
                 observer.onNext(())
                 observer.onCompleted()
             } catch {
-                observer.onError(RealmError.createFailed("create failed"))
+                observer.onError(RealmError.saveFailed("\(object.description)"))
             }
             return Disposables.create()
         }
     }
     
-
     func queryAll<T: Object>(_ model: T.Type) -> Observable<Results<T>> {
         return Observable.deferred {
             let realm = self.realm
@@ -114,45 +99,35 @@ class RealmInstance {
         }
     }
 
-//
-//    func update(block: @escaping () -> Void) -> Promise<Void> {
-//        return Promise { fullfill, reject in
-//            do {
-//                try realm.write {
-//                    block()
-//                }
-//                fullfill(())
-//            } catch {
-//                reject(RealmError.updateFailed("Failed to update."))
-//            }
-//        }
-//    }
-//
-//    func delete(object: Object) -> Promise<Void> {
-//        return Promise { fullfill, reject in
-//            do {
-//                try realm.write {
-//                    realm.delete(object)
-//                }
-//                fullfill(())
-//            } catch {
-//                reject(RealmError.deleteObjectFailed(object.description))
-//            }
-//        }
-//    }
-//
-//    func deleteAll() -> Promise<Void> {
-//        return Promise { fullfill, reject in
-//            do {
-//                try realm.write {
-//                    realm.deleteAll()
-//                }
-//                fullfill(())
-//            } catch {
-//                reject(RealmError.deleteAllObjectsFailed)
-//            }
-//        }
-//    }
+    func delete(object: Object) -> Observable<Void> {
+        return Observable.create { [weak self] observer in
+            do {
+                try self?.realm.write {
+                    self?.realm.delete(object)
+                }
+                observer.onNext(())
+                observer.onCompleted()
+            } catch {
+                observer.onError(RealmError.deleteObjectFailed("\(object.description)"))
+            }
+            return Disposables.create()
+        }
+    }
+
+    func deleteAll() -> Observable<Void> {
+        return Observable.create { [weak self] observer in
+            do {
+                try self?.realm.write {
+                    self?.realm.deleteAll()
+                }
+                observer.onNext(())
+                observer.onCompleted()
+            } catch {
+                observer.onError(RealmError.deleteAllObjectsFailed)
+            }
+            return Disposables.create()
+        }
+    }
 
 }
 

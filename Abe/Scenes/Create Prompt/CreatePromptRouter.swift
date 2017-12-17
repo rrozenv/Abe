@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 
 protocol CreatePromptRoutingLogic {
+    func toMainInput()
     func toPrompts()
 }
 
@@ -11,6 +12,13 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+    }
+    
+    func toMainInput() {
+        let vc = CreatePromptViewController()
+        let realm = RealmInstance(configuration: RealmConfig.common)
+        vc.viewModel = CreatePromptViewModel(realm: realm, router: self)
+        navigationController.pushViewController(vc, animated: true)
     }
 
     func toPrompts() {

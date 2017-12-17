@@ -27,24 +27,23 @@ class PromptsRouter: PromptsRoutingLogic {
     }
 
     func toCreatePrompt() {
-        let router = CreatePromptRouter(navigationController: navigationController)
+        let navVc = UINavigationController()
+        let router = CreatePromptRouter(navigationController: navVc)
         let realm = RealmInstance(configuration: RealmConfig.common)
         let viewModel = CreatePromptViewModel(realm: realm, router: router)
         let vc = CreatePromptViewController()
         vc.viewModel = viewModel
-        let nc = UINavigationController(rootViewController: vc)
-        navigationController.present(nc, animated: true, completion: nil)
+        navigationController.present(navVc, animated: true, completion: nil)
+        router.toMainInput()
     }
 
     func toPrompt(_ prompt: Prompt) {
-//        let router = PromptDetailRouter(dataProvider: dataProvider,
-//                                        navigationController: navigationController)
-//
-//        let viewModel = PromptDetailViewModel(promptDataStorage: dataProvider.makePromptsDataService(),prompt: prompt, router: router)
-//
-//        let vc = PromptDetailViewController()
-//        vc.viewModel = viewModel
-//        navigationController.pushViewController(vc, animated: true)
+        let router = PromptDetailRouter(navigationController: navigationController)
+        let realm = RealmInstance(configuration: RealmConfig.common)
+        let viewModel = PromptDetailViewModel(realm: realm, prompt: prompt, router: router)
+        let vc = PromptDetailViewController()
+        vc.viewModel = viewModel
+        navigationController.pushViewController(vc, animated: true)
     }
 
 }

@@ -30,9 +30,12 @@ class CreatePromptViewController: UIViewController {
     
     func bindViewModel() {
         //MARK: - Input
-        let input = CreatePromptViewModel.Input(title: titleTextView.rx.text
-            .orEmpty.asObservable(), body: bodyTextView.rx.text
-                .orEmpty.asObservable(), createPromptTrigger: doneButton.rx.tap.asObservable(), cancelTrigger: dismissButton.rx.tap.asDriver())
+        let input =
+            CreatePromptViewModel
+                .Input(title: titleTextView.rx.text.orEmpty.asObservable(),
+                       body: bodyTextView.rx.text.orEmpty.asObservable(),
+                       createPromptTrigger: doneButton.rx.tap.asObservable(),
+                       cancelTrigger: dismissButton.rx.tap.asDriver())
         
         //MARK: - Output
         let output = viewModel.transform(input: input)

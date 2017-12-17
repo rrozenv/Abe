@@ -8,6 +8,7 @@ class Prompt: Object {
     @objc dynamic var body: String = ""
     @objc dynamic var imageURL: String = ""
     @objc dynamic var createdAt = Date()
+    let replies = List<PromptReply>()
     
     override static func primaryKey() -> String? {
         return "id"
@@ -27,6 +28,7 @@ class Prompt: Object {
     }
     
 }
+
 
 
 

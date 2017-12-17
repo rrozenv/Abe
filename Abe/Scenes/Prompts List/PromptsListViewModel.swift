@@ -24,6 +24,7 @@ final class PromptsListViewModel: ViewModelType {
         let posts: Driver<Results<Prompt>>
         let createPrompt: Driver<Void>
         let selectedPrompt: Driver<Prompt>
+        let saveUserInfo: Driver<Void>
         let error: Driver<Error>
     }
     
@@ -44,6 +45,16 @@ final class PromptsListViewModel: ViewModelType {
             .trackError(errorTracker)
             .asDriverOnErrorJustComplete()
         
+        let saveUserInfo = self.realm
+            .query(User.self, with: User.currentUserPredicate, sortDescriptors: [])
+            .map { $0.first }
+            .map {
+                guard let user = $0 else { return }
+                UserDefaultsManager.saveUserInfo(user)
+            }
+            .mapToVoid()
+            .asDriverOnErrorJustComplete()
+        
         let fetching = activityIndicator.asDriver()
         let errors = errorTracker.asDriver()
         
@@ -52,7 +63,12 @@ final class PromptsListViewModel: ViewModelType {
         let createPrompt = input.createPostTrigger
             .do(onNext: router.toCreatePrompt)
         
-        return Output(fetching: fetching, posts: prompts, createPrompt: createPrompt, selectedPrompt: selectedPrompt, error: errors)
+        return Output(fetching: fetching,
+                      posts: prompts,
+                      createPrompt: createPrompt,
+                      selectedPrompt: selectedPrompt,
+                      saveUserInfo: saveUserInfo,
+                      error: errors)
     }
 }
 
