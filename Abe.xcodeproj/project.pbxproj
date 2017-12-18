@@ -17,6 +17,9 @@
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
 		9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED671FE70627002E538E /* PromptReplyTableCell.swift */; };
 		9883ED6A1FE7062D002E538E /* ScoreCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */; };
+		98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */; };
+		98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */; };
+		98921BBA1FE735C4006CCCF6 /* ReplyOptionsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */; };
 		9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9893171C1FE6EF4000E2979F /* RealmRepresentable.swift */; };
 		989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317211FE6F3E300E2979F /* PromptDetailRouter.swift */; };
 		989317251FE6F3E400E2979F /* PromptDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317221FE6F3E300E2979F /* PromptDetailViewController.swift */; };
@@ -79,6 +82,9 @@
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
 		9883ED671FE70627002E538E /* PromptReplyTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptReplyTableCell.swift; sourceTree = "<group>"; };
 		9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreCollectionCell.swift; sourceTree = "<group>"; };
+		98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsViewController.swift; sourceTree = "<group>"; };
+		98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsViewModel.swift; sourceTree = "<group>"; };
+		98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsRouter.swift; sourceTree = "<group>"; };
 		9893171C1FE6EF4000E2979F /* RealmRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRepresentable.swift; sourceTree = "<group>"; };
 		989317211FE6F3E300E2979F /* PromptDetailRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptDetailRouter.swift; sourceTree = "<group>"; };
 		989317221FE6F3E300E2979F /* PromptDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptDetailViewController.swift; sourceTree = "<group>"; };
@@ -230,7 +236,8 @@
 				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
 				980DE5B41FE5B56B0087C6C3 /* Create Prompt */,
 				989317201FE6F3D200E2979F /* Prompt Detail */,
-				989317271FE6F40700E2979F /* Create Prompt Reply */,
+				989317271FE6F40700E2979F /* Create Reply */,
+				98921BBB1FE735C9006CCCF6 /* Reply Options */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -242,6 +249,16 @@
 				9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		98921BBB1FE735C9006CCCF6 /* Reply Options */ = {
+			isa = PBXGroup;
+			children = (
+				98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */,
+				98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */,
+				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
+			);
+			path = "Reply Options";
 			sourceTree = "<group>";
 		};
 		9893171E1FE6F04C00E2979F /* Cells */ = {
@@ -271,14 +288,14 @@
 			path = "Prompt Detail";
 			sourceTree = "<group>";
 		};
-		989317271FE6F40700E2979F /* Create Prompt Reply */ = {
+		989317271FE6F40700E2979F /* Create Reply */ = {
 			isa = PBXGroup;
 			children = (
 				9883ED641FE70458002E538E /* CreateReplyRouter.swift */,
 				989317291FE6F41A00E2979F /* CreateReplyViewController.swift */,
 				989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */,
 			);
-			path = "Create Prompt Reply";
+			path = "Create Reply";
 			sourceTree = "<group>";
 		};
 		98FEE7721FE4BAD300CD80A8 = {
@@ -573,18 +590,21 @@
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
+				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
 				980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */,
 				9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */,
 				9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */,
 				98FEE7BB1FE4BC5400CD80A8 /* PromptsListViewController.swift in Sources */,
 				98FEE7C91FE4CB5000CD80A8 /* PromptView.swift in Sources */,
 				9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */,
+				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
 				98FEE7C31FE4C11C00CD80A8 /* CreatePromptViewModel.swift in Sources */,
 				9883ED6A1FE7062D002E538E /* ScoreCollectionCell.swift in Sources */,
+				98921BBA1FE735C4006CCCF6 /* ReplyOptionsRouter.swift in Sources */,
 				989317261FE6F3E400E2979F /* PromptDetailViewModel.swift in Sources */,
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,

@@ -4,10 +4,12 @@ import UIKit
 
 protocol CreateReplyRoutingLogic {
     func toMainInput(for prompt: Prompt)
+    func toReplyOptions(with savedInput: SavedReplyInput)
     func toPromptDetail()
 }
 
 final class CreateReplyRouter: CreateReplyRoutingLogic {
+    
     private let navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -21,7 +23,20 @@ final class CreateReplyRouter: CreateReplyRoutingLogic {
         navigationController.pushViewController(vc, animated: true)
     }
     
+    func toReplyOptions(with savedInput: SavedReplyInput) {
+        let vc = ReplyOptionsViewController()
+        let realm = RealmInstance(configuration: RealmConfig.common)
+        let router = ReplyOptionsRouter(navigationController: navigationController)
+        let viewModel = ReplyOptionsViewModel(realm: realm,
+                                              prompt: savedInput.prompt,
+                                              savedReplyInput: savedInput,
+                                              router: router)
+        vc.viewModel = viewModel
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
     func toPromptDetail() {
         navigationController.dismiss(animated: true)
     }
+    
 }

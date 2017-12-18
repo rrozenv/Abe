@@ -51,24 +51,15 @@ struct CreateReplyViewModel {
         let inputIsValid = input.body.map { $0.count > 10 }
         let currentPrompt = Observable.of(prompt)
 
-        let reply = Observable.combineLatest(currentPrompt, input.body.asObservable()) { (currentPrompt, replyBody) -> PromptReply in
-            return PromptReply(userId: self.user.id,
-                               userName: self.user.name,
-                               promptId: self.prompt.id,
-                               body: replyBody)
+        let savedInput = Observable.combineLatest(currentPrompt, input.body.asObservable()) { (currentPrompt, replyBody) -> SavedReplyInput in
+            return SavedReplyInput(body: replyBody, prompt: currentPrompt)
         }
   
         let promptDidUpdate = input.createTrigger
             .asObservable()
-            .withLatestFrom(reply)
-            .flatMapLatest { (reply) -> Observable<Void> in
-                return self.realm.update {
-                    self.prompt.replies.insert(reply, at: 0)
-                }
-                .trackActivity(activityIndicator)
-                .trackError(errorTracker)
-            }
-            .do(onNext: router.toPromptDetail)
+            .withLatestFrom(savedInput)
+            .do(onNext: { input in self.router.toReplyOptions(with: input) })
+            .mapToVoid()
         
         return Output(inputIsValid: inputIsValid,
                       loading: loading,

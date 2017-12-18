@@ -110,7 +110,7 @@ extension CreatePromptReplyViewController {
     func setupPostButton() {
         postButton = UIButton()
         postButton.backgroundColor = UIColor.blue
-        postButton.setTitle("Post", for: .normal)
+        postButton.setTitle("Next", for: .normal)
         
         view.addSubview(postButton)
         postButton.snp.makeConstraints { (make) in
