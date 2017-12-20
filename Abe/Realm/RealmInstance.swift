@@ -4,6 +4,7 @@ import RealmSwift
 import RxSwift
 import RxCocoa
 import PromiseKit
+import RxRealm
 
 class RealmInstance: RealmRepresentable {
     
@@ -54,6 +55,14 @@ class RealmInstance: RealmRepresentable {
         }
     }
     
+    func fetch<T: Object>(_ model: T.Type) -> Observable<(AnyRealmCollection<T>, RealmChangeset?)> {
+        return Observable.deferred {
+            let realm = self.realm
+            let objects = realm.objects(model)
+            return Observable.changeset(from: objects)
+        }
+    }
+    
     func query<T: Object>(_ model: T.Type,
                           with predicate: NSPredicate,
                           sortDescriptors: [NSSortDescriptor] = []) -> Observable<Results<T>> {
@@ -81,7 +90,7 @@ class RealmInstance: RealmRepresentable {
 }
 
 extension Reactive where Base: Realm {
-    
+
     func create<T: Object>(_ model: T.Type, value: [String: Any], update: Bool) -> Observable<Void> {
         return Observable.create { observer in
             do {
@@ -96,7 +105,7 @@ extension Reactive where Base: Realm {
             return Disposables.create()
         }
     }
-    
+
     func fetch<T: Object>(_ model: T.Type, primaryKey: String) -> Observable<T?> {
         return Observable.create { observer in
             let object = self.base.object(ofType: model, forPrimaryKey: primaryKey)
@@ -105,7 +114,7 @@ extension Reactive where Base: Realm {
             return Disposables.create()
         }
     }
-    
+
     func save<R: Object>(_ object: R, update: Bool = true) -> Observable<Void> {
         return Observable.create { observer in
             do {
@@ -120,7 +129,7 @@ extension Reactive where Base: Realm {
             return Disposables.create()
         }
     }
-    
+
     func update(block: @escaping () -> Void) -> Observable<Void> {
         return Observable.create { observer in
             do {
@@ -134,7 +143,7 @@ extension Reactive where Base: Realm {
             return Disposables.create()
         }
     }
-    
+
     func delete<R: Object>(_ object: R) -> Observable<Void> {
         return Observable.create { observer in
             do {
@@ -149,7 +158,7 @@ extension Reactive where Base: Realm {
             return Disposables.create()
         }
     }
-    
+
 }
 
 

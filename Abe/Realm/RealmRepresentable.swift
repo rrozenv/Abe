@@ -6,6 +6,7 @@ import RealmSwift
 protocol RealmRepresentable {
     func create<T: Object>(_ model: T.Type, value: [String: Any], update: Bool) -> Observable<Void>
     func save(object: Object) -> Observable<Void>
+    func fetch<T: Object>(_ model: T.Type) -> Results<T>
     func fetch<T: Object>(_ model: T.Type, primaryKey: String) -> Observable<T?>
     func queryAll<T: Object>(_ model: T.Type) -> Observable<Results<T>>
     func query<T: Object>(_ model: T.Type, with predicate: NSPredicate, sortDescriptors: [NSSortDescriptor]) -> Observable<Results<T>>

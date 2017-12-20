@@ -4,6 +4,7 @@ import RxSwift
 import RealmSwift
 import RxDataSources
 import Action
+import RxRealm
 import RxRealmDataSources
 //import NSObject_Rx
 
@@ -39,14 +40,22 @@ class PromptsListViewController: UIViewController {
         //MARK: - Output
         let output = viewModel.transform(input: input)
         
-        //Bind Posts to UITableView
+        let dataSource = RxTableViewRealmDataSource<Prompt>(cellIdentifier: PromptTableCell.reuseIdentifier, cellType: PromptTableCell.self) {cell, indexPath, prompt in
+            cell.configure(with: prompt)
+        }
+        
         output.posts
-            .drive(tableView.rx.items) { tableView, index, prompt in
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptTableCell.reuseIdentifier) as? PromptTableCell else { fatalError() }
-                cell.configure(with: prompt)
-                return cell
-            }
+            .bind(to: tableView.rx.realmChanges(dataSource))
             .disposed(by: disposeBag)
+        
+        //Bind Posts to UITableView
+//        output.posts
+//            .drive(tableView.rx.items) { tableView, index, prompt in
+//                guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptTableCell.reuseIdentifier) as? PromptTableCell else { fatalError() }
+//                cell.configure(with: prompt)
+//                return cell
+//            }
+//            .disposed(by: disposeBag)
         
         //Connect Create Post to UI
         pull.drive(onNext: { [weak self] in

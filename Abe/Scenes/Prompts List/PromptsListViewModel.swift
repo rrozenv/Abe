@@ -3,6 +3,9 @@ import Foundation
 import RxSwift
 import RxCocoa
 import RealmSwift
+import RxRealm
+
+typealias PromptChangeSet = (AnyRealmCollection<Prompt>, RealmChangeset?)
 
 final class PromptsListViewModel: ViewModelType {
     
@@ -13,7 +16,7 @@ final class PromptsListViewModel: ViewModelType {
     
     struct Output {
         let fetching: Driver<Bool>
-        let posts: Driver<Results<Prompt>>
+        let posts: Observable<PromptChangeSet>
         let createPrompt: Driver<Void>
         let selectedPrompt: Driver<Prompt>
        // let saveUserInfo: Driver<Void>
@@ -41,10 +44,15 @@ final class PromptsListViewModel: ViewModelType {
 //            .mapToVoid()
 //            .asDriverOnErrorJustComplete()
         
-        let prompts = self.realm.queryAll(Prompt.self)
-            .trackActivity(activityIndicator)
+//        let prompts = self.realm.queryAll(Prompt.self)
+//            .trackActivity(activityIndicator)
+//            .trackError(errorTracker)
+//            .asDriverOnErrorJustComplete()
+        
+        let prompts = self.realm
+            .fetch(Prompt.self)
             .trackError(errorTracker)
-            .asDriverOnErrorJustComplete()
+            .trackActivity(activityIndicator)
         
         let selectedPrompt = input.selection.do(onNext: router.toPrompt)
 
