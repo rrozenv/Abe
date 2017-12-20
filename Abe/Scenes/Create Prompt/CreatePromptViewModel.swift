@@ -16,14 +16,9 @@ final class CreatePromptViewModel: ViewModelType {
     
     struct Output {
         let inputIsValid: Driver<Bool>
-        let promptSaved: Driver<Void>
         let dismissViewController: Driver<Void>
     }
     
-    private lazy var realmT: Realm = {
-        return try! Realm(configuration: RealmConfig.common.configuration)
-    }()
-
     private let realm: RealmInstance
     private let router: CreatePromptRouter
     
@@ -34,22 +29,31 @@ final class CreatePromptViewModel: ViewModelType {
     
     func transform(input: Input) -> Output {
         
+        //TODO: Force logout if Syncuser is nil
+        
+        //1. Output - Checks if done button is enabled
+        let inputIsValid = Observable
+            .combineLatest(input.title, input.body) { (title, body) in
+                return title.count > 10 && body.count > 10
+            }
+            .asDriver(onErrorJustReturn: false)
+        
+        //2. Output - Dismisses VC when a new prompt is saved OR
+        //            back button is tapped
         let _user = self.realm
             .fetch(User.self, primaryKey: SyncUser.current!.identity!)
             .unwrap()
         
-        let inputIsValid = Observable.combineLatest(input.title, input.body) { (title, body) in
-            return title.count > 10 && body.count > 10
-        }
-        .asDriver(onErrorJustReturn: false)
-        
-        let _userInputs = Observable.combineLatest(_user, input.title, input.body) { (user: $0, title: $1, body: $2) }
+        let _promptInputs = Observable
+            .combineLatest(_user, input.title, input.body) {
+                (user: $0, title: $1, body: $2)
+            }
         
         let _createPrompt = input.createPromptTrigger
-            .withLatestFrom(_userInputs)
-            .map { self.createPrompt(with: $0) }
-            .flatMapLatest { (prompt) in
-                return self.realm.save(object: prompt)
+            .withLatestFrom(_promptInputs)
+            .map { Prompt(title: $0.title, body: $0.body, user: $0.user) }
+            .flatMapLatest { [unowned self] in
+                return self.realm.save(object: $0)
             }
             .asDriverOnErrorJustComplete()
         
@@ -58,12 +62,7 @@ final class CreatePromptViewModel: ViewModelType {
             .do(onNext: router.toPrompts)
         
         return Output(inputIsValid: inputIsValid,
-                      promptSaved: _createPrompt,
                       dismissViewController: dismiss)
     }
     
-    private func createPrompt(with inputs: (User, String, String)) -> Prompt {
-        return Prompt(id: UUID().uuidString, title: inputs.1, body: inputs.2, user: inputs.0)
-    }
-
 }

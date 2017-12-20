@@ -3,6 +3,8 @@ import Foundation
 import RxSwift
 import RxDataSources
 import Action
+import RxRealm
+import RxRealmDataSources
 
 class PromptDetailViewController: UIViewController {
     
@@ -26,21 +28,27 @@ class PromptDetailViewController: UIViewController {
         tableView.reloadData()
     }
     
+    deinit {
+        print("Prompt Detail Deinit")
+    }
+    
     func bindViewModel() {
         //MARK: - Input
-        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-            .mapToVoid()
-            .asDriverOnErrorJustComplete()
+//        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
+//            .mapToVoid()
+//            .asDriverOnErrorJustComplete()
         
-        let input = PromptDetailViewModel.Input(reloadTrigger: viewWillAppear, createReplyTrigger: createReplyButton.rx.tap.asDriver(), backTrigger: backButton.rx.tap.asDriver())
+        let input = PromptDetailViewModel
+            .Input(createReplyTrigger: createReplyButton.rx.tap.asDriver(),
+                   backTrigger: backButton.rx.tap.asDriver())
         
         //MARK: - Output
         let output = viewModel.transform(input: input)
-        
+
         output.replies
-            .drive(tableView.rx.items) { tableView, index, promptReply in
+            .drive(tableView.rx.items) { tableView, index, reply in
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
-                cell.configure(with: promptReply)
+                cell.configure(with: reply)
                 return cell
             }
             .disposed(by: disposeBag)

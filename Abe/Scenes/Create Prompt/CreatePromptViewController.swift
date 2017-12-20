@@ -47,10 +47,6 @@ class CreatePromptViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        output.promptSaved
-            .drive()
-            .disposed(by: disposeBag)
-        
         output.dismissViewController
             .drive()
             .disposed(by: disposeBag)

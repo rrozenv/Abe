@@ -85,31 +85,11 @@ final class SignupViewModel {
             .flatMapLatest { [unowned self] (user) in
                 return self.realm.create(User.self, value: user.value, update: true)
             }
-//            .flatMapLatest { _ in
-//                return self.realm
-//                    .query(User.self,
-//                           with: User.currentUserPredicate,
-//                           sortDescriptors: [])
-//            }
-//            .map { $0.first }
-//            .unwrap()
-//            .do(onNext: { Application.shared.currentUser = $0 })
-//            .mapToVoid()
             .asDriverOnErrorJustComplete()
             .do(onNext: self.router.toHome)
         
         let existingUser = login.elements()
             .mapToVoid()
-//            .flatMapLatest { _ in
-//                return self.realm
-//                    .query(User.self,
-//                           with: User.currentUserPredicate,
-//                           sortDescriptors: [])
-//            }
-//            .map { $0.first }
-//            .unwrap()
-//            .do(onNext: { Application.shared.currentUser = $0 })
-//            .mapToVoid()
             .do(onNext: self.router.toHome)
             .asDriverOnErrorJustComplete()
         

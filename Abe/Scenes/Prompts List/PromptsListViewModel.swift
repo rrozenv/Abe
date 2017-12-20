@@ -19,7 +19,6 @@ final class PromptsListViewModel: ViewModelType {
         let posts: Observable<PromptChangeSet>
         let createPrompt: Driver<Void>
         let selectedPrompt: Driver<Prompt>
-       // let saveUserInfo: Driver<Void>
         let error: Driver<Error>
     }
     
@@ -36,21 +35,9 @@ final class PromptsListViewModel: ViewModelType {
         let errorTracker = ErrorTracker()
         let fetching = activityIndicator.asDriver()
         let errors = errorTracker.asDriver()
-        
-//        let saveUser = self.realm
-//            .query(User.self, with: User.currentUserPredicate, sortDescriptors: [])
-//            .map { $0.first }
-//            .map { Application.shared.currentUser = $0 }
-//            .mapToVoid()
-//            .asDriverOnErrorJustComplete()
-        
-//        let prompts = self.realm.queryAll(Prompt.self)
-//            .trackActivity(activityIndicator)
-//            .trackError(errorTracker)
-//            .asDriverOnErrorJustComplete()
-        
+
         let prompts = self.realm
-            .fetch(Prompt.self)
+            .fetchAll(Prompt.self)
             .trackError(errorTracker)
             .trackActivity(activityIndicator)
         

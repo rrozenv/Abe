@@ -10,20 +10,28 @@ class ContactsStore {
     func isAuthorized() -> Observable<Bool> {
         return Observable.create { (observer) -> Disposable in
             if CNContactStore.authorizationStatus(for: .contacts) == .notDetermined {
-                self.store.requestAccess(for: .contacts, completionHandler: { (authorized, error) in
-                    if authorized {
-                        observer.onNext(true)
-                        observer.onCompleted()
-                    }
-                    
-                    if let error = error {
-                        observer.onError(error)
-                    }
-                })
+                observer.onNext(false)
+                observer.onCompleted()
             } else {
                 observer.onNext(true)
                 observer.onCompleted()
             }
+            return Disposables.create()
+        }
+    }
+    
+    func requestAccess() -> Observable<Bool> {
+        return Observable.create { (observer) -> Disposable in
+            self.store.requestAccess(for: .contacts, completionHandler: { (authorized, error) in
+                if authorized {
+                    observer.onNext(true)
+                    observer.onCompleted()
+                }
+                
+                if let error = error {
+                    observer.onError(error)
+                }
+            })
             return Disposables.create()
         }
     }

@@ -22,24 +22,22 @@ struct CreateReplyViewModel {
     
     struct Output {
         let inputIsValid: Driver<Bool>
+        let currentPrompt: Driver<Prompt>
+        let promptDidUpdate: Observable<Void>
         let loading: Driver<Bool>
         let errors: Driver<Error>
-        let promptDidUpdate: Observable<Void>
     }
     
-    private let realm: RealmRepresentable
+    private let realm: RealmInstance
     private let router: CreateReplyRoutingLogic
     private let prompt: Prompt
-    private let user: UserInfo
     
     var promptTitle: String { return prompt.title }
     
-    init(realm: RealmRepresentable, prompt: Prompt, router: CreateReplyRoutingLogic) {
+    init(realm: RealmInstance, prompt: Prompt, router: CreateReplyRoutingLogic) {
         self.prompt = prompt
         self.realm = realm
         self.router = router
-        guard let userInfo = UserDefaultsManager.userInfo() else { fatalError() }
-        self.user = userInfo
     }
     
     func transform(input: Input) -> Output {
@@ -49,9 +47,10 @@ struct CreateReplyViewModel {
         let errors = errorTracker.asDriver()
         
         let inputIsValid = input.body.map { $0.count > 10 }
-        let currentPrompt = Observable.of(prompt)
+        let currentPrompt = Driver.of(prompt)
 
-        let savedInput = Observable.combineLatest(currentPrompt, input.body.asObservable()) { (currentPrompt, replyBody) -> SavedReplyInput in
+        let savedInput = Driver
+            .combineLatest(currentPrompt, input.body.asDriver()) { (currentPrompt, replyBody) in
             return SavedReplyInput(body: replyBody, prompt: currentPrompt)
         }
   
@@ -62,53 +61,10 @@ struct CreateReplyViewModel {
             .mapToVoid()
         
         return Output(inputIsValid: inputIsValid,
+                      currentPrompt: currentPrompt,
+                      promptDidUpdate: promptDidUpdate,
                       loading: loading,
-                      errors: errors,
-                      promptDidUpdate: promptDidUpdate)
+                      errors: errors)
     }
-    
-//    func transform(input: Input) -> Output {
-//        let inputIsValid = input.body.map { $0.count > 10 }
-//
-//        let currentPrompt = Observable.of(prompt)
-//
-////        let reply = Driver.combineLatest(currentPrompt, input.body) { (currentPrompt, replyBody) -> PromptReply in
-////            return PromptReply(prompt: currentPrompt, body: replyBody)
-////        }
-//
-//        let creply = Observable.combineLatest(currentPrompt, input.body.asObservable()) { (currentPrompt, replyBody) -> PromptReply in
-//            return PromptReply(prompt: currentPrompt, body: replyBody)
-//        }
-//
-//        let newReply = input.createTrigger.asObservable()
-//            .withLatestFrom(creply)
-//            .flatMapLatest { (reply) -> Observable<Void> in
-//                return self.promptDataStorage.update(block: {
-//                    self.prompt.replies.append(reply)
-//                })
-//            }
-//            .do(onNext: router.toPromptDetail)
-//
-////        let updatePrompt = input.createTrigger
-////            .withLatestFrom(reply)
-////            .flatMapLatest { (reply) -> SharedSequence<DriverSharingStrategy, Void> in
-////                return self.promptDataStorage.update(block: {
-////                    self.prompt.replies.append(reply)
-////                })
-////                .asDriverOnErrorJustComplete()
-////            }
-////            .do(onNext: router.toPromptDetail)
-//
-////        let dismiss = Driver.of(updatePrompt, input.cancelTrigger)
-////            .merge()
-////            .do(onNext: router.toPromptDetail)
-//
-////        let dismiss = Driver.merge([updatePrompt, input.cancelTrigger])
-////            .do(onNext: router.toPromptDetail)
-//
-//        return Output(inputIsValid: inputIsValid, updatePrompt: newReply)
-//    }
-    
-
     
 }

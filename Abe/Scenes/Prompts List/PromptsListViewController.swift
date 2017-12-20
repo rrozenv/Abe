@@ -35,7 +35,7 @@ class PromptsListViewController: UIViewController {
         let input =
             PromptsListViewModel
             .Input(createPostTrigger: createPromptButton.rx.tap.asDriver(),
-                   selection: tableView.rx.modelSelected(Prompt.self).asDriver())
+                   selection: tableView.rx.realmModelSelected(Prompt.self).asDriver())
         
         //MARK: - Output
         let output = viewModel.transform(input: input)
@@ -47,17 +47,7 @@ class PromptsListViewController: UIViewController {
         output.posts
             .bind(to: tableView.rx.realmChanges(dataSource))
             .disposed(by: disposeBag)
-        
-        //Bind Posts to UITableView
-//        output.posts
-//            .drive(tableView.rx.items) { tableView, index, prompt in
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptTableCell.reuseIdentifier) as? PromptTableCell else { fatalError() }
-//                cell.configure(with: prompt)
-//                return cell
-//            }
-//            .disposed(by: disposeBag)
-        
-        //Connect Create Post to UI
+
         pull.drive(onNext: { [weak self] in
             self?.tableView.reloadData()
             self?.tableView.refreshControl?.endRefreshing()
@@ -76,11 +66,12 @@ class PromptsListViewController: UIViewController {
             .drive()
             .disposed(by: disposeBag)
         
-//        output.saveUserInfo
-//            .drive()
-//            .disposed(by: disposeBag)
+        output.error
+            .drive()
+            .disposed(by: disposeBag)
 
     }
+    
 }
 
 extension PromptsListViewController {

@@ -35,18 +35,21 @@ struct ReplyOptionsViewModel {
     
     var promptTitle: String { return prompt.title }
     
-    private let realm: RealmRepresentable
+    private let commonRealm: RealmInstance
+    private let privateRealm: RealmInstance
     private let router: ReplyOptionsRoutingLogic
     private let prompt: Prompt
     private let contactsStore: ContactsStore
     private let savedReplyInput: SavedReplyInput
     
-    init(realm: RealmRepresentable,
+    init(commonRealm: RealmInstance,
+         privateRealm: RealmInstance,
          prompt: Prompt,
          savedReplyInput: SavedReplyInput,
          router: ReplyOptionsRoutingLogic) {
         self.prompt = prompt
-        self.realm = realm
+        self.commonRealm = commonRealm
+        self.privateRealm = privateRealm
         self.contactsStore = ContactsStore()
         self.savedReplyInput = savedReplyInput
         self.router = router
@@ -63,7 +66,7 @@ struct ReplyOptionsViewModel {
         let _options: [Visibility] = [.all, .facebook, .contacts]
         let visbilityOptions = Driver.of(_options)
         
-        let _user = self.realm
+        let _user = self.commonRealm
             .fetch(User.self, primaryKey: SyncUser.current!.identity!)
             .unwrap()
             .asDriverOnErrorJustComplete()
@@ -71,34 +74,32 @@ struct ReplyOptionsViewModel {
         //MARK: - 2. let savedContacts: Driver<Void>
         let _selectedVisibility = input.visibilitySelected
         
-        let _shouldAskForContacts = _selectedVisibility
+        let _contactsAuthStatus = _selectedVisibility
             .filter { $0 == Visibility.contacts }
-            .withLatestFrom(_user)
-            .map { $0.contacts.count }
-            .filter { $0 < 1 }
-        
-        let _userContacts = _shouldAskForContacts
-            .mapToVoid()
             .flatMapLatest { _ in
                 return self.contactsStore.isAuthorized()
+                    .asDriverOnErrorJustComplete()
+            }
+        
+        let _requestContactsAccess = _contactsAuthStatus
+            .map{ !$0 }
+            .flatMapLatest { _ in
+                return self.contactsStore.requestAccess()
                     .trackError(errorTracker)
                     .asDriverOnErrorJustComplete()
             }
+        
+        let saveContacts = Driver.of(_requestContactsAccess, _contactsAuthStatus)
+            .merge()
             .map{ $0 }
-            .flatMap { _ in
+            .flatMapLatest { _ in
                 self.contactsStore.userContacts().asDriverOnErrorJustComplete()
             }
-    
-        let savedContacts = _userContacts
-            .withLatestFrom(_user) { (contacts, user) in
-                return self.realm.update {
-                    contacts.forEach { user.contacts.append($0) }
-                }
-                .trackError(errorTracker)
-                .trackActivity(activityIndicator)
+            .flatMapLatest { (contacts) in
+                self.privateRealm.save(objects: contacts)
+                .asDriverOnErrorJustComplete()
             }
-            .mapToVoid()
-        
+    
         //3. MARK: - let didCreateReply: Observable<Void>
         let _currentPrompt = Driver.of(prompt)
         let _savedReplyInput = Driver.of(self.savedReplyInput)
@@ -108,28 +109,23 @@ struct ReplyOptionsViewModel {
                                  _user,
                                  _savedReplyInput,
                                  _selectedVisibility) { (prompt, user, replyInput, visibility) -> PromptReply in
-            return PromptReply(userId: user.id,
-                               userName: user.name,
-                               promptId: prompt.id,
-                               body: replyInput.body,
-                               visibility: visibility.rawValue)
+                                    return PromptReply(user: user,
+                                                       promptId: prompt.id,
+                                                       body: replyInput.body,
+                                                       visibility: visibility.rawValue)
         }
         
         let didCreateReply = input.createTrigger
             .asObservable()
             .withLatestFrom(_reply)
             .flatMapLatest { (reply) -> Observable<Void> in
-                return self.realm.update {
-                        self.prompt.replies.insert(reply, at: 0)
-                    }
-                    .trackActivity(activityIndicator)
-                    .trackError(errorTracker)
+                return self.commonRealm.save(object: reply)
             }
             .do(onNext: router.toPromptDetail)
         
         return Output(visibilityOptions: visbilityOptions,
                       didCreateReply: didCreateReply,
-                      savedContacts: savedContacts,
+                      savedContacts: saveContacts,
                       loading: loading,
                       errors: errors)
     }

@@ -107,7 +107,7 @@ final class PromptReplyTableCell: UITableViewCell {
     
     func configure(with reply: PromptReply) {
         self.selectionStyle = .none
-        userNameLabel.text = reply.userName
+        userNameLabel.text = reply.user?.name
         replyBodyLabel.text = reply.body
     
         Driver.of(scores)

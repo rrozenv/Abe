@@ -6,25 +6,14 @@ import RxCocoa
 import PromiseKit
 import RxRealm
 
-class RealmInstance: RealmRepresentable {
+class RealmInstance {
     
     private let realm: Realm
+    private let config: Realm.Configuration
     
     required init(configuration: RealmConfig) {
+        self.config = configuration.configuration
         self.realm = try! Realm(configuration: configuration.configuration)
-    }
-    
-    func createT<T: Object>(_ model: T.Type, value: [String: Any], update: Bool) -> Promise<T> {
-        return Promise { fullfill, reject in
-            do {
-                try realm.write {
-                    let newObject = realm.create(model as Object.Type, value: value, update: update) as! T
-                    fullfill(newObject)
-                }
-            } catch {
-                reject(RealmError.createFailed(""))
-            }
-        }
     }
     
     func create<T: Object>(_ model: T.Type,
@@ -41,21 +30,20 @@ class RealmInstance: RealmRepresentable {
         }
     }
     
+    func save(objects: [Object]) -> Observable<Void> {
+        return Observable.deferred {
+            return self.realm.rx.save(objects)
+        }
+    }
+    
+    
     func fetch<T: Object>(_ model: T.Type, primaryKey: String) -> Observable<T?> {
         return Observable.deferred {
             return self.realm.rx.fetch(model, primaryKey: primaryKey)
         }
     }
     
-    func queryAll<T: Object>(_ model: T.Type) -> Observable<Results<T>> {
-        return Observable.deferred {
-            let realm = self.realm
-            let objects = realm.objects(model)
-            return Observable.collection(from: objects)
-        }
-    }
-    
-    func fetch<T: Object>(_ model: T.Type) -> Observable<(AnyRealmCollection<T>, RealmChangeset?)> {
+    func fetchAll<T: Object>(_ model: T.Type) -> Observable<(AnyRealmCollection<T>, RealmChangeset?)> {
         return Observable.deferred {
             let realm = self.realm
             let objects = realm.objects(model)
@@ -63,17 +51,41 @@ class RealmInstance: RealmRepresentable {
         }
     }
     
-    func query<T: Object>(_ model: T.Type,
+    func fetch<T: Object>(_ model: T.Type,
                           with predicate: NSPredicate,
-                          sortDescriptors: [NSSortDescriptor] = []) -> Observable<Results<T>> {
+                          sortDescriptors: [NSSortDescriptor] = []) -> Observable<(AnyRealmCollection<T>, RealmChangeset?)> {
         return Observable.deferred {
             let realm = self.realm
-            let objects = realm.objects(T.self)
+            let objects = realm.objects(model)
                 .filter(predicate)
-                //.sorted(by: sortDescriptors.map(SortDescriptor.init))
-            return Observable.collection(from: objects)
+            //.sorted(by: sortDescriptors.map(SortDescriptor.init))
+            return Observable.changeset(from: objects)
         }
     }
+    
+    func fetchResults<T: Object>(_ model: T.Type,
+                          with predicate: NSPredicate,
+                          sortDescriptors: [NSSortDescriptor] = []) -> Observable<[T]> {
+        return Observable.deferred {
+            let realm = self.realm
+            let objects = realm.objects(model)
+                .filter(predicate)
+                .toArray()
+            //.sorted(by: sortDescriptors.map(SortDescriptor.init))
+            return Observable.of(objects)
+        }
+    }
+    
+    func fetchAllResults<T: Object>(_ model: T.Type) -> Observable<[T]> {
+        return Observable.deferred {
+            let realm = self.realm
+            let objects = realm.objects(model)
+                .toArray()
+            //.sorted(by: sortDescriptors.map(SortDescriptor.init))
+            return Observable.of(objects)
+        }
+    }
+
     
     func delete<T: Object>(_ object: T) -> Observable<Void> {
         return Observable.deferred {
@@ -120,6 +132,21 @@ extension Reactive where Base: Realm {
             do {
                 try self.base.write {
                     self.base.add(object, update: update)
+                }
+                observer.onNext(())
+                observer.onCompleted()
+            } catch {
+                observer.onError(error)
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func save<R: Object>(_ objects: [R], update: Bool = true) -> Observable<Void> {
+        return Observable.create { observer in
+            do {
+                try self.base.write {
+                    self.base.add(objects, update: update)
                 }
                 observer.onNext(())
                 observer.onCompleted()
