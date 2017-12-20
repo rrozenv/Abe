@@ -8,11 +8,20 @@ class User: Object {
         return NSPredicate(format: "id = %@", SyncUser.current!.identity!)
     }
     
+    static var key: String {
+        return SyncUser.current!.identity!
+    }
+    
+    static var defaultUser: User {
+        return User()
+    }
+    
     // MARK: - Properties
     @objc dynamic var id: String = ""
     @objc dynamic var name: String = ""
     @objc dynamic var email: String = ""
     let contacts = List<Contact>()
+    let prompts = List<Prompt>()
     //let replies = List<PromptReply>()
     
     // MARK: - Init
@@ -36,22 +45,4 @@ class User: Object {
     
 }
 
-class Contact: Object {
-    @objc dynamic var id: String = ""
-    @objc dynamic var firstName: String = ""
-    @objc dynamic var lastName: String = ""
-    let numbers = List<String>()
-    
-    convenience init(id: String, first: String, last: String, numbers: [String]) {
-        self.init()
-        self.id = id
-        self.firstName = first
-        self.lastName = last
-        numbers.forEach { self.numbers.append($0) }
-    }
-    // MARK: - Meta
-    override static func primaryKey() -> String? {
-        return "id"
-    }
-    
-}
+

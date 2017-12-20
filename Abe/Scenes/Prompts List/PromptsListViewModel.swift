@@ -3,14 +3,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 import RealmSwift
-import RxRealmDataSources
-
-protocol ViewModelType {
-    associatedtype Input
-    associatedtype Output
-    
-    func transform(input: Input) -> Output
-}
 
 final class PromptsListViewModel: ViewModelType {
     
@@ -24,7 +16,7 @@ final class PromptsListViewModel: ViewModelType {
         let posts: Driver<Results<Prompt>>
         let createPrompt: Driver<Void>
         let selectedPrompt: Driver<Prompt>
-        let saveUserInfo: Driver<Void>
+       // let saveUserInfo: Driver<Void>
         let error: Driver<Error>
     }
     
@@ -39,24 +31,20 @@ final class PromptsListViewModel: ViewModelType {
     func transform(input: Input) -> Output {
         let activityIndicator = ActivityIndicator()
         let errorTracker = ErrorTracker()
+        let fetching = activityIndicator.asDriver()
+        let errors = errorTracker.asDriver()
+        
+//        let saveUser = self.realm
+//            .query(User.self, with: User.currentUserPredicate, sortDescriptors: [])
+//            .map { $0.first }
+//            .map { Application.shared.currentUser = $0 }
+//            .mapToVoid()
+//            .asDriverOnErrorJustComplete()
         
         let prompts = self.realm.queryAll(Prompt.self)
             .trackActivity(activityIndicator)
             .trackError(errorTracker)
             .asDriverOnErrorJustComplete()
-        
-        let saveUserInfo = self.realm
-            .query(User.self, with: User.currentUserPredicate, sortDescriptors: [])
-            .map { $0.first }
-            .map {
-                guard let user = $0 else { return }
-                UserDefaultsManager.saveUserInfo(user)
-            }
-            .mapToVoid()
-            .asDriverOnErrorJustComplete()
-        
-        let fetching = activityIndicator.asDriver()
-        let errors = errorTracker.asDriver()
         
         let selectedPrompt = input.selection.do(onNext: router.toPrompt)
 
@@ -67,9 +55,9 @@ final class PromptsListViewModel: ViewModelType {
                       posts: prompts,
                       createPrompt: createPrompt,
                       selectedPrompt: selectedPrompt,
-                      saveUserInfo: saveUserInfo,
                       error: errors)
     }
+    
 }
 
 

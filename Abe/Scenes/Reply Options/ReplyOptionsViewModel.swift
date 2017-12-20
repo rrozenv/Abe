@@ -12,113 +12,6 @@ enum Visibility: String {
     case contacts
 }
 
-extension CNContact {
-    
-    static func findContacts() -> [CNContact] {
-        let store = CNContactStore()
-        
-        let keysToFetch = [CNContactFormatter.descriptorForRequiredKeys(for: .fullName),
-                           CNContactThumbnailImageDataKey,
-                           CNContactImageDataAvailableKey,
-                           CNContactPhoneNumbersKey, CNContactEmailAddressesKey] as [Any]
-        
-        let fetchRequest = CNContactFetchRequest(keysToFetch: keysToFetch as! [CNKeyDescriptor])
-        
-        var contacts = [CNContact]()
-        
-        do{
-            try store.enumerateContacts(with: fetchRequest, usingBlock: {
-                ( contact, stop) -> Void in
-                // TODO: Guard required values dont add items that are null
-                // Check for Mobile numbers, could be more than one.
-                var mobileNumbers = [CNPhoneNumber]()
-                var emailIds = [NSString]()
-                
-                for phoneNumber in contact.phoneNumbers {
-                    mobileNumbers.append(phoneNumber.value)
-                }
-                for emailId in contact.emailAddresses {
-                    emailIds.append(emailId.value)
-                }
-                // Only add Contacts with Mobile numbers!
-                if (!mobileNumbers.isEmpty || !emailIds.isEmpty) {
-                    contacts.append(contact)
-                } else {
-                    print("\(contact.givenName) does not have Mobile number listed!")
-                }
-            })
-        }
-        catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        return contacts
-    }
-    
-}
-
-class ContactsStore {
-    private let store = CNContactStore()
-    
-    func isAuthorized() -> Observable<Bool> {
-        return Observable.create { (observer) -> Disposable in
-            if CNContactStore.authorizationStatus(for: .contacts) == .notDetermined {
-                self.store.requestAccess(for: .contacts, completionHandler: { (authorized, error) in
-                    if authorized {
-                        observer.onNext(true)
-                        observer.onCompleted()
-                    }
-                    
-                    if let error = error {
-                        observer.onError(error)
-                    }
-                })
-            } else {
-                observer.onNext(true)
-                observer.onCompleted()
-            }
-            return Disposables.create()
-        }
-    }
-    
-    func userContacts() -> Observable<[Contact]> {
-        return Observable.create { observer in
-            let contacts = self.fetchContacts()
-            observer.onNext(contacts)
-            observer.onCompleted()
-            return Disposables.create()
-        }
-    }
-    
-    func fetchContacts() -> [Contact] {
-        let keysToFetch = [CNContactFormatter.descriptorForRequiredKeys(for: .fullName),
-                           CNContactThumbnailImageDataKey,
-                           CNContactImageDataAvailableKey,
-                           CNContactPhoneNumbersKey, CNContactEmailAddressesKey] as [Any]
-        
-        let fetchRequest = CNContactFetchRequest(keysToFetch: keysToFetch as! [CNKeyDescriptor])
-        
-        var contacts = [Contact]()
-        
-        do{
-            try store.enumerateContacts(with: fetchRequest, usingBlock: {
-                (cnContact, stop) -> Void in
-                let allNumbers = cnContact.phoneNumbers.map { $0.value.stringValue }
-                let contact = Contact(id: cnContact.identifier,
-                                      first: cnContact.givenName,
-                                      last: cnContact.familyName,
-                                      numbers: allNumbers)
-                contacts.append(contact)
-            })
-        }
-        catch let error as NSError {
-            print(error.localizedDescription)
-        }
-        
-        return contacts
-    }
-    
-}
-
 struct SavedReplyInput {
     let body: String
     let prompt: Prompt
@@ -140,14 +33,13 @@ struct ReplyOptionsViewModel {
         let errors: Driver<Error>
     }
     
+    var promptTitle: String { return prompt.title }
+    
     private let realm: RealmRepresentable
     private let router: ReplyOptionsRoutingLogic
     private let prompt: Prompt
-    private let user: UserInfo
     private let contactsStore: ContactsStore
     private let savedReplyInput: SavedReplyInput
-    
-    var promptTitle: String { return prompt.title }
     
     init(realm: RealmRepresentable,
          prompt: Prompt,
@@ -158,33 +50,34 @@ struct ReplyOptionsViewModel {
         self.contactsStore = ContactsStore()
         self.savedReplyInput = savedReplyInput
         self.router = router
-        guard let userInfo = UserDefaultsManager.userInfo() else { fatalError() }
-        self.user = userInfo
     }
     
     func transform(input: Input) -> Output {
+        
         let activityIndicator = ActivityIndicator()
         let errorTracker = ErrorTracker()
         let loading = activityIndicator.asDriver()
         let errors = errorTracker.asDriver()
         
-        let options: [Visibility] = [.all, .facebook, .contacts]
-        let visbilityOptions = Driver.of(options)
+        //MARK: - 1. let visibilityOptions: Driver<[Visibility]>
+        let _options: [Visibility] = [.all, .facebook, .contacts]
+        let visbilityOptions = Driver.of(_options)
         
-        let user = self.realm
-            .query(User.self, with: User.currentUserPredicate, sortDescriptors: [])
-            .map { $0.first! }
+        let _user = self.realm
+            .fetch(User.self, primaryKey: SyncUser.current!.identity!)
+            .unwrap()
             .asDriverOnErrorJustComplete()
-   
-        let selectedVisibility = input.visibilitySelected
         
-        let shouldAskForContacts = selectedVisibility
+        //MARK: - 2. let savedContacts: Driver<Void>
+        let _selectedVisibility = input.visibilitySelected
+        
+        let _shouldAskForContacts = _selectedVisibility
             .filter { $0 == Visibility.contacts }
-            .withLatestFrom(user)
+            .withLatestFrom(_user)
             .map { $0.contacts.count }
             .filter { $0 < 1 }
         
-        let userContacts = shouldAskForContacts
+        let _userContacts = _shouldAskForContacts
             .mapToVoid()
             .flatMapLatest { _ in
                 return self.contactsStore.isAuthorized()
@@ -196,8 +89,8 @@ struct ReplyOptionsViewModel {
                 self.contactsStore.userContacts().asDriverOnErrorJustComplete()
             }
     
-        let savedContacts = userContacts
-            .withLatestFrom(user) { (contacts, user) in
+        let savedContacts = _userContacts
+            .withLatestFrom(_user) { (contacts, user) in
                 return self.realm.update {
                     contacts.forEach { user.contacts.append($0) }
                 }
@@ -206,14 +99,15 @@ struct ReplyOptionsViewModel {
             }
             .mapToVoid()
         
-        let currentPrompt = Driver.of(prompt)
-        let savedReplyInput = Driver.of(self.savedReplyInput)
+        //3. MARK: - let didCreateReply: Observable<Void>
+        let _currentPrompt = Driver.of(prompt)
+        let _savedReplyInput = Driver.of(self.savedReplyInput)
         
-        let reply =
-            Driver.combineLatest(currentPrompt,
-                                 user,
-                                 savedReplyInput,
-                                 selectedVisibility) { (prompt, user, replyInput, visibility) -> PromptReply in
+        let _reply =
+            Driver.combineLatest(_currentPrompt,
+                                 _user,
+                                 _savedReplyInput,
+                                 _selectedVisibility) { (prompt, user, replyInput, visibility) -> PromptReply in
             return PromptReply(userId: user.id,
                                userName: user.name,
                                promptId: prompt.id,
@@ -223,7 +117,7 @@ struct ReplyOptionsViewModel {
         
         let didCreateReply = input.createTrigger
             .asObservable()
-            .withLatestFrom(reply)
+            .withLatestFrom(_reply)
             .flatMapLatest { (reply) -> Observable<Void> in
                 return self.realm.update {
                         self.prompt.replies.insert(reply, at: 0)

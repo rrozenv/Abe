@@ -67,9 +67,9 @@ class PromptsListViewController: UIViewController {
             .drive()
             .disposed(by: disposeBag)
         
-        output.saveUserInfo
-            .drive()
-            .disposed(by: disposeBag)
+//        output.saveUserInfo
+//            .drive()
+//            .disposed(by: disposeBag)
 
     }
 }

@@ -8,9 +8,7 @@ import RxCocoa
 final class RealmAuth {
     
     class func fetchCurrentSyncUser() -> SyncUser? {
-        guard let syncUser = SyncUser.current else {
-            return nil
-        }
+        guard let syncUser = SyncUser.current else { return nil }
         return syncUser
     }
     

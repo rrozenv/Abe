@@ -9,6 +9,9 @@ import RxRealm
 final class Application {
     
     static let shared = Application()
+    var currentUser: User? = nil
+    
+    private init() { }
 
     func configureMainInterface(in window: UIWindow) {
         if RealmAuth.fetchCurrentSyncUser() != nil {
@@ -24,15 +27,15 @@ final class Application {
         let router = PromptsRouter(navigationController: navVc)
         let realm = RealmInstance(configuration: RealmConfig.common)
         promptsVc.viewModel = PromptsListViewModel(realm: realm, router: router)
-        window.rootViewController = navVc
         router.toPrompts()
+        window.rootViewController = navVc
     }
     
     private func displayRegisterViewController(in window: UIWindow) {
         let signupNavController = UINavigationController()
         let signupRouter = SignupRouter(window: window, navigationController: signupNavController)
-        window.rootViewController = signupNavController
         signupRouter.toRegister()
+        window.rootViewController = signupNavController
     }
     
 }

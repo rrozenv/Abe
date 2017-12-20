@@ -17,6 +17,10 @@
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
 		9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED671FE70627002E538E /* PromptReplyTableCell.swift */; };
 		9883ED6A1FE7062D002E538E /* ScoreCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */; };
+		988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988658F31FE8045A00FEB703 /* ViewModelType.swift */; };
+		988658F61FE8049900FEB703 /* RealmError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988658F51FE8049900FEB703 /* RealmError.swift */; };
+		988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988658F71FE8073C00FEB703 /* ContactStore.swift */; };
+		988658FA1FE807B400FEB703 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988658F91FE807B400FEB703 /* Contact.swift */; };
 		98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */; };
 		98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */; };
 		98921BBA1FE735C4006CCCF6 /* ReplyOptionsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */; };
@@ -82,6 +86,10 @@
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
 		9883ED671FE70627002E538E /* PromptReplyTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptReplyTableCell.swift; sourceTree = "<group>"; };
 		9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreCollectionCell.swift; sourceTree = "<group>"; };
+		988658F31FE8045A00FEB703 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
+		988658F51FE8049900FEB703 /* RealmError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmError.swift; sourceTree = "<group>"; };
+		988658F71FE8073C00FEB703 /* ContactStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactStore.swift; sourceTree = "<group>"; };
+		988658F91FE807B400FEB703 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsViewController.swift; sourceTree = "<group>"; };
 		98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsViewModel.swift; sourceTree = "<group>"; };
 		98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsRouter.swift; sourceTree = "<group>"; };
@@ -179,6 +187,7 @@
 			children = (
 				9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */,
 				980DE5AF1FE5B47D0087C6C3 /* User.swift */,
+				988658F91FE807B400FEB703 /* Contact.swift */,
 				98FEE7B61FE4BBFA00CD80A8 /* Prompt.swift */,
 				9883ED601FE6F810002E538E /* PromptReply.swift */,
 			);
@@ -193,6 +202,7 @@
 				980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */,
 				98FEE7B41FE4BBDB00CD80A8 /* RealmConfiguration.swift */,
 				98FEE7DE1FE4D5AF00CD80A8 /* RealmAuth.swift */,
+				988658F51FE8049900FEB703 /* RealmError.swift */,
 			);
 			path = Realm;
 			sourceTree = "<group>";
@@ -222,6 +232,8 @@
 		980DE5B61FE5B5BE0087C6C3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				988658F31FE8045A00FEB703 /* ViewModelType.swift */,
+				988658F71FE8073C00FEB703 /* ContactStore.swift */,
 				980DE5A31FE589310087C6C3 /* Observable+Ext.swift */,
 				980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */,
 				980DE5A61FE5A3B40087C6C3 /* ErrorTracker.swift */,
@@ -586,11 +598,13 @@
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,
 				98FEE7B71FE4BBFB00CD80A8 /* Prompt.swift in Sources */,
 				98FEE7C71FE4C12800CD80A8 /* CreatePromptRouter.swift in Sources */,
+				988658F61FE8049900FEB703 /* RealmError.swift in Sources */,
 				9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */,
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
+				988658FA1FE807B400FEB703 /* Contact.swift in Sources */,
 				980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */,
 				9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */,
 				9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */,
@@ -598,6 +612,7 @@
 				98FEE7C91FE4CB5000CD80A8 /* PromptView.swift in Sources */,
 				9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */,
 				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
+				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
@@ -613,6 +628,7 @@
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
+				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,
 				98FEE7BF1FE4BC6200CD80A8 /* PromptTableCell.swift in Sources */,
 				989317251FE6F3E400E2979F /* PromptDetailViewController.swift in Sources */,
 				980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */,

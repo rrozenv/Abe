@@ -3,29 +3,7 @@ import Foundation
 import RealmSwift
 import RxSwift
 import RxCocoa
-
-enum RealmError: Error {
-    case saveFailed(String)
-    case updateFailed(String)
-    case createFailed(String)
-    case deleteObjectFailed(String)
-    case deleteAllObjectsFailed
-    
-    var description: String {
-        switch self {
-        case .saveFailed(let type):
-            return "Realm failed to save object of type: \(type)."
-        case .updateFailed(let type):
-            return "Realm failed to update object of type: \(type)"
-        case .createFailed(let type):
-            return "Realm failed to create objecto of type: \(type)."
-        case .deleteObjectFailed(let type):
-            return "Realm failed to delete object: \(type)."
-        case .deleteAllObjectsFailed:
-            return "Realm failed to delete all objects."
-        }
-    }
-}
+import PromiseKit
 
 class RealmInstance: RealmRepresentable {
     
@@ -35,33 +13,36 @@ class RealmInstance: RealmRepresentable {
         self.realm = try! Realm(configuration: configuration.configuration)
     }
     
-    func create<T: Object>(_ model: T.Type, value: [String: Any]) -> Observable<Void> {
-        return Observable.create { [weak self] observer in
+    func createT<T: Object>(_ model: T.Type, value: [String: Any], update: Bool) -> Promise<T> {
+        return Promise { fullfill, reject in
             do {
-                try self?.realm.write {
-                  self?.realm.create(model, value: value, update: false)
+                try realm.write {
+                    let newObject = realm.create(model as Object.Type, value: value, update: update) as! T
+                    fullfill(newObject)
                 }
-                observer.onNext(())
-                observer.onCompleted()
             } catch {
-                observer.onError(RealmError.createFailed("\(T.Type.self)"))
+                reject(RealmError.createFailed(""))
             }
-            return Disposables.create()
+        }
+    }
+    
+    func create<T: Object>(_ model: T.Type,
+                           value: [String: Any],
+                           update: Bool) -> Observable<Void> {
+        return Observable.deferred {
+            return self.realm.rx.create(model, value: value, update: update)
         }
     }
     
     func save(object: Object) -> Observable<Void> {
-        return Observable.create { [weak self] observer in
-            do {
-                try self?.realm.write {
-                    self?.realm.add(object)
-                }
-                observer.onNext(())
-                observer.onCompleted()
-            } catch {
-                observer.onError(RealmError.saveFailed("\(object.description)"))
-            }
-            return Disposables.create()
+        return Observable.deferred {
+            return self.realm.rx.save(object)
+        }
+    }
+    
+    func fetch<T: Object>(_ model: T.Type, primaryKey: String) -> Observable<T?> {
+        return Observable.deferred {
+            return self.realm.rx.fetch(model, primaryKey: primaryKey)
         }
     }
     
@@ -85,10 +66,65 @@ class RealmInstance: RealmRepresentable {
         }
     }
     
+    func delete<T: Object>(_ object: T) -> Observable<Void> {
+        return Observable.deferred {
+            return self.realm.rx.delete(object)
+        }
+    }
+    
     func update(block: @escaping () -> Void) -> Observable<Void> {
-        return Observable.create { [weak self] observer in
+        return Observable.deferred {
+            return self.realm.rx.update(block: block)
+        }
+    }
+    
+}
+
+extension Reactive where Base: Realm {
+    
+    func create<T: Object>(_ model: T.Type, value: [String: Any], update: Bool) -> Observable<Void> {
+        return Observable.create { observer in
             do {
-                try self?.realm.write {
+                try self.base.write {
+                    self.base.create(model, value: value, update: update)
+                }
+                observer.onNext(())
+                observer.onCompleted()
+            } catch {
+                observer.onError(RealmError.createFailed("\(T.Type.self)"))
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func fetch<T: Object>(_ model: T.Type, primaryKey: String) -> Observable<T?> {
+        return Observable.create { observer in
+            let object = self.base.object(ofType: model, forPrimaryKey: primaryKey)
+            observer.onNext(object)
+            observer.onCompleted()
+            return Disposables.create()
+        }
+    }
+    
+    func save<R: Object>(_ object: R, update: Bool = true) -> Observable<Void> {
+        return Observable.create { observer in
+            do {
+                try self.base.write {
+                    self.base.add(object, update: update)
+                }
+                observer.onNext(())
+                observer.onCompleted()
+            } catch {
+                observer.onError(error)
+            }
+            return Disposables.create()
+        }
+    }
+    
+    func update(block: @escaping () -> Void) -> Observable<Void> {
+        return Observable.create { observer in
+            do {
+                try self.base.write {
                     block()
                 }
                 observer.onNext(())
@@ -98,37 +134,22 @@ class RealmInstance: RealmRepresentable {
             return Disposables.create()
         }
     }
-
-    func delete(object: Object) -> Observable<Void> {
-        return Observable.create { [weak self] observer in
+    
+    func delete<R: Object>(_ object: R) -> Observable<Void> {
+        return Observable.create { observer in
             do {
-                try self?.realm.write {
-                    self?.realm.delete(object)
+                try self.base.write {
+                    self.base.delete(object)
                 }
                 observer.onNext(())
                 observer.onCompleted()
             } catch {
-                observer.onError(RealmError.deleteObjectFailed("\(object.description)"))
+                observer.onError(error)
             }
             return Disposables.create()
         }
     }
-
-    func deleteAll() -> Observable<Void> {
-        return Observable.create { [weak self] observer in
-            do {
-                try self?.realm.write {
-                    self?.realm.deleteAll()
-                }
-                observer.onNext(())
-                observer.onCompleted()
-            } catch {
-                observer.onError(RealmError.deleteAllObjectsFailed)
-            }
-            return Disposables.create()
-        }
-    }
-
+    
 }
 
 
