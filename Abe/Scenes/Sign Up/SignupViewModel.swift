@@ -82,6 +82,7 @@ final class SignupViewModel {
             .withLatestFrom(latestUserInput) { (syncUser, input) -> User in
                 return User(syncUser: syncUser, name: input.userName, email: input.email)
             }
+            .do(onNext: { UserDefaultsManager.saveUserInfo($0) })
             .flatMapLatest { [unowned self] (user) in
                 return self.realm.create(User.self, value: user.value, update: true)
             }

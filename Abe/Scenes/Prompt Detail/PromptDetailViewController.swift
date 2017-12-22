@@ -46,9 +46,9 @@ class PromptDetailViewController: UIViewController {
         let output = viewModel.transform(input: input)
 
         output.replies
-            .drive(tableView.rx.items) { tableView, index, reply in
+            .drive(tableView.rx.items) { tableView, index, viewModel in
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
-                cell.bindViewModel(with: reply)
+                cell.configure(with: viewModel)
                 return cell
             }
             .disposed(by: disposeBag)

@@ -9,6 +9,12 @@ protocol PromptTableCellDelegate: class {
     func didSelectScore(_ score: String, replyId: String)
 }
 
+struct ScoreViewModel {
+    let value: Int
+    let image: UIImage
+    let userDidReply: Bool
+}
+
 final class PromptReplyTableCell: UITableViewCell {
     private let viewModel = ReplyCellViewModel(commonRealm: RealmInstance(configuration: RealmConfig.common))
     
@@ -21,10 +27,11 @@ final class PromptReplyTableCell: UITableViewCell {
     // MARK: - Type Properties
     static let reuseIdentifier = "PromptReplyTableCell"
     var collectionView: UICollectionView!
-    //var scoreImages: [UIImage] = [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")]
+    var scoreImages: [UIImage] = [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")]
     //var scores: [Score] = Score.createScores()
     var replyId: String = ""
     weak var delegate: PromptTableCellDelegate?
+    let drive = Driver.of([#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")])
     
     // MARK: - Properties
     fileprivate var containerView: UIView!
@@ -84,7 +91,6 @@ final class PromptReplyTableCell: UITableViewCell {
             .disposed(by: disposeBag)
         
      
-        
 //        output.userName
 //            .drive(userNameLabel.rx.text)
 //            .disposed(by: disposeBag)
@@ -94,28 +100,45 @@ final class PromptReplyTableCell: UITableViewCell {
 //            .disposed(by: disposeBag)
         
     }
-    
-  
-//
-//    func configure(with reply: PromptReply) {
-//        self.selectionStyle = .none
-//        userNameLabel.text = reply.user?.name
-//        replyBodyLabel.text = reply.body
-//
-//        Driver.of(scores)
-//            .drive(collectionView.rx.items) { collView, index, score in
-//                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-//                cell.scoreImageView.image = score.getImage
-//                return cell
+
+    func configure(with viewModel: CellViewModel) {
+        self.selectionStyle = .none
+       
+        viewModel.reply.map { $0.user!.name }
+            .asDriverOnErrorJustComplete()
+            .drive(replyBodyLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.reply.map { $0.body }
+            .asDriverOnErrorJustComplete()
+            .drive(replyBodyLabel.rx.text)
+            .disposed(by: disposeBag)
+
+//        let scoreViewModels = Observable.of(#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected"))
+//            .enumerated()
+//            .map { (i) in
+//                return ScoreViewModel(value: i.index + 1,
+//                                      image: i.element,
+//                                      userDidReply: viewModel.userDidReply)
 //            }
-//            .disposed(by: disposeBag)
+//            .toArray()
+//            .asDriverOnErrorJustComplete()
 //
-//        collectionView.rx.modelSelected(Score.self).asDriver()
-//            .drive(onNext: { score in
-//                print(score.getScore)
-//            })
-//            .disposed(by: disposeBag)
-//    }
+        viewModel.scoreCellViewModels
+            .asDriverOnErrorJustComplete()
+            .drive(collectionView.rx.items) { collView, index, score in
+                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+                cell.configure(with: score)
+                return cell
+            }
+            .disposed(by: disposeBag)
+
+        collectionView.rx.modelSelected(Score.self).asDriver()
+            .drive(onNext: { score in
+                print(score.getScore)
+            })
+            .disposed(by: disposeBag)
+    }
     
 }
 

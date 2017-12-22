@@ -5,6 +5,13 @@ import RxCocoa
 import RealmSwift
 import RxRealm
 
+struct CellViewModel {
+    let reply: Observable<PromptReply>
+    let scoreCellViewModels: Observable<[ScoreCellViewModel]>
+    let userDidReply: Observable<Bool>
+    let userScore: Observable<ReplyScore?>
+}
+
 typealias ReplyChangeSet = (AnyRealmCollection<PromptReply>, RealmChangeset?)
 
 struct PromptDetailViewModel {
@@ -15,7 +22,7 @@ struct PromptDetailViewModel {
     }
     
     struct Output {
-        let replies: Driver<[PromptReply]>
+        let replies: Driver<[CellViewModel]>
         let createReply: Driver<Void>
         let dismissViewController: Driver<Void>
         let fetching: Driver<Bool>
@@ -42,6 +49,7 @@ struct PromptDetailViewModel {
         let errorTracker = ErrorTracker()
         let fetching = activityIndicator.asDriver()
         let errors = errorTracker.asDriver()
+        guard let defaultsUser = UserDefaultsManager.userInfo() else { fatalError() }
         
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
         
@@ -74,6 +82,25 @@ struct PromptDetailViewModel {
             .map { $0.filter { $0.visibility == "all" } }
             .asDriverOnErrorJustComplete()
         
+        let replyViewModels = _allReplies
+            .map { (replies) -> [CellViewModel] in
+                return replies.map { (reply) in
+                    let userScore =
+                        self.fetchCurrentUserScoreIfExists(for: reply,
+                                                           currentUserId: defaultsUser.id)
+                    let userDidReply = userScore != nil ? true : false
+                    let scoreCellViewModels = [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")].map {
+                        return ScoreCellViewModel(userDidReply: userDidReply,
+                                                  placeholderImage: $0,
+                                                  userScore: userScore)
+                    }
+                    return CellViewModel(reply: Observable.of(reply),
+                                         scoreCellViewModels: Observable.of(scoreCellViewModels),
+                                         userDidReply: Observable.of(userDidReply),
+                                         userScore: Observable.of(userScore))
+                }
+            }
+        
         //2. Merged list
 //        let finalizedReplyList = Observable
 //            .of(_allReplies, _filteredContactReplies)
@@ -86,11 +113,16 @@ struct PromptDetailViewModel {
         
         let dismiss = input.backTrigger.do(onNext: router.toPrompts)
         
-        return Output(replies: _allReplies,
+        return Output(replies: replyViewModels,
                       createReply: createReply,
                       dismissViewController: dismiss,
                       fetching: fetching,
                       errors: errors)
+    }
+    
+    func fetchCurrentUserScoreIfExists(for reply: PromptReply, currentUserId: String) -> ReplyScore? {
+        let score = reply.scores.filter(NSPredicate(format: "userId = %@", currentUserId)).first
+        return score ?? nil
     }
     
     

@@ -5,6 +5,11 @@ import SnapKit
 
 class ScoreCollectionCell: UICollectionViewCell {
     
+    enum State {
+        case userDidReply
+        case userDidNotReply
+    }
+    
     static let reuseIdentifier = "ScoreCollectionCell"
     var containerView: UIView!
     var scoreImageView: UIImageView!
@@ -17,6 +22,11 @@ class ScoreCollectionCell: UICollectionViewCell {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(with viewModel: ScoreCellViewModel) {
+        self.scoreImageView.image = viewModel.placeholderImage
+        self.scoreImageView.isHidden = viewModel.userDidReply ? true : false
     }
     
     fileprivate func setupContainerView() {

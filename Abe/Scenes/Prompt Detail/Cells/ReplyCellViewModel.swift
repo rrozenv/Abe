@@ -33,7 +33,7 @@ struct ReplyCellViewModel {
             .fetch(User.self, primaryKey: SyncUser.current!.identity!)
             .unwrap()
             .asDriverOnErrorJustComplete()
-        
+    
         let _reply = Driver.of(input.reply)
         let info = _reply.map { ($0.user!.name, $0.body) }
 //        let userName = _reply.map { $0.user!.name }
@@ -58,7 +58,8 @@ struct ReplyCellViewModel {
             .toArray()
             .withLatestFrom(userReplyScore) { (placeholders, userScore) -> [ScoreCellViewModel] in
                 return placeholders.map { (placeholder) -> ScoreCellViewModel in
-                    return ScoreCellViewModel(userDidReply: (userScore != nil) ? true : false,
+                    return ScoreCellViewModel(userDidReply:
+                        (userScore != nil) ? true : false,
                         placeholderImage: placeholder,
                         userScore: userScore)
                 }
@@ -68,7 +69,13 @@ struct ReplyCellViewModel {
         return Output(info: info,
                       scoreCellViewModels: scoreViewModels)
     }
-
+    
+    func fetchCurrentUserScoreIfExists(for reply: PromptReply,
+                                       currentUser: User) -> ReplyScore? {
+        let score = reply.scores.filter(NSPredicate(format: "userId = %@", currentUser.id)).first
+        return score ?? nil
+    }
+    
 }
 
 extension ReplyCellViewModel {
