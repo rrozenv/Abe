@@ -9,6 +9,7 @@ class PromptReply: Object {
     @objc dynamic var body: String = ""
     @objc dynamic var visibility: String = "all"
     @objc dynamic var createdAt = Date()
+    let scores = List<ReplyScore>()
     
     override static func primaryKey() -> String? {
         return "id"
@@ -32,4 +33,26 @@ class PromptReply: Object {
                 "body": body]
     }
     
+}
+
+class ReplyScore: Object {
+    @objc dynamic var id: String = UUID().uuidString
+    @objc dynamic var replyId: String = ""
+    @objc dynamic var userId: String = ""
+    @objc dynamic var score: Int = 0
+    
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+    
+    convenience init(userId: String, replyId: String, score: Int) {
+        self.init()
+        self.userId = userId
+        self.replyId = replyId
+        self.score = score
+    }
+    
+    static func valueDict(user: User, replyId: String, score: String) -> [String: Any] {
+        return ["userId": user.id, "replyId": replyId, "score": score]
+    }
 }

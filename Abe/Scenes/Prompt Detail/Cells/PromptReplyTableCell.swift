@@ -10,6 +10,7 @@ protocol PromptTableCellDelegate: class {
 }
 
 final class PromptReplyTableCell: UITableViewCell {
+    private let viewModel = ReplyCellViewModel(commonRealm: RealmInstance(configuration: RealmConfig.common))
     
     private(set) var disposeBag = DisposeBag()
     
@@ -17,53 +18,11 @@ final class PromptReplyTableCell: UITableViewCell {
         disposeBag = DisposeBag()
     }
     
-    enum Score {
-        case one(UIImage, String)
-        case two(UIImage, String)
-        case three(UIImage, String)
-        case four(UIImage, String)
-        case five(UIImage, String)
-        
-        var getImage: UIImage {
-            switch self {
-            case .one(let image, _):
-                return image
-            case .two(let image, _):
-                return image
-            case .three(let image, _):
-                return image
-            case .four(let image, _):
-                return image
-            case .five(let image, _):
-                return image
-            }
-        }
-        
-        var getScore: String {
-            switch self {
-            case .one(_, let score):
-                return score
-            case .two(_, let score):
-                return score
-            case .three(_, let score):
-                return score
-            case .four(_, let score):
-                return score
-            case .five(_, let score):
-                return score
-            }
-        }
-        
-        static func createScores() -> [Score] {
-            return [Score.one(#imageLiteral(resourceName: "IC_Score_One_Unselected"), "1"), Score.two(#imageLiteral(resourceName: "IC_Score_Two_Unselected"), "2"), Score.three(#imageLiteral(resourceName: "IC_Score_Three_Unselected"), "3"), Score.four(#imageLiteral(resourceName: "IC_Score_Four_Unselected"), "4"), Score.five(#imageLiteral(resourceName: "IC_Score_Five_Unselected"), "5")]
-        }
-    }
-    
     // MARK: - Type Properties
     static let reuseIdentifier = "PromptReplyTableCell"
     var collectionView: UICollectionView!
-    var scoreImages: [UIImage] = [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")]
-    var scores: [Score] = Score.createScores()
+    //var scoreImages: [UIImage] = [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")]
+    //var scores: [Score] = Score.createScores()
     var replyId: String = ""
     weak var delegate: PromptTableCellDelegate?
     
@@ -101,29 +60,62 @@ final class PromptReplyTableCell: UITableViewCell {
         
         setupCollectionView()
         setupLabelsStackView()
+        userNameLabel.text = "T"
+        replyBodyLabel.text = "L"
     }
     
-  
-    
-    func configure(with reply: PromptReply) {
-        self.selectionStyle = .none
-        userNameLabel.text = reply.user?.name
-        replyBodyLabel.text = reply.body
-    
-        Driver.of(scores)
-            .drive(collectionView.rx.items) { collView, index, score in
+    func bindViewModel(with reply: PromptReply) {
+        let input = ReplyCellViewModel.Input(reply: reply)
+        let output = viewModel.transform(input: input)
+        
+        output.info
+            .drive(onNext: { (info) in
+                self.userNameLabel.text = info.0
+                self.replyBodyLabel.text = info.1
+            })
+            .disposed(by: disposeBag)
+        
+        output.scoreCellViewModels
+            .drive(collectionView.rx.items) { collView, index, viewModel in
                 guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                cell.scoreImageView.image = score.getImage
+                cell.scoreImageView.image = viewModel.placeholderImage
                 return cell
             }
             .disposed(by: disposeBag)
         
-        collectionView.rx.modelSelected(Score.self).asDriver()
-            .drive(onNext: { score in
-                print(score.getScore)
-            })
-            .disposed(by: disposeBag)
+     
+        
+//        output.userName
+//            .drive(userNameLabel.rx.text)
+//            .disposed(by: disposeBag)
+//
+//        output.body
+//            .drive(replyBodyLabel.rx.text)
+//            .disposed(by: disposeBag)
+        
     }
+    
+  
+//
+//    func configure(with reply: PromptReply) {
+//        self.selectionStyle = .none
+//        userNameLabel.text = reply.user?.name
+//        replyBodyLabel.text = reply.body
+//
+//        Driver.of(scores)
+//            .drive(collectionView.rx.items) { collView, index, score in
+//                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+//                cell.scoreImageView.image = score.getImage
+//                return cell
+//            }
+//            .disposed(by: disposeBag)
+//
+//        collectionView.rx.modelSelected(Score.self).asDriver()
+//            .drive(onNext: { score in
+//                print(score.getScore)
+//            })
+//            .disposed(by: disposeBag)
+//    }
     
 }
 
@@ -176,7 +168,7 @@ extension PromptReplyTableCell {
         containerView.addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in
             make.left.bottom.right.equalTo(containerView)
-            make.height.equalTo(25)
+            make.height.equalTo(40)
         }
     }
     
@@ -191,6 +183,52 @@ extension PromptReplyTableCell {
             make.left.top.equalTo(containerView).offset(15)
             make.right.equalTo(containerView).offset(-15)
             make.bottom.equalTo(collectionView.snp.top).offset(-10)
+        }
+    }
+    
+}
+
+extension PromptReplyTableCell {
+    
+    enum Score {
+        case one(UIImage, String)
+        case two(UIImage, String)
+        case three(UIImage, String)
+        case four(UIImage, String)
+        case five(UIImage, String)
+        
+        var getImage: UIImage {
+            switch self {
+            case .one(let image, _):
+                return image
+            case .two(let image, _):
+                return image
+            case .three(let image, _):
+                return image
+            case .four(let image, _):
+                return image
+            case .five(let image, _):
+                return image
+            }
+        }
+        
+        var getScore: String {
+            switch self {
+            case .one(_, let score):
+                return score
+            case .two(_, let score):
+                return score
+            case .three(_, let score):
+                return score
+            case .four(_, let score):
+                return score
+            case .five(_, let score):
+                return score
+            }
+        }
+        
+        static func createScores() -> [Score] {
+            return [Score.one(#imageLiteral(resourceName: "IC_Score_One_Unselected"), "1"), Score.two(#imageLiteral(resourceName: "IC_Score_Two_Unselected"), "2"), Score.three(#imageLiteral(resourceName: "IC_Score_Three_Unselected"), "3"), Score.four(#imageLiteral(resourceName: "IC_Score_Four_Unselected"), "4"), Score.five(#imageLiteral(resourceName: "IC_Score_Five_Unselected"), "5")]
         }
     }
     

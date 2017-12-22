@@ -30,6 +30,7 @@
 		989317261FE6F3E400E2979F /* PromptDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317231FE6F3E400E2979F /* PromptDetailViewModel.swift */; };
 		9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */; };
 		9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317291FE6F41A00E2979F /* CreateReplyViewController.swift */; };
+		9897110F1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9897110E1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift */; };
 		98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */; };
 		98FEE7841FE4BAD300CD80A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98FEE7821FE4BAD300CD80A8 /* Main.storyboard */; };
 		98FEE7861FE4BAD300CD80A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98FEE7851FE4BAD300CD80A8 /* Assets.xcassets */; };
@@ -99,6 +100,7 @@
 		989317231FE6F3E400E2979F /* PromptDetailViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptDetailViewModel.swift; sourceTree = "<group>"; };
 		989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewModel.swift; sourceTree = "<group>"; };
 		989317291FE6F41A00E2979F /* CreateReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewController.swift; sourceTree = "<group>"; };
+		9897110E1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyCellViewModel.swift; sourceTree = "<group>"; };
 		98FEE77B1FE4BAD300CD80A8 /* Abe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Abe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		98FEE7831FE4BAD300CD80A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				9883ED671FE70627002E538E /* PromptReplyTableCell.swift */,
+				9897110E1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift */,
 				9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */,
 			);
 			path = Cells;
@@ -614,6 +617,7 @@
 				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
 				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
+				9897110F1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift in Sources */,
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
