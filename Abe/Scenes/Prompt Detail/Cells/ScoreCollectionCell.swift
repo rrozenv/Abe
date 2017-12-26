@@ -24,9 +24,9 @@ class ScoreCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with viewModel: ScoreCellViewModel) {
+    func configure(with viewModel: ScoreCellViewModel, userDidReply: Bool) {
         self.scoreImageView.image = viewModel.placeholderImage
-        self.scoreImageView.isHidden = viewModel.userDidReply ? true : false
+        self.scoreImageView.isHidden = userDidReply ? true : false
     }
     
     fileprivate func setupContainerView() {

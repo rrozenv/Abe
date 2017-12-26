@@ -40,21 +40,50 @@ class PromptDetailViewController: UIViewController {
         
         let input = PromptDetailViewModel
             .Input(createReplyTrigger: createReplyButton.rx.tap.asDriver(),
-                   backTrigger: backButton.rx.tap.asDriver())
+                   backTrigger: backButton.rx.tap.asDriver(),
+                   scoreSelected: PublishSubject<(CellViewModel, ScoreCellViewModel)>())
         
         //MARK: - Output
         let output = viewModel.transform(input: input)
+        
+//        output.replies
+//            .drive(onNext: { _ in
+//                self.tableView.reloadData()
+//            })
+//            .disposed(by: disposeBag)
 
         output.replies
             .drive(tableView.rx.items) { tableView, index, viewModel in
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
+               
                 cell.configure(with: viewModel)
+                
+                cell.collectionView.rx
+                    .modelSelected(ScoreCellViewModel.self).asObservable()
+                    .subscribe(onNext: { scoreVm in
+                        input.scoreSelected.onNext((viewModel, scoreVm))
+                    })
+                    .disposed(by: cell.disposeBag)
+                
+                Observable.of(viewModel.scoreCellViewModels)
+                    .asDriverOnErrorJustComplete()
+                    .drive(cell.collectionView.rx.items) { collView, index, score in
+                        guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+                        cell.configure(with: score, userDidReply: viewModel.userDidReply)
+                        return cell
+                    }
+                    .disposed(by: cell.disposeBag)
+                
                 return cell
             }
             .disposed(by: disposeBag)
         
         output.createReply
             .drive()
+            .disposed(by: disposeBag)
+        
+        output.saveScore
+            .subscribe()
             .disposed(by: disposeBag)
         
         output.dismissViewController
@@ -102,3 +131,5 @@ extension PromptDetailViewController {
     
     
 }
+
+

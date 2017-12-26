@@ -85,8 +85,16 @@ class RealmInstance {
             return Observable.of(objects)
         }
     }
-
     
+    func fetchObjects<T: Object>(_ model: T.Type, with predicate: NSPredicate) -> [T] {
+        let realm = self.realm
+        let objects = realm.objects(model)
+            .filter(predicate)
+            .toArray()
+        //.sorted(by: sortDescriptors.map(SortDescriptor.init))
+        return objects
+    }
+
     func delete<T: Object>(_ object: T) -> Observable<Void> {
         return Observable.deferred {
             return self.realm.rx.delete(object)
@@ -96,6 +104,22 @@ class RealmInstance {
     func update(block: @escaping () -> Void) -> Observable<Void> {
         return Observable.deferred {
             return self.realm.rx.update(block: block)
+        }
+    }
+    
+    func updateWrite(block: @escaping () -> Void) {
+        try! self.realm.write {
+            block()
+        }
+    }
+    
+    func fetchPromise<T: Object>(_ model: T.Type, with predicate: NSPredicate) -> Promise<[T]> {
+        return Promise { fullfill, _ in
+            let realm = self.realm
+            let objects = realm.objects(model)
+                .filter(predicate)
+                .toArray()
+            fullfill(objects)
         }
     }
     

@@ -12,6 +12,8 @@
 		980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */; };
 		980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5AF1FE5B47D0087C6C3 /* User.swift */; };
 		980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */; };
+		982594101FF2C44D00D12C59 /* PromptRepliesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9825940F1FF2C44D00D12C59 /* PromptRepliesViewController.swift */; };
+		982594121FF2C4BC00D12C59 /* PromptRepliesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982594111FF2C4BC00D12C59 /* PromptRepliesViewModel.swift */; };
 		9883ED611FE6F810002E538E /* PromptReply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED601FE6F810002E538E /* PromptReply.swift */; };
 		9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */; };
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
@@ -82,6 +84,8 @@
 		980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		980DE5AF1FE5B47D0087C6C3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmConstants.swift; sourceTree = "<group>"; };
+		9825940F1FF2C44D00D12C59 /* PromptRepliesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptRepliesViewController.swift; sourceTree = "<group>"; };
+		982594111FF2C4BC00D12C59 /* PromptRepliesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptRepliesViewModel.swift; sourceTree = "<group>"; };
 		9883ED601FE6F810002E538E /* PromptReply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptReply.swift; sourceTree = "<group>"; };
 		9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
@@ -256,6 +260,15 @@
 			path = Scenes;
 			sourceTree = "<group>";
 		};
+		982594131FF2C8D800D12C59 /* Updated */ = {
+			isa = PBXGroup;
+			children = (
+				9825940F1FF2C44D00D12C59 /* PromptRepliesViewController.swift */,
+				982594111FF2C4BC00D12C59 /* PromptRepliesViewModel.swift */,
+			);
+			path = Updated;
+			sourceTree = "<group>";
+		};
 		9883ED661FE7061B002E538E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -299,6 +312,7 @@
 				989317211FE6F3E300E2979F /* PromptDetailRouter.swift */,
 				989317221FE6F3E300E2979F /* PromptDetailViewController.swift */,
 				989317231FE6F3E400E2979F /* PromptDetailViewModel.swift */,
+				982594131FF2C8D800D12C59 /* Updated */,
 			);
 			path = "Prompt Detail";
 			sourceTree = "<group>";
@@ -598,6 +612,7 @@
 				98FEE7C11FE4BC7400CD80A8 /* Application.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
+				982594101FF2C44D00D12C59 /* PromptRepliesViewController.swift in Sources */,
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,
 				98FEE7B71FE4BBFB00CD80A8 /* Prompt.swift in Sources */,
 				98FEE7C71FE4C12800CD80A8 /* CreatePromptRouter.swift in Sources */,
@@ -628,6 +643,7 @@
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
 				9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */,
+				982594121FF2C4BC00D12C59 /* PromptRepliesViewModel.swift in Sources */,
 				98FEE7C51FE4C12300CD80A8 /* CreatePromptViewController.swift in Sources */,
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,

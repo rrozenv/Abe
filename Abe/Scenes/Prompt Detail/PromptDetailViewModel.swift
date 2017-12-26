@@ -6,24 +6,41 @@ import RealmSwift
 import RxRealm
 
 struct CellViewModel {
-    let reply: Observable<PromptReply>
-    let scoreCellViewModels: Observable<[ScoreCellViewModel]>
-    let userDidReply: Observable<Bool>
-    let userScore: Observable<ReplyScore?>
+    let reply: PromptReply
+    let scoreCellViewModels: [ScoreCellViewModel]
+    let userDidReply: Bool
+    let userScore: ReplyScore?
 }
 
 typealias ReplyChangeSet = (AnyRealmCollection<PromptReply>, RealmChangeset?)
 
 struct PromptDetailViewModel {
     
+    // MARK: - Properties
+    
+    let disposeBag = DisposeBag()
+    
+    var querying: Driver<Bool> { return _querying.asDriver() }
+    var replies: Driver<[CellViewModel]> { return _replies.asDriver() }
+    
+    // MARK: -
+    
+    private let _querying = Variable<Bool>(false)
+    private let _replies = Variable<[CellViewModel]>([])
+    
+    var hasReplies: Bool { return numberOfReplies > 0 }
+    var numberOfReplies: Int { return _replies.value.count }
+    
     struct Input {
         let createReplyTrigger: Driver<Void>
         let backTrigger: Driver<Void>
+        let scoreSelected: PublishSubject<(CellViewModel, ScoreCellViewModel)>
     }
     
     struct Output {
         let replies: Driver<[CellViewModel]>
         let createReply: Driver<Void>
+        let saveScore: Observable<CellViewModel>
         let dismissViewController: Driver<Void>
         let fetching: Driver<Bool>
         let errors: Driver<Error>
@@ -33,6 +50,7 @@ struct PromptDetailViewModel {
     private let router: PromptDetailRoutingLogic
     private let commonRealm: RealmInstance
     private let privateRealm: RealmInstance
+    private let user: UserInfo
     
     init(commonRealm: RealmInstance,
          privateRealm: RealmInstance,
@@ -42,6 +60,7 @@ struct PromptDetailViewModel {
         self.router = router
         self.commonRealm = commonRealm
         self.privateRealm = privateRealm
+        self.user = UserDefaultsManager.userInfo()!
     }
     
     func transform(input: Input) -> Output {
@@ -49,8 +68,7 @@ struct PromptDetailViewModel {
         let errorTracker = ErrorTracker()
         let fetching = activityIndicator.asDriver()
         let errors = errorTracker.asDriver()
-        guard let defaultsUser = UserDefaultsManager.userInfo() else { fatalError() }
-        
+    
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
         
         let _user = self.commonRealm
@@ -77,30 +95,51 @@ struct PromptDetailViewModel {
 //        .asDriverOnErrorJustComplete()
 //
         //2. Replies marked all
-        let _allReplies = self.commonRealm
+        self.commonRealm
             .fetchResults(PromptReply.self, with: predicate)
             .map { $0.filter { $0.visibility == "all" } }
-            .asDriverOnErrorJustComplete()
+            .map { self.createReplyCellViewModels(with: $0) }
+            .bind(to: _replies)
+            .disposed(by: disposeBag)
         
-        let replyViewModels = _allReplies
-            .map { (replies) -> [CellViewModel] in
-                return replies.map { (reply) in
-                    let userScore =
-                        self.fetchCurrentUserScoreIfExists(for: reply,
-                                                           currentUserId: defaultsUser.id)
-                    let userDidReply = userScore != nil ? true : false
-                    let scoreCellViewModels = [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")].map {
-                        return ScoreCellViewModel(userDidReply: userDidReply,
-                                                  placeholderImage: $0,
-                                                  userScore: userScore)
-                    }
-                    return CellViewModel(reply: Observable.of(reply),
-                                         scoreCellViewModels: Observable.of(scoreCellViewModels),
-                                         userDidReply: Observable.of(userDidReply),
-                                         userScore: Observable.of(userScore))
+        let saveScore = input
+            .scoreSelected
+            .asObservable()
+            .filter { !$0.0.userDidReply }
+            .flatMap { (vm) -> Observable<CellViewModel> in
+                let replyScore = ReplyScore(userId: self.user.id,
+                                            replyId: vm.0.reply.id,
+                                            score: vm.1.value)
+                
+                self.commonRealm.updateWrite {
+                    vm.0.reply.scores.append(replyScore)
                 }
+                
+                return .just(CellViewModel(reply: vm.0.reply,
+                                     scoreCellViewModels: vm.0.scoreCellViewModels,
+                                     userDidReply: true,
+                                     userScore: replyScore))
             }
+            .do(onNext: { (cellVm) in
+                let index = self._replies.value.index(where: { $0.reply.id == cellVm.reply.id })
+                var currentReplies = self._replies.value
+                currentReplies[index!] = cellVm
+                self._replies.value = currentReplies
+            })
         
+//        let save = scoreToSave
+//            .map { viewModel -> (PromptReply, ReplyScore) in
+//                let score = ReplyScore(userId: defaultsUser.id, replyId: viewModel.reply.id, score: viewModel.value)
+//                let reply = viewModel.reply
+//                return (reply, score)
+//            }
+//            .flatMap { (inputs) in
+//                self.commonRealm.update {
+//                    inputs.0.scores.append(inputs.1)
+//                }
+//            }
+//
+    
         //2. Merged list
 //        let finalizedReplyList = Observable
 //            .of(_allReplies, _filteredContactReplies)
@@ -113,29 +152,59 @@ struct PromptDetailViewModel {
         
         let dismiss = input.backTrigger.do(onNext: router.toPrompts)
         
-        return Output(replies: replyViewModels,
+        return Output(replies: _replies.asDriver(),
                       createReply: createReply,
+                      saveScore: saveScore,
                       dismissViewController: dismiss,
                       fetching: fetching,
                       errors: errors)
     }
     
-    func fetchCurrentUserScoreIfExists(for reply: PromptReply, currentUserId: String) -> ReplyScore? {
-        let score = reply.scores.filter(NSPredicate(format: "userId = %@", currentUserId)).first
-        return score ?? nil
+    func createReplyCellViewModels(with replies: [PromptReply]) -> [CellViewModel] {
+        return replies.map { (reply) in
+            let userScore = self.fetchCurrentUserScoreIfExists(for: reply, currentUserId: user.id)
+            let userDidReply = (userScore != nil) ? true : false
+            let scoreCellViewModels =
+                createScoreCellViewModels(for: reply,
+                                          userDidReply: userDidReply,
+                                          userScore: userScore)
+            return CellViewModel(reply: reply,
+                                 scoreCellViewModels: scoreCellViewModels,
+                                 userDidReply: userDidReply,
+                                 userScore: userScore)
+        }
     }
     
+    func createCellViewModel(with reply: PromptReply) -> CellViewModel {
+        let userScore = self.fetchCurrentUserScoreIfExists(for: reply, currentUserId: user.id)
+        let userDidReply = (userScore != nil) ? true : false
+        let scoreCellViewModels =
+            createScoreCellViewModels(for: reply,
+                                      userDidReply: userDidReply,
+                                      userScore: userScore)
+        return CellViewModel(reply: reply,
+                             scoreCellViewModels: scoreCellViewModels,
+                             userDidReply: userDidReply,
+                             userScore: userScore)
+    }
     
-    //                outerLoop: for reply in replies {
-    //                    if reply.visibility == "contacts" {
-    //                        for contact in contacts {
-    //                            if contact.numbers.contains(user.phoneNumber) {
-    //                                repliesToDisplay.append(reply)
-    //                                continue outerLoop
-    //                            }
-    //                        }
-    //                    }
-    //                }
+    func createScoreCellViewModels(for reply: PromptReply,
+                                   userDidReply: Bool,
+                                   userScore: ReplyScore?) -> [ScoreCellViewModel] {
+        return [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")].enumerated().map {
+                return ScoreCellViewModel(value: $0.offset + 1,
+                                          reply: reply,
+                                          userDidReply: userDidReply,
+                                          placeholderImage: $0.element,
+                                          userScore: userScore)
+        }
+    }
+    
+    func fetchCurrentUserScoreIfExists(for reply: PromptReply, currentUserId: String) -> ReplyScore? {
+        let score = reply.scores
+            .filter(NSPredicate(format: "userId = %@", currentUserId)).first
+        return score ?? nil
+    }
 
     
 }
