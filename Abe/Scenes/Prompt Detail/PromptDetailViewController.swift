@@ -11,12 +11,14 @@ class PromptDetailViewController: UIViewController {
     let disposeBag = DisposeBag()
     var viewModel: PromptDetailViewModel!
     
+    var tabBarView: TabBarView!
     var tableView: UITableView!
     var createReplyButton: UIButton!
     var backButton: UIBarButtonItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTabBarView()
         setupTableView()
         setupCreatePromptReplyButton()
         setupCancelButton()
@@ -34,24 +36,34 @@ class PromptDetailViewController: UIViewController {
     
     func bindViewModel() {
         //MARK: - Input
-//        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-//            .mapToVoid()
-//            .asDriverOnErrorJustComplete()
+        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
+            .mapToVoid()
+            .asDriverOnErrorJustComplete()
         
+        let allTapped = tabBarView.leftButton.rx.tap
+            .map { _ in Visibility.all }
+            .asDriverOnErrorJustComplete()
+        
+        let contactsTapped = tabBarView.rightButton.rx.tap
+            .map { _ in Visibility.contacts }
+            .asDriverOnErrorJustComplete()
+        
+        let tabButtonTapped = Observable.of(allTapped, contactsTapped)
+            .merge()
+            .startWith(.all)
+            .distinctUntilChanged()
+            .asDriverOnErrorJustComplete()
+       
         let input = PromptDetailViewModel
-            .Input(createReplyTrigger: createReplyButton.rx.tap.asDriver(),
+            .Input(refreshTrigger: viewWillAppear,
+                   currentlySelectedTab: tabButtonTapped,
+                   createReplyTrigger: createReplyButton.rx.tap.asDriver(),
                    backTrigger: backButton.rx.tap.asDriver(),
                    scoreSelected: PublishSubject<(CellViewModel, ScoreCellViewModel)>())
         
         //MARK: - Output
         let output = viewModel.transform(input: input)
         
-//        output.replies
-//            .drive(onNext: { _ in
-//                self.tableView.reloadData()
-//            })
-//            .disposed(by: disposeBag)
-
         output.replies
             .drive(tableView.rx.items) { tableView, index, viewModel in
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
@@ -78,12 +90,20 @@ class PromptDetailViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        output.fetching
+            .drive(onNext: { (isFetching) in
+                print("currently fetching \(isFetching)")
+            })
+            .disposed(by: disposeBag)
+        
         output.createReply
             .drive()
             .disposed(by: disposeBag)
         
         output.saveScore
-            .subscribe()
+            .subscribe(onNext: { _ in
+                self.tableView.reloadData()
+            })
             .disposed(by: disposeBag)
         
         output.dismissViewController
@@ -108,7 +128,7 @@ extension PromptDetailViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         
         //MARK: - tableView Constraints
-        view.addSubview(tableView)
+        view.insertSubview(tableView, belowSubview: tabBarView)
         tableView.snp.makeConstraints { (make) in
             make.edges.equalTo(view)
         }
@@ -127,6 +147,17 @@ extension PromptDetailViewController {
             make.left.bottom.right.equalTo(view)
             make.height.equalTo(60)
         }
+    }
+    
+    func setupTabBarView() {
+        tabBarView = TabBarView(leftTitle: "Trending", rightTitle: "Friends")
+        
+        view.addSubview(tabBarView)
+        tabBarView.translatesAutoresizingMaskIntoConstraints = false
+        tabBarView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+        tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        tabBarView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor, constant: 10).isActive = true
+        tabBarView.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
     
