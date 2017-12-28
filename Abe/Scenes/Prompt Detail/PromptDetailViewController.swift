@@ -50,10 +50,10 @@ class PromptDetailViewController: UIViewController {
         
         let tabButtonTapped = Observable.of(allTapped, contactsTapped)
             .merge()
-            .startWith(.all)
             .distinctUntilChanged()
+            .startWith(.all)
             .asDriverOnErrorJustComplete()
-       
+        
         let input = PromptDetailViewModel
             .Input(refreshTrigger: viewWillAppear,
                    currentlySelectedTab: tabButtonTapped,
@@ -108,6 +108,9 @@ class PromptDetailViewController: UIViewController {
         
         output.dismissViewController
             .drive()
+            .disposed(by: disposeBag)
+        
+        output.didBindReplies
             .disposed(by: disposeBag)
     }
 

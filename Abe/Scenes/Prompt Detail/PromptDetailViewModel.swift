@@ -40,6 +40,7 @@ struct PromptDetailViewModel {
         let dismissViewController: Driver<Void>
         let fetching: Driver<Bool>
         let errors: Driver<Error>
+        let didBindReplies: Disposable
     }
     
     private let prompt: Prompt
@@ -66,49 +67,54 @@ struct PromptDetailViewModel {
         let errors = errorTracker.asDriver()
     
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
-        
+
         //MARK: - All Replies View Models
         let _allReplies = input.currentlySelectedTab
             .filter { $0 == Visibility.all }
-            .flatMap { visibility in
+            .flatMapLatest { (allVis) in
                 return self.commonRealm
                     .fetchResults(PromptReply.self, with: predicate)
-                    .map { $0.filter { $0.visibility == visibility.rawValue } }
+                    .map { $0.filter { $0.visibility == allVis.rawValue } }
                     .trackActivity(activityIndicator)
                     .trackError(errorTracker)
-                    .asDriverOnErrorJustComplete()
+                    .asDriver(onErrorJustReturn: [PromptReply]())
             }
             .map { self.createReplyCellViewModels(with: $0) }
-        
+
         //MARK: - Contact Replies View Models
-        let _contactReplies = input.currentlySelectedTab.asObservable()
+        let _contactReplies = input.currentlySelectedTab
+            .debug()
             .filter { $0 == Visibility.contacts }
-            .flatMap { visibility in
+            .flatMapLatest { (contactsVis) in
                 return self.commonRealm
                     .fetchResults(PromptReply.self, with: predicate)
-                    .map { $0.filter { $0.visibility == visibility.rawValue } }
+                    .map { $0.filter { $0.visibility == contactsVis.rawValue } }
+                    .trackActivity(activityIndicator)
+                    .trackError(errorTracker)
+                    .asDriver(onErrorJustReturn: [PromptReply]())
             }
         
         let _userContactNumers = self.privateRealm
             .fetchAllResults(Contact.self)
             .map { $0.flatMap { $0.numbers } }
-        
-        let _filteredContactReplies = Observable
+            .startWith([String]())
+            .asDriver(onErrorJustReturn: [String]())
+    
+        let _filteredContactReplies = Driver
             .combineLatest(_contactReplies, _userContactNumers) { (replies, userNumbers) -> [PromptReply] in
-                return replies.filter {
-                    guard let replyUserPhone = $0.user?.phoneNumber else { return false }
+                return replies.filter { (reply) -> Bool in
+                    guard let replyUserPhone = reply.user?.phoneNumber else { return false }
                     return userNumbers.contains(replyUserPhone)
                 }
             }
             .map { self.createReplyCellViewModels(with: $0) }
-            .startWith([])
-            .asDriverOnErrorJustComplete()
-        
+
         //MARK: - Bind Replies
-        Observable.of(_allReplies, _filteredContactReplies)
+        //All replies must come LAST because they are shown FIRST
+        let didBindReplies = Observable.of(_filteredContactReplies, _allReplies)
+            .debug()
             .merge()
             .bind(to: self._replies)
-            .disposed(by: disposeBag)
         
         let saveScore = input
             .scoreSelected
@@ -144,8 +150,11 @@ struct PromptDetailViewModel {
                       saveScore: saveScore,
                       dismissViewController: dismiss,
                       fetching: fetching,
-                      errors: errors)
+                      errors: errors,
+                      didBindReplies: didBindReplies)
     }
+    
+    //MARK: - Helper Methods
     
     private func createReplyCellViewModels(with replies: [PromptReply]) -> [CellViewModel] {
         return replies.map { (reply) in
@@ -196,3 +205,24 @@ struct PromptDetailViewModel {
 
     
 }
+
+
+//let repliesForPrompt = input.refreshTrigger
+//    .flatMapLatest { _ in
+//        return self.commonRealm
+//            .fetchResults(PromptReply.self, with: predicate)
+//            .trackActivity(activityIndicator)
+//            .trackError(errorTracker)
+//            .asDriver(onErrorJustReturn: [PromptReply]())
+//}
+
+//            .withLatestFrom(repliesForPrompt) { (contactsVis, replies) -> [PromptReply] in
+//                return replies.filter { $0.visibility == contactsVis.rawValue }
+//            }
+//            .startWith([PromptReply]())
+
+//            .withLatestFrom(repliesForPrompt) { (allVis, replies) -> [PromptReply] in
+//                print("I have \(replies.count) at this point")
+//                return replies.filter { $0.visibility == allVis.rawValue }
+//            }
+//            .map { self.createReplyCellViewModels(with: $0) }
