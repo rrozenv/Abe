@@ -41,8 +41,10 @@ class PromptsRouter: PromptsRoutingLogic {
         let router = PromptDetailRouter(navigationController: navigationController)
         let commonRealm = RealmInstance(configuration: RealmConfig.common)
         let privateRealm = RealmInstance(configuration: RealmConfig.secret)
+        let replyService = ReplyService()
         let viewModel = PromptDetailViewModel(commonRealm: commonRealm,
                                               privateRealm: privateRealm,
+                                              replyService: replyService,
                                               prompt: prompt,
                                               router: router)
         let vc = PromptDetailViewController()

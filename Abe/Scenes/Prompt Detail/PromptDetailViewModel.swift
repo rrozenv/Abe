@@ -48,15 +48,18 @@ struct PromptDetailViewModel {
     private let commonRealm: RealmInstance
     private let privateRealm: RealmInstance
     private let user: UserInfo
+    private let replyService: ReplyService
     
     init(commonRealm: RealmInstance,
          privateRealm: RealmInstance,
+         replyService: ReplyService,
          prompt: Prompt,
          router: PromptDetailRoutingLogic) {
         self.prompt = prompt
         self.router = router
         self.commonRealm = commonRealm
         self.privateRealm = privateRealm
+        self.replyService = replyService
         self.user = UserDefaultsManager.userInfo()!
     }
     
@@ -72,8 +75,8 @@ struct PromptDetailViewModel {
         let _allReplies = input.currentlySelectedTab
             .filter { $0 == Visibility.all }
             .flatMapLatest { (allVis) in
-                return self.commonRealm
-                    .fetchResults(PromptReply.self, with: predicate)
+                return self.replyService
+                    .fetchRepliesWith(predicate: predicate)
                     .map { $0.filter { $0.visibility == allVis.rawValue } }
                     .trackActivity(activityIndicator)
                     .trackError(errorTracker)
@@ -86,8 +89,8 @@ struct PromptDetailViewModel {
             .debug()
             .filter { $0 == Visibility.contacts }
             .flatMapLatest { (contactsVis) in
-                return self.commonRealm
-                    .fetchResults(PromptReply.self, with: predicate)
+                return self.replyService
+                    .fetchRepliesWith(predicate: predicate)
                     .map { $0.filter { $0.visibility == contactsVis.rawValue } }
                     .trackActivity(activityIndicator)
                     .trackError(errorTracker)

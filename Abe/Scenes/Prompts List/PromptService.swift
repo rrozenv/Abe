@@ -107,3 +107,72 @@ struct UserService {
     }
     
 }
+
+enum ReplyServiceError: Error {
+    case creationFailed
+    case updateFailed(PromptReply)
+    case deletionFailed(PromptReply)
+    case saveScoreFailed(PromptReply)
+}
+
+struct ReplyService {
+    
+    fileprivate func withRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
+        do {
+            let realm = try Realm(configuration: RealmConfig.common.configuration)
+            return try action(realm)
+        } catch let err {
+            print("Failed \(operation) realm with error: \(err)")
+            return nil
+        }
+    }
+    
+    @discardableResult
+    func createReply(title: String,
+                      body: String,
+                      user: User) -> Observable<Prompt> {
+        let result = withRealm("creating") { realm -> Observable<Prompt> in
+            let prompt = Prompt(title: title, body: body, user: user)
+            try realm.write {
+                realm.add(prompt)
+            }
+            return .just(prompt)
+        }
+        return result ?? .error(PromptServiceError.creationFailed)
+    }
+    
+    @discardableResult
+    func delete(prompt: Prompt) -> Observable<Void> {
+        let result = withRealm("deleting") { realm-> Observable<Void> in
+            try realm.write {
+                realm.delete(prompt)
+            }
+            return .empty()
+        }
+        return result ?? .error(PromptServiceError.deletionFailed(prompt))
+    }
+    
+    @discardableResult
+    func saveScore(reply: PromptReply,
+                   score: ReplyScore) -> Observable<PromptReply> {
+        let result = withRealm("updating title") { realm -> Observable<PromptReply> in
+            try realm.write {
+                reply.scores.append(score)
+            }
+            return .just(reply)
+        }
+        return result ?? .error(ReplyServiceError.saveScoreFailed(reply))
+    }
+    
+    func fetchRepliesWith(predicate: NSPredicate) -> Observable<[PromptReply]> {
+        let result = withRealm("getting replies") { realm -> Observable<[PromptReply]> in
+            let replies = realm
+                .objects(PromptReply.self)
+                .filter(predicate)
+                .toArray()
+            return .just(replies)
+        }
+        return result ?? .empty()
+    }
+    
+}
