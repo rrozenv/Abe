@@ -19,11 +19,15 @@ final class CreatePromptViewModel: ViewModelType {
         let dismissViewController: Driver<Void>
     }
     
-    private let realm: RealmInstance
+    private let promptService: PromptService
+    private let userService: UserService
     private let router: CreatePromptRouter
     
-    init(realm: RealmInstance, router: CreatePromptRouter) {
-        self.realm = realm
+    init(promptService: PromptService,
+         userService: UserService,
+         router: CreatePromptRouter) {
+        self.promptService = promptService
+        self.userService = userService
         self.router = router
     }
     
@@ -40,9 +44,7 @@ final class CreatePromptViewModel: ViewModelType {
         
         //2. Output - Dismisses VC when a new prompt is saved OR
         //            back button is tapped
-        let _user = self.realm
-            .fetch(User.self, primaryKey: SyncUser.current!.identity!)
-            .unwrap()
+        let _user = self.userService.fetchUserFor(key: SyncUser.current!.identity!)
         
         let _promptInputs = Observable
             .combineLatest(_user, input.title, input.body) {
@@ -51,10 +53,11 @@ final class CreatePromptViewModel: ViewModelType {
         
         let _createPrompt = input.createPromptTrigger
             .withLatestFrom(_promptInputs)
-            .map { Prompt(title: $0.title, body: $0.body, user: $0.user) }
             .flatMapLatest { [unowned self] in
-                return self.realm.save(object: $0)
+                return self.promptService
+                    .createPrompt(title: $0.title, body: $0.body, user: $0.user)
             }
+            .mapToVoid()
             .asDriverOnErrorJustComplete()
         
         let dismiss = Driver.of(_createPrompt, input.cancelTrigger)

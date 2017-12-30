@@ -16,8 +16,9 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
     
     func toMainInput() {
         let vc = CreatePromptViewController()
-        let realm = RealmInstance(configuration: RealmConfig.common)
-        vc.viewModel = CreatePromptViewModel(realm: realm, router: self)
+        let promptService = PromptService()
+        let userService = UserService()
+        vc.viewModel = CreatePromptViewModel(promptService: promptService, userService: userService, router: self)
         navigationController.pushViewController(vc, animated: true)
     }
 

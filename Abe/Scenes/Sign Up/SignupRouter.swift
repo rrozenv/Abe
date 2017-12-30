@@ -27,7 +27,7 @@ class SignupRouter: SignupRoutingLogic {
     func toHome() {
         let promptsVc = PromptsListViewController()
         let navVc = UINavigationController()
-        let router = PromptsRouter(navigationController: navVc)
+        let router = PromptsRouter(navigationController: navVc, viewController: promptsVc)
         let realm = RealmInstance(configuration: RealmConfig.common)
         promptsVc.viewModel = PromptsListViewModel(realm: realm, router: router)
         window.rootViewController = navVc

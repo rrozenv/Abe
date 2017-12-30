@@ -14,27 +14,27 @@ protocol PromptsRoutingLogic {
 class PromptsRouter: PromptsRoutingLogic {
 
     private let navigationController: UINavigationController
+    private weak var viewController: PromptsListViewController?
 
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController,
+         viewController: PromptsListViewController) {
         self.navigationController = navigationController
+        self.viewController = viewController
     }
 
     func toPrompts() {
         let vc = PromptsListViewController()
         let realm = RealmInstance(configuration: RealmConfig.common)
-        vc.viewModel = PromptsListViewModel(realm: realm, router: self)
+        let viewModel = PromptsListViewModel(realm: realm, router: self)
+        vc.viewModel = viewModel
         navigationController.pushViewController(vc, animated: true)
     }
 
     func toCreatePrompt() {
         let navVc = UINavigationController()
         let router = CreatePromptRouter(navigationController: navVc)
-        let realm = RealmInstance(configuration: RealmConfig.common)
-        let viewModel = CreatePromptViewModel(realm: realm, router: router)
-        let vc = CreatePromptViewController()
-        vc.viewModel = viewModel
-        navigationController.present(navVc, animated: true, completion: nil)
         router.toMainInput()
+        navigationController.present(navVc, animated: true, completion: nil)
     }
 
     func toPrompt(_ prompt: Prompt) {

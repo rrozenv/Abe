@@ -118,9 +118,10 @@ struct ReplyOptionsViewModel {
         let didCreateReply = input.createTrigger
             .asObservable()
             .withLatestFrom(_reply)
-            .flatMapLatest { (reply) -> Observable<Void> in
+            .flatMapLatest { (reply) -> Observable<PromptReply> in
                 return self.commonRealm.save(object: reply)
             }
+            .mapToVoid()
             .do(onNext: router.toPromptDetail)
         
         return Output(visibilityOptions: visbilityOptions,

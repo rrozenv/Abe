@@ -12,6 +12,7 @@
 		980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */; };
 		980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5AF1FE5B47D0087C6C3 /* User.swift */; };
 		980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */; };
+		9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9823322A1FF7E09800C3CB49 /* PromptService.swift */; };
 		982530FC1FF4151D000E6E20 /* PromptMasterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */; };
 		982530FE1FF41531000E6E20 /* PromptMasterDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */; };
 		982531001FF41568000E6E20 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FF1FF41568000E6E20 /* TabBarView.swift */; };
@@ -87,6 +88,7 @@
 		980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		980DE5AF1FE5B47D0087C6C3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmConstants.swift; sourceTree = "<group>"; };
+		9823322A1FF7E09800C3CB49 /* PromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptService.swift; sourceTree = "<group>"; };
 		982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewController.swift; sourceTree = "<group>"; };
 		982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewModel.swift; sourceTree = "<group>"; };
 		982530FF1FF41568000E6E20 /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 				98FEE7B81FE4BC4C00CD80A8 /* PromptsRouter.swift */,
 				98FEE7BA1FE4BC5400CD80A8 /* PromptsListViewController.swift */,
 				98FEE7BC1FE4BC5B00CD80A8 /* PromptsListViewModel.swift */,
+				9823322A1FF7E09800C3CB49 /* PromptService.swift */,
 			);
 			path = "Prompts List";
 			sourceTree = "<group>";
@@ -670,6 +673,7 @@
 				982531001FF41568000E6E20 /* TabBarView.swift in Sources */,
 				98FEE7BF1FE4BC6200CD80A8 /* PromptTableCell.swift in Sources */,
 				989317251FE6F3E400E2979F /* PromptDetailViewController.swift in Sources */,
+				9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */,
 				982531071FF4179B000E6E20 /* RepliesFromContactsViewModel.swift in Sources */,
 				980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */,
 			);

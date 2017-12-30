@@ -41,7 +41,8 @@ final class PromptsListViewModel: ViewModelType {
             .trackError(errorTracker)
             .trackActivity(activityIndicator)
         
-        let selectedPrompt = input.selection.do(onNext: router.toPrompt)
+        let selectedPrompt = input.selection
+            .do(onNext: router.toPrompt)
 
         let createPrompt = input.createPostTrigger
             .do(onNext: router.toCreatePrompt)

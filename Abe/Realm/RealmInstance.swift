@@ -24,9 +24,22 @@ class RealmInstance {
         }
     }
     
-    func save(object: Object) -> Observable<Void> {
-        return Observable.deferred {
-            return self.realm.rx.save(object)
+    func save<T: Object>(object: T) -> Observable<T> {
+        return self.realm.rx.save(object)
+    }
+    
+    func saveT<T: Object>(object: T) -> Observable<T> {
+        return Observable.create { observer in
+            do {
+                try self.realm.write {
+                    self.realm.add(object)
+                }
+                observer.onNext(object)
+                observer.onCompleted()
+            } catch {
+                observer.onError(error)
+            }
+            return Disposables.create()
         }
     }
     
@@ -151,13 +164,13 @@ extension Reactive where Base: Realm {
         }
     }
 
-    func save<R: Object>(_ object: R, update: Bool = true) -> Observable<Void> {
+    func save<R: Object>(_ object: R, update: Bool = true) -> Observable<R> {
         return Observable.create { observer in
             do {
                 try self.base.write {
                     self.base.add(object, update: update)
                 }
-                observer.onNext(())
+                observer.onNext(object)
                 observer.onCompleted()
             } catch {
                 observer.onError(error)

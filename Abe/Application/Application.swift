@@ -24,7 +24,8 @@ final class Application {
     private func displayHomeViewController(in window: UIWindow) {
         let navVc = UINavigationController()
         let promptsVc = PromptsListViewController()
-        let router = PromptsRouter(navigationController: navVc)
+        let router = PromptsRouter(navigationController: navVc,
+                                   viewController: promptsVc)
         let realm = RealmInstance(configuration: RealmConfig.common)
         promptsVc.viewModel = PromptsListViewModel(realm: realm, router: router)
         router.toPrompts()
