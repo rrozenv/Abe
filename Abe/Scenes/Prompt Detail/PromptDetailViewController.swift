@@ -65,23 +65,24 @@ class PromptDetailViewController: UIViewController {
         let output = viewModel.transform(input: input)
         
         output.replies
-            .drive(tableView.rx.items) { tableView, index, viewModel in
+            .drive(tableView.rx.items) { tableView, index, replyCellviewModel in
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
                
-                cell.configure(with: viewModel)
+                cell.configure(with: replyCellviewModel)
                 
                 cell.collectionView.rx
                     .modelSelected(ScoreCellViewModel.self).asObservable()
                     .subscribe(onNext: { scoreVm in
-                        input.scoreSelected.onNext((viewModel, scoreVm))
+                        input.scoreSelected.onNext((replyCellviewModel, scoreVm))
                     })
                     .disposed(by: cell.disposeBag)
                 
-                Observable.of(viewModel.scoreCellViewModels)
+                Observable.of(replyCellviewModel.scoreCellViewModels)
                     .asDriverOnErrorJustComplete()
                     .drive(cell.collectionView.rx.items) { collView, index, score in
                         guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                        cell.configure(with: score, userDidReply: viewModel.userDidReply)
+                        cell.configure(with: score,
+                                       userDidReply: replyCellviewModel.userDidReply)
                         return cell
                     }
                     .disposed(by: cell.disposeBag)
@@ -100,10 +101,9 @@ class PromptDetailViewController: UIViewController {
             .drive()
             .disposed(by: disposeBag)
         
+        //Automatically reloads row
         output.saveScore
-            .subscribe(onNext: { _ in
-                self.tableView.reloadData()
-            })
+            .subscribe()
             .disposed(by: disposeBag)
         
         output.dismissViewController
@@ -112,6 +112,13 @@ class PromptDetailViewController: UIViewController {
         
         output.didBindReplies
             .disposed(by: disposeBag)
+        
+        //        output.saveScore
+        //            .subscribe(onNext: { replyCellViewModel in
+        //                let indexPath = IndexPath(row: replyCellViewModel.index, section: 0)
+        //                self.tableView.reloadRows(at: [indexPath], with: .none)
+        //            })
+        //            .disposed(by: disposeBag)
     }
 
 }

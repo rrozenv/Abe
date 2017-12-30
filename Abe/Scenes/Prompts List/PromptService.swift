@@ -154,12 +154,12 @@ struct ReplyService {
     
     @discardableResult
     func saveScore(reply: PromptReply,
-                   score: ReplyScore) -> Observable<PromptReply> {
-        let result = withRealm("updating title") { realm -> Observable<PromptReply> in
+                   score: ReplyScore) -> Observable<(PromptReply, ReplyScore)> {
+        let result = withRealm("updating title") { realm -> Observable<(PromptReply, ReplyScore)> in
             try realm.write {
                 reply.scores.append(score)
             }
-            return .just(reply)
+            return .just((reply, score))
         }
         return result ?? .error(ReplyServiceError.saveScoreFailed(reply))
     }

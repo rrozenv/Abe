@@ -7,6 +7,7 @@ import RxRealm
 
 struct CellViewModel {
     let reply: PromptReply
+    let index: Int
     let scoreCellViewModels: [ScoreCellViewModel]
     let userDidReply: Bool
     let userScore: ReplyScore?
@@ -86,7 +87,6 @@ struct PromptDetailViewModel {
 
         //MARK: - Contact Replies View Models
         let _contactReplies = input.currentlySelectedTab
-            .debug()
             .filter { $0 == Visibility.contacts }
             .flatMapLatest { (contactsVis) in
                 return self.replyService
@@ -115,32 +115,42 @@ struct PromptDetailViewModel {
         //MARK: - Bind Replies
         //All replies must come LAST because they are shown FIRST
         let didBindReplies = Observable.of(_filteredContactReplies, _allReplies)
-            .debug()
             .merge()
             .bind(to: self._replies)
         
-        let saveScore = input
-            .scoreSelected
-            .asObservable()
-            .filter { !$0.0.userDidReply }
-            .flatMap { (vm) -> Observable<CellViewModel> in
+        //MARK: - Save Score
+        let _shouldSaveScore = input.scoreSelected.asObservable()
+            .filter { (replyCellViewModel, _)  in !replyCellViewModel.userDidReply }
+        
+        let _replyWithNewScore = _shouldSaveScore
+            .flatMapLatest { (viewModels) -> Observable<(PromptReply, ReplyScore)> in
+                let replyCellViewModel = viewModels.0
+                let scoreCellViewModel = viewModels.1
                 let replyScore = ReplyScore(userId: self.user.id,
-                                            replyId: vm.0.reply.id,
-                                            score: vm.1.value)
-                
-                self.commonRealm.updateWrite {
-                    vm.0.reply.scores.append(replyScore)
-                }
-                
-                return .just(CellViewModel(reply: vm.0.reply,
-                                     scoreCellViewModels: vm.0.scoreCellViewModels,
-                                     userDidReply: true,
-                                     userScore: replyScore))
+                                            replyId: replyCellViewModel.reply.id,
+                                            score: scoreCellViewModel.value)
+        
+                return self.replyService
+                    .saveScore(reply: replyCellViewModel.reply, score: replyScore)
             }
-            .do(onNext: { (cellVm) in
-                let index = self._replies.value.index(where: { $0.reply.id == cellVm.reply.id })
-                self._replies.value[index!] = cellVm
-            })
+        
+        let replyCellDidUpdate = _replyWithNewScore
+            .withLatestFrom(_shouldSaveScore) { (replyAndNewScore, viewModels) -> CellViewModel in
+                let reply = replyAndNewScore.0
+                let userScore = replyAndNewScore.1
+                let replyCellViewModel = viewModels.0
+                let newScoreCellViewModels =
+                    self.createScoreCellViewModels(for: reply,
+                                                   userDidReply: true,
+                                                   userScore: userScore)
+        
+                return CellViewModel(reply: reply,
+                                     index: replyCellViewModel.index,
+                                     scoreCellViewModels: newScoreCellViewModels,
+                                     userDidReply: true,
+                                     userScore: userScore)
+            }
+            .do(onNext: { self._replies.value[$0.index] = $0 })
 
         let createReply = input
             .createReplyTrigger
@@ -150,7 +160,7 @@ struct PromptDetailViewModel {
         
         return Output(replies: _replies.asDriver(),
                       createReply: createReply,
-                      saveScore: saveScore,
+                      saveScore: replyCellDidUpdate,
                       dismissViewController: dismiss,
                       fetching: fetching,
                       errors: errors,
@@ -160,7 +170,7 @@ struct PromptDetailViewModel {
     //MARK: - Helper Methods
     
     private func createReplyCellViewModels(with replies: [PromptReply]) -> [CellViewModel] {
-        return replies.map { (reply) in
+        return replies.enumerated().map { index, reply in
             let userScore = self.fetchCurrentUserScoreIfExists(for: reply, currentUserId: user.id)
             let userDidReply = (userScore != nil) ? true : false
             let scoreCellViewModels =
@@ -168,34 +178,24 @@ struct PromptDetailViewModel {
                                           userDidReply: userDidReply,
                                           userScore: userScore)
             return CellViewModel(reply: reply,
+                                 index: index,
                                  scoreCellViewModels: scoreCellViewModels,
                                  userDidReply: userDidReply,
                                  userScore: userScore)
         }
     }
     
-    private func createCellViewModel(with reply: PromptReply) -> CellViewModel {
-        let userScore = self.fetchCurrentUserScoreIfExists(for: reply, currentUserId: user.id)
-        let userDidReply = (userScore != nil) ? true : false
-        let scoreCellViewModels =
-            createScoreCellViewModels(for: reply,
-                                      userDidReply: userDidReply,
-                                      userScore: userScore)
-        return CellViewModel(reply: reply,
-                             scoreCellViewModels: scoreCellViewModels,
-                             userDidReply: userDidReply,
-                             userScore: userScore)
-    }
-    
     private func createScoreCellViewModels(for reply: PromptReply,
                                    userDidReply: Bool,
                                    userScore: ReplyScore?) -> [ScoreCellViewModel] {
         return [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")].enumerated().map {
-                return ScoreCellViewModel(value: $0.offset + 1,
+                let scoreValue = $0.offset + 1
+                return ScoreCellViewModel(value: scoreValue,
                                           reply: reply,
                                           userDidReply: userDidReply,
                                           placeholderImage: $0.element,
-                                          userScore: userScore)
+                                          userScore: userScore,
+                                          percentage: self.scorePercentage(for: reply, scoreValue: scoreValue))
         }
     }
     
@@ -205,27 +205,25 @@ struct PromptDetailViewModel {
             .filter(NSPredicate(format: "userId = %@", currentUserId)).first
         return score ?? nil
     }
-
+    
+    private func scorePercentage(for reply: PromptReply,
+                                          scoreValue: Int) -> String {
+        guard reply.scores.count > 0 else { return "0" }
+        let numberOfVotesForScore = reply.scores
+            .filter(NSPredicate(format: "score == %i", scoreValue))
+        guard numberOfVotesForScore.count > 0 else { return "0" }
+        print("votes for score: \(numberOfVotesForScore.count)")
+        print("total score: \(reply.scores.count)")
+        let value = (Double(numberOfVotesForScore.count) / Double(reply.scores.count))
+        print("Value: \(value)")
+        return "\(value.roundTo(decimalPlaces: 2)) %"
+    }
     
 }
 
+extension Double {
+    func roundTo(decimalPlaces: Int) -> String {
+        return String(format: "%.\(decimalPlaces)f", self)
+    }
+}
 
-//let repliesForPrompt = input.refreshTrigger
-//    .flatMapLatest { _ in
-//        return self.commonRealm
-//            .fetchResults(PromptReply.self, with: predicate)
-//            .trackActivity(activityIndicator)
-//            .trackError(errorTracker)
-//            .asDriver(onErrorJustReturn: [PromptReply]())
-//}
-
-//            .withLatestFrom(repliesForPrompt) { (contactsVis, replies) -> [PromptReply] in
-//                return replies.filter { $0.visibility == contactsVis.rawValue }
-//            }
-//            .startWith([PromptReply]())
-
-//            .withLatestFrom(repliesForPrompt) { (allVis, replies) -> [PromptReply] in
-//                print("I have \(replies.count) at this point")
-//                return replies.filter { $0.visibility == allVis.rawValue }
-//            }
-//            .map { self.createReplyCellViewModels(with: $0) }

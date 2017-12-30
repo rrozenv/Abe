@@ -10,6 +10,7 @@ struct ScoreCellViewModel {
     var userDidReply: Bool
     let placeholderImage: UIImage
     let userScore: ReplyScore?
+    let percentage: String
 }
 
 

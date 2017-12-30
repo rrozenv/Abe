@@ -49,12 +49,7 @@ final class PromptReplyTableCell: UITableViewCell {
         commonInit()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-    }
-    
-    func commonInit() {
+    private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
         self.separatorInset = .zero
         self.preservesSuperviewLayoutMargins = false
@@ -139,7 +134,7 @@ extension PromptReplyTableCell {
         containerView.addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in
             make.left.bottom.right.equalTo(containerView)
-            make.height.equalTo(40)
+            make.height.equalTo(60)
         }
     }
     
@@ -220,7 +215,7 @@ class PointsGridLayout: UICollectionViewFlowLayout {
     }
     
     func itemWidth() -> CGFloat {
-        return 25
+        return 50
     }
     
     override var itemSize: CGSize {
