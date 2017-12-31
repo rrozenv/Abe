@@ -41,9 +41,11 @@ struct ReplyOptionsViewModel {
     private let prompt: Prompt
     private let contactsStore: ContactsStore
     private let savedReplyInput: SavedReplyInput
+    private let replyService: ReplyService
     
     init(commonRealm: RealmInstance,
          privateRealm: RealmInstance,
+         replyService: ReplyService,
          prompt: Prompt,
          savedReplyInput: SavedReplyInput,
          router: ReplyOptionsRoutingLogic) {
@@ -53,6 +55,7 @@ struct ReplyOptionsViewModel {
         self.contactsStore = ContactsStore()
         self.savedReplyInput = savedReplyInput
         self.router = router
+        self.replyService = replyService
     }
     
     func transform(input: Input) -> Output {
@@ -118,8 +121,11 @@ struct ReplyOptionsViewModel {
         let didCreateReply = input.createTrigger
             .asObservable()
             .withLatestFrom(_reply)
-            .flatMapLatest { (reply) -> Observable<PromptReply> in
-                return self.commonRealm.save(object: reply)
+            .flatMapLatest { (reply) in
+                return self.replyService.saveReply(reply)
+            }
+            .flatMapLatest { (reply) in
+                return self.replyService.add(reply: reply, to: self.prompt)
             }
             .mapToVoid()
             .do(onNext: router.toPromptDetail)

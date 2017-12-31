@@ -28,8 +28,10 @@ final class CreateReplyRouter: CreateReplyRoutingLogic {
         let commonRealm = RealmInstance(configuration: RealmConfig.common)
         let privateRealm = RealmInstance(configuration: RealmConfig.secret)
         let router = ReplyOptionsRouter(navigationController: navigationController)
+        let replyService = ReplyService()
         let viewModel = ReplyOptionsViewModel(commonRealm: commonRealm,
                                               privateRealm: privateRealm,
+                                              replyService: replyService,
                                               prompt: savedInput.prompt,
                                               savedReplyInput: savedInput,
                                               router: router)

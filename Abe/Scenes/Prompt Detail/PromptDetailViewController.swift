@@ -36,10 +36,6 @@ class PromptDetailViewController: UIViewController {
     
     func bindViewModel() {
         //MARK: - Input
-        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-            .mapToVoid()
-            .asDriverOnErrorJustComplete()
-        
         let allTapped = tabBarView.leftButton.rx.tap
             .map { _ in Visibility.all }
             .asDriverOnErrorJustComplete()
@@ -48,15 +44,22 @@ class PromptDetailViewController: UIViewController {
             .map { _ in Visibility.contacts }
             .asDriverOnErrorJustComplete()
         
-        let tabButtonTapped = Observable.of(allTapped, contactsTapped)
+        //let currentTab = BehaviorSubject<Visibility>(value: .all)
+        
+        let currentTab = Observable.of(allTapped, contactsTapped)
             .merge()
             .distinctUntilChanged()
             .startWith(.all)
+            .asDriver(onErrorJustReturn: .all)
+//            .bind(to: currentTab)
+      
+        let refreshCurrentTab = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
+            .withLatestFrom(currentTab)
             .asDriverOnErrorJustComplete()
         
         let input = PromptDetailViewModel
-            .Input(refreshTrigger: viewWillAppear,
-                   currentlySelectedTab: tabButtonTapped,
+            .Input(refreshTrigger: refreshCurrentTab,
+                   currentlySelectedTab: currentTab,
                    createReplyTrigger: createReplyButton.rx.tap.asDriver(),
                    backTrigger: backButton.rx.tap.asDriver(),
                    scoreSelected: PublishSubject<(CellViewModel, ScoreCellViewModel)>())
@@ -89,6 +92,10 @@ class PromptDetailViewController: UIViewController {
                 
                 return cell
             }
+            .disposed(by: disposeBag)
+        
+        output.shouldDisplayReplies
+            .drive(onNext: { self.tableView.isHidden = $0 ? false : true })
             .disposed(by: disposeBag)
         
         output.fetching

@@ -141,6 +141,27 @@ struct ReplyService {
         return result ?? .error(PromptServiceError.creationFailed)
     }
     
+    func saveReply(_ reply: PromptReply) -> Observable<PromptReply> {
+        let result = withRealm("creating") { realm -> Observable<PromptReply> in
+            try realm.write {
+                realm.add(reply)
+            }
+            return .just(reply)
+        }
+        return result ?? .error(PromptServiceError.creationFailed)
+    }
+    
+    func add(reply: PromptReply,
+             to prompt: Prompt) -> Observable<(PromptReply, Prompt)> {
+        let result = withRealm("updating title") { realm -> Observable<(PromptReply, Prompt)> in
+            try realm.write {
+                prompt.replies.append(reply)
+            }
+            return .just((reply, prompt))
+        }
+        return result ?? .error(ReplyServiceError.saveScoreFailed(reply))
+    }
+    
     @discardableResult
     func delete(prompt: Prompt) -> Observable<Void> {
         let result = withRealm("deleting") { realm-> Observable<Void> in

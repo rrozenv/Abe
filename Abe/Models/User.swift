@@ -25,7 +25,7 @@ class User: Object {
         self.id = syncUser.identity ?? ""
         self.name = name
         self.email = email
-        self.phoneNumber = "2018354011"
+        self.phoneNumber = "555-478-7672"
     }
     
     // MARK: - Meta
