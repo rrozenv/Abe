@@ -73,20 +73,14 @@ struct PromptDetailViewModel {
     
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
        
-//        let _visibilityToFetch = Driver
-//            .merge(input.refreshTrigger, input.currentlySelectedTab)
-//            .debug()
-//            .skip(1)
+        let _visibilityToFetch = Driver
+            .merge(input.refreshTrigger, input.currentlySelectedTab)
+            .skip(1)
         
-        let didUserReply = input.currentlySelectedTab
+        let didUserReply = _visibilityToFetch
             .map { _ in self.checkIfReplied(to: self.prompt, userId: self.user.id) }
-//            .flatMapLatest { _ in
-//                self.checkIfUserReplied(to: self.prompt, userId: self.user.id)
-//                    .asDriver(onErrorJustReturn: false)
-//            }
-        
-        
-        let _allReplies = input.currentlySelectedTab
+
+        let _allReplies = _visibilityToFetch
             .filter { $0 == Visibility.all }
             .map { _ in self.checkIfReplied(to: self.prompt, userId: self.user.id) }
             .filter { $0 }
@@ -101,7 +95,7 @@ struct PromptDetailViewModel {
             .map { self.createReplyCellViewModels(with: $0) }
 
         //MARK: - Contact Replies View Models
-        let _contactReplies = input.currentlySelectedTab
+        let _contactReplies = _visibilityToFetch
             .filter { $0 == Visibility.contacts }
             .map { _ in self.checkIfReplied(to: self.prompt, userId: self.user.id) }
             .filter { $0 }
