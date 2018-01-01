@@ -25,7 +25,7 @@ final class CreatePromptViewModel: ViewModelType {
     
     init(promptService: PromptService,
          router: CreatePromptRouter) {
-        guard let user = Application.shared.currentUser else { fatalError() }
+        guard let user = Application.shared.currentUser.value else { fatalError() }
         self.user = user
         self.promptService = promptService
         self.router = router

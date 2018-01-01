@@ -15,7 +15,7 @@ class User: Object {
     @objc dynamic var phoneNumber: String = ""
     let contacts = List<Contact>()
     let prompts = List<Prompt>()
-    //let replies = List<PromptReply>()
+    let replies = List<PromptReply>()
     
     // MARK: - Init
     convenience init(syncUser: SyncUser,

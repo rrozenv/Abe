@@ -4,6 +4,7 @@ import RxSwift
 import RxCocoa
 import RealmSwift
 import RxRealm
+import RxSwiftExt
 
 struct CellViewModel {
     let reply: PromptReply
@@ -24,6 +25,7 @@ struct PromptDetailViewModel {
     
     // MARK: -
     struct Input {
+        let userUpdatedNotification: Observable<Void>
         let refreshTrigger: Driver<Visibility>
         let currentlySelectedTab: Driver<Visibility>
         let createReplyTrigger: Driver<Void>
@@ -47,14 +49,14 @@ struct PromptDetailViewModel {
     private let commonRealm: RealmInstance
     private let privateRealm: RealmInstance
     private let replyService: ReplyService
-    private let user: User
+    private var user: User
     
     init(commonRealm: RealmInstance,
          privateRealm: RealmInstance,
          replyService: ReplyService,
          prompt: Prompt,
          router: PromptDetailRoutingLogic) {
-        guard let user = Application.shared.currentUser else { fatalError() }
+        guard let user = Application.shared.currentUser.value else { fatalError() }
         self.user = user
         self.prompt = prompt
         self.router = router
@@ -70,7 +72,11 @@ struct PromptDetailViewModel {
         let errors = errorTracker.asDriver()
     
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
-       
+        
+        let currentUser = input.userUpdatedNotification
+            .flatMap { _ in Application.shared.currentUser.asObservable() }
+            .unwrap()
+        
         let _visibilityToFetch = Driver
             .merge(input.refreshTrigger, input.currentlySelectedTab)
             .skip(1)
@@ -116,8 +122,7 @@ struct PromptDetailViewModel {
     
         let _filteredContactReplies = Driver
             .combineLatest(_contactReplies, _userContactNumers) { (replies, userNumbers) -> [PromptReply] in
-                return replies.filter { (reply) -> Bool in
-                    print("user phone: \(reply.user?.phoneNumber)")
+                return replies.filter { (reply) in
                     guard let replyUserPhone = reply.user?.phoneNumber else { return false }
                     return userNumbers.contains(replyUserPhone)
                 }

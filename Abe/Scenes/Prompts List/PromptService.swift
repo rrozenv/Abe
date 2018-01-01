@@ -176,6 +176,17 @@ struct ReplyService {
         return result ?? .error(ReplyServiceError.saveScoreFailed(reply))
     }
     
+    func add(reply: PromptReply,
+             to user: User) -> Observable<(PromptReply, User)> {
+        let result = withRealm("updating title") { realm -> Observable<(PromptReply, User)> in
+            try realm.write {
+                user.replies.append(reply)
+            }
+            return .just((reply, user))
+        }
+        return result ?? .error(ReplyServiceError.saveScoreFailed(reply))
+    }
+    
     @discardableResult
     func delete(prompt: Prompt) -> Observable<Void> {
         let result = withRealm("deleting") { realm-> Observable<Void> in

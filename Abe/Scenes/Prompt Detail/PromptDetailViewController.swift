@@ -57,8 +57,13 @@ class PromptDetailViewController: UIViewController {
             .withLatestFrom(currentTab)
             .asDriverOnErrorJustComplete()
         
+        let userUpdatedNotification = NotificationCenter.default.rx
+            .notification(Notification.Name.userUpdated)
+            .mapToVoid()
+        
         let input = PromptDetailViewModel
-            .Input(refreshTrigger: refreshCurrentTab,
+            .Input(userUpdatedNotification: userUpdatedNotification,
+                   refreshTrigger: refreshCurrentTab,
                    currentlySelectedTab: currentTab,
                    createReplyTrigger: createReplyButton.rx.tap.asDriver(),
                    backTrigger: backButton.rx.tap.asDriver(),

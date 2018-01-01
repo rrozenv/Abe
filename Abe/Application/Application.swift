@@ -12,7 +12,8 @@ final class Application {
     static let shared = Application(userService: UserService())
     private let userService: UserService
     private let disposeBag = DisposeBag()
-    var currentUser: User? = nil
+    
+    var currentUser = Variable<User?>(nil)
     
     private init(userService: UserService) {
         self.userService = userService
@@ -22,25 +23,21 @@ final class Application {
         let user = RealmAuth.fetchSyncUser().share()
         
         //MARK: - If user is logged in
-        _ = user
-            .unwrap()
+        _ = user.unwrap()
             .flatMapLatest { [unowned self] in
                 self.userService.fetchUserFor(key: $0.identity!)
             }
-            .do(onNext: { [unowned self] (user) in
-                self.currentUser = user
+            .subscribe(onNext: { [unowned self] (user) in
+                self.currentUser.value = user
                 self.displayHomeViewController(in: window)
             })
-            .subscribe()
             .disposed(by: disposeBag)
         
         //MARK: - If user is NOT logged in
-        _ = user
-            .filter { $0 == nil }
-            .do(onNext: { [unowned self] _ in
+        _ = user.filter { $0 == nil }
+            .subscribe(onNext: { [unowned self] _ in
                 self.displayRegisterViewController(in: window)
             })
-            .subscribe()
             .disposed(by: disposeBag)
     }
     

@@ -50,7 +50,7 @@ struct ReplyOptionsViewModel {
          prompt: Prompt,
          savedReplyInput: SavedReplyInput,
          router: ReplyOptionsRoutingLogic) {
-        guard let user = Application.shared.currentUser else { fatalError() }
+        guard let user = Application.shared.currentUser.value else { fatalError() }
         self.user = user
         self.prompt = prompt
         self.commonRealm = commonRealm
@@ -120,9 +120,8 @@ struct ReplyOptionsViewModel {
             .withLatestFrom(_reply)
             .flatMapLatest { (reply) in
                 return self.replyService.saveReply(reply)
-            }
-            .flatMapLatest { (reply) in
-                return self.replyService.add(reply: reply, to: self.prompt)
+                    .flatMapLatest { self.replyService.add(reply: $0, to: self.prompt) }
+                    .flatMapLatest { self.replyService.add(reply: $0.0, to: self.user) }
             }
             .mapToVoid()
             .do(onNext: router.toPromptDetail)
