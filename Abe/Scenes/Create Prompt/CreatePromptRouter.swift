@@ -17,8 +17,7 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
     func toMainInput() {
         let vc = CreatePromptViewController()
         let promptService = PromptService()
-        let userService = UserService()
-        vc.viewModel = CreatePromptViewModel(promptService: promptService, userService: userService, router: self)
+        vc.viewModel = CreatePromptViewModel(promptService: promptService, router: self)
         navigationController.pushViewController(vc, animated: true)
     }
 

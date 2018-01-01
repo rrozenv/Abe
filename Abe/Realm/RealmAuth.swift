@@ -12,6 +12,18 @@ final class RealmAuth {
         return syncUser
     }
     
+    class func fetchSyncUser() -> Observable<SyncUser?> {
+        return Observable.create { (observer) in
+            if let syncUser = SyncUser.current {
+                observer.onNext(syncUser)
+            } else {
+                observer.onNext(nil)
+            }
+            observer.onCompleted()
+            return Disposables.create()
+        }
+    }
+    
     class func resetDefaultRealm() {
         guard let user = SyncUser.current else { return }
         user.logOut()

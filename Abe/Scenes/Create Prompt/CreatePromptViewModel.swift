@@ -20,14 +20,14 @@ final class CreatePromptViewModel: ViewModelType {
     }
     
     private let promptService: PromptService
-    private let userService: UserService
     private let router: CreatePromptRouter
+    private let user: User
     
     init(promptService: PromptService,
-         userService: UserService,
          router: CreatePromptRouter) {
+        guard let user = Application.shared.currentUser else { fatalError() }
+        self.user = user
         self.promptService = promptService
-        self.userService = userService
         self.router = router
     }
     
@@ -44,18 +44,14 @@ final class CreatePromptViewModel: ViewModelType {
         
         //2. Output - Dismisses VC when a new prompt is saved OR
         //            back button is tapped
-        let _user = self.userService.fetchUserFor(key: SyncUser.current!.identity!)
-        
         let _promptInputs = Observable
-            .combineLatest(_user, input.title, input.body) {
-                (user: $0, title: $1, body: $2)
-            }
+            .combineLatest(input.title, input.body) { (title: $0, body: $1) }
         
         let _createPrompt = input.createPromptTrigger
             .withLatestFrom(_promptInputs)
             .flatMapLatest { [unowned self] in
                 return self.promptService
-                    .createPrompt(title: $0.title, body: $0.body, user: $0.user)
+                    .createPrompt(title: $0.title, body: $0.body, user: self.user)
             }
             .mapToVoid()
             .asDriverOnErrorJustComplete()

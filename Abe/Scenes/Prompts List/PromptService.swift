@@ -97,6 +97,20 @@ struct UserService {
             return nil
         }
     }
+    
+    func createUser(syncUser: SyncUser,
+                    name: String,
+                    email: String,
+                    phoneNumber: String) -> Observable<User> {
+        let result = withRealm("creating") { realm -> Observable<User> in
+            let user = User(syncUser: syncUser, name: name, email: email)
+            try realm.write {
+                realm.add(user)
+            }
+            return .just(user)
+        }
+        return result ?? .error(PromptServiceError.creationFailed)
+    }
 
     func fetchUserFor(key: String) -> Observable<User> {
         let result = withRealm("getting tasks") { realm -> Observable<User> in

@@ -20,12 +20,9 @@ struct PromptDetailViewModel {
     // MARK: - Properties
     
     let disposeBag = DisposeBag()
-    var replies: Driver<[CellViewModel]> { return _replies.asDriver() }
+    private let _replies = Variable<[CellViewModel]>([])
     
     // MARK: -
-
-    private let _replies = Variable<[CellViewModel]>([])
-
     struct Input {
         let refreshTrigger: Driver<Visibility>
         let currentlySelectedTab: Driver<Visibility>
@@ -49,20 +46,21 @@ struct PromptDetailViewModel {
     private let router: PromptDetailRoutingLogic
     private let commonRealm: RealmInstance
     private let privateRealm: RealmInstance
-    private let user: UserInfo
     private let replyService: ReplyService
+    private let user: User
     
     init(commonRealm: RealmInstance,
          privateRealm: RealmInstance,
          replyService: ReplyService,
          prompt: Prompt,
          router: PromptDetailRoutingLogic) {
+        guard let user = Application.shared.currentUser else { fatalError() }
+        self.user = user
         self.prompt = prompt
         self.router = router
         self.commonRealm = commonRealm
         self.privateRealm = privateRealm
         self.replyService = replyService
-        self.user = UserDefaultsManager.userInfo()!
     }
     
     func transform(input: Input) -> Output {
@@ -108,15 +106,18 @@ struct PromptDetailViewModel {
                     .asDriver(onErrorJustReturn: [PromptReply]())
             }
         
-        let _userContactNumers = self.privateRealm
-            .fetchAllResults(Contact.self)
-            .map { $0.flatMap { $0.numbers } }
-            .startWith([String]())
-            .asDriver(onErrorJustReturn: [String]())
+        let _userContactNumers = input.refreshTrigger.flatMapLatest { _ in
+            return self.privateRealm
+                .fetchAllResults(Contact.self)
+                .map { $0.flatMap { $0.numbers } }
+                .startWith([String]())
+                .asDriver(onErrorJustReturn: [String]())
+        }
     
         let _filteredContactReplies = Driver
             .combineLatest(_contactReplies, _userContactNumers) { (replies, userNumbers) -> [PromptReply] in
                 return replies.filter { (reply) -> Bool in
+                    print("user phone: \(reply.user?.phoneNumber)")
                     guard let replyUserPhone = reply.user?.phoneNumber else { return false }
                     return userNumbers.contains(replyUserPhone)
                 }

@@ -20,7 +20,7 @@ class SignupRouter: SignupRoutingLogic {
     
     func toRegister() {
         let vc = SignUpViewController()
-        vc.viewModel = SignupViewModel(router: self)
+        vc.viewModel = SignupViewModel(userService: UserService(), router: self)
         navigationController.pushViewController(vc, animated: true)
     }
     

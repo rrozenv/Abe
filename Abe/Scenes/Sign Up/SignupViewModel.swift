@@ -34,9 +34,12 @@ final class SignupViewModel {
         return RealmInstance(configuration: RealmConfig.common)
     }()
     
+    private let userService: UserService
     private let router: SignupRouter
     
-    init(router: SignupRouter) {
+    init(userService: UserService,
+         router: SignupRouter) {
+        self.userService = userService
         self.router = router
     }
     
@@ -79,13 +82,11 @@ final class SignupViewModel {
             }
         
         let newUser = register.elements()
-            .withLatestFrom(latestUserInput) { (syncUser, input) -> User in
-                return User(syncUser: syncUser, name: input.userName, email: input.email)
+            .withLatestFrom(latestUserInput, resultSelector: { ($0, $1) })
+            .flatMapLatest { [unowned self] in
+                return self.userService.createUser(syncUser: $0.0, name: $0.1.userName, email: $0.1.email, phoneNumber: "555-478-7672")
             }
-            .do(onNext: { UserDefaultsManager.saveUserInfo($0) })
-            .flatMapLatest { [unowned self] (user) in
-                return self.realm.create(User.self, value: user.value, update: true)
-            }
+            .mapToVoid()
             .asDriverOnErrorJustComplete()
             .do(onNext: self.router.toHome)
         
