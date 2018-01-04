@@ -16,8 +16,13 @@
 		982530FC1FF4151D000E6E20 /* PromptMasterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */; };
 		982530FE1FF41531000E6E20 /* PromptMasterDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */; };
 		982531001FF41568000E6E20 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FF1FF41568000E6E20 /* TabBarView.swift */; };
-		982531031FF4176E000E6E20 /* RepliesFromContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982531021FF4176E000E6E20 /* RepliesFromContactsViewController.swift */; };
-		982531071FF4179B000E6E20 /* RepliesFromContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982531061FF4179B000E6E20 /* RepliesFromContactsViewModel.swift */; };
+		985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */; };
+		985C2A5D1FFDAC8E0034E116 /* EnableContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */; };
+		985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */; };
+		985C2A611FFDAE040034E116 /* ContactService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A601FFDAE040034E116 /* ContactService.swift */; };
+		985C2A641FFDC1D80034E116 /* UserDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A631FFDC1D80034E116 /* UserDetailsViewController.swift */; };
+		985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A651FFDC1E40034E116 /* UserDetailsViewModel.swift */; };
+		985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A671FFDC1F40034E116 /* UserDetailsRouter.swift */; };
 		9883ED611FE6F810002E538E /* PromptReply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED601FE6F810002E538E /* PromptReply.swift */; };
 		9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */; };
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
@@ -38,6 +43,9 @@
 		9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317291FE6F41A00E2979F /* CreateReplyViewController.swift */; };
 		9897110F1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9897110E1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift */; };
 		98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CB44921FFAC82A0085CBFD /* Notifications.swift */; };
+		98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */; };
+		98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */; };
+		98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */; };
 		98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */; };
 		98FEE7841FE4BAD300CD80A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98FEE7821FE4BAD300CD80A8 /* Main.storyboard */; };
 		98FEE7861FE4BAD300CD80A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98FEE7851FE4BAD300CD80A8 /* Assets.xcassets */; };
@@ -93,8 +101,13 @@
 		982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewController.swift; sourceTree = "<group>"; };
 		982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewModel.swift; sourceTree = "<group>"; };
 		982530FF1FF41568000E6E20 /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
-		982531021FF4176E000E6E20 /* RepliesFromContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesFromContactsViewController.swift; sourceTree = "<group>"; };
-		982531061FF4179B000E6E20 /* RepliesFromContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesFromContactsViewModel.swift; sourceTree = "<group>"; };
+		985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewController.swift; sourceTree = "<group>"; };
+		985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewModel.swift; sourceTree = "<group>"; };
+		985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsRouter.swift; sourceTree = "<group>"; };
+		985C2A601FFDAE040034E116 /* ContactService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactService.swift; sourceTree = "<group>"; };
+		985C2A631FFDC1D80034E116 /* UserDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewController.swift; sourceTree = "<group>"; };
+		985C2A651FFDC1E40034E116 /* UserDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewModel.swift; sourceTree = "<group>"; };
+		985C2A671FFDC1F40034E116 /* UserDetailsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsRouter.swift; sourceTree = "<group>"; };
 		9883ED601FE6F810002E538E /* PromptReply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptReply.swift; sourceTree = "<group>"; };
 		9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
@@ -115,6 +128,9 @@
 		989317291FE6F41A00E2979F /* CreateReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewController.swift; sourceTree = "<group>"; };
 		9897110E1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyCellViewModel.swift; sourceTree = "<group>"; };
 		98CB44921FFAC82A0085CBFD /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewController.swift; sourceTree = "<group>"; };
+		98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewModel.swift; sourceTree = "<group>"; };
+		98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryRouter.swift; sourceTree = "<group>"; };
 		98FEE77B1FE4BAD300CD80A8 /* Abe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Abe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		98FEE7831FE4BAD300CD80A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -262,6 +278,9 @@
 		980DE5B71FE5B5CD0087C6C3 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				98F671FB1FFEA1ED001DE88E /* Phone Entry */,
+				985C2A621FFDC19C0034E116 /* Enter Name */,
+				985C2A5B1FFDAC770034E116 /* Enable Contacts */,
 				980DE5AA1FE5B3730087C6C3 /* Sign Up */,
 				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
 				980DE5B41FE5B56B0087C6C3 /* Create Prompt */,
@@ -283,13 +302,25 @@
 			path = "Prompt Detail Master";
 			sourceTree = "<group>";
 		};
-		982531081FF41995000E6E20 /* Maybe */ = {
+		985C2A5B1FFDAC770034E116 /* Enable Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				982531021FF4176E000E6E20 /* RepliesFromContactsViewController.swift */,
-				982531061FF4179B000E6E20 /* RepliesFromContactsViewModel.swift */,
+				985C2A601FFDAE040034E116 /* ContactService.swift */,
+				985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */,
+				985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */,
+				985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */,
 			);
-			path = Maybe;
+			path = "Enable Contacts";
+			sourceTree = "<group>";
+		};
+		985C2A621FFDC19C0034E116 /* Enter Name */ = {
+			isa = PBXGroup;
+			children = (
+				985C2A671FFDC1F40034E116 /* UserDetailsRouter.swift */,
+				985C2A631FFDC1D80034E116 /* UserDetailsViewController.swift */,
+				985C2A651FFDC1E40034E116 /* UserDetailsViewModel.swift */,
+			);
+			path = "Enter Name";
 			sourceTree = "<group>";
 		};
 		9883ED661FE7061B002E538E /* Cells */ = {
@@ -305,9 +336,9 @@
 		98921BBB1FE735C9006CCCF6 /* Reply Options */ = {
 			isa = PBXGroup;
 			children = (
+				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
 				98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */,
 				98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */,
-				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
 			);
 			path = "Reply Options";
 			sourceTree = "<group>";
@@ -335,7 +366,6 @@
 				989317211FE6F3E300E2979F /* PromptDetailRouter.swift */,
 				989317221FE6F3E300E2979F /* PromptDetailViewController.swift */,
 				989317231FE6F3E400E2979F /* PromptDetailViewModel.swift */,
-				982531081FF41995000E6E20 /* Maybe */,
 			);
 			path = "Prompt Detail";
 			sourceTree = "<group>";
@@ -348,6 +378,16 @@
 				989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */,
 			);
 			path = "Create Reply";
+			sourceTree = "<group>";
+		};
+		98F671FB1FFEA1ED001DE88E /* Phone Entry */ = {
+			isa = PBXGroup;
+			children = (
+				98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */,
+				98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */,
+				98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */,
+			);
+			path = "Phone Entry";
 			sourceTree = "<group>";
 		};
 		98FEE7721FE4BAD300CD80A8 = {
@@ -574,6 +614,7 @@
 				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/NSObject+Rx/NSObject_Rx.framework",
+				"${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
@@ -591,6 +632,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NSObject_Rx.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhoneNumberKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
@@ -640,25 +682,30 @@
 				98FEE7C71FE4C12800CD80A8 /* CreatePromptRouter.swift in Sources */,
 				988658F61FE8049900FEB703 /* RealmError.swift in Sources */,
 				9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */,
-				982531031FF4176E000E6E20 /* RepliesFromContactsViewController.swift in Sources */,
+				985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */,
 				982530FC1FF4151D000E6E20 /* PromptMasterDetailViewController.swift in Sources */,
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
+				98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */,
 				988658FA1FE807B400FEB703 /* Contact.swift in Sources */,
 				980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */,
+				98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */,
 				9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */,
 				9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */,
 				98FEE7BB1FE4BC5400CD80A8 /* PromptsListViewController.swift in Sources */,
 				98FEE7C91FE4CB5000CD80A8 /* PromptView.swift in Sources */,
 				9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */,
+				985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */,
 				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
 				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */,
 				9897110F1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift in Sources */,
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,
+				985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */,
+				985C2A611FFDAE040034E116 /* ContactService.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
 				98FEE7C31FE4C11C00CD80A8 /* CreatePromptViewModel.swift in Sources */,
@@ -669,16 +716,19 @@
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
 				9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */,
+				98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */,
 				98FEE7C51FE4C12300CD80A8 /* CreatePromptViewController.swift in Sources */,
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
+				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,
+				985C2A641FFDC1D80034E116 /* UserDetailsViewController.swift in Sources */,
+				985C2A5D1FFDAC8E0034E116 /* EnableContactsViewModel.swift in Sources */,
 				982531001FF41568000E6E20 /* TabBarView.swift in Sources */,
 				98FEE7BF1FE4BC6200CD80A8 /* PromptTableCell.swift in Sources */,
 				989317251FE6F3E400E2979F /* PromptDetailViewController.swift in Sources */,
 				9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */,
-				982531071FF4179B000E6E20 /* RepliesFromContactsViewModel.swift in Sources */,
 				980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

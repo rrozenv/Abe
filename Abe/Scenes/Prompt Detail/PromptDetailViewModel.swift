@@ -8,6 +8,7 @@ import RxSwiftExt
 
 struct CellViewModel {
     let reply: PromptReply
+    let userName: String
     let index: Int
     let scoreCellViewModels: [ScoreCellViewModel]
     let userDidReply: Bool
@@ -19,15 +20,15 @@ typealias ReplyChangeSet = (AnyRealmCollection<PromptReply>, RealmChangeset?)
 struct PromptDetailViewModel {
     
     // MARK: - Properties
-    
     let disposeBag = DisposeBag()
     private let _replies = Variable<[CellViewModel]>([])
     
     // MARK: -
     struct Input {
+        let viewDidLoad: Observable<Void>
         let userUpdatedNotification: Observable<Void>
-        let refreshTrigger: Driver<Visibility>
-        let currentlySelectedTab: Driver<Visibility>
+        let viewWillAppear: Observable<Void>
+        let visibilitySelected: Driver<Visibility>
         let createReplyTrigger: Driver<Void>
         let backTrigger: Driver<Void>
         let scoreSelected: PublishSubject<(CellViewModel, ScoreCellViewModel)>
@@ -42,6 +43,7 @@ struct PromptDetailViewModel {
         let fetching: Driver<Bool>
         let errors: Driver<Error>
         let didBindReplies: Disposable
+        let currentVisibility: Driver<Visibility>
     }
     
     private let prompt: Prompt
@@ -73,25 +75,43 @@ struct PromptDetailViewModel {
     
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
         
-        let currentUser = input.userUpdatedNotification
-            .flatMap { _ in Application.shared.currentUser.asObservable() }
-            .unwrap()
+        let currentVisibility = input.visibilitySelected
+        
+//        let _currentUser = Observable.of(input.viewDidLoad,
+//                                         input.userUpdatedNotification)
+//            .merge()
+//            .flatMap { _ in Application.shared.currentUser.asObservable() }
+//            .unwrap()
+//            .asDriverOnErrorJustComplete()
+        
+        let _visibilityWhenViewAppears = input.viewWillAppear
+            .flatMap { input.visibilitySelected }
+            .debug()
+            .asDriverOnErrorJustComplete()
         
         let _visibilityToFetch = Driver
-            .merge(input.refreshTrigger, input.currentlySelectedTab)
+            .merge(_visibilityWhenViewAppears, input.visibilitySelected)
             .skip(1)
+            .debug()
         
         let didUserReply = _visibilityToFetch
+//            .withLatestFrom(_currentUser)
             .map { _ in self.checkIfReplied(to: self.prompt, userId: self.user.id) }
-
+        
         let _allReplies = _visibilityToFetch
             .filter { $0 == Visibility.all }
+//            .withLatestFrom(_currentUser)
             .map { _ in self.checkIfReplied(to: self.prompt, userId: self.user.id) }
             .filter { $0 }
             .flatMapLatest { _ in
                 return self.replyService
                     .fetchRepliesWith(predicate: predicate)
-                    .map { $0.filter { $0.visibility == Visibility.all.rawValue } }
+                    .map {
+                        $0.filter {
+                            $0.visibility == Visibility.all.rawValue
+                             && $0.user?.id != self.user.id
+                        }
+                    }
                     .trackActivity(activityIndicator)
                     .trackError(errorTracker)
                     .asDriver(onErrorJustReturn: [PromptReply]())
@@ -101,24 +121,31 @@ struct PromptDetailViewModel {
         //MARK: - Contact Replies View Models
         let _contactReplies = _visibilityToFetch
             .filter { $0 == Visibility.contacts }
+//            .withLatestFrom(_currentUser)
             .map { _ in self.checkIfReplied(to: self.prompt, userId: self.user.id) }
             .filter { $0 }
             .flatMapLatest { _ in
                 return self.replyService
                     .fetchRepliesWith(predicate: predicate)
-                    .map { $0.filter { $0.visibility == Visibility.contacts.rawValue } }
+                    .map {
+                        $0.filter {
+                            $0.visibility == Visibility.contacts.rawValue
+                                && $0.user?.id != self.user.id
+                        }
+                    }
                     .trackActivity(activityIndicator)
                     .trackError(errorTracker)
                     .asDriver(onErrorJustReturn: [PromptReply]())
             }
         
-        let _userContactNumers = input.refreshTrigger.flatMapLatest { _ in
+        let _userContactNumers = input.viewWillAppear.flatMapLatest { _ in
             return self.privateRealm
                 .fetchAllResults(Contact.self)
                 .map { $0.flatMap { $0.numbers } }
                 .startWith([String]())
                 .asDriver(onErrorJustReturn: [String]())
         }
+        .asDriverOnErrorJustComplete()
     
         let _filteredContactReplies = Driver
             .combineLatest(_contactReplies, _userContactNumers) { (replies, userNumbers) -> [PromptReply] in
@@ -158,12 +185,16 @@ struct PromptDetailViewModel {
                 let reply = replyAndNewScore.0
                 let userScore = replyAndNewScore.1
                 let replyCellViewModel = viewModels.0
+                let userName = self.setUserName(for: reply,
+                                                visibility: reply.visibility,
+                                                didReply: true)
                 let newScoreCellViewModels =
                     self.createScoreCellViewModels(for: reply,
                                                    userDidReply: true,
                                                    userScore: userScore)
         
                 return CellViewModel(reply: reply,
+                                     userName: userName,
                                      index: replyCellViewModel.index,
                                      scoreCellViewModels: newScoreCellViewModels,
                                      userDidReply: true,
@@ -184,7 +215,8 @@ struct PromptDetailViewModel {
                       dismissViewController: dismiss,
                       fetching: fetching,
                       errors: errors,
-                      didBindReplies: didBindReplies)
+                      didBindReplies: didBindReplies,
+                      currentVisibility: currentVisibility)
     }
     
     //MARK: - Helper Methods
@@ -205,11 +237,13 @@ struct PromptDetailViewModel {
         return replies.enumerated().map { index, reply in
             let userScore = self.fetchCurrentUserScoreIfExists(for: reply, currentUserId: user.id)
             let userDidReply = (userScore != nil) ? true : false
+            let userName = self.setUserName(for: reply, visibility: reply.visibility, didReply: userDidReply)
             let scoreCellViewModels =
                 createScoreCellViewModels(for: reply,
                                           userDidReply: userDidReply,
                                           userScore: userScore)
             return CellViewModel(reply: reply,
+                                 userName: userName,
                                  index: index,
                                  scoreCellViewModels: scoreCellViewModels,
                                  userDidReply: userDidReply,
@@ -246,6 +280,19 @@ struct PromptDetailViewModel {
         guard numberOfVotesForScore.count > 0 else { return "0" }
         let value = (Double(numberOfVotesForScore.count) / Double(reply.scores.count))
         return "\(value.roundTo(decimalPlaces: 2)) %"
+    }
+    
+    private func setUserName(for reply: PromptReply,
+                             visibility: String,
+                             didReply: Bool) -> String {
+        switch (visibility, didReply) {
+        case ("all", let didReply):
+            return (didReply) ? reply.user!.name : "Someone said..."
+        case ("contacts", let didReply):
+            return (didReply) ? reply.user!.name : "Someone from contacts said..."
+        default:
+            return reply.user!.name
+        }
     }
     
 }

@@ -14,4 +14,5 @@ target 'Abe' do
   pod 'RxRealmDataSources'
   pod 'RxSwiftExt'
   pod 'PromiseKit', '~> 4.4'
+  pod 'PhoneNumberKit', '~> 2.1'
 end

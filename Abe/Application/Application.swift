@@ -36,7 +36,8 @@ final class Application {
         //MARK: - If user is NOT logged in
         _ = user.filter { $0 == nil }
             .subscribe(onNext: { [unowned self] _ in
-                self.displayRegisterViewController(in: window)
+                self.displayEnableContactsViewController(in: window)
+                //self.displayRegisterViewController(in: window)
             })
             .disposed(by: disposeBag)
     }
@@ -57,6 +58,13 @@ final class Application {
         let signupRouter = SignupRouter(window: window, navigationController: signupNavController)
         signupRouter.toRegister()
         window.rootViewController = signupNavController
+    }
+    
+    private func displayEnableContactsViewController(in window: UIWindow) {
+        let navVc = UINavigationController()
+        let router = EnableContactsRouter(navigationController: navVc)
+        router.toRoot()
+        window.rootViewController = navVc
     }
     
 }

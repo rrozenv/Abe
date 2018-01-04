@@ -94,6 +94,7 @@ final class SignupViewModel {
         let existingUser = login.elements()
             .flatMapLatest { [unowned self] in self.userService.fetchUserFor(key: $0.identity!)
             }
+            .do(onNext: { Application.shared.currentUser.value = $0 })
             .mapToVoid()
             .do(onNext: self.router.toHome)
             .asDriverOnErrorJustComplete()

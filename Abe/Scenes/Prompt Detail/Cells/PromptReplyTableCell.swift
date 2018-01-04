@@ -65,7 +65,7 @@ final class PromptReplyTableCell: UITableViewCell {
 
     func configure(with viewModel: CellViewModel) {
         self.selectionStyle = .none
-        userNameLabel.text = viewModel.reply.user?.name
+        userNameLabel.text = viewModel.userName
         replyBodyLabel.text = viewModel.reply.body
     }
     

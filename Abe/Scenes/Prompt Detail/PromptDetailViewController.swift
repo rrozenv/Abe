@@ -35,7 +35,15 @@ class PromptDetailViewController: UIViewController {
     }
     
     func bindViewModel() {
+        
         //MARK: - Input
+        let viewDidLoad = rx.sentMessage(#selector(UIViewController.viewDidLoad))
+            .mapToVoid()
+        
+        let userUpdatedNotification = NotificationCenter.default.rx
+            .notification(Notification.Name.userUpdated)
+            .mapToVoid()
+        
         let allTapped = tabBarView.leftButton.rx.tap
             .map { _ in Visibility.all }
             .asDriverOnErrorJustComplete()
@@ -44,27 +52,20 @@ class PromptDetailViewController: UIViewController {
             .map { _ in Visibility.contacts }
             .asDriverOnErrorJustComplete()
         
-        //let currentTab = BehaviorSubject<Visibility>(value: .all)
-        
-        let currentTab = Observable.of(allTapped, contactsTapped)
+        let visibilitySelected = Observable.of(allTapped, contactsTapped)
             .merge()
             .distinctUntilChanged()
             .startWith(.all)
             .asDriver(onErrorJustReturn: .all)
-//            .bind(to: currentTab)
-      
-        let refreshCurrentTab = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-            .withLatestFrom(currentTab)
-            .asDriverOnErrorJustComplete()
         
-        let userUpdatedNotification = NotificationCenter.default.rx
-            .notification(Notification.Name.userUpdated)
+        let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
             .mapToVoid()
-        
+      
         let input = PromptDetailViewModel
-            .Input(userUpdatedNotification: userUpdatedNotification,
-                   refreshTrigger: refreshCurrentTab,
-                   currentlySelectedTab: currentTab,
+            .Input(viewDidLoad: viewDidLoad,
+                   userUpdatedNotification: userUpdatedNotification,
+                   viewWillAppear: viewWillAppear,
+                   visibilitySelected: visibilitySelected,
                    createReplyTrigger: createReplyButton.rx.tap.asDriver(),
                    backTrigger: backButton.rx.tap.asDriver(),
                    scoreSelected: PublishSubject<(CellViewModel, ScoreCellViewModel)>())
@@ -100,7 +101,10 @@ class PromptDetailViewController: UIViewController {
             .disposed(by: disposeBag)
         
         output.shouldDisplayReplies
-            .drive(onNext: { self.tableView.isHidden = $0 ? false : true })
+            .drive(onNext: {
+                self.tableView.isHidden = $0 ? false : true
+                self.createReplyButton.isHidden = $0
+            })
             .disposed(by: disposeBag)
         
         output.fetching
@@ -123,6 +127,21 @@ class PromptDetailViewController: UIViewController {
             .disposed(by: disposeBag)
         
         output.didBindReplies
+            .disposed(by: disposeBag)
+        
+        output.currentVisibility
+            .drive(onNext: { (vis) in
+                switch vis {
+                case .all:
+                   self.tabBarView.leftButton.backgroundColor = UIColor.black
+                   self.tabBarView.rightButton.backgroundColor = UIColor.gray
+                case .contacts:
+                    self.tabBarView.leftButton.backgroundColor = UIColor.gray
+                    self.tabBarView.rightButton.backgroundColor = UIColor.black
+                case .facebook:
+                    break
+                }
+            })
             .disposed(by: disposeBag)
         
         //        output.saveScore

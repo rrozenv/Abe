@@ -123,6 +123,9 @@ struct ReplyOptionsViewModel {
                     .flatMapLatest { self.replyService.add(reply: $0, to: self.prompt) }
                     .flatMapLatest { self.replyService.add(reply: $0.0, to: self.user) }
             }
+            .do(onNext: { _ in
+                NotificationCenter.default.post(.init(name: .userUpdated, object: nil))
+            })
             .mapToVoid()
             .do(onNext: router.toPromptDetail)
         
