@@ -16,7 +16,9 @@ final class UserDetailsRouter: UserDetailsRoutingLogic {
     
     func toPhoneEntry() {
         let vc = PhoneEntryViewController()
-        let viewModel = PhoneEntryViewModel(userService: UserService())
+        let router = PhoneEntryRouter(navigationController: navigationController)
+        let viewModel = PhoneEntryViewModel(userService: UserService(),
+                                            router: router)
         vc.viewModel = viewModel
         navigationController.pushViewController(vc, animated: true)
     }

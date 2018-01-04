@@ -41,8 +41,8 @@ class PhoneEntryViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        output.numberIsVerified
-            .drive(onNext: { _ in print("Number is verified") })
+        output.didCreateUser
+            .drive()
             .disposed(by: disposeBag)
         
         output.errors

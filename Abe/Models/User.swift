@@ -28,6 +28,15 @@ class User: Object {
         self.phoneNumber = "555-478-7672"
     }
     
+    convenience init(syncUserId: String,
+                     name: String,
+                     phoneNumber: String) {
+        self.init()
+        self.id = syncUserId
+        self.name = name
+        self.phoneNumber = "555-478-7672"
+    }
+    
     // MARK: - Meta
     override static func primaryKey() -> String? {
         return "id"

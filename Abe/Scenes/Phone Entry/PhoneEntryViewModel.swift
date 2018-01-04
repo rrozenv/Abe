@@ -15,20 +15,21 @@ struct PhoneEntryViewModel {
     
     struct Output {
         let entryIsValid: Driver<Bool>
-        let numberIsVerified: Driver<Void>
+        let didCreateUser: Driver<Void>
         let errors: Driver<Error>
     }
 
     private let phoneValidator = PhoneNumberValidator()
     private let userService: UserService
-    private let userName: (first: String, last: String)
-    //private let router: SignupRouter
+    private let userName: String
+    private let router: PhoneEntryRoutingLogic
     
-    init(userService: UserService) {
+    init(userService: UserService,
+         router: PhoneEntryRoutingLogic) {
         guard let userName = UserDefaultsManager.userName() else { fatalError() }
-        self.userName = userName
+        self.userName = userName.first + " " + userName.last
         self.userService = userService
-        //self.router = router
+        self.router = router
     }
     
     func transform(input: Input) -> Output {
@@ -36,7 +37,7 @@ struct PhoneEntryViewModel {
         let activityTracker = ActivityIndicator()
         //let loading = activityTracker.asDriver()
         let errors = errorTracker.asDriver()
- 
+        
         let _numberInput = input.phoneNumber
         
         let entryIsValid = _numberInput
@@ -44,8 +45,8 @@ struct PhoneEntryViewModel {
         
         let _verifyNumber = input.doneTapped
             .withLatestFrom(_numberInput)
-            .flatMapLatest {
-                self.phoneValidator.validateNumber($0)
+            .flatMapLatest { number -> Driver<(valid: Bool, number: PhoneNumber)> in
+                self.phoneValidator.validateNumber(number)
                     .trackError(errorTracker)
                     .asDriver(onErrorJustReturn: (valid: false, number: PhoneNumber.notPhoneNumber()))
             }
@@ -64,20 +65,21 @@ struct PhoneEntryViewModel {
                 .materialize()
             }
         
-        let createUser = _registerAuthorization.elements()
+        let didCreateUser = _registerAuthorization.elements()
             .withLatestFrom(_verifiedNumber, resultSelector: { (syncUser: $0, number: $1) })
             .flatMapLatest {
                 self.userService.createUser(syncUser: $0.syncUser,
-                                            name: self.userName.first,
-                                            email: "\($0.number)",
-                                            phoneNumber: "\($0.number)")
+                                            name: self.userName,
+                                            email: $0.number.numberString,
+                                            phoneNumber: $0.number.numberString)
             }
             .do(onNext: { Application.shared.currentUser.value = $0 })
             .mapToVoid()
+            .do(onNext: router.toHome)
             .asDriverOnErrorJustComplete()
         
         return Output(entryIsValid: entryIsValid,
-                      numberIsVerified: _verifiedNumber.mapToVoid().asDriverOnErrorJustComplete(),
+                      didCreateUser: didCreateUser,
                       errors: errors)
     }
     

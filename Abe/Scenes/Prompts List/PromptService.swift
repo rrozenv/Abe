@@ -103,7 +103,9 @@ struct UserService {
                     email: String,
                     phoneNumber: String) -> Observable<User> {
         let result = withRealm("creating") { realm -> Observable<User> in
-            let user = User(syncUser: syncUser, name: name, email: email)
+            let user = User(syncUserId: syncUser.identity!,
+                            name: name,
+                            phoneNumber: phoneNumber)
             try realm.write {
                 realm.add(user)
             }

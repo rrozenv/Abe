@@ -37,6 +37,17 @@ struct ContactService {
         return result ?? .empty()
     }
     
+    func fetchWith(predicate: NSPredicate) -> Observable<Results<Contact>> {
+        let result = withRealm("getting replies") { realm -> Observable<Results<Contact>> in
+            let contacts = realm
+                .objects(Contact.self)
+                .filter(predicate)
+            
+            return .just(contacts)
+        }
+        return result ?? .empty()
+    }
+    
 }
 
 
