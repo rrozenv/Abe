@@ -1,4 +1,4 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 use_frameworks!
 
 target 'Abe' do
@@ -15,4 +15,6 @@ target 'Abe' do
   pod 'RxSwiftExt'
   pod 'PromiseKit', '~> 4.4'
   pod 'PhoneNumberKit', '~> 2.1'
+  pod 'Moya/RxSwift'
+  pod 'RxOptional'
 end

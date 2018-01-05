@@ -56,9 +56,9 @@ struct PhoneEntryViewModel {
             .map { $0.number }
             
         let _registerAuthorization = _verifiedNumber
-            .flatMap {
-                RealmAuth.authorize(email: $0.numberString,
-                                    password: $0.numberString,
+            .flatMap { number -> Observable<Event<SyncUser>> in
+                RealmAuth.authorize(email: number.numberString,
+                                    password: number.numberString,
                                     register: true)
                 .trackError(errorTracker)
                 .trackActivity(activityTracker)

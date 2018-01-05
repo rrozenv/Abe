@@ -19,7 +19,18 @@ final class TabBarView: UIView {
     private let height1X: CGFloat = 50.0
     var containerView: UIView!
     var leftButton: UIButton!
+    var centerButton: UIButton!
     var rightButton: UIButton!
+    var selectedVisibility: Visibility = .all {
+        didSet {
+            self.adjustButtonColors(selected: getButtonTag(for: selectedVisibility))
+        }
+    }
+    
+    private var buttonArray: [UIButton] {
+        return [leftButton, centerButton, rightButton]
+    }
+    
     var height: CGFloat {
         return Screen.height * (height1X / Screen.height)
     }
@@ -29,26 +40,39 @@ final class TabBarView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(leftTitle: String, rightTitle: String) {
+    init(leftTitle: String,
+         centerTitle: String,
+         rightTitle: String) {
         super.init(frame: .zero)
         self.backgroundColor = UIColor.clear
         self.dropShadow()
         setupBackgroundView()
         setupLeftButton(with: leftTitle)
+        setupCenterButton(with: centerTitle)
         setupRightButton(with: rightTitle)
+        setupButtonStackView()
     }
     
-    func didSelect(tabButtonType: HomeViewController.TabButtonType) {
-        switch tabButtonType {
-        case .mainMovieList:
-            leftButton.backgroundColor = UIColor.black
-            rightButton.backgroundColor = UIColor.gray
-        case .contests:
-            leftButton.backgroundColor = UIColor.gray
-            rightButton.backgroundColor = UIColor.black
+}
+
+extension TabBarView {
+    
+    fileprivate func adjustButtonColors(selected tag: Int) {
+        buttonArray.forEach {
+            $0.backgroundColor =
+                ($0.tag == tag) ? UIColor.black : UIColor.gray
         }
     }
-
+    
+    fileprivate func getButtonTag(for visibility: Visibility) -> Int {
+        switch visibility {
+        case .all: return 1
+        case .contacts: return 2
+        case .userReply: return 3
+        default: return 0
+        }
+    }
+    
 }
 
 extension TabBarView {
@@ -64,127 +88,94 @@ extension TabBarView {
         }
     }
     
+    fileprivate func setupButtonStackView() {
+        let buttons: [UIButton] = [leftButton, centerButton, rightButton]
+        let stackView = UIStackView(arrangedSubviews: buttons)
+        stackView.distribution = .fillEqually
+        stackView.axis = .horizontal
+        
+        containerView.addSubview(stackView)
+        stackView.snp.makeConstraints { (make) in
+            make.edges.equalTo(containerView)
+        }
+    }
+    
     fileprivate func setupLeftButton(with title: String) {
         leftButton = UIButton()
+        leftButton.tag = 1
         leftButton.setTitle(title, for: .normal)
         leftButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
         leftButton.backgroundColor = UIColor.black
-       
-        containerView.addSubview(leftButton)
-        leftButton.translatesAutoresizingMaskIntoConstraints = false
-        leftButton.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5).isActive = true
-        leftButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
-        leftButton.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        leftButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+    }
+    
+    fileprivate func setupCenterButton(with title: String) {
+        centerButton = UIButton()
+        centerButton.tag = 2
+        centerButton.setTitle(title, for: .normal)
+        centerButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
+        centerButton.backgroundColor = UIColor.black
     }
     
     fileprivate func setupRightButton(with title: String) {
         rightButton = UIButton()
+        rightButton.tag = 3
         rightButton.setTitle(title, for: .normal)
         rightButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
         rightButton.backgroundColor = UIColor.black
-        
-        containerView.addSubview(rightButton)
-        rightButton.translatesAutoresizingMaskIntoConstraints = false
-        rightButton.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.5).isActive = true
-        rightButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
-        rightButton.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        rightButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
     }
     
 }
 
-//final class CustomNavigationBar: UIView {
-//    
-//    //MARK: View Properties
-//    private let height1X: CGFloat = 75.0
-//    var containerView: UIView!
-//    var leftButton: UIButton!
-//    var centerButton: UIButton!
-//    var rightButton: UIButton!
-//    var locationLabel: UILabel!
-//    var height: CGFloat {
-//        return Screen.height * (height1X / Screen.height)
-//    }
-//    
-//    //MARK: Initalizer Setup
-//    required init?(coder aDecoder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//    
-//    init(leftImage: UIImage, centerImage: UIImage, rightImage: UIImage) {
-//        super.init(frame: .zero)
-//        self.backgroundColor = UIColor.clear
-//        setupBackgroundView()
-//        setupLeftButton(with: leftImage)
-//        setupCenterButton(with: centerImage)
-//        setupRightButton(with: rightImage)
-//        setupLocationLabel()
-//    }
-//    
-//}
-//
-//extension CustomNavigationBar {
-//    
-//    fileprivate func setupBackgroundView() {
-//        containerView = UIView()
-//        containerView.backgroundColor = UIColor.white
-//        containerView.layer.masksToBounds = true
-//        
-//        self.addSubview(containerView)
-//        containerView.translatesAutoresizingMaskIntoConstraints = false
-//        containerView.constrainEdges(to: self)
-//    }
-//    
-//    fileprivate func setupLeftButton(with image: UIImage) {
-//        leftButton = UIButton()
-//        leftButton.backgroundColor = UIColor.clear
-//        leftButton.setImage(image, for: .normal)
-//        
-//        containerView.addSubview(leftButton)
-//        leftButton.translatesAutoresizingMaskIntoConstraints = false
-//        leftButton.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.064).isActive = true
-//        leftButton.heightAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.064).isActive = true
-//        leftButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
-//        leftButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-//    }
-//    
-//    fileprivate func setupCenterButton(with image: UIImage) {
-//        centerButton = UIButton()
-//        centerButton.backgroundColor = UIColor.clear
-//        centerButton.setImage(image, for: .normal)
-//        
-//        containerView.addSubview(centerButton)
-//        centerButton.translatesAutoresizingMaskIntoConstraints = false
-//        centerButton.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.2267).isActive = true
-//        centerButton.heightAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.1786).isActive = true
-//        centerButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-//        centerButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 3).isActive = true
-//    }
-//    
-//    fileprivate func setupRightButton(with image: UIImage) {
-//        rightButton = UIButton()
-//        rightButton.backgroundColor = UIColor.clear
-//        rightButton.setImage(image, for: .normal)
-//        
-//        containerView.addSubview(rightButton)
-//        rightButton.translatesAutoresizingMaskIntoConstraints = false
-//        rightButton.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.060).isActive = true
-//        rightButton.heightAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.068).isActive = true
-//        rightButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
-//        rightButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-//    }
-//    
-//    fileprivate func setupLocationLabel() {
-//        locationLabel = UILabel()
-//        locationLabel.textColor = UIColor.yellow
-//        locationLabel.font = FontBook.AvenirHeavy.of(size: 13)
-//        
-//        containerView.insertSubview(locationLabel, aboveSubview: centerButton)
-//        locationLabel.translatesAutoresizingMaskIntoConstraints = false
-//        locationLabel.centerXAnchor.constraint(equalTo: centerButton.centerXAnchor, constant: 5).isActive = true
-//        locationLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -6).isActive = true
-//    }
-//    
-//}
+final class RepliesEmptyView: UIView {
+    
+    var containerView: UIView!
+    var titleLabel: UILabel!
+    var selectedVisibility: Visibility = .all {
+        didSet {
+            self.setTitleText(for: selectedVisibility)
+        }
+    }
+
+    //MARK: Initalizer Setup
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        setupContainerView()
+        setupTitleLabel()
+    }
+    
+    private func setupContainerView() {
+        containerView = UIView()
+        containerView.backgroundColor = UIColor.red
+        
+        self.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.snp.makeConstraints { (make) in
+            make.edges.edges.equalTo(self)
+        }
+    }
+    
+    private func setupTitleLabel() {
+        titleLabel = UILabel()
+        
+        containerView.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.snp.makeConstraints { (make) in
+            make.center.equalTo(containerView.snp.center)
+        }
+    }
+    
+    private func setTitleText(for visibility: Visibility) {
+        switch visibility {
+        case .all: titleLabel.text = "No Trending Replies"
+        case .contacts: titleLabel.text = "No Replies For Contacts"
+        case .userReply: titleLabel.text = "You did not reply"
+        default: break
+        }
+    }
+
+}
 

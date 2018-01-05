@@ -15,11 +15,13 @@ class PromptDetailViewController: UIViewController {
     var tableView: UITableView!
     var createReplyButton: UIButton!
     var backButton: UIBarButtonItem!
+    var emptyView: RepliesEmptyView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBarView()
         setupTableView()
+        setupEmptyView()
         setupCreatePromptReplyButton()
         setupCancelButton()
         bindViewModel()
@@ -48,11 +50,16 @@ class PromptDetailViewController: UIViewController {
             .map { _ in Visibility.all }
             .asDriverOnErrorJustComplete()
         
-        let contactsTapped = tabBarView.rightButton.rx.tap
+        let contactsTapped = tabBarView.centerButton.rx.tap
             .map { _ in Visibility.contacts }
             .asDriverOnErrorJustComplete()
         
-        let visibilitySelected = Observable.of(allTapped, contactsTapped)
+        let myReplyTapped = tabBarView.rightButton.rx.tap
+            .map { _ in Visibility.userReply }
+            .asDriverOnErrorJustComplete()
+        
+        let visibilitySelected = Observable
+            .of(allTapped, contactsTapped, myReplyTapped)
             .merge()
             .distinctUntilChanged()
             .startWith(.all)
@@ -100,9 +107,14 @@ class PromptDetailViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        output.replies
+            .map { $0.isEmpty }
+            .drive(onNext: { self.emptyView.isHidden = $0 ? false : true })
+            .disposed(by: disposeBag)
+        
         output.shouldDisplayReplies
             .drive(onNext: {
-                self.tableView.isHidden = $0 ? false : true
+                //self.emptyView.isHidden = $0 //? false : true
                 self.createReplyButton.isHidden = $0
             })
             .disposed(by: disposeBag)
@@ -130,18 +142,14 @@ class PromptDetailViewController: UIViewController {
             .disposed(by: disposeBag)
         
         output.currentVisibility
-            .drive(onNext: { (vis) in
-                switch vis {
-                case .all:
-                   self.tabBarView.leftButton.backgroundColor = UIColor.black
-                   self.tabBarView.rightButton.backgroundColor = UIColor.gray
-                case .contacts:
-                    self.tabBarView.leftButton.backgroundColor = UIColor.gray
-                    self.tabBarView.rightButton.backgroundColor = UIColor.black
-                case .facebook:
-                    break
-                }
+            .drive(onNext: { [unowned self] vis in
+                self.tabBarView.selectedVisibility = vis
+                self.emptyView.selectedVisibility = vis
             })
+            .disposed(by: disposeBag)
+        
+        output.didUpdateUser
+            .subscribe()
             .disposed(by: disposeBag)
         
         //        output.saveScore
@@ -155,6 +163,15 @@ class PromptDetailViewController: UIViewController {
 }
 
 extension PromptDetailViewController {
+    
+    fileprivate func setupEmptyView() {
+        emptyView = RepliesEmptyView()
+        
+        view.insertSubview(emptyView, belowSubview: tabBarView)
+        emptyView.snp.makeConstraints { (make) in
+            make.edges.equalTo(view)
+        }
+    }
     
     fileprivate func setupCancelButton() {
         backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
@@ -191,7 +208,7 @@ extension PromptDetailViewController {
     }
     
     func setupTabBarView() {
-        tabBarView = TabBarView(leftTitle: "Trending", rightTitle: "Friends")
+        tabBarView = TabBarView(leftTitle: "Trending", centerTitle: "Friends", rightTitle: "My Reply")
         
         view.addSubview(tabBarView)
         tabBarView.translatesAutoresizingMaskIntoConstraints = false

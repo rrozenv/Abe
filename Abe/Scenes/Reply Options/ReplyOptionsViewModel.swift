@@ -10,6 +10,7 @@ enum Visibility: String {
     case all
     case facebook
     case contacts
+    case userReply
 }
 
 struct SavedReplyInput {

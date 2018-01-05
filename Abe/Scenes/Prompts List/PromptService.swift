@@ -3,6 +3,7 @@ import Foundation
 import RealmSwift
 import RxSwift
 import RxRealm
+import Moya
 
 enum PromptServiceError: Error {
     case creationFailed
@@ -222,5 +223,18 @@ struct ReplyService {
         }
         return result ?? .empty()
     }
+    
+}
+
+struct IssueTrackerModel {
+    
+    let provider: MoyaProvider<PixabayAPI>
+
+//    func trackIssues() -> Observable<[Image]> {
+//       provider.rx.request(.search(query: "hey", page: 1))
+//            .mapJSON()
+//            .asObservable()
+//
+//    }
     
 }
