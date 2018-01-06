@@ -3,36 +3,39 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import SnapKit
 
-protocol ReplyCellViewModelInputs {
-    /// Call to configure cell with activity value.
-    var reply: PublishSubject<PromptReply> { get }
-}
+//protocol ReplyCellViewModelInputs {
+//    /// Call to configure cell with activity value.
+//    var reply: PublishSubject<PromptReply> { get }
+//}
+//
+//protocol ReplyCellViewModelOutputs {
+//    /// Emits the backer image url to be displayed.
+//    var body: Driver<String> { get }
+//}
+//
+//protocol ReplyCellViewModelType {
+//    var inputs: ReplyCellViewModelInputs { get }
+//    var outputs: ReplyCellViewModelOutputs { get }
+//}
 
-protocol ReplyCellViewModelOutputs {
-    /// Emits the backer image url to be displayed.
-    var body: Driver<String> { get }
-}
-
-protocol ReplyCellViewModelType {
-    var inputs: ReplyCellViewModelInputs { get }
-    var outputs: ReplyCellViewModelOutputs { get }
-}
-
-public final class ReplyCellViewModel: ReplyCellViewModelInputs,
-ReplyCellViewModelOutputs, ReplyCellViewModelType {
+public final class ReplyCellViewModel {
     
-    var inputs: ReplyCellViewModelInputs { return self }
-    let reply = PublishSubject<PromptReply>()
+    struct Input {
+        let reply: PublishSubject<PromptReply>
+    }
     
-    var outputs: ReplyCellViewModelOutputs { return self }
-    let body: Driver<String>
-
-    public init() {
-        self.body = self.reply
-            .asObservable()
+    struct Output {
+        let body: Driver<String>
+    }
+    
+    func transform(input: Input) -> Output {
+        let body = input.reply
             .map { $0.body }
             .asDriver(onErrorJustReturn: "")
+        
+        return Output(body: body)
     }
     
 }
@@ -45,6 +48,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     fileprivate let viewModel = ReplyCellViewModel()
     
     // MARK: - Properties
+    fileprivate var containerView: UIView!
     fileprivate var replyBodyLabel: UILabel!
     
     // MARK: - Initialization
@@ -56,22 +60,45 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
+        setupContainerView()
+        setupTitleLabel()
     }
     
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
-        bindViewModel()
     }
     
-    private func bindViewModel() {
-        viewModel.outputs
-            .body
+    func configureWith(value: PromptReply) {
+        let inputs = ReplyCellViewModel
+            .Input(reply: PublishSubject<PromptReply>())
+        inputs.reply.onNext(value)
+        
+        let outputs = viewModel.transform(input: inputs)
+        
+        outputs.body
             .drive(replyBodyLabel.rx.text)
             .disposed(by: disposeBag)
     }
     
-    func configureWith(value: PromptReply) {
-        viewModel.inputs.reply.onNext(value)
+    func setupContainerView() {
+        containerView = UIView()
+        containerView.backgroundColor = UIColor.white
+        
+        contentView.addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(contentView)
+            make.height.equalTo(100)
+        }
+    }
+    
+    private func setupTitleLabel() {
+        replyBodyLabel = UILabel()
+        
+        containerView.addSubview(replyBodyLabel)
+        replyBodyLabel.translatesAutoresizingMaskIntoConstraints = false
+        replyBodyLabel.snp.makeConstraints { (make) in
+            make.center.equalTo(containerView.snp.center)
+        }
     }
     
     override func prepareForReuse() {
