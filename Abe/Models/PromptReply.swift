@@ -33,6 +33,19 @@ class PromptReply: Object {
                 "body": body]
     }
     
+    func isAuthorInCurrentUserContacts(currentUser: User) -> Bool {
+        return self.user!.id != currentUser.id
+            &&
+            self.user!.allNumbersFromContacts()
+                .contains(currentUser.phoneNumber)
+    }
+    
+    func fetchCastedScoreIfExists(for userId: String) -> (score: ReplyScore?, reply: PromptReply) {
+        let score = self.scores
+            .filter(NSPredicate(format: "userId = %@", userId)).first
+        return (score, self)
+    }
+    
 }
 
 class ReplyScore: Object {

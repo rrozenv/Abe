@@ -21,14 +21,20 @@ struct PhoneEntryViewModel {
 
     private let phoneValidator = PhoneNumberValidator()
     private let userService: UserService
+    private let contactsStore: ContactsStore
+    private let contactService: ContactService
     private let userName: String
     private let router: PhoneEntryRoutingLogic
     
     init(userService: UserService,
+         contactStore: ContactsStore = ContactsStore(),
+         contactService: ContactService = ContactService(),
          router: PhoneEntryRoutingLogic) {
         guard let userName = UserDefaultsManager.userName() else { fatalError() }
         self.userName = userName.first + " " + userName.last
         self.userService = userService
+        self.contactsStore = contactStore
+        self.contactService = contactService
         self.router = router
     }
     
@@ -65,7 +71,7 @@ struct PhoneEntryViewModel {
                 .materialize()
             }
         
-        let didCreateUser = _registerAuthorization.elements()
+        let currentUser = _registerAuthorization.elements()
             .withLatestFrom(_verifiedNumber, resultSelector: { (syncUser: $0, number: $1) })
             .flatMapLatest {
                 self.userService.createUser(syncUser: $0.syncUser,
@@ -73,13 +79,29 @@ struct PhoneEntryViewModel {
                                             email: $0.number.numberString,
                                             phoneNumber: $0.number.numberString)
             }
+            .share()
+        
+        let userContacts = currentUser
+            .flatMapLatest { _ in
+                self.contactsStore
+                    .userContacts()
+                    .trackError(errorTracker)
+                    .trackActivity(activityTracker)
+                    .asDriverOnErrorJustComplete()
+            }
+            
+        let saveContactsToUser = userContacts
+            .withLatestFrom(currentUser, resultSelector: { (contacts, user) in
+                return self.contactService.add(contacts: contacts, to: user)
+            })
+            .flatMap { $0 }
             .do(onNext: { Application.shared.currentUser.value = $0 })
             .mapToVoid()
             .do(onNext: router.toHome)
             .asDriverOnErrorJustComplete()
         
         return Output(entryIsValid: entryIsValid,
-                      didCreateUser: didCreateUser,
+                      didCreateUser: saveContactsToUser,
                       errors: errors)
     }
     

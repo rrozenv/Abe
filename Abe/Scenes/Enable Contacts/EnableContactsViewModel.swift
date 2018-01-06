@@ -53,20 +53,20 @@ struct EnableContactsViewModel {
         let didSaveContacts = Driver.of(_requestContactsAccess, _authStatus)
             .merge()
             .filter { $0 }
-            .flatMapLatest { _ in
-                self.contactsStore
-                    .userContacts()
-                    .trackError(errorTracker)
-                    .trackActivity(activityIndicator)
-                    .asDriverOnErrorJustComplete()
-            }
-            .flatMapLatest { (contacts) in
-                self.contactService
-                    .saveAll(contacts)
-                    .trackError(errorTracker)
-                    .trackActivity(activityIndicator)
-                    .asDriverOnErrorJustComplete()
-            }
+//            .flatMapLatest { _ in
+//                self.contactsStore
+//                    .userContacts()
+//                    .trackError(errorTracker)
+//                    .trackActivity(activityIndicator)
+//                    .asDriverOnErrorJustComplete()
+//            }
+//            .flatMapLatest { (contacts) in
+//                self.contactService
+//                    .saveAll(contacts)
+//                    .trackError(errorTracker)
+//                    .trackActivity(activityIndicator)
+//                    .asDriverOnErrorJustComplete()
+//            }
             .mapToVoid()
             .do(onNext: router.toNameInput)
         

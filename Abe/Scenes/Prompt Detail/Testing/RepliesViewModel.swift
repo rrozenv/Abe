@@ -11,36 +11,66 @@ protocol RepliesViewModelInputs {
 
 protocol RepliesViewModelOutputs {
     /// Emits the backer image url to be displayed.
-    var replies: Driver<[PromptReply]> { get }
+    var allReplies: Driver<[PromptReply]> { get }
 }
 
-struct RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
+final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
     
     let disposeBag = DisposeBag()
    
     //MARK: - Inputs
     let viewWillAppear: AnyObserver<Void>
+    let visibilitySelected: AnyObserver<Visibility>
 
     //MARK: - Outputs
-    let replies: Driver<[PromptReply]>
-    
-    private var user: Variable<User>
-    
+    let didUserReply: Driver<Bool>
+    let currentVisibility: Driver<Visibility>
+    let allReplies: Driver<[PromptReply]>
+    let contactReplies: Driver<[PromptReply]>
+
     init(replyService: ReplyService = ReplyService(),
          prompt: Prompt) {
         
         //Make sure current user exists
         guard let user = Application.shared.currentUser.value else { fatalError() }
-        self.user = Variable<User>(user)
+        let currentUser = Variable<User>(user)
         
         //Setup viewWillAppear() notification
         let _viewWillAppear = PublishSubject<Void>()
         self.viewWillAppear = _viewWillAppear.asObserver()
         
-        //Fetch replies on viewWillAppear()
-        let predicate = NSPredicate(format: "promptId = %@", prompt.id)
-        self.replies = _viewWillAppear.asObservable().flatMapLatest { _ in
-                return replyService.fetchRepliesWith(predicate: predicate)
+        let _visibilitySelected = BehaviorSubject<Visibility>(value: .all)
+        self.visibilitySelected = _visibilitySelected.asObserver()
+        self.currentVisibility = _visibilitySelected.asDriver(onErrorJustReturn: .all)
+        
+        let _didUserReply = _viewWillAppear.asObservable()
+            .map { _ in currentUser.value.didReply(to: prompt) }
+        self.didUserReply = _didUserReply.asDriver(onErrorJustReturn: false)
+        
+        let _shouldFetch = _viewWillAppear.asObservable()
+            .withLatestFrom(_didUserReply)
+            .filter { $0 }
+            .share()
+        
+        self.allReplies = _shouldFetch
+            .withLatestFrom(_visibilitySelected.asObservable())
+            .filter { $0 == Visibility.all }
+            .map { vis in
+                let bySelectedVis = NSPredicate(format: "visibility = %@", vis.rawValue)
+                return prompt.replies.filter(bySelectedVis)
+                    .toArray()
+                    .filter { $0.user?.id != currentUser.value.id }
+            }
+            .asDriver(onErrorJustReturn: [])
+        
+        self.contactReplies = _shouldFetch
+            .withLatestFrom(_visibilitySelected.asObservable())
+            .filter { $0 == Visibility.contacts }
+            .map { vis in
+                let bySelectedVis = NSPredicate(format: "visibility = %@", vis.rawValue)
+                return prompt.replies.filter(bySelectedVis)
+                    .toArray()
+                    .filter { $0.isAuthorInCurrentUserContacts(currentUser: currentUser.value) }
             }
             .asDriver(onErrorJustReturn: [])
     }

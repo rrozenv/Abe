@@ -27,12 +27,28 @@ public final class ReplyCellViewModel {
     
     //MARK: - Output
     let body: Driver<String>
+    let name: Driver<String>
 
     init() {
+        guard let user = Application.shared.currentUser.value else { fatalError() }
+        
         let _reply = PublishSubject<PromptReply>()
         self.reply = _reply.asObserver()
         self.body = _reply.asObservable()
             .map { $0.body }
+            .asDriver(onErrorJustReturn: "")
+        
+        self.name = _reply.asObservable()
+            .map { $0.fetchCastedScoreIfExists(for: user.id) }
+            .map {
+                switch $0.reply.visibility {
+                case "all":
+                    return ($0.score != nil) ? $0.reply.user!.name : "Someone said..."
+                case "contacts":
+                    return ($0.score != nil) ? $0.reply.user!.name : "Someone from contacts said..."
+                default: return "???"
+                }
+            }
             .asDriver(onErrorJustReturn: "")
     }
     

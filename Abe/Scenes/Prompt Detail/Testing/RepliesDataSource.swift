@@ -11,14 +11,10 @@ internal final class RepliesDataSource: ValueCellDataSource {
     
     func load(replies: [PromptReply]) {
         let section = Section.replies.rawValue
-        
         self.clearValues(section: section)
-        
-        //replies.forEach { activity in
-            self.set(values: replies,
-                     cellClass: ReplyTableCell.self,
-                     inSection: section)
-        //}
+        self.set(values: replies,
+                 cellClass: ReplyTableCell.self,
+                 inSection: section)
     }
     
     internal func replyAtIndexPath(_ indexPath: IndexPath) -> PromptReply? {
@@ -37,4 +33,5 @@ internal final class RepliesDataSource: ValueCellDataSource {
             assertionFailure("Unrecognized combo: \(cell), \(value)")
         }
     }
+    
 }

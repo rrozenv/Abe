@@ -19,10 +19,13 @@ class RepliesViewController: UIViewController {
     private let dataSource = RepliesDataSource()
     private var tableView: UITableView!
     private var tabBarView: TabBarView!
+    private var createReplyButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        setupCreatePromptReplyButton()
+        setupTabBarView()
         bindViewModel()
     }
     
@@ -32,7 +35,45 @@ class RepliesViewController: UIViewController {
     }
     
     func bindViewModel() {
-        viewModel.replies.drive(onNext: { [weak self] replies in
+        let allTapped = tabBarView.leftButton.rx.tap
+            .map { _ in Visibility.all }
+            .asDriverOnErrorJustComplete()
+        
+        let contactsTapped = tabBarView.centerButton.rx.tap
+            .map { _ in Visibility.contacts }
+            .asDriverOnErrorJustComplete()
+        
+        let myReplyTapped = tabBarView.rightButton.rx.tap
+            .map { _ in Visibility.userReply }
+            .asDriverOnErrorJustComplete()
+        
+        let visibilitySelected = Observable
+            .of(allTapped, contactsTapped, myReplyTapped)
+            .merge()
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: .all)
+        
+        visibilitySelected
+            .drive(viewModel.visibilitySelected)
+            .disposed(by: disposeBag)
+        
+        viewModel.didUserReply
+            .drive(createReplyButton.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        viewModel.currentVisibility
+            .drive(onNext: { [weak self] (vis) in
+                self?.tabBarView.selectedVisibility = vis
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.allReplies.drive(onNext: { [weak self] replies in
+            self?.dataSource.load(replies: replies)
+            self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
+        
+        viewModel.contactReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.load(replies: replies)
             self?.tableView.reloadData()
         })
@@ -64,6 +105,21 @@ class RepliesViewController: UIViewController {
     
     fileprivate func setupTabBarView() {
         tabBarView = TabBarView(leftTitle: "Trending", centerTitle: "Friends", rightTitle: "My Reply")
+    }
+    
+    fileprivate func setupCreatePromptReplyButton() {
+        //MARK: - createPromptButton Properties
+        createReplyButton = UIButton()
+        createReplyButton.backgroundColor = UIColor.black
+        createReplyButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
+        createReplyButton.setTitle("Reply", for: .normal)
+        
+        //MARK: - createPromptButton Constraints
+        view.addSubview(createReplyButton)
+        createReplyButton.snp.makeConstraints { (make) in
+            make.left.bottom.right.equalTo(view)
+            make.height.equalTo(60)
+        }
     }
 
 }

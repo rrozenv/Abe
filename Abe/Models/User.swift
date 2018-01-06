@@ -48,6 +48,16 @@ class User: Object {
                 "email": email]
     }
     
+    func didReply(to prompt: Prompt) -> Bool {
+        let predicate = NSPredicate(format: "promptId = %@", prompt.id)
+        let userReplies = self.replies.filter(predicate)
+        return userReplies.count > 0
+    }
+    
+    func allNumbersFromContacts() -> [String] {
+        return self.contacts.flatMap { $0.numbers }
+    }
+    
 }
 
 

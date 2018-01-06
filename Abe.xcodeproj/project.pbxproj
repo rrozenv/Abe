@@ -343,8 +343,8 @@
 			children = (
 				9862867720006AE300502294 /* RepliesViewController.swift */,
 				9862867920006AF000502294 /* RepliesViewModel.swift */,
-				9854D251200053A700D7B7EB /* ValueCellDataSource.swift */,
 				9854D2532000546B00D7B7EB /* RepliesDataSource.swift */,
+				9854D251200053A700D7B7EB /* ValueCellDataSource.swift */,
 				9862867220005E0900502294 /* ReplyTableCell.swift */,
 			);
 			path = Testing;
