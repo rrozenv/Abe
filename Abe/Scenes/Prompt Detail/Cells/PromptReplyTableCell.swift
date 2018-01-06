@@ -16,7 +16,7 @@ struct ScoreViewModel {
 }
 
 final class PromptReplyTableCell: UITableViewCell {
-    
+ 
     private(set) var disposeBag = DisposeBag()
     
     override func prepareForReuse() {

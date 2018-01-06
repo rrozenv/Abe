@@ -85,6 +85,7 @@ extension TabBarView {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.snp.makeConstraints { (make) in
             make.edges.edges.equalTo(self)
+            make.height.equalTo(50)
         }
     }
     

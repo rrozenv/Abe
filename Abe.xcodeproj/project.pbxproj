@@ -16,6 +16,9 @@
 		982530FC1FF4151D000E6E20 /* PromptMasterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */; };
 		982530FE1FF41531000E6E20 /* PromptMasterDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */; };
 		982531001FF41568000E6E20 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FF1FF41568000E6E20 /* TabBarView.swift */; };
+		9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9854D2412000186F00D7B7EB /* PromptSummarySectionHeaderView.swift */; };
+		9854D252200053A700D7B7EB /* ValueCellDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9854D251200053A700D7B7EB /* ValueCellDataSource.swift */; };
+		9854D2542000546B00D7B7EB /* RepliesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9854D2532000546B00D7B7EB /* RepliesDataSource.swift */; };
 		985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */; };
 		985C2A5D1FFDAC8E0034E116 /* EnableContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */; };
 		985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */; };
@@ -23,6 +26,7 @@
 		985C2A641FFDC1D80034E116 /* UserDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A631FFDC1D80034E116 /* UserDetailsViewController.swift */; };
 		985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A651FFDC1E40034E116 /* UserDetailsViewModel.swift */; };
 		985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A671FFDC1F40034E116 /* UserDetailsRouter.swift */; };
+		9862867320005E0900502294 /* ReplyTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9862867220005E0900502294 /* ReplyTableCell.swift */; };
 		9883ED611FE6F810002E538E /* PromptReply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED601FE6F810002E538E /* PromptReply.swift */; };
 		9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */; };
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
@@ -102,6 +106,9 @@
 		982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewController.swift; sourceTree = "<group>"; };
 		982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewModel.swift; sourceTree = "<group>"; };
 		982530FF1FF41568000E6E20 /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		9854D2412000186F00D7B7EB /* PromptSummarySectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSummarySectionHeaderView.swift; sourceTree = "<group>"; };
+		9854D251200053A700D7B7EB /* ValueCellDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueCellDataSource.swift; sourceTree = "<group>"; };
+		9854D2532000546B00D7B7EB /* RepliesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesDataSource.swift; sourceTree = "<group>"; };
 		985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewController.swift; sourceTree = "<group>"; };
 		985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewModel.swift; sourceTree = "<group>"; };
 		985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsRouter.swift; sourceTree = "<group>"; };
@@ -109,6 +116,7 @@
 		985C2A631FFDC1D80034E116 /* UserDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewController.swift; sourceTree = "<group>"; };
 		985C2A651FFDC1E40034E116 /* UserDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewModel.swift; sourceTree = "<group>"; };
 		985C2A671FFDC1F40034E116 /* UserDetailsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsRouter.swift; sourceTree = "<group>"; };
+		9862867220005E0900502294 /* ReplyTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyTableCell.swift; sourceTree = "<group>"; };
 		9883ED601FE6F810002E538E /* PromptReply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptReply.swift; sourceTree = "<group>"; };
 		9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
@@ -326,9 +334,20 @@
 			path = "Enter Name";
 			sourceTree = "<group>";
 		};
+		9862867420006A4B00502294 /* Testing */ = {
+			isa = PBXGroup;
+			children = (
+				9854D251200053A700D7B7EB /* ValueCellDataSource.swift */,
+				9854D2532000546B00D7B7EB /* RepliesDataSource.swift */,
+				9862867220005E0900502294 /* ReplyTableCell.swift */,
+			);
+			path = Testing;
+			sourceTree = "<group>";
+		};
 		9883ED661FE7061B002E538E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				9854D2412000186F00D7B7EB /* PromptSummarySectionHeaderView.swift */,
 				9883ED671FE70627002E538E /* PromptReplyTableCell.swift */,
 				9897110E1FEC8C0F00C75BD3 /* ReplyCellViewModel.swift */,
 				9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */,
@@ -369,6 +388,7 @@
 				989317211FE6F3E300E2979F /* PromptDetailRouter.swift */,
 				989317221FE6F3E300E2979F /* PromptDetailViewController.swift */,
 				989317231FE6F3E400E2979F /* PromptDetailViewModel.swift */,
+				9862867420006A4B00502294 /* Testing */,
 			);
 			path = "Prompt Detail";
 			sourceTree = "<group>";
@@ -695,8 +715,10 @@
 				9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */,
 				985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */,
 				982530FC1FF4151D000E6E20 /* PromptMasterDetailViewController.swift in Sources */,
+				9854D252200053A700D7B7EB /* ValueCellDataSource.swift in Sources */,
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
+				9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */,
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
 				98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */,
@@ -736,8 +758,10 @@
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,
 				985C2A641FFDC1D80034E116 /* UserDetailsViewController.swift in Sources */,
+				9854D2542000546B00D7B7EB /* RepliesDataSource.swift in Sources */,
 				985C2A5D1FFDAC8E0034E116 /* EnableContactsViewModel.swift in Sources */,
 				982531001FF41568000E6E20 /* TabBarView.swift in Sources */,
+				9862867320005E0900502294 /* ReplyTableCell.swift in Sources */,
 				98FEE7BF1FE4BC6200CD80A8 /* PromptTableCell.swift in Sources */,
 				989317251FE6F3E400E2979F /* PromptDetailViewController.swift in Sources */,
 				9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */,

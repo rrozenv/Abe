@@ -10,6 +10,7 @@ class PromptDetailViewController: UIViewController {
     
     let disposeBag = DisposeBag()
     var viewModel: PromptDetailViewModel!
+    var scoreSelected = PublishSubject<(CellViewModel, ScoreCellViewModel)>()
     
     var tabBarView: TabBarView!
     var tableView: UITableView!
@@ -75,36 +76,42 @@ class PromptDetailViewController: UIViewController {
                    visibilitySelected: visibilitySelected,
                    createReplyTrigger: createReplyButton.rx.tap.asDriver(),
                    backTrigger: backButton.rx.tap.asDriver(),
-                   scoreSelected: PublishSubject<(CellViewModel, ScoreCellViewModel)>())
+                   scoreSelected: scoreSelected)
         
         //MARK: - Output
         let output = viewModel.transform(input: input)
         
+//        output.replies
+//            .drive(tableView.rx.items) { tableView, index, replyCellviewModel in
+//                guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
+//
+//                cell.configure(with: replyCellviewModel)
+//
+//                cell.collectionView.rx
+//                    .modelSelected(ScoreCellViewModel.self).asObservable()
+//                    .subscribe(onNext: { scoreVm in
+//                        input.scoreSelected.onNext((replyCellviewModel, scoreVm))
+//                    })
+//                    .disposed(by: cell.disposeBag)
+//
+//                Observable.of(replyCellviewModel.scoreCellViewModels)
+//                    .asDriverOnErrorJustComplete()
+//                    .drive(cell.collectionView.rx.items) { collView, index, score in
+//                        guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+//                        cell.configure(with: score,
+//                                       userDidReply: replyCellviewModel.userDidReply)
+//                        return cell
+//                    }
+//                    .disposed(by: cell.disposeBag)
+//
+//                return cell
+//            }
+//            .disposed(by: disposeBag)
+        
         output.replies
-            .drive(tableView.rx.items) { tableView, index, replyCellviewModel in
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
-               
-                cell.configure(with: replyCellviewModel)
-                
-                cell.collectionView.rx
-                    .modelSelected(ScoreCellViewModel.self).asObservable()
-                    .subscribe(onNext: { scoreVm in
-                        input.scoreSelected.onNext((replyCellviewModel, scoreVm))
-                    })
-                    .disposed(by: cell.disposeBag)
-                
-                Observable.of(replyCellviewModel.scoreCellViewModels)
-                    .asDriverOnErrorJustComplete()
-                    .drive(cell.collectionView.rx.items) { collView, index, score in
-                        guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                        cell.configure(with: score,
-                                       userDidReply: replyCellviewModel.userDidReply)
-                        return cell
-                    }
-                    .disposed(by: cell.disposeBag)
-                
-                return cell
-            }
+            .drive(onNext: { _ in
+                self.tableView.reloadData()
+            })
             .disposed(by: disposeBag)
         
         output.replies
@@ -162,6 +169,79 @@ class PromptDetailViewController: UIViewController {
 
 }
 
+extension PromptDetailViewController: UITableViewDataSource {
+    
+    fileprivate enum Section: Int {
+        case promptSummary = 0
+        case replies = 1
+
+        static var count: Int { return Section.replies.rawValue + 1 }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return Section.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let section = Section(rawValue: section) else { fatalError("Unexpected Section") }
+        switch section {
+        case .promptSummary: return 0
+        case .replies: return viewModel.numberOfReplies
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let section = Section(rawValue: indexPath.section) else { fatalError("Unexpected Section") }
+        switch section {
+        case .promptSummary:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmptyCell") else { fatalError() }
+            return cell
+        case .replies:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: PromptReplyTableCell.reuseIdentifier) as? PromptReplyTableCell else { fatalError() }
+            
+            let replyViewModel = viewModel.replies[indexPath.row]
+            cell.configure(with: replyViewModel)
+            
+            cell.collectionView.rx
+                .modelSelected(ScoreCellViewModel.self).asObservable()
+                .subscribe(onNext: { scoreVm in
+                    self.scoreSelected.onNext((replyViewModel, scoreVm))
+                })
+                .disposed(by: cell.disposeBag)
+            
+            Observable.of(replyViewModel.scoreCellViewModels)
+                .asDriverOnErrorJustComplete()
+                .drive(cell.collectionView.rx.items) { collView, index, score in
+                    guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+                    cell.configure(with: score,
+                                   userDidReply: replyViewModel.userDidReply)
+                    return cell
+                }
+                .disposed(by: cell.disposeBag)
+            
+            return cell
+        }
+    }
+    
+}
+
+extension PromptDetailViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let section = Section(rawValue: section) else { fatalError("Unexpected Section") }
+        switch section {
+        case .promptSummary:
+            let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: PromptSummarySectionHeaderView.reuseIdentifier) as? PromptSummarySectionHeaderView
+            headerCell?.titleLabel.text = "Prompt Summary Cell"
+            return headerCell
+        default:
+//            let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: TabBarSectionHeaderView.reuseIdentifier) as? TabBarSectionHeaderView
+            return tabBarView
+        }
+    }
+    
+}
+
 extension PromptDetailViewController {
     
     fileprivate func setupEmptyView() {
@@ -180,15 +260,21 @@ extension PromptDetailViewController {
     
     fileprivate func setupTableView() {
         //MARK: - tableView Properties
-        tableView = UITableView(frame: CGRect.zero, style: .grouped)
+        tableView = UITableView(frame: CGRect.zero, style: .plain)
+        tableView.delegate = self
+        tableView.dataSource = self
         tableView.register(PromptReplyTableCell.self, forCellReuseIdentifier: PromptReplyTableCell.reuseIdentifier)
+        tableView.register(PromptSummarySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: PromptSummarySectionHeaderView.reuseIdentifier)
+        tableView.register(TabBarSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: TabBarSectionHeaderView.reuseIdentifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "EmptyCell")
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         
         //MARK: - tableView Constraints
         view.insertSubview(tableView, belowSubview: tabBarView)
         tableView.snp.makeConstraints { (make) in
-            make.edges.equalTo(view)
+            make.left.right.bottom.equalTo(view)
+            make.top.equalTo(topLayoutGuide.snp.bottom)
         }
     }
     
@@ -209,13 +295,14 @@ extension PromptDetailViewController {
     
     func setupTabBarView() {
         tabBarView = TabBarView(leftTitle: "Trending", centerTitle: "Friends", rightTitle: "My Reply")
+        //tabBarView.isHidden = true
         
-        view.addSubview(tabBarView)
-        tabBarView.translatesAutoresizingMaskIntoConstraints = false
-        tabBarView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
-        tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tabBarView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor, constant: 10).isActive = true
-        tabBarView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+//        view.addSubview(tabBarView)
+        //tabBarView.translatesAutoresizingMaskIntoConstraints = false
+//        tabBarView.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+//        tabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+//        tabBarView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor, constant: 10).isActive = true
+        //tabBarView.heightAnchor.constraint(equalToConstant: 50).isActive = true
     }
     
     

@@ -5,6 +5,7 @@ import RxCocoa
 import RealmSwift
 import RxRealm
 import RxSwiftExt
+import RxDataSources
 
 struct CellViewModel {
     let reply: PromptReply
@@ -22,6 +23,10 @@ struct PromptDetailViewModel {
     // MARK: - Properties
     let disposeBag = DisposeBag()
     private let _replies = Variable<[CellViewModel]>([])
+    
+    var replies: [CellViewModel] { return _replies.value }
+    var hasReplies: Bool { return numberOfReplies > 0 }
+    var numberOfReplies: Int { return _replies.value.count }
     
     // MARK: -
     struct Input {
@@ -82,7 +87,6 @@ struct PromptDetailViewModel {
             .do(onNext: { _ in
                 self.user.value = Application.shared.currentUser.value!
             })
-            .do(onNext: { _ in print("user has: \(self.user.value.replies.count) replies")})
         
         let _visibilityWhenViewAppears = input.viewWillAppear
             .flatMap { input.visibilitySelected }
@@ -99,8 +103,8 @@ struct PromptDetailViewModel {
         
         let _allReplies = _visibilityToFetch
             .filter { $0 == Visibility.all }
-            .map { _ in self.checkIfReplied(to: self.prompt, userId: self.user.value.id) }
-            .filter { $0 }
+            .filter { _ in
+                self.checkIfReplied(to: self.prompt, userId: self.user.value.id) }
             .flatMapLatest { _ in
                 return self.replyService
                     .fetchRepliesWith(predicate: predicate)
@@ -164,7 +168,8 @@ struct PromptDetailViewModel {
 
         //MARK: - Bind Replies
         //All replies must come LAST because they are shown FIRST
-        let didBindReplies = Observable.of(_filteredContactReplies, _userReply, _allReplies)
+        let didBindReplies = Observable
+            .of(_filteredContactReplies, _userReply, _allReplies)
             .merge()
             .bind(to: self._replies)
         
