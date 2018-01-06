@@ -38,18 +38,23 @@ class PromptsRouter: PromptsRoutingLogic {
     }
 
     func toPrompt(_ prompt: Prompt) {
-        let router = PromptDetailRouter(navigationController: navigationController)
-        let commonRealm = RealmInstance(configuration: RealmConfig.common)
-        let privateRealm = RealmInstance(configuration: RealmConfig.secret)
-        let replyService = ReplyService()
-        let viewModel = PromptDetailViewModel(commonRealm: commonRealm,
-                                              privateRealm: privateRealm,
-                                              replyService: replyService,
-                                              prompt: prompt,
-                                              router: router)
-        let vc = PromptDetailViewController()
-        vc.viewModel = viewModel
-        navigationController.pushViewController(vc, animated: true)
+        let vm = RepliesViewModel(prompt: prompt)
+        let viewCont = RepliesViewController()
+        viewCont.viewModel = vm
+        navigationController.pushViewController(viewCont, animated: true)
+        
+//        let router = PromptDetailRouter(navigationController: navigationController)
+//        let commonRealm = RealmInstance(configuration: RealmConfig.common)
+//        let privateRealm = RealmInstance(configuration: RealmConfig.secret)
+//        let replyService = ReplyService()
+//        let viewModel = PromptDetailViewModel(commonRealm: commonRealm,
+//                                              privateRealm: privateRealm,
+//                                              replyService: replyService,
+//                                              prompt: prompt,
+//                                              router: router)
+//        let vc = PromptDetailViewController()
+//        vc.viewModel = viewModel
+//        navigationController.pushViewController(vc, animated: true)
     }
 
 }

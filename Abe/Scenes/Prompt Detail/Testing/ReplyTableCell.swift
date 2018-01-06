@@ -22,20 +22,18 @@ import SnapKit
 
 public final class ReplyCellViewModel {
     
-    struct Input {
-        let reply: PublishSubject<PromptReply>
-    }
+    //MARK: - Inputs
+    let reply: AnyObserver<PromptReply>
     
-    struct Output {
-        let body: Driver<String>
-    }
-    
-    func transform(input: Input) -> Output {
-        let body = input.reply
+    //MARK: - Output
+    let body: Driver<String>
+
+    init() {
+        let _reply = PublishSubject<PromptReply>()
+        self.reply = _reply.asObserver()
+        self.body = _reply.asObservable()
             .map { $0.body }
             .asDriver(onErrorJustReturn: "")
-        
-        return Output(body: body)
     }
     
 }
@@ -60,27 +58,23 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
-        setupContainerView()
-        setupTitleLabel()
     }
     
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
-    }
-    
-    func configureWith(value: PromptReply) {
-        let inputs = ReplyCellViewModel
-            .Input(reply: PublishSubject<PromptReply>())
-        inputs.reply.onNext(value)
+        setupContainerView()
+        setupTitleLabel()
         
-        let outputs = viewModel.transform(input: inputs)
-        
-        outputs.body
+        viewModel.body
             .drive(replyBodyLabel.rx.text)
             .disposed(by: disposeBag)
     }
     
-    func setupContainerView() {
+    func configureWith(value: PromptReply) {
+        viewModel.reply.onNext(value)
+    }
+    
+    private func setupContainerView() {
         containerView = UIView()
         containerView.backgroundColor = UIColor.white
         

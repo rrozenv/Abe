@@ -1,67 +1,51 @@
-//
-//  RepliesViewModel.swift
-//  Abe
-//
-//  Created by Robert Rozenvasser on 1/5/18.
-//  Copyright © 2018 Cluk Labs. All rights reserved.
-//
 
 import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
 
-//protocol RepliesViewModelInputs {
-//    /// Call to configure cell with activity value.
-//    var viewWillAppear: PublishSubject<Void> { get }
-//}
-//
-//protocol RepliesViewModelOutputs {
-//    /// Emits the backer image url to be displayed.
-//    var replies: Driver<[PromptReply]> { get }
-//}
-//
-//protocol RepliesViewModelType {
-//    var inputs: RepliesViewModelInputs { get }
-//    var outputs: RepliesViewModelOutputs { get }
-//}
+protocol RepliesViewModelInputs {
+    /// Call to configure cell with activity value.
+    var viewWillAppear: AnyObserver<Void> { get }
+}
 
-struct RepliesViewModel {
+protocol RepliesViewModelOutputs {
+    /// Emits the backer image url to be displayed.
+    var replies: Driver<[PromptReply]> { get }
+}
+
+struct RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
     
-    // MARK: - Properties
     let disposeBag = DisposeBag()
    
-    // MARK: -
-    struct Input {
-        let viewWillAppear: Observable<Void>
-    }
+    //MARK: - Inputs
+    let viewWillAppear: AnyObserver<Void>
+
+    //MARK: - Outputs
+    let replies: Driver<[PromptReply]>
     
-    struct Output {
-        let replies: Driver<[PromptReply]>
-    }
-    
-    private let prompt: Prompt
-    private let replyService: ReplyService
     private var user: Variable<User>
     
-    init(replyService: ReplyService,
+    init(replyService: ReplyService = ReplyService(),
          prompt: Prompt) {
+        
+        //Make sure current user exists
         guard let user = Application.shared.currentUser.value else { fatalError() }
         self.user = Variable<User>(user)
-        self.prompt = prompt
-        self.replyService = replyService
-    }
-    
-    func transform(input: Input) -> Output {
-       
+        
+        //Setup viewWillAppear() notification
+        let _viewWillAppear = PublishSubject<Void>()
+        self.viewWillAppear = _viewWillAppear.asObserver()
+        
+        //Fetch replies on viewWillAppear()
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
-        let replies = input.viewWillAppear
-            .flatMapLatest { _ in
-                return self.replyService
-                    .fetchRepliesWith(predicate: predicate)
+        self.replies = _viewWillAppear.asObservable().flatMapLatest { _ in
+                return replyService.fetchRepliesWith(predicate: predicate)
             }
             .asDriver(onErrorJustReturn: [])
-        
-        return Output(replies: replies)
     }
+    
 }
+
+//        let _prompt = BehaviorSubject<Prompt>(value: prompt)
+//        self.prompt = _prompt.asObserver()

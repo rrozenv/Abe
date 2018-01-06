@@ -2,8 +2,6 @@
 import Foundation
 import UIKit
 
-import UIKit
-
 internal final class RepliesDataSource: ValueCellDataSource {
     
     internal enum Section: Int {
@@ -16,11 +14,11 @@ internal final class RepliesDataSource: ValueCellDataSource {
         
         self.clearValues(section: section)
         
-        replies.forEach { activity in
-            self.set(values: [activity],
+        //replies.forEach { activity in
+            self.set(values: replies,
                      cellClass: ReplyTableCell.self,
                      inSection: section)
-        }
+        //}
     }
     
     internal func replyAtIndexPath(_ indexPath: IndexPath) -> PromptReply? {
