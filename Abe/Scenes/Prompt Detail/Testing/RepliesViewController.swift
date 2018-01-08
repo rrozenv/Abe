@@ -53,6 +53,10 @@ class RepliesViewController: UIViewController {
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: .all)
         
+        createReplyButton.rx.tap.asObservable()
+            .bind(to: viewModel.createReplyTapped)
+            .disposed(by: disposeBag)
+        
         visibilitySelected
             .drive(viewModel.visibilitySelected)
             .disposed(by: disposeBag)
@@ -78,6 +82,11 @@ class RepliesViewController: UIViewController {
             self?.tableView.reloadData()
         })
         .disposed(by: disposeBag)
+        
+        viewModel.routeToCreateReply
+            .subscribe()
+            .disposed(by: disposeBag)
+        
     }
     
     deinit {
@@ -124,7 +133,19 @@ class RepliesViewController: UIViewController {
 
 }
 
-extension RepliesViewController: UITableViewDelegate {
+extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
+    
+    func tableView(_ tableView: UITableView,
+                   willDisplay cell: UITableViewCell,
+                   forRowAt indexPath: IndexPath) {
+        if let cell = cell as? ReplyTableCell, cell.delegate == nil {
+            cell.delegate = self
+        }
+    }
+    
+    func didSelectScore() {
+        print("Score selected!")
+    }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }

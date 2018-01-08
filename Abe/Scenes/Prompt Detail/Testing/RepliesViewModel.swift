@@ -22,33 +22,49 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
     //MARK: - Inputs
     let viewWillAppear: AnyObserver<Void>
     let visibilitySelected: AnyObserver<Visibility>
+    let createReplyTapped: AnyObserver<Void>
 
     //MARK: - Outputs
     let didUserReply: Driver<Bool>
     let currentVisibility: Driver<Visibility>
     let allReplies: Driver<Results<PromptReply>>
     let contactReplies: Driver<[PromptReply]>
+    let routeToCreateReply: Observable<Void>
 
     init(replyService: ReplyService = ReplyService(),
+         router: PromptDetailRoutingLogic,
          prompt: Prompt) {
         
         //Make sure current user exists
         guard let user = Application.shared.currentUser.value else { fatalError() }
         let currentUser = Variable<User>(user)
         
-        //Setup viewWillAppear() notification
-        let _viewWillAppear = PublishSubject<Void>()
-        self.viewWillAppear = _viewWillAppear.asObserver()
-        
         let _visibilitySelected = BehaviorSubject<Visibility>(value: .all)
         self.visibilitySelected = _visibilitySelected.asObserver()
         self.currentVisibility = _visibilitySelected.asDriver(onErrorJustReturn: .all)
+        
+        let _createReplyTapped = PublishSubject<Void>()
+        self.createReplyTapped = _createReplyTapped.asObserver()
+        self.routeToCreateReply = _createReplyTapped.asObservable()
+            .do(onNext: { router.toCreateReply(for: prompt) })
+        
+        //Setup viewWillAppear() notification
+        let _viewWillAppear = PublishSubject<Void>()
+        self.viewWillAppear = _viewWillAppear.asObserver()
         
         let _didUserReply = _viewWillAppear.asObservable()
             .map { _ in currentUser.value.didReply(to: prompt) }
         self.didUserReply = _didUserReply.asDriver(onErrorJustReturn: false)
         
-        let _shouldFetch = _viewWillAppear.asObservable()
+        let _visibilityWhenViewAppears = _viewWillAppear.asObservable()
+            .flatMap { _visibilitySelected.asObservable() }
+        
+        let _visibilityToFetch = Observable
+            .merge(_visibilityWhenViewAppears, self.currentVisibility.asObservable())
+            .skip(1)
+            .debug()
+        
+        let _shouldFetch = _visibilityToFetch.asObservable()
             .withLatestFrom(_didUserReply)
             .filter { $0 }
             .share()

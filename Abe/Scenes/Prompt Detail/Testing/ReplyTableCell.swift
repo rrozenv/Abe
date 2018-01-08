@@ -28,7 +28,7 @@ struct ReplyScoreCellViewModel {
     let percentage: String
 }
 
-public final class ReplyCellViewModel {
+struct ReplyCellViewModel {
     
     //MARK: - Inputs
     let reply: AnyObserver<PromptReply>
@@ -45,6 +45,7 @@ public final class ReplyCellViewModel {
         self.reply = _reply.asObserver()
         
         self.body = _reply.asObservable()
+            .debug()
             .map { $0.body }
             .asDriver(onErrorJustReturn: "")
         
@@ -82,14 +83,19 @@ public final class ReplyCellViewModel {
     
 }
 
+protocol ReplyTableCellDelegate: class {
+    func didSelectScore()
+}
+
 final class ReplyTableCell: UITableViewCell, ValueCell {
 
     typealias Value = PromptReply
     static var defaultReusableId: String = "ReplyTableCell"
     private(set) var disposeBag = DisposeBag()
-    fileprivate let viewModel = ReplyCellViewModel()
+    fileprivate var viewModel = ReplyCellViewModel()
     var collectionView: UICollectionView!
-    private let replyScoresDataSource = ReplyScoresDataSource()
+    private var replyScoresDataSource = ReplyScoresDataSource()
+    weak var delegate: ReplyTableCellDelegate?
     
     // MARK: - Properties
     fileprivate var containerView: UIView!
@@ -105,35 +111,39 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         super.init(coder: aDecoder)
         commonInit()
     }
-    
+
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
         setupContainerView()
         setupCollectionView()
         setupTitleLabel()
-        
+    }
+    
+    func configureWith(value: PromptReply) {
+        bindViewModel()
+        viewModel.reply.onNext(value)
+    }
+    
+    private func bindViewModel() {
         viewModel.body
             .drive(replyBodyLabel.rx.text)
             .disposed(by: disposeBag)
         
-//        viewModel.scoreCellViewModels
-//            .drive(collectionView.rx.items) { collView, index, vm in
-//                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-//                cell.configure(with: vm)
-//                return cell
-//            }
-//            .disposed(by: disposeBag)
-        
         viewModel.scoreCellViewModels
-            .drive(onNext: { [weak self] (vm) in
-                self?.replyScoresDataSource.load(scores: vm)
-                self?.collectionView.reloadData()
+            .drive(collectionView.rx.items) { collView, index, vm in
+                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+                print("configuring score cell")
+                cell.configure(with: vm)
+                return cell
+            }
+            .disposed(by: disposeBag)
+        
+        collectionView.rx
+            .modelSelected(ScoreCellViewModel.self)
+            .subscribe(onNext: { (vm) in
+                self.delegate?.didSelectScore()
             })
             .disposed(by: disposeBag)
-    }
-    
-    func configureWith(value: PromptReply) {
-        viewModel.reply.onNext(value)
     }
     
     private func setupContainerView() {
@@ -153,9 +163,9 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         containerView.addSubview(replyBodyLabel)
         replyBodyLabel.translatesAutoresizingMaskIntoConstraints = false
         replyBodyLabel.snp.makeConstraints { (make) in
-            make.bottom.equalTo(collectionView.snp.top).offset(-5)
-            make.top.equalTo(containerView.snp.bottom).offset(5)
-            make.left.equalTo(containerView.snp.left).offset(10)
+            //make.bottom.equalTo(collectionView.snp.top).offset(-5)
+            make.top.equalTo(containerView.snp.top)
+            //make.left.equalTo(containerView.snp.left).offset(10)
         }
     }
     
@@ -174,7 +184,10 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     }
     
     override func prepareForReuse() {
+        super.prepareForReuse()
         disposeBag = DisposeBag()
+        replyScoresDataSource = ReplyScoresDataSource()
+        //viewModel = ReplyCellViewModel()
     }
     
 }

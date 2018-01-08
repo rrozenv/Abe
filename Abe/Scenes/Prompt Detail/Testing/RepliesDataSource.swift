@@ -19,6 +19,7 @@ internal final class RepliesDataSource: ValueCellDataSource {
     }
     
     func realmLoad(replies: Results<PromptReply>) {
+        print("I have \(replies.count) replies")
         let section = Section.replies.rawValue
         self.clearValues(section: section)
         self.realmSet(values: replies,
@@ -60,7 +61,7 @@ internal final class ReplyScoresDataSource: ValueCellDataSource {
     
     func load(scores: [ScoreCellViewModel]) {
         let section = Section.defaultSection.rawValue
-        self.clearValues(section: section)
+        //self.clearValues(section: section)
         self.set(values: scores,
                  cellClass: ScoreCollectionCell.self,
                  inSection: section)
@@ -70,7 +71,8 @@ internal final class ReplyScoresDataSource: ValueCellDataSource {
         return self[indexPath] as? ScoreCellViewModel
     }
     
-    override func configureCell(collectionCell cell: UICollectionViewCell, withValue value: Any) {
+    override func configureCell(collectionCell cell: UICollectionViewCell,
+                                withValue value: Any) {
         switch (cell, value) {
         case let (cell as ScoreCollectionCell, value as ScoreCellViewModel):
             cell.configureWith(value: value)
