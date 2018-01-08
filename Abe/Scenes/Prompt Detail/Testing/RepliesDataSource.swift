@@ -17,6 +17,13 @@ internal final class RepliesDataSource: ValueCellDataSource {
                  inSection: section)
     }
     
+    func updateReply(_ reply: PromptReply, at indexPath: IndexPath) {
+        self.set(value: reply,
+                 cellClass: ReplyTableCell.self,
+                 inSection: indexPath.section,
+                 row: indexPath.row)
+    }
+    
     internal func replyAtIndexPath(_ indexPath: IndexPath) -> PromptReply? {
         return self[indexPath] as? PromptReply
     }
@@ -35,3 +42,5 @@ internal final class RepliesDataSource: ValueCellDataSource {
     }
     
 }
+
+

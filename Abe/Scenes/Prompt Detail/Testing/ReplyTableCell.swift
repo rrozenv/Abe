@@ -20,6 +20,14 @@ import SnapKit
 //    var outputs: ReplyCellViewModelOutputs { get }
 //}
 
+struct ReplyScoreCellViewModel {
+    let value: Int
+    let reply: PromptReply
+    let placeholderImage: UIImage
+    let userScore: ReplyScore?
+    let percentage: String
+}
+
 public final class ReplyCellViewModel {
     
     //MARK: - Inputs
@@ -28,12 +36,14 @@ public final class ReplyCellViewModel {
     //MARK: - Output
     let body: Driver<String>
     let name: Driver<String>
+    let scoreCellViewModels:  Driver<[ScoreCellViewModel]>
 
     init() {
         guard let user = Application.shared.currentUser.value else { fatalError() }
         
         let _reply = PublishSubject<PromptReply>()
         self.reply = _reply.asObserver()
+        
         self.body = _reply.asObservable()
             .map { $0.body }
             .asDriver(onErrorJustReturn: "")
@@ -50,6 +60,24 @@ public final class ReplyCellViewModel {
                 }
             }
             .asDriver(onErrorJustReturn: "")
+        
+        self.scoreCellViewModels = _reply.asObservable()
+            .map { reply in
+               return [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")].enumerated().map {
+                    let scoreValue = $0.offset + 1
+                    let replyScoreIfExists = reply.fetchCastedScoreIfExists(for: user.id)
+                    let userDidReply = replyScoreIfExists.score != nil ? true : false
+                    let percentage = "\(reply.percentageOfVotesCastesFor(scoreValue: scoreValue))"
+                    return ScoreCellViewModel(value: scoreValue,
+                                              reply: reply,
+                                              userDidReply: userDidReply,
+                                              placeholderImage: $0.element,
+                                              userScore: replyScoreIfExists.score,
+                                              percentage: percentage)
+                }
+            }
+            .asDriver(onErrorJustReturn: [])
+        
     }
     
 }
@@ -60,6 +88,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     static var defaultReusableId: String = "ReplyTableCell"
     private(set) var disposeBag = DisposeBag()
     fileprivate let viewModel = ReplyCellViewModel()
+    var collectionView: UICollectionView!
     
     // MARK: - Properties
     fileprivate var containerView: UIView!
@@ -79,10 +108,19 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
         setupContainerView()
+        setupCollectionView()
         setupTitleLabel()
         
         viewModel.body
             .drive(replyBodyLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.scoreCellViewModels
+            .drive(collectionView.rx.items) { collView, index, vm in
+                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+                cell.configure(with: vm)
+                return cell
+            }
             .disposed(by: disposeBag)
     }
     
@@ -111,8 +149,24 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         }
     }
     
+    private func setupCollectionView() {
+        collectionView = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: PointsGridLayout())
+        collectionView.backgroundColor = UIColor.orange
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.register(ScoreCollectionCell.self, forCellWithReuseIdentifier: ScoreCollectionCell.reuseIdentifier)
+        
+        containerView.addSubview(collectionView)
+        collectionView.snp.makeConstraints { (make) in
+            make.left.bottom.right.equalTo(containerView)
+            make.height.equalTo(60)
+        }
+    }
+    
     override func prepareForReuse() {
         disposeBag = DisposeBag()
     }
     
 }
+
+

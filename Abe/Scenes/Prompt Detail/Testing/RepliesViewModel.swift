@@ -57,7 +57,8 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
             .filter { $0 == Visibility.all }
             .map { vis in
                 let bySelectedVis = NSPredicate(format: "visibility = %@", vis.rawValue)
-                return prompt.replies.filter(bySelectedVis)
+                return prompt.replies
+                    .filter(bySelectedVis)
                     .toArray()
                     .filter { $0.user?.id != currentUser.value.id }
             }
@@ -67,8 +68,10 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
             .withLatestFrom(_visibilitySelected.asObservable())
             .filter { $0 == Visibility.contacts }
             .map { vis in
-                let bySelectedVis = NSPredicate(format: "visibility = %@", vis.rawValue)
-                return prompt.replies.filter(bySelectedVis)
+                let bySelectedVis = NSPredicate(format: "visibility = %@",
+                                                vis.rawValue)
+                return prompt.replies
+                    .filter(bySelectedVis)
                     .toArray()
                     .filter { $0.isAuthorInCurrentUserContacts(currentUser: currentUser.value) }
             }

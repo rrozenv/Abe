@@ -46,6 +46,14 @@ class PromptReply: Object {
         return (score, self)
     }
     
+    func percentageOfVotesCastesFor(scoreValue: Int) -> Double {
+        guard self.scores.count > 0 else { return 0.0 }
+        let numberOfVotesForScore = self.scores
+            .filter(NSPredicate(format: "score == %i", scoreValue))
+        guard numberOfVotesForScore.count > 0 else { return 0.0 }
+        return (Double(numberOfVotesForScore.count) / Double(self.scores.count))
+    }
+    
 }
 
 class ReplyScore: Object {

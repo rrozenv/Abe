@@ -213,8 +213,7 @@ extension PromptDetailViewController: UITableViewDataSource {
                 .asDriverOnErrorJustComplete()
                 .drive(cell.collectionView.rx.items) { collView, index, score in
                     guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                    cell.configure(with: score,
-                                   userDidReply: replyViewModel.userDidReply)
+                    cell.configure(with: score)
                     return cell
                 }
                 .disposed(by: cell.disposeBag)
