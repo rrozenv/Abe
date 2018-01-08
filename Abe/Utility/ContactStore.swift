@@ -59,7 +59,7 @@ class ContactsStore {
             try store.enumerateContacts(with: fetchRequest, usingBlock: {
                 (cnContact, stop) -> Void in
                 let allNumbers = cnContact.phoneNumbers.map { $0.value.stringValue }
-                let contact = Contact(id: cnContact.identifier,
+                let contact = Contact(id: UUID().uuidString,
                                       first: cnContact.givenName,
                                       last: cnContact.familyName,
                                       numbers: allNumbers)

@@ -3,7 +3,9 @@ import Foundation
 import UIKit
 import SnapKit
 
-class ScoreCollectionCell: UICollectionViewCell {
+class ScoreCollectionCell: UICollectionViewCell, ValueCell {
+    static var defaultReusableId: String = "ScoreCollectionCell"
+    typealias Value = ScoreCellViewModel
     
     enum State {
         case userDidReply
@@ -35,6 +37,15 @@ class ScoreCollectionCell: UICollectionViewCell {
         self.scorePercentage.isHidden = viewModel.userDidReply ? false : true
         self.percentageBackgroundView.isHidden = viewModel.userDidReply ? false : true
     }
+    
+    func configureWith(value: ScoreCellViewModel) {
+        self.scoreImageView.image = value.placeholderImage
+        self.scorePercentage.text = value.percentage
+        self.scoreImageView.isHidden = value.userDidReply ? true : false
+        self.scorePercentage.isHidden = value.userDidReply ? false : true
+        self.percentageBackgroundView.isHidden = value.userDidReply ? false : true
+    }
+    
     
     fileprivate func setupContainerView() {
         containerView = UIView()

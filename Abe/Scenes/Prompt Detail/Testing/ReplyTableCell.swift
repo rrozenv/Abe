@@ -89,6 +89,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     private(set) var disposeBag = DisposeBag()
     fileprivate let viewModel = ReplyCellViewModel()
     var collectionView: UICollectionView!
+    private let replyScoresDataSource = ReplyScoresDataSource()
     
     // MARK: - Properties
     fileprivate var containerView: UIView!
@@ -115,12 +116,19 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
             .drive(replyBodyLabel.rx.text)
             .disposed(by: disposeBag)
         
+//        viewModel.scoreCellViewModels
+//            .drive(collectionView.rx.items) { collView, index, vm in
+//                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
+//                cell.configure(with: vm)
+//                return cell
+//            }
+//            .disposed(by: disposeBag)
+        
         viewModel.scoreCellViewModels
-            .drive(collectionView.rx.items) { collView, index, vm in
-                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                cell.configure(with: vm)
-                return cell
-            }
+            .drive(onNext: { [weak self] (vm) in
+                self?.replyScoresDataSource.load(scores: vm)
+                self?.collectionView.reloadData()
+            })
             .disposed(by: disposeBag)
     }
     
@@ -145,7 +153,9 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         containerView.addSubview(replyBodyLabel)
         replyBodyLabel.translatesAutoresizingMaskIntoConstraints = false
         replyBodyLabel.snp.makeConstraints { (make) in
-            make.center.equalTo(containerView.snp.center)
+            make.bottom.equalTo(collectionView.snp.top).offset(-5)
+            make.top.equalTo(containerView.snp.bottom).offset(5)
+            make.left.equalTo(containerView.snp.left).offset(10)
         }
     }
     
@@ -154,7 +164,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         collectionView.backgroundColor = UIColor.orange
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.register(ScoreCollectionCell.self, forCellWithReuseIdentifier: ScoreCollectionCell.reuseIdentifier)
+        collectionView.register(ScoreCollectionCell.self, forCellWithReuseIdentifier: ScoreCollectionCell.defaultReusableId)
         
         containerView.addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in

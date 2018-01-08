@@ -1,6 +1,7 @@
 
 import Foundation
 import UIKit
+import RealmSwift
 
 /// A type that represents a cell that can be reused and configured with a value.
 public protocol ValueCell: class {
@@ -170,6 +171,17 @@ open class ValueCellDataSource: NSObject, UICollectionViewDataSource, UITableVie
         Cell: ValueCell,
         Value: Any>
         (values: [Value], cellClass: Cell.Type, inSection section: Int)
+        where
+        Cell.Value == Value {
+            
+            self.padValuesForSection(section)
+            self.values[section] = values.map { ($0, Cell.defaultReusableId) }
+    }
+    
+    public final func realmSet <
+        Cell: ValueCell,
+        Value: Any>
+        (values: Results<Value>, cellClass: Cell.Type, inSection section: Int)
         where
         Cell.Value == Value {
             

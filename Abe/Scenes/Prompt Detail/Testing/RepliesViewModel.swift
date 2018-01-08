@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import RealmSwift
 
 protocol RepliesViewModelInputs {
     /// Call to configure cell with activity value.
@@ -11,7 +12,7 @@ protocol RepliesViewModelInputs {
 
 protocol RepliesViewModelOutputs {
     /// Emits the backer image url to be displayed.
-    var allReplies: Driver<[PromptReply]> { get }
+    var allReplies: Driver<Results<PromptReply>> { get }
 }
 
 final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
@@ -25,7 +26,7 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
     //MARK: - Outputs
     let didUserReply: Driver<Bool>
     let currentVisibility: Driver<Visibility>
-    let allReplies: Driver<[PromptReply]>
+    let allReplies: Driver<Results<PromptReply>>
     let contactReplies: Driver<[PromptReply]>
 
     init(replyService: ReplyService = ReplyService(),
@@ -54,15 +55,17 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
         
         self.allReplies = _shouldFetch
             .withLatestFrom(_visibilitySelected.asObservable())
-            .filter { $0 == Visibility.all }
-            .map { vis in
+            .filter { $0.rawValue == Visibility.all.rawValue }
+            .map { vis -> Results<PromptReply> in
                 let bySelectedVis = NSPredicate(format: "visibility = %@", vis.rawValue)
-                return prompt.replies
-                    .filter(bySelectedVis)
-                    .toArray()
-                    .filter { $0.user?.id != currentUser.value.id }
+                let removeUsersReply = NSPredicate(format: "user.id != %@", currentUser.value.id)
+                let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [bySelectedVis, removeUsersReply])
+                let replies = prompt.replies
+                    .filter(predicate)
+                    //.filter { $0.user?.id != currentUser.value.id }
+                return replies
             }
-            .asDriver(onErrorJustReturn: [])
+            .asDriverOnErrorJustComplete()
         
         self.contactReplies = _shouldFetch
             .withLatestFrom(_visibilitySelected.asObservable())
