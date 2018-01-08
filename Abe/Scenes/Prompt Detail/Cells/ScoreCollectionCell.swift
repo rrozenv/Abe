@@ -13,11 +13,15 @@ class ScoreCollectionCell: UICollectionViewCell {
     static let reuseIdentifier = "ScoreCollectionCell"
     var containerView: UIView!
     var scoreImageView: UIImageView!
+    var percentageBackgroundView: UIView!
+    var scorePercentage: UILabel!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupContainerView()
         setupScoreImageView()
+        setupPercentageBackgroundView()
+        setupScorePercentage()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -26,7 +30,10 @@ class ScoreCollectionCell: UICollectionViewCell {
     
     func configure(with viewModel: ScoreCellViewModel) {
         self.scoreImageView.image = viewModel.placeholderImage
+        self.scorePercentage.text = viewModel.percentage
         self.scoreImageView.isHidden = viewModel.userDidReply ? true : false
+        self.scorePercentage.isHidden = viewModel.userDidReply ? false : true
+        self.percentageBackgroundView.isHidden = viewModel.userDidReply ? false : true
     }
     
     fileprivate func setupContainerView() {
@@ -45,7 +52,30 @@ class ScoreCollectionCell: UICollectionViewCell {
         containerView.addSubview(scoreImageView)
         scoreImageView.snp.makeConstraints { (make) in
             make.edges.equalTo(containerView)
-            make.height.width.equalTo(25)
+            make.height.width.equalTo(50)
+        }
+    }
+    
+    fileprivate func setupPercentageBackgroundView() {
+        percentageBackgroundView = UIView()
+        percentageBackgroundView.backgroundColor = UIColor.blue
+        
+        containerView.addSubview(percentageBackgroundView)
+        percentageBackgroundView.snp.makeConstraints { (make) in
+            make.edges.equalTo(containerView)
+            make.height.equalTo(50)
+            make.width.equalTo(50)
+        }
+    }
+    
+    fileprivate func setupScorePercentage() {
+        scorePercentage = UILabel()
+        scorePercentage.textColor = UIColor.white
+        
+        percentageBackgroundView.addSubview(scorePercentage)
+        scorePercentage.snp.makeConstraints { (make) in
+            make.edges.equalTo(percentageBackgroundView.snp.edges)
+            make.center.equalTo(percentageBackgroundView.snp.center)
         }
     }
     

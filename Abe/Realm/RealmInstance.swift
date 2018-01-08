@@ -24,9 +24,22 @@ class RealmInstance {
         }
     }
     
-    func save(object: Object) -> Observable<Void> {
-        return Observable.deferred {
-            return self.realm.rx.save(object)
+    func save<T: Object>(object: T) -> Observable<T> {
+        return self.realm.rx.save(object)
+    }
+    
+    func saveT<T: Object>(object: T) -> Observable<T> {
+        return Observable.create { observer in
+            do {
+                try self.realm.write {
+                    self.realm.add(object)
+                }
+                observer.onNext(object)
+                observer.onCompleted()
+            } catch {
+                observer.onError(error)
+            }
+            return Disposables.create()
         }
     }
     
@@ -85,8 +98,16 @@ class RealmInstance {
             return Observable.of(objects)
         }
     }
-
     
+    func fetchObjects<T: Object>(_ model: T.Type, with predicate: NSPredicate) -> [T] {
+        let realm = self.realm
+        let objects = realm.objects(model)
+            .filter(predicate)
+            .toArray()
+        //.sorted(by: sortDescriptors.map(SortDescriptor.init))
+        return objects
+    }
+
     func delete<T: Object>(_ object: T) -> Observable<Void> {
         return Observable.deferred {
             return self.realm.rx.delete(object)
@@ -96,6 +117,22 @@ class RealmInstance {
     func update(block: @escaping () -> Void) -> Observable<Void> {
         return Observable.deferred {
             return self.realm.rx.update(block: block)
+        }
+    }
+    
+    func updateWrite(block: @escaping () -> Void) {
+        try! self.realm.write {
+            block()
+        }
+    }
+    
+    func fetchPromise<T: Object>(_ model: T.Type, with predicate: NSPredicate) -> Promise<[T]> {
+        return Promise { fullfill, _ in
+            let realm = self.realm
+            let objects = realm.objects(model)
+                .filter(predicate)
+                .toArray()
+            fullfill(objects)
         }
     }
     
@@ -127,13 +164,13 @@ extension Reactive where Base: Realm {
         }
     }
 
-    func save<R: Object>(_ object: R, update: Bool = true) -> Observable<Void> {
+    func save<R: Object>(_ object: R, update: Bool = true) -> Observable<R> {
         return Observable.create { observer in
             do {
                 try self.base.write {
                     self.base.add(object, update: update)
                 }
-                observer.onNext(())
+                observer.onNext(object)
                 observer.onCompleted()
             } catch {
                 observer.onError(error)

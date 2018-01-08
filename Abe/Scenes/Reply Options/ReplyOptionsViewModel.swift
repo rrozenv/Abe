@@ -10,6 +10,7 @@ enum Visibility: String {
     case all
     case facebook
     case contacts
+    case userReply
 }
 
 struct SavedReplyInput {
@@ -41,18 +42,24 @@ struct ReplyOptionsViewModel {
     private let prompt: Prompt
     private let contactsStore: ContactsStore
     private let savedReplyInput: SavedReplyInput
+    private let replyService: ReplyService
+    private let user: User
     
     init(commonRealm: RealmInstance,
          privateRealm: RealmInstance,
+         replyService: ReplyService,
          prompt: Prompt,
          savedReplyInput: SavedReplyInput,
          router: ReplyOptionsRoutingLogic) {
+        guard let user = Application.shared.currentUser.value else { fatalError() }
+        self.user = user
         self.prompt = prompt
         self.commonRealm = commonRealm
         self.privateRealm = privateRealm
         self.contactsStore = ContactsStore()
         self.savedReplyInput = savedReplyInput
         self.router = router
+        self.replyService = replyService
     }
     
     func transform(input: Input) -> Output {
@@ -65,11 +72,6 @@ struct ReplyOptionsViewModel {
         //MARK: - 1. let visibilityOptions: Driver<[Visibility]>
         let _options: [Visibility] = [.all, .facebook, .contacts]
         let visbilityOptions = Driver.of(_options)
-        
-        let _user = self.commonRealm
-            .fetch(User.self, primaryKey: SyncUser.current!.identity!)
-            .unwrap()
-            .asDriverOnErrorJustComplete()
         
         //MARK: - 2. let savedContacts: Driver<Void>
         let _selectedVisibility = input.visibilitySelected
@@ -106,10 +108,9 @@ struct ReplyOptionsViewModel {
         
         let _reply =
             Driver.combineLatest(_currentPrompt,
-                                 _user,
                                  _savedReplyInput,
-                                 _selectedVisibility) { (prompt, user, replyInput, visibility) -> PromptReply in
-                                    return PromptReply(user: user,
+                                 _selectedVisibility) { (prompt, replyInput, visibility) -> PromptReply in
+                                    return PromptReply(user: self.user,
                                                        promptId: prompt.id,
                                                        body: replyInput.body,
                                                        visibility: visibility.rawValue)
@@ -118,9 +119,15 @@ struct ReplyOptionsViewModel {
         let didCreateReply = input.createTrigger
             .asObservable()
             .withLatestFrom(_reply)
-            .flatMapLatest { (reply) -> Observable<Void> in
-                return self.commonRealm.save(object: reply)
+            .flatMapLatest { (reply) in
+                return self.replyService.saveReply(reply)
+                    .flatMapLatest { self.replyService.add(reply: $0, to: self.prompt) }
+                    .flatMapLatest { self.replyService.add(reply: $0.0, to: self.user) }
             }
+            .do(onNext: { _ in
+                NotificationCenter.default.post(.init(name: .userUpdated, object: nil))
+            })
+            .mapToVoid()
             .do(onNext: router.toPromptDetail)
         
         return Output(visibilityOptions: visbilityOptions,

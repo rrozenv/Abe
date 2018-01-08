@@ -16,8 +16,7 @@ struct ScoreViewModel {
 }
 
 final class PromptReplyTableCell: UITableViewCell {
-    private let viewModel = ReplyCellViewModel(commonRealm: RealmInstance(configuration: RealmConfig.common))
-    
+ 
     private(set) var disposeBag = DisposeBag()
     
     override func prepareForReuse() {
@@ -50,12 +49,7 @@ final class PromptReplyTableCell: UITableViewCell {
         commonInit()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-    }
-    
-    func commonInit() {
+    private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
         self.separatorInset = .zero
         self.preservesSuperviewLayoutMargins = false
@@ -67,77 +61,26 @@ final class PromptReplyTableCell: UITableViewCell {
         
         setupCollectionView()
         setupLabelsStackView()
-        userNameLabel.text = "T"
-        replyBodyLabel.text = "L"
-    }
-    
-    func bindViewModel(with reply: PromptReply) {
-        let input = ReplyCellViewModel.Input(reply: reply)
-        let output = viewModel.transform(input: input)
-        
-        output.info
-            .drive(onNext: { (info) in
-                self.userNameLabel.text = info.0
-                self.replyBodyLabel.text = info.1
-            })
-            .disposed(by: disposeBag)
-        
-        output.scoreCellViewModels
-            .drive(collectionView.rx.items) { collView, index, viewModel in
-                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                cell.scoreImageView.image = viewModel.placeholderImage
-                return cell
-            }
-            .disposed(by: disposeBag)
-        
-     
-//        output.userName
-//            .drive(userNameLabel.rx.text)
-//            .disposed(by: disposeBag)
-//
-//        output.body
-//            .drive(replyBodyLabel.rx.text)
-//            .disposed(by: disposeBag)
-        
     }
 
     func configure(with viewModel: CellViewModel) {
         self.selectionStyle = .none
-       
-        viewModel.reply.map { $0.user!.name }
-            .asDriverOnErrorJustComplete()
-            .drive(replyBodyLabel.rx.text)
-            .disposed(by: disposeBag)
-        
-        viewModel.reply.map { $0.body }
-            .asDriverOnErrorJustComplete()
-            .drive(replyBodyLabel.rx.text)
-            .disposed(by: disposeBag)
-
-//        let scoreViewModels = Observable.of(#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected"))
-//            .enumerated()
-//            .map { (i) in
-//                return ScoreViewModel(value: i.index + 1,
-//                                      image: i.element,
-//                                      userDidReply: viewModel.userDidReply)
-//            }
-//            .toArray()
-//            .asDriverOnErrorJustComplete()
-//
-        viewModel.scoreCellViewModels
-            .asDriverOnErrorJustComplete()
-            .drive(collectionView.rx.items) { collView, index, score in
-                guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                cell.configure(with: score)
-                return cell
-            }
-            .disposed(by: disposeBag)
-
-        collectionView.rx.modelSelected(Score.self).asDriver()
-            .drive(onNext: { score in
-                print(score.getScore)
-            })
-            .disposed(by: disposeBag)
+        userNameLabel.text = viewModel.userName
+        replyBodyLabel.text = viewModel.reply.body
+    }
+    
+    func setCollectionViewTag(forRow row: Int) {
+        collectionView.tag = row
+        collectionView.reloadData()
+    }
+    
+    func setCollectionViewDataSourceDelegate
+        <D: UICollectionViewDataSource & UICollectionViewDelegate>
+        (dataSourceDelegate: D, forRow row: Int) {
+        collectionView.delegate = dataSourceDelegate
+        collectionView.dataSource = dataSourceDelegate
+        collectionView.tag = row
+        collectionView.reloadData()
     }
     
 }
@@ -191,7 +134,7 @@ extension PromptReplyTableCell {
         containerView.addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in
             make.left.bottom.right.equalTo(containerView)
-            make.height.equalTo(40)
+            make.height.equalTo(60)
         }
     }
     
@@ -272,7 +215,7 @@ class PointsGridLayout: UICollectionViewFlowLayout {
     }
     
     func itemWidth() -> CGFloat {
-        return 25
+        return 50
     }
     
     override var itemSize: CGSize {

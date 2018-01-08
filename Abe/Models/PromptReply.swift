@@ -33,6 +33,27 @@ class PromptReply: Object {
                 "body": body]
     }
     
+    func isAuthorInCurrentUserContacts(currentUser: User) -> Bool {
+        return self.user!.id != currentUser.id
+            &&
+            self.user!.allNumbersFromContacts()
+                .contains(currentUser.phoneNumber)
+    }
+    
+    func fetchCastedScoreIfExists(for userId: String) -> (score: ReplyScore?, reply: PromptReply) {
+        let score = self.scores
+            .filter(NSPredicate(format: "userId = %@", userId)).first
+        return (score, self)
+    }
+    
+    func percentageOfVotesCastesFor(scoreValue: Int) -> Double {
+        guard self.scores.count > 0 else { return 0.0 }
+        let numberOfVotesForScore = self.scores
+            .filter(NSPredicate(format: "score == %i", scoreValue))
+        guard numberOfVotesForScore.count > 0 else { return 0.0 }
+        return (Double(numberOfVotesForScore.count) / Double(self.scores.count))
+    }
+    
 }
 
 class ReplyScore: Object {

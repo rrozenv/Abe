@@ -15,7 +15,7 @@ class User: Object {
     @objc dynamic var phoneNumber: String = ""
     let contacts = List<Contact>()
     let prompts = List<Prompt>()
-    //let replies = List<PromptReply>()
+    let replies = List<PromptReply>()
     
     // MARK: - Init
     convenience init(syncUser: SyncUser,
@@ -25,7 +25,16 @@ class User: Object {
         self.id = syncUser.identity ?? ""
         self.name = name
         self.email = email
-        self.phoneNumber = "2018354011"
+        self.phoneNumber = "555-478-7672"
+    }
+    
+    convenience init(syncUserId: String,
+                     name: String,
+                     phoneNumber: String) {
+        self.init()
+        self.id = syncUserId
+        self.name = name
+        self.phoneNumber = "555-478-7672"
     }
     
     // MARK: - Meta
@@ -37,6 +46,16 @@ class User: Object {
         return ["id": SyncUser.current!.identity!,
                 "name": name,
                 "email": email]
+    }
+    
+    func didReply(to prompt: Prompt) -> Bool {
+        let predicate = NSPredicate(format: "promptId = %@", prompt.id)
+        let userReplies = self.replies.filter(predicate)
+        return userReplies.count > 0
+    }
+    
+    func allNumbersFromContacts() -> [String] {
+        return self.contacts.flatMap { $0.numbers }
     }
     
 }
