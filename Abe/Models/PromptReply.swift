@@ -54,6 +54,7 @@ class PromptReply: Object {
         return (Double(numberOfVotesForScore.count) / Double(self.scores.count))
     }
     
+
 }
 
 class ReplyScore: Object {

@@ -17,6 +17,8 @@ protocol RepliesViewModelOutputs {
     var allReplies: Driver<Results<PromptReply>> { get }
     var contactReplies: Driver<[PromptReply]> { get }
     var routeToCreateReply: Observable<Void> { get }
+    var lockedReplies: Driver<[PromptReply]> { get }
+    var unlockedReplies: Driver<[PromptReply]> { get }
 }
 
 protocol RepliesViewModelType {
@@ -41,6 +43,8 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let allReplies: Driver<Results<PromptReply>>
     let contactReplies: Driver<[PromptReply]>
     let routeToCreateReply: Observable<Void>
+    let lockedReplies: Driver<[PromptReply]>
+    let unlockedReplies: Driver<[PromptReply]>
 
     init?(replyService: ReplyService = ReplyService(),
          router: PromptDetailRoutingLogic,
@@ -90,10 +94,46 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .filter { $0.rawValue == Visibility.all.rawValue }
             .map { vis -> Results<PromptReply> in
                 let replies = prompt.replies
-                    .filter(predicateMatching(visibility: vis, userId: currentUser.value.id))
+                    .filter(predicateMatching(visibility: .all,
+                                              userId: currentUser.value.id))
                 return replies
             }
             .asDriverOnErrorJustComplete()
+        
+        let contactOnlyReplies = _shouldFetch
+            .map { _ -> [PromptReply] in
+                return prompt.replies
+                    .filter(predicateMatching(visibility: .contacts,
+                                              userId: currentUser.value.id))
+                    .toArray()
+                    .filter {
+                        $0.isAuthorInCurrentUserContacts(currentUser: currentUser.value)
+                    }
+            }
+        
+        let allReplies = _shouldFetch
+            .map { _ -> [PromptReply] in
+                let replies = prompt.replies
+                    .filter(predicateMatching(visibility: .all,
+                                              userId: currentUser.value.id))
+                    .toArray()
+                return replies
+            }
+        
+        self.lockedReplies = contactOnlyReplies
+            .map { contactReplies -> [PromptReply] in
+                let allReplies = prompt.replies
+                    .filter(predicateMatching(visibility: .all,
+                                              userId: currentUser.value.id))
+                    .toArray()
+                return contactReplies + allReplies
+            }
+            .map { $0.filter { !didUserCastScoreFor(reply: $0, userId: currentUser.value.id) } }
+            .asDriver(onErrorJustReturn: [])
+        
+        self.unlockedReplies = contactOnlyReplies.concat(allReplies)
+            .map { $0.filter { didUserCastScoreFor(reply: $0, userId: currentUser.value.id) } }
+            .asDriver(onErrorJustReturn: [])
         
         self.contactReplies = _shouldFetch
             .withLatestFrom(_visibilitySelected.asObservable())
@@ -118,5 +158,9 @@ private func predicateMatching(visibility: Visibility,
     return NSCompoundPredicate(andPredicateWithSubpredicates: [bySelectedVis, removeUsersReply])
 }
 
-//        let _prompt = BehaviorSubject<Prompt>(value: prompt)
-//        self.prompt = _prompt.asObserver()
+private func didUserCastScoreFor(reply: PromptReply,
+                                 userId: String) -> Bool {
+    let userScoreIfExists = reply.fetchCastedScoreIfExists(for: userId).score
+    return (userScoreIfExists != nil) ? true : false
+}
+

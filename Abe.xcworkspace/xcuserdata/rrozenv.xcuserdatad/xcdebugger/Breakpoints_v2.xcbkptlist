@@ -74,7 +74,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/PromptDetailViewController.swift"
-                  timestampString = "537158022.610314"
+                  timestampString = "537229413.477972"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "112"
@@ -89,7 +89,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/PromptDetailViewController.swift"
-                  timestampString = "537158022.612671"
+                  timestampString = "537229413.480662"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "113"
@@ -282,7 +282,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/Testing/ValueCellDataSource.swift"
-                  timestampString = "537158022.668236"
+                  timestampString = "537229413.522562"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "178"
@@ -297,7 +297,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/Testing/ValueCellDataSource.swift"
-                  timestampString = "537158022.669942"
+                  timestampString = "537229413.525194"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "178"
@@ -352,6 +352,22 @@
             startingLineNumber = "136"
             endingLineNumber = "136"
             landmarkName = "fetchUser(key:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesViewController.swift"
+            timestampString = "537229413.2550499"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "bindViewModel()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -68,12 +68,18 @@ class RepliesViewController: UIViewController {
             .disposed(by: disposeBag)
         
         viewModel.outputs.allReplies.drive(onNext: { [weak self] replies in
-            self?.dataSource.realmLoad(replies: replies)
-            self?.tableView.reloadData()
+//            self?.dataSource.realmLoad(replies: replies)
+//            self?.tableView.reloadData()
         })
         .disposed(by: disposeBag)
         
         viewModel.outputs.contactReplies.drive(onNext: { [weak self] replies in
+//            self?.dataSource.load(replies: replies)
+//            self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
+        
+        viewModel.outputs.lockedReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.load(replies: replies)
             self?.tableView.reloadData()
         })
