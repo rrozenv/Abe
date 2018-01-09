@@ -36,7 +36,7 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
          prompt: Prompt) {
         
         //Make sure current user exists
-        guard let user = Application.shared.currentUser.value else { fatalError() }
+        guard let user = AppController.shared.currentUser.value else { fatalError() }
         let currentUser = Variable<User>(user)
         
         let _visibilitySelected = BehaviorSubject<Visibility>(value: .all)

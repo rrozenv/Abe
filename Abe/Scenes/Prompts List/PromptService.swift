@@ -87,6 +87,10 @@ struct PromptService: PromptServiceType {
     
 }
 
+struct UserDataStore {
+    
+}
+
 struct UserService {
     
     fileprivate func withRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
@@ -121,6 +125,15 @@ struct UserService {
             return .just(user)
         }
         return result ?? .empty()
+    }
+    
+    func fetchUser(key: String) -> User? {
+        print(key)
+        let realm = try! Realm(configuration: RealmConfig.common.configuration)
+        let user = realm.objects(User.self)
+            .filter(NSPredicate(format: "id = %@", key))
+            .first
+        return user
     }
     
 }

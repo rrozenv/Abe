@@ -63,8 +63,8 @@ final class Application {
     private func displayEnableContactsViewController(in window: UIWindow) {
         let navVc = UINavigationController()
         let router = EnableContactsRouter(navigationController: navVc)
-        router.toRoot()
         window.rootViewController = navVc
+        router.toRoot()
     }
     
 }

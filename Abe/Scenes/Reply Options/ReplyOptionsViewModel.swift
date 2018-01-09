@@ -51,7 +51,7 @@ struct ReplyOptionsViewModel {
          prompt: Prompt,
          savedReplyInput: SavedReplyInput,
          router: ReplyOptionsRoutingLogic) {
-        guard let user = Application.shared.currentUser.value else { fatalError() }
+        guard let user = AppController.shared.currentUser.value else { fatalError() }
         self.user = user
         self.prompt = prompt
         self.commonRealm = commonRealm

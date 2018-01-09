@@ -12,6 +12,7 @@
 		980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */; };
 		980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5AF1FE5B47D0087C6C3 /* User.swift */; };
 		980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */; };
+		980F50372004571F006C2B83 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980F50362004571E006C2B83 /* AppController.swift */; };
 		9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9823322A1FF7E09800C3CB49 /* PromptService.swift */; };
 		982530FC1FF4151D000E6E20 /* PromptMasterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */; };
 		982530FE1FF41531000E6E20 /* PromptMasterDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */; };
@@ -104,6 +105,7 @@
 		980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		980DE5AF1FE5B47D0087C6C3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmConstants.swift; sourceTree = "<group>"; };
+		980F50362004571E006C2B83 /* AppController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
 		9823322A1FF7E09800C3CB49 /* PromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptService.swift; sourceTree = "<group>"; };
 		982530FB1FF4151D000E6E20 /* PromptMasterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewController.swift; sourceTree = "<group>"; };
 		982530FD1FF41531000E6E20 /* PromptMasterDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptMasterDetailViewModel.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 			children = (
 				98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */,
 				98FEE7C01FE4BC7400CD80A8 /* Application.swift */,
+				980F50362004571E006C2B83 /* AppController.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -762,6 +765,7 @@
 				98F672031FFF0EA8001DE88E /* PixabayAPI.swift in Sources */,
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
+				980F50372004571F006C2B83 /* AppController.swift in Sources */,
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,

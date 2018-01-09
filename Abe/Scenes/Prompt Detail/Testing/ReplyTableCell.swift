@@ -39,7 +39,7 @@ struct ReplyCellViewModel {
     let scoreCellViewModels:  Driver<[ScoreCellViewModel]>
 
     init() {
-        guard let user = Application.shared.currentUser.value else { fatalError() }
+        guard let user = AppController.shared.currentUser.value else { fatalError() }
         
         let _reply = PublishSubject<PromptReply>()
         self.reply = _reply.asObserver()
@@ -52,10 +52,11 @@ struct ReplyCellViewModel {
         self.name = _reply.asObservable()
             .map { $0.fetchCastedScoreIfExists(for: user.id) }
             .map {
-                switch $0.reply.visibility {
-                case "all":
+                guard let visibility = Visibility(rawValue: $0.reply.visibility) else { return "???" }
+                switch visibility {
+                case .all:
                     return ($0.score != nil) ? $0.reply.user!.name : "Someone said..."
-                case "contacts":
+                case .contacts:
                     return ($0.score != nil) ? $0.reply.user!.name : "Someone from contacts said..."
                 default: return "???"
                 }
@@ -91,9 +92,11 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
 
     typealias Value = PromptReply
     static var defaultReusableId: String = "ReplyTableCell"
+    
     private(set) var disposeBag = DisposeBag()
     fileprivate var viewModel = ReplyCellViewModel()
     var collectionView: UICollectionView!
+    
     private var replyScoresDataSource = ReplyScoresDataSource()
     weak var delegate: ReplyTableCellDelegate?
     
@@ -126,13 +129,13 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     
     private func bindViewModel() {
         viewModel.body
+            .debug()
             .drive(replyBodyLabel.rx.text)
             .disposed(by: disposeBag)
         
         viewModel.scoreCellViewModels
             .drive(collectionView.rx.items) { collView, index, vm in
                 guard let cell = collView.dequeueReusableCell(withReuseIdentifier: ScoreCollectionCell.reuseIdentifier, for: IndexPath(row: index, section: 0)) as? ScoreCollectionCell else { fatalError() }
-                print("configuring score cell")
                 cell.configure(with: vm)
                 return cell
             }

@@ -95,9 +95,15 @@ struct PhoneEntryViewModel {
                 return self.contactService.add(contacts: contacts, to: user)
             })
             .flatMap { $0 }
-            .do(onNext: { Application.shared.currentUser.value = $0 })
             .mapToVoid()
-            .do(onNext: router.toHome)
+            .do(onNext: {
+                NotificationCenter.default
+                    .post(name: Notification.Name.closeLoginVC,
+                          object: nil)
+            })
+//            .do(onNext: { Application.shared.currentUser.value = $0 })
+//            .mapToVoid()
+//            .do(onNext: router.toHome)
             .asDriverOnErrorJustComplete()
         
         return Output(entryIsValid: entryIsValid,
