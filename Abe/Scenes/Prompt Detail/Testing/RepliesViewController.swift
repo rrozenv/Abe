@@ -1,10 +1,3 @@
-//
-//  RepliesViewController.swift
-//  Abe
-//
-//  Created by Robert Rozenvasser on 1/5/18.
-//  Copyright © 2018 Cluk Labs. All rights reserved.
-//
 
 import Foundation
 import UIKit
@@ -14,7 +7,7 @@ import RxCocoa
 class RepliesViewController: UIViewController {
     
     let disposeBag = DisposeBag()
-    var viewModel: RepliesViewModel!
+    var viewModel: RepliesViewModelType!
     
     private let dataSource = RepliesDataSource()
     private var tableView: UITableView!
@@ -31,10 +24,12 @@ class RepliesViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.viewWillAppear.onNext(())
+        viewModel.inputs.viewWillAppear.onNext(())
     }
     
     func bindViewModel() {
+        
+        //MARK: - Inputs
         let allTapped = tabBarView.leftButton.rx.tap
             .map { _ in Visibility.all }
             .asDriverOnErrorJustComplete()
@@ -54,36 +49,37 @@ class RepliesViewController: UIViewController {
             .asDriver(onErrorJustReturn: .all)
         
         createReplyButton.rx.tap.asObservable()
-            .bind(to: viewModel.createReplyTapped)
+            .bind(to: viewModel.inputs.createReplyTapped)
             .disposed(by: disposeBag)
         
         visibilitySelected
-            .drive(viewModel.visibilitySelected)
+            .drive(viewModel.inputs.visibilitySelected)
             .disposed(by: disposeBag)
         
-        viewModel.didUserReply
+        //MARK: - Outputs
+        viewModel.outputs.didUserReply
             .drive(createReplyButton.rx.isHidden)
             .disposed(by: disposeBag)
         
-        viewModel.currentVisibility
+        viewModel.outputs.currentVisibility
             .drive(onNext: { [weak self] (vis) in
                 self?.tabBarView.selectedVisibility = vis
             })
             .disposed(by: disposeBag)
         
-        viewModel.allReplies.drive(onNext: { [weak self] replies in
+        viewModel.outputs.allReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.realmLoad(replies: replies)
             self?.tableView.reloadData()
         })
         .disposed(by: disposeBag)
         
-        viewModel.contactReplies.drive(onNext: { [weak self] replies in
+        viewModel.outputs.contactReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.load(replies: replies)
             self?.tableView.reloadData()
         })
         .disposed(by: disposeBag)
         
-        viewModel.routeToCreateReply
+        viewModel.outputs.routeToCreateReply
             .subscribe()
             .disposed(by: disposeBag)
         

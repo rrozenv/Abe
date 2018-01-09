@@ -6,37 +6,53 @@ import RxCocoa
 import RealmSwift
 
 protocol RepliesViewModelInputs {
-    /// Call to configure cell with activity value.
     var viewWillAppear: AnyObserver<Void> { get }
+    var visibilitySelected: AnyObserver<Visibility> { get }
+    var createReplyTapped: AnyObserver<Void> { get }
 }
 
 protocol RepliesViewModelOutputs {
-    /// Emits the backer image url to be displayed.
+    var didUserReply: Driver<Bool> { get }
+    var currentVisibility: Driver<Visibility> { get }
     var allReplies: Driver<Results<PromptReply>> { get }
+    var contactReplies: Driver<[PromptReply]> { get }
+    var routeToCreateReply: Observable<Void> { get }
 }
 
-final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
+protocol RepliesViewModelType {
+    var inputs: RepliesViewModelInputs { get }
+    var outputs: RepliesViewModelOutputs { get }
+}
+
+final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, RepliesViewModelOutputs {
     
     let disposeBag = DisposeBag()
    
     //MARK: - Inputs
+    var inputs: RepliesViewModelInputs { return self }
     let viewWillAppear: AnyObserver<Void>
     let visibilitySelected: AnyObserver<Visibility>
     let createReplyTapped: AnyObserver<Void>
 
     //MARK: - Outputs
+    var outputs: RepliesViewModelOutputs { return self }
     let didUserReply: Driver<Bool>
     let currentVisibility: Driver<Visibility>
     let allReplies: Driver<Results<PromptReply>>
     let contactReplies: Driver<[PromptReply]>
     let routeToCreateReply: Observable<Void>
 
-    init(replyService: ReplyService = ReplyService(),
+    init?(replyService: ReplyService = ReplyService(),
          router: PromptDetailRoutingLogic,
          prompt: Prompt) {
         
         //Make sure current user exists
-        guard let user = AppController.shared.currentUser.value else { fatalError() }
+        guard let user = AppController.shared.currentUser.value else {
+            NotificationCenter
+                .default.post(name: Notification.Name.logout, object: nil)
+            return nil
+        }
+        
         let currentUser = Variable<User>(user)
         
         let _visibilitySelected = BehaviorSubject<Visibility>(value: .all)
@@ -73,12 +89,8 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
             .withLatestFrom(_visibilitySelected.asObservable())
             .filter { $0.rawValue == Visibility.all.rawValue }
             .map { vis -> Results<PromptReply> in
-                let bySelectedVis = NSPredicate(format: "visibility = %@", vis.rawValue)
-                let removeUsersReply = NSPredicate(format: "user.id != %@", currentUser.value.id)
-                let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [bySelectedVis, removeUsersReply])
                 let replies = prompt.replies
-                    .filter(predicate)
-                    //.filter { $0.user?.id != currentUser.value.id }
+                    .filter(predicateMatching(visibility: vis, userId: currentUser.value.id))
                 return replies
             }
             .asDriverOnErrorJustComplete()
@@ -97,6 +109,13 @@ final class RepliesViewModel: RepliesViewModelInputs, RepliesViewModelOutputs {
             .asDriver(onErrorJustReturn: [])
     }
     
+}
+
+private func predicateMatching(visibility: Visibility,
+                               userId: String) -> NSCompoundPredicate {
+    let bySelectedVis = NSPredicate(format: "visibility = %@", visibility.rawValue)
+    let removeUsersReply = NSPredicate(format: "user.id != %@", userId)
+    return NSCompoundPredicate(andPredicateWithSubpredicates: [bySelectedVis, removeUsersReply])
 }
 
 //        let _prompt = BehaviorSubject<Prompt>(value: prompt)
