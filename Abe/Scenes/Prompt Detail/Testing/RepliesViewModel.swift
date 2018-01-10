@@ -20,6 +20,7 @@ protocol RepliesViewModelOutputs {
     var unlockedReplies: Driver<[PromptReply]> { get }
     var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
     var currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])> { get }
+    var stillUnreadFromFriendsCount: Driver<String> { get }
 }
 
 protocol RepliesViewModelType {
@@ -53,6 +54,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let unlockedReplies: Driver<[PromptReply]>
     let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
     let currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])>
+    let stillUnreadFromFriendsCount: Driver<String>
 
     init?(replyService: ReplyService = ReplyService(),
          router: PromptDetailRoutingLogic,
@@ -99,18 +101,28 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .filter { $0 }
         
         //MARK: - Locked Replies
-        self.lockedReplies = _shouldFetchReplies
+        let _lockedRepliesNotMerged = _shouldFetchReplies
             .withLatestFrom(_currentFilterOption)
             .filter { $0 == FilterOption.locked }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,
                                currentUser: currentUser.value) }
+        
+        self.lockedReplies = _lockedRepliesNotMerged
             .map { mergeAndRandomize(friends: $0.friends,
                                      others: $0.others,
                                      percentage: 0.70) }
             .asDriver(onErrorJustReturn: [])
         
+        let shouldDisplayUnreadFromFriendsView = _lockedRepliesNotMerged
+            .map { $0.friends.isEmpty ? false : true }
+            .asDriver(onErrorJustReturn: false)
+        
+        self.stillUnreadFromFriendsCount = _lockedRepliesNotMerged
+            .map { "\($0.friends.count) replies from friends still locked!" }
+            .asDriver(onErrorJustReturn: "")
+
         //MARK: - Unlocked Replies
         self.unlockedReplies = _shouldFetchReplies
             .withLatestFrom(_currentFilterOption)

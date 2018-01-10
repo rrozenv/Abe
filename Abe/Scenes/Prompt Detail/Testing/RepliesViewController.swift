@@ -55,7 +55,7 @@ class RepliesViewController: UIViewController {
         filterOptionTapped
             .drive(viewModel.inputs.filterOptionSelected)
             .disposed(by: disposeBag)
-        
+    
         //MARK: - Outputs
         viewModel.outputs.didUserReply
             .drive()
@@ -104,6 +104,12 @@ class RepliesViewController: UIViewController {
             .subscribe()
             .disposed(by: disposeBag)
         
+        viewModel.outputs.stillUnreadFromFriendsCount
+            .drive(onNext: {
+                print($0)
+            })
+            .disposed(by: disposeBag)
+        
     }
     
     deinit {
@@ -131,7 +137,7 @@ class RepliesViewController: UIViewController {
     }
     
     fileprivate func setupTabBarView() {
-        tabBarView = TabBarView(leftTitle: "Trending", centerTitle: "Friends", rightTitle: "My Reply")
+        tabBarView = TabBarView(leftTitle: "Locked", centerTitle: "Unlocked", rightTitle: "My Reply")
         tabBarView.selectedFilter = .locked
     }
     
