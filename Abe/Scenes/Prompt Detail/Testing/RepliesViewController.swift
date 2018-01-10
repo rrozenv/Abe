@@ -30,30 +30,30 @@ class RepliesViewController: UIViewController {
     func bindViewModel() {
         
         //MARK: - Inputs
-        let allTapped = tabBarView.leftButton.rx.tap
-            .map { _ in Visibility.all }
+        let lockedTapped = tabBarView.leftButton.rx.tap
+            .map { _ in FilterOption.locked }
             .asDriverOnErrorJustComplete()
         
-        let contactsTapped = tabBarView.centerButton.rx.tap
-            .map { _ in Visibility.contacts }
+        let unlockedTapped = tabBarView.centerButton.rx.tap
+            .map { _ in FilterOption.unlocked }
             .asDriverOnErrorJustComplete()
         
         let myReplyTapped = tabBarView.rightButton.rx.tap
-            .map { _ in Visibility.userReply }
+            .map { _ in FilterOption.myReply }
             .asDriverOnErrorJustComplete()
         
-        let visibilitySelected = Observable
-            .of(allTapped, contactsTapped, myReplyTapped)
+        let filterOptionTapped = Observable
+            .of(lockedTapped, unlockedTapped, myReplyTapped)
             .merge()
             .distinctUntilChanged()
-            .asDriver(onErrorJustReturn: .all)
+            .asDriver(onErrorJustReturn: .locked)
         
         createReplyButton.rx.tap.asObservable()
             .bind(to: viewModel.inputs.createReplyTapped)
             .disposed(by: disposeBag)
         
-        visibilitySelected
-            .drive(viewModel.inputs.visibilitySelected)
+        filterOptionTapped
+            .drive(viewModel.inputs.filterOptionSelected)
             .disposed(by: disposeBag)
         
         //MARK: - Outputs
@@ -62,29 +62,30 @@ class RepliesViewController: UIViewController {
             //.drive(createReplyButton.rx.isHidden)
             .disposed(by: disposeBag)
         
-        viewModel.outputs.currentVisibility
-            .drive(onNext: { [weak self] (vis) in
-                self?.tabBarView.selectedVisibility = vis
+        viewModel.outputs.didSelectFilterOption
+            .drive(onNext: { [weak self] (filterOption) in
+                self?.tabBarView.selectedFilter = filterOption
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.allReplies.drive(onNext: { [weak self] replies in
-//            self?.dataSource.realmLoad(replies: replies)
-//            self?.tableView.reloadData()
-        })
-        .disposed(by: disposeBag)
-        
-        viewModel.outputs.contactReplies.drive(onNext: { [weak self] replies in
-//            self?.dataSource.load(replies: replies)
-//            self?.tableView.reloadData()
-        })
-        .disposed(by: disposeBag)
-        
-        viewModel.outputs.allLockedReplies.drive(onNext: { [weak self] replies in
+        viewModel.outputs.lockedReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.load(replies: replies)
             self?.tableView.reloadData()
         })
         .disposed(by: disposeBag)
+        
+        viewModel.outputs.unlockedReplies.drive(onNext: { [weak self] replies in
+            self?.dataSource.load(replies: replies)
+            self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
+        
+        viewModel.outputs.updateReplyWithSavedScore
+            .drive(onNext: { [weak self] (inputs) in
+                self?.dataSource.updateReply(inputs.0, at: inputs.1)
+                self?.tableView.reloadRows(at: [inputs.1], with: .none)
+            })
+            .disposed(by: disposeBag)
         
         viewModel.outputs.routeToCreateReply
             .subscribe()
@@ -117,6 +118,7 @@ class RepliesViewController: UIViewController {
     
     fileprivate func setupTabBarView() {
         tabBarView = TabBarView(leftTitle: "Trending", centerTitle: "Friends", rightTitle: "My Reply")
+        tabBarView.selectedFilter = .locked
     }
     
     fileprivate func setupCreatePromptReplyButton() {
@@ -138,6 +140,8 @@ class RepliesViewController: UIViewController {
 
 extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
     
+    
+    
     func tableView(_ tableView: UITableView,
                    willDisplay cell: UITableViewCell,
                    forRowAt indexPath: IndexPath) {
@@ -146,8 +150,9 @@ extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
         }
     }
     
-    func didSelectScore() {
-        print("Score selected!")
+    func didSelectScore(scoreViewModel: ScoreCellViewModel, at index: IndexPath) {
+        print("score selectd at index \(index)")
+        viewModel.inputs.scoreSelected.onNext((scoreViewModel, index))
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

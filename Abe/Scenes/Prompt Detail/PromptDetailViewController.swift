@@ -150,7 +150,7 @@ class PromptDetailViewController: UIViewController {
         
         output.currentVisibility
             .drive(onNext: { [unowned self] vis in
-                self.tabBarView.selectedVisibility = vis
+                //self.tabBarView.selectedVisibility = vis
                 self.emptyView.selectedVisibility = vis
             })
             .disposed(by: disposeBag)

@@ -85,7 +85,7 @@ struct ReplyCellViewModel {
 }
 
 protocol ReplyTableCellDelegate: class {
-    func didSelectScore()
+    func didSelectScore(scoreViewModel: ScoreCellViewModel, at index: IndexPath)
 }
 
 final class ReplyTableCell: UITableViewCell, ValueCell {
@@ -143,8 +143,10 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         
         collectionView.rx
             .modelSelected(ScoreCellViewModel.self)
+            .throttle(0.5, scheduler: MainScheduler.instance)
             .subscribe(onNext: { (vm) in
-                self.delegate?.didSelectScore()
+                guard let tableIndex = self.indexPath, !vm.userDidReply else { return }
+                self.delegate?.didSelectScore(scoreViewModel: vm, at: tableIndex)
             })
             .disposed(by: disposeBag)
     }

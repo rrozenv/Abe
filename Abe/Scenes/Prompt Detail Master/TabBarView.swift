@@ -21,9 +21,9 @@ final class TabBarView: UIView {
     var leftButton: UIButton!
     var centerButton: UIButton!
     var rightButton: UIButton!
-    var selectedVisibility: Visibility = .all {
+    var selectedFilter: FilterOption = .locked {
         didSet {
-            self.adjustButtonColors(selected: getButtonTag(for: selectedVisibility))
+            self.adjustButtonColors(selected: getButtonTag(for: selectedFilter))
         }
     }
     
@@ -64,12 +64,11 @@ extension TabBarView {
         }
     }
     
-    fileprivate func getButtonTag(for visibility: Visibility) -> Int {
+    fileprivate func getButtonTag(for visibility: FilterOption) -> Int {
         switch visibility {
-        case .all: return 1
-        case .contacts: return 2
-        case .userReply: return 3
-        default: return 0
+        case .locked: return 1
+        case .unlocked: return 2
+        case .myReply: return 3
         }
     }
     

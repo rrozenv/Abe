@@ -7,24 +7,29 @@ import RealmSwift
 
 protocol RepliesViewModelInputs {
     var viewWillAppear: AnyObserver<Void> { get }
-    var visibilitySelected: AnyObserver<Visibility> { get }
+    var filterOptionSelected: AnyObserver<FilterOption> { get }
     var createReplyTapped: AnyObserver<Void> { get }
+    var scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)> { get }
 }
 
 protocol RepliesViewModelOutputs {
     var didUserReply: Driver<Bool> { get }
-    var currentVisibility: Driver<Visibility> { get }
-    var allReplies: Driver<Results<PromptReply>> { get }
-    var contactReplies: Driver<[PromptReply]> { get }
+    var didSelectFilterOption: Driver<FilterOption> { get }
     var routeToCreateReply: Observable<Void> { get }
     var lockedReplies: Driver<[PromptReply]> { get }
     var unlockedReplies: Driver<[PromptReply]> { get }
-    var allLockedReplies: Driver<[PromptReply]> { get }
+    var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
 }
 
 protocol RepliesViewModelType {
     var inputs: RepliesViewModelInputs { get }
     var outputs: RepliesViewModelOutputs { get }
+}
+
+enum FilterOption: Int {
+    case locked = 1
+    case unlocked = 2
+    case myReply = 3
 }
 
 final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, RepliesViewModelOutputs {
@@ -34,25 +39,23 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     //MARK: - Inputs
     var inputs: RepliesViewModelInputs { return self }
     let viewWillAppear: AnyObserver<Void>
-    let visibilitySelected: AnyObserver<Visibility>
+    let filterOptionSelected: AnyObserver<FilterOption>
     let createReplyTapped: AnyObserver<Void>
+    let scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)>
 
     //MARK: - Outputs
     var outputs: RepliesViewModelOutputs { return self }
     let didUserReply: Driver<Bool>
-    let currentVisibility: Driver<Visibility>
-    let allReplies: Driver<Results<PromptReply>>
-    let contactReplies: Driver<[PromptReply]>
+    let didSelectFilterOption: Driver<FilterOption>
     let routeToCreateReply: Observable<Void>
     let lockedReplies: Driver<[PromptReply]>
     let unlockedReplies: Driver<[PromptReply]>
-    let allLockedReplies: Driver<[PromptReply]>
+    let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
 
     init?(replyService: ReplyService = ReplyService(),
          router: PromptDetailRoutingLogic,
          prompt: Prompt) {
-        
-        //Make sure current user exists
+    
         guard let user = AppController.shared.currentUser.value else {
             NotificationCenter
                 .default.post(name: Notification.Name.logout, object: nil)
@@ -61,70 +64,42 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         
         let currentUser = Variable<User>(user)
         
-        let _visibilitySelected = BehaviorSubject<Visibility>(value: .all)
-        self.visibilitySelected = _visibilitySelected.asObserver()
-        self.currentVisibility = _visibilitySelected.asDriver(onErrorJustReturn: .all)
+        //MARK: - Filter Option
+        let _didSelectFilterOption = PublishSubject<FilterOption>()
+        self.filterOptionSelected = _didSelectFilterOption.asObserver()
+        self.didSelectFilterOption = _didSelectFilterOption.asDriver(onErrorJustReturn: .locked)
         
+        //MARK: - Create Reply Tapped
         let _createReplyTapped = PublishSubject<Void>()
         self.createReplyTapped = _createReplyTapped.asObserver()
         self.routeToCreateReply = _createReplyTapped.asObservable()
             .do(onNext: { router.toCreateReply(for: prompt) })
         
-        //Setup viewWillAppear() notification
+        //MARK: - View Will Appear
         let _viewWillAppear = PublishSubject<Void>()
         self.viewWillAppear = _viewWillAppear.asObserver()
+        let _viewWillAppearObservable = _viewWillAppear.asObservable()
         
-        let _didUserReply = _viewWillAppear.asObservable()
+        //MARK: - Did User Reply
+        let _didUserReply = _viewWillAppearObservable
             .map { _ in currentUser.value.didReply(to: prompt) }
         self.didUserReply = _didUserReply.asDriver(onErrorJustReturn: false)
         
-        let _visibilityWhenViewAppears = _viewWillAppear.asObservable()
-            .flatMap { _visibilitySelected.asObservable() }
+        //MARK: - Currently Selected Filter Option
+        let _filterWhenViewAppears = _viewWillAppearObservable
+            .map { FilterOption.locked }
         
-        let _visibilityToFetch = Observable
-            .merge(_visibilityWhenViewAppears, self.currentVisibility.asObservable())
-            .skip(1)
-            .debug()
+        let _currentFilterOption = Observable
+            .merge(_filterWhenViewAppears, self.didSelectFilterOption.asObservable())
         
-        let _shouldFetch = _visibilityToFetch.asObservable()
+        let _shouldFetchReplies = _currentFilterOption.asObservable()
             .withLatestFrom(_didUserReply)
             .filter { $0 }
-            .share()
         
-        self.allReplies = _shouldFetch
-            .withLatestFrom(_visibilitySelected.asObservable())
-            .filter { $0.rawValue == Visibility.all.rawValue }
-            .map { vis -> Results<PromptReply> in
-                let replies = prompt.replies
-                    .filter(predicateMatching(visibility: .all,
-                                              userId: currentUser.value.id))
-                return replies
-            }
-            .asDriverOnErrorJustComplete()
-        
-        let contactOnlyReplies = _shouldFetch
-            .map { _ -> [PromptReply] in
-                return prompt.replies
-                    .filter(predicateMatching(visibility: .contacts,
-                                              userId: currentUser.value.id))
-                    .toArray()
-                    .filter {
-                        $0.isAuthorInCurrentUserContacts(currentUser: currentUser.value)
-                    }
-            }
-        
-        let allReplies = _shouldFetch
-            .map { _ -> [PromptReply] in
-                let replies = prompt.replies
-                    .filter(predicateMatching(visibility: .all,
-                                              userId: currentUser.value.id))
-                    .toArray()
-                return replies
-            }
-        
-        self.allLockedReplies = _shouldFetch
-            .withLatestFrom(_visibilitySelected.asObservable())
-            .filter { $0.rawValue == Visibility.all.rawValue }
+        //MARK: - Locked Replies
+        self.lockedReplies = _shouldFetchReplies
+            .withLatestFrom(_currentFilterOption)
+            .filter { $0 == FilterOption.locked }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,
@@ -134,33 +109,35 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
                                      percentage: 0.70) }
             .asDriver(onErrorJustReturn: [])
         
-        self.lockedReplies = contactOnlyReplies
-            .map { contactReplies -> [PromptReply] in
-                let allReplies = prompt.replies
-                    .filter(predicateMatching(visibility: .all,
-                                              userId: currentUser.value.id))
-                    .toArray()
-                return contactReplies + allReplies
-            }
-            .map { $0.filter { !didUserCastScoreFor(reply: $0, userId: currentUser.value.id) } }
+        //MARK: - Unlocked Replies
+        self.unlockedReplies = _shouldFetchReplies
+            .withLatestFrom(_currentFilterOption)
+            .filter { $0 == FilterOption.unlocked }
+            .map { _ in prompt.replies.toArray() }
+            .map { sortReplies($0,
+                               forLockedFeed: false,
+                               currentUser: currentUser.value) }
+            .map { $0.friends + $0.others }
             .asDriver(onErrorJustReturn: [])
         
-        self.unlockedReplies = contactOnlyReplies.concat(allReplies)
-            .map { $0.filter { didUserCastScoreFor(reply: $0, userId: currentUser.value.id) } }
-            .asDriver(onErrorJustReturn: [])
+        //MARK: - Filter Option
+        let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
+        self.scoreSelected = _didSelectScore.asObserver()
+        let tableIndex = _didSelectScore.asObservable()
+            .map { $0.1 }
         
-        self.contactReplies = _shouldFetch
-            .withLatestFrom(_visibilitySelected.asObservable())
-            .filter { $0 == Visibility.contacts }
-            .map { vis in
-                let bySelectedVis = NSPredicate(format: "visibility = %@",
-                                                vis.rawValue)
-                return prompt.replies
-                    .filter(bySelectedVis)
-                    .toArray()
-                    .filter { $0.isAuthorInCurrentUserContacts(currentUser: currentUser.value) }
+        self.updateReplyWithSavedScore = _didSelectScore.asObservable()
+            .flatMap { (inputs) -> Observable<(PromptReply, ReplyScore)> in
+                let scoreVm = inputs.0
+                let replyScore = ReplyScore(userId: currentUser.value.id,
+                                            replyId: scoreVm.reply.id,
+                                            score: scoreVm.value)
+                return replyService.saveScore(reply: scoreVm.reply, score: replyScore)
             }
-            .asDriver(onErrorJustReturn: [])
+            .withLatestFrom(tableIndex, resultSelector: { (replyAndScore, tableIndex)  in (replyAndScore.0, tableIndex)
+            })
+            .asDriverOnErrorJustComplete()
+        
     }
     
 }
@@ -260,3 +237,80 @@ extension Sequence {
         return result
     }
 }
+
+extension UIResponder {
+    func next<T: UIResponder>(_ type: T.Type) -> T? {
+        return next as? T ?? next?.next(type)
+    }
+}
+
+extension UITableViewCell {
+    var tableView: UITableView? {
+        return next(UITableView.self)
+    }
+    var indexPath: IndexPath? {
+        return tableView?.indexPath(for: self)
+    }
+}
+
+//self.allReplies = _shouldFetch
+//    .withLatestFrom(_visibilitySelected.asObservable())
+//    .filter { $0.rawValue == Visibility.all.rawValue }
+//    .map { vis -> Results<PromptReply> in
+//        let replies = prompt.replies
+//            .filter(predicateMatching(visibility: .all,
+//                                      userId: currentUser.value.id))
+//        return replies
+//    }
+//    .asDriverOnErrorJustComplete()
+
+
+
+//let contactOnlyReplies = _shouldFetch
+//    .map { _ -> [PromptReply] in
+//        return prompt.replies
+//            .filter(predicateMatching(visibility: .contacts,
+//                                      userId: currentUser.value.id))
+//            .toArray()
+//            .filter {
+//                $0.isAuthorInCurrentUserContacts(currentUser: currentUser.value)
+//        }
+//}
+//
+//let allReplies = _shouldFetch
+//    .map { _ -> [PromptReply] in
+//        let replies = prompt.replies
+//            .filter(predicateMatching(visibility: .all,
+//                                      userId: currentUser.value.id))
+//            .toArray()
+//        return replies
+//}
+
+//self.lockedReplies = contactOnlyReplies
+//    .map { contactReplies -> [PromptReply] in
+//        let allReplies = prompt.replies
+//            .filter(predicateMatching(visibility: .all,
+//                                      userId: currentUser.value.id))
+//            .toArray()
+//        return contactReplies + allReplies
+//    }
+//    .map { $0.filter { !didUserCastScoreFor(reply: $0, userId: currentUser.value.id) } }
+//    .asDriver(onErrorJustReturn: [])
+//
+//self.unlockedReplies = contactOnlyReplies.concat(allReplies)
+//    .map { $0.filter { didUserCastScoreFor(reply: $0, userId: currentUser.value.id) } }
+//    .asDriver(onErrorJustReturn: [])
+//
+//self.contactReplies = _shouldFetch
+//    .withLatestFrom(_visibilitySelected.asObservable())
+//    .filter { $0 == Visibility.contacts }
+//    .map { vis in
+//        let bySelectedVis = NSPredicate(format: "visibility = %@",
+//                                        vis.rawValue)
+//        return prompt.replies
+//            .filter(bySelectedVis)
+//            .toArray()
+//            .filter { $0.isAuthorInCurrentUserContacts(currentUser: currentUser.value) }
+//    }
+//    .asDriver(onErrorJustReturn: [])
+
