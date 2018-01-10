@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Abe/Utility/ContactStore.swift"
-            timestampString = "537144797.490256"
+            timestampString = "537252712.648962"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
             landmarkName = "requestAccess()"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,7 +74,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/PromptDetailViewController.swift"
-                  timestampString = "537229413.477972"
+                  timestampString = "537252712.8716429"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "112"
@@ -89,7 +89,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/PromptDetailViewController.swift"
-                  timestampString = "537229413.480662"
+                  timestampString = "537252712.873749"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "113"
@@ -234,77 +234,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesDataSource.swift"
-            timestampString = "537158816.923719"
+            timestampString = "537252712.649204"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
             endingLineNumber = "65"
             landmarkName = "load(scores:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesDataSource.swift"
-            timestampString = "537158816.923767"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "configureCell(tableCell:withValue:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Prompt Detail/Testing/ValueCellDataSource.swift"
-            timestampString = "537144797.491907"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
-            landmarkName = "set(values:cellClass:inSection:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Abe.ValueCellDataSource.set&lt;A, B where A: Abe.ValueCell, B == A.Value&gt;(values: Swift.Array&lt;B&gt;, cellClass: A.Type, inSection: Swift.Int) -&gt; ()"
-                  moduleName = "Abe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/Testing/ValueCellDataSource.swift"
-                  timestampString = "537229413.522562"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "178"
-                  endingLineNumber = "178"
-                  offsetFromSymbolStart = "106">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (B) -&gt; (value: Any, reusableId: Swift.String) in Abe.ValueCellDataSource.set&lt;A, B where A: Abe.ValueCell, B == A.Value&gt;(values: Swift.Array&lt;B&gt;, cellClass: A.Type, inSection: Swift.Int) -&gt; ()"
-                  moduleName = "Abe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Prompt%20Detail/Testing/ValueCellDataSource.swift"
-                  timestampString = "537229413.525194"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "178"
-                  endingLineNumber = "178"
-                  offsetFromSymbolStart = "22">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -320,22 +256,6 @@
             startingLineNumber = "269"
             endingLineNumber = "269"
             landmarkName = "collectionView(_:cellForItemAt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesDataSource.swift"
-            timestampString = "537158816.923858"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "configureCell(tableCell:withValue:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -362,13 +282,93 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesViewController.swift"
-            timestampString = "537229413.2550499"
+            timestampString = "537252712.649309"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
             landmarkName = "bindViewModel()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesViewModel.swift"
+            timestampString = "537252712.6493959"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
+            landmarkName = "mergeAndRandomize(friends:others:percentage:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesViewModel.swift"
+            timestampString = "537252712.649924"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "209"
+            endingLineNumber = "209"
+            landmarkName = "mergeAndRandomize(friends:others:percentage:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesViewModel.swift"
+            timestampString = "537252712.650332"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "211"
+            endingLineNumber = "211"
+            landmarkName = "mergeAndRandomize(friends:others:percentage:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesViewModel.swift"
+            timestampString = "537252712.650617"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "215"
+            endingLineNumber = "215"
+            landmarkName = "mergeAndRandomize(friends:others:percentage:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Prompt Detail/Testing/RepliesViewModel.swift"
+            timestampString = "537252712.65093"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "216"
+            endingLineNumber = "216"
+            landmarkName = "mergeAndRandomize(friends:others:percentage:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

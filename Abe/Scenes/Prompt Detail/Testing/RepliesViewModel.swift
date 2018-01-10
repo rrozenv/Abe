@@ -19,6 +19,7 @@ protocol RepliesViewModelOutputs {
     var routeToCreateReply: Observable<Void> { get }
     var lockedReplies: Driver<[PromptReply]> { get }
     var unlockedReplies: Driver<[PromptReply]> { get }
+    var allLockedReplies: Driver<[PromptReply]> { get }
 }
 
 protocol RepliesViewModelType {
@@ -45,6 +46,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let routeToCreateReply: Observable<Void>
     let lockedReplies: Driver<[PromptReply]>
     let unlockedReplies: Driver<[PromptReply]>
+    let allLockedReplies: Driver<[PromptReply]>
 
     init?(replyService: ReplyService = ReplyService(),
          router: PromptDetailRoutingLogic,
@@ -120,6 +122,14 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
                 return replies
             }
         
+        self.allLockedReplies = _shouldFetch
+            .withLatestFrom(_visibilitySelected.asObservable())
+            .filter { $0.rawValue == Visibility.all.rawValue }
+            .map { _ in prompt.replies.toArray() }
+            .map { sortReplies($0, locked: true, currentUser: currentUser.value) }
+            .map { mergeAndRandomize(friends: $0.friends, others: $0.others, percentage: 0.70) }
+            .asDriver(onErrorJustReturn: [])
+        
         self.lockedReplies = contactOnlyReplies
             .map { contactReplies -> [PromptReply] in
                 let allReplies = prompt.replies
@@ -164,3 +174,77 @@ private func didUserCastScoreFor(reply: PromptReply,
     return (userScoreIfExists != nil) ? true : false
 }
 
+private func sortReplies(_ replies: [PromptReply],
+                         locked: Bool,
+                         currentUser: User) -> (friends: [PromptReply], others:[PromptReply]) {
+    var userFriendsReplies = [PromptReply]()
+    var notFriendsReplies = [PromptReply]()
+    for reply in replies {
+        let userDidVote = reply.doesScoreExistFor(userId: currentUser.id)
+        switch locked {
+        case true:
+            guard !userDidVote else { continue }
+            if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
+                userFriendsReplies.append(reply)
+            } else {
+                notFriendsReplies.append(reply)
+            }
+        case false:
+            guard userDidVote else { continue }
+            if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
+                userFriendsReplies.append(reply)
+            } else {
+                notFriendsReplies.append(reply)
+            }
+        }
+    }
+    return (userFriendsReplies, notFriendsReplies)
+}
+
+private func mergeAndRandomize(friends: [PromptReply], others:[PromptReply], percentage: Double) -> [PromptReply] {
+    guard friends.count > 0 || others.count > 0 else { return friends + others }
+    let indexEstimate = (Double(friends.count)) / percentage
+    let index = Int(indexEstimate) - friends.count
+    guard index < others.count else { return friends + others }
+    let othersNeeded = others.split(at: index).left
+    print(othersNeeded.count)
+    let unrandomizedTopReplies = friends + othersNeeded
+    unrandomizedTopReplies.forEach { (reply) in
+        print(reply.user?.phoneNumber ?? "no phone")
+    }
+    let topRepliesRandomized = unrandomizedTopReplies.shuffled()
+    let remainingReplies = others[othersNeeded.count..<others.count]
+    print(topRepliesRandomized.count + remainingReplies.count)
+    return topRepliesRandomized + remainingReplies
+}
+
+extension Array {
+    func split(at: Int) -> (left: [Element], right: [Element]) {
+        let leftSplit = self[0 ..< at]
+        let rightSplit = self[at ..< self.count]
+        return (left: Array(leftSplit), right: Array(rightSplit))
+    }
+}
+
+extension MutableCollection {
+    /// Shuffles the contents of this collection.
+    mutating func shuffle() {
+        let c = count
+        guard c > 1 else { return }
+        
+        for (firstUnshuffled, unshuffledCount) in zip(indices, stride(from: c, to: 1, by: -1)) {
+            let d: IndexDistance = numericCast(arc4random_uniform(numericCast(unshuffledCount)))
+            let i = index(firstUnshuffled, offsetBy: d)
+            swapAt(firstUnshuffled, i)
+        }
+    }
+}
+
+extension Sequence {
+    /// Returns an array with the contents of this sequence, shuffled.
+    func shuffled() -> [Element] {
+        var result = Array(self)
+        result.shuffle()
+        return result
+    }
+}

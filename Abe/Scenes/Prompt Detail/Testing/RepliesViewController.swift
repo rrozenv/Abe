@@ -58,7 +58,8 @@ class RepliesViewController: UIViewController {
         
         //MARK: - Outputs
         viewModel.outputs.didUserReply
-            .drive(createReplyButton.rx.isHidden)
+            .drive()
+            //.drive(createReplyButton.rx.isHidden)
             .disposed(by: disposeBag)
         
         viewModel.outputs.currentVisibility
@@ -79,7 +80,7 @@ class RepliesViewController: UIViewController {
         })
         .disposed(by: disposeBag)
         
-        viewModel.outputs.lockedReplies.drive(onNext: { [weak self] replies in
+        viewModel.outputs.allLockedReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.load(replies: replies)
             self?.tableView.reloadData()
         })

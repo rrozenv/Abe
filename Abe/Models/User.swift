@@ -34,7 +34,7 @@ class User: Object {
         self.init()
         self.id = syncUserId
         self.name = name
-        self.phoneNumber = "555-478-7672"
+        self.phoneNumber = phoneNumber
     }
     
     // MARK: - Meta
