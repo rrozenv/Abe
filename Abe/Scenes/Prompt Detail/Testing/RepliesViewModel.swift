@@ -19,6 +19,7 @@ protocol RepliesViewModelOutputs {
     var lockedReplies: Driver<[PromptReply]> { get }
     var unlockedReplies: Driver<[PromptReply]> { get }
     var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
+    var currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])> { get }
 }
 
 protocol RepliesViewModelType {
@@ -51,6 +52,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let lockedReplies: Driver<[PromptReply]>
     let unlockedReplies: Driver<[PromptReply]>
     let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
+    let currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])>
 
     init?(replyService: ReplyService = ReplyService(),
          router: PromptDetailRoutingLogic,
@@ -119,6 +121,15 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
                                currentUser: currentUser.value) }
             .map { $0.friends + $0.others }
             .asDriver(onErrorJustReturn: [])
+        
+        //MARK: - My Reply
+        self.currentUserReplyAndScores = _shouldFetchReplies
+            .withLatestFrom(_currentFilterOption)
+            .filter { $0 == FilterOption.myReply }
+            .map { _ in currentUser.value.reply(to: prompt) }
+            .unwrap()
+            .map { ($0, $0.scores.toArray()) }
+            .asDriverOnErrorJustComplete()
         
         //MARK: - Filter Option
         let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()

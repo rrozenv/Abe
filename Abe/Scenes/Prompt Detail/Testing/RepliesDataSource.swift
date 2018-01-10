@@ -18,8 +18,16 @@ internal final class RepliesDataSource: ValueCellDataSource {
                  inSection: section)
     }
     
+    func load(myReply: PromptReply, scores: [ReplyScore]) {
+        self.set(values: scores,
+                 cellClass: SavedReplyScoreTableCell.self,
+                 inSection: Section.replies.rawValue)
+        self.prependRow(value: myReply,
+                        cellClass: ReplyTableCell.self,
+                        toSection: Section.replies.rawValue)
+    }
+    
     func realmLoad(replies: Results<PromptReply>) {
-        print("I have \(replies.count) replies")
         let section = Section.replies.rawValue
         self.clearValues(section: section)
         self.realmSet(values: replies,
@@ -45,6 +53,8 @@ internal final class RepliesDataSource: ValueCellDataSource {
     override func configureCell(tableCell cell: UITableViewCell, withValue value: Any) {
         switch (cell, value) {
         case let (cell as ReplyTableCell, value as PromptReply):
+            cell.configureWith(value: value)
+        case let (cell as SavedReplyScoreTableCell, value as ReplyScore):
             cell.configureWith(value: value)
         default:
             assertionFailure("Unrecognized combo: \(cell), \(value)")

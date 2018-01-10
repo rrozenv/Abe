@@ -71,12 +71,16 @@ class RepliesViewController: UIViewController {
         viewModel.outputs.lockedReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.load(replies: replies)
             self?.tableView.reloadData()
+            let indexPath = IndexPath(row: 0, section: RepliesDataSource.Section.replies.rawValue)
+            self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
         })
         .disposed(by: disposeBag)
         
         viewModel.outputs.unlockedReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.load(replies: replies)
             self?.tableView.reloadData()
+            let indexPath = IndexPath(row: 0, section: RepliesDataSource.Section.replies.rawValue)
+            self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
         })
         .disposed(by: disposeBag)
         
@@ -84,6 +88,15 @@ class RepliesViewController: UIViewController {
             .drive(onNext: { [weak self] (inputs) in
                 self?.dataSource.updateReply(inputs.0, at: inputs.1)
                 self?.tableView.reloadRows(at: [inputs.1], with: .none)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.currentUserReplyAndScores
+            .drive(onNext: { [weak self] (inputs) in
+                self?.dataSource.load(myReply: inputs.0, scores: inputs.1)
+                self?.tableView.reloadSections(
+                    [RepliesDataSource.Section.replies.rawValue],
+                    animationStyle: .none)
             })
             .disposed(by: disposeBag)
         
@@ -107,6 +120,7 @@ class RepliesViewController: UIViewController {
         tableView.register(ReplyTableCell.self, forCellReuseIdentifier: ReplyTableCell.defaultReusableId)
         tableView.register(PromptSummarySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: PromptSummarySectionHeaderView.reuseIdentifier)
         tableView.register(TabBarSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: TabBarSectionHeaderView.reuseIdentifier)
+        tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
         
         //MARK: - tableView Constraints
         view.addSubview(tableView)
@@ -140,8 +154,6 @@ class RepliesViewController: UIViewController {
 
 extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
     
-    
-    
     func tableView(_ tableView: UITableView,
                    willDisplay cell: UITableViewCell,
                    forRowAt indexPath: IndexPath) {
@@ -162,7 +174,7 @@ extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
             let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: PromptSummarySectionHeaderView.reuseIdentifier) as? PromptSummarySectionHeaderView
             headerCell?.titleLabel.text = "Prompt Summary Cell"
             return headerCell
-        default:
+        case .replies:
             return tabBarView
         }
     }
