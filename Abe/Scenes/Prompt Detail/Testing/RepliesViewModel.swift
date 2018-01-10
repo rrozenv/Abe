@@ -126,8 +126,12 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .withLatestFrom(_visibilitySelected.asObservable())
             .filter { $0.rawValue == Visibility.all.rawValue }
             .map { _ in prompt.replies.toArray() }
-            .map { sortReplies($0, locked: true, currentUser: currentUser.value) }
-            .map { mergeAndRandomize(friends: $0.friends, others: $0.others, percentage: 0.70) }
+            .map { sortReplies($0,
+                               forLockedFeed: true,
+                               currentUser: currentUser.value) }
+            .map { mergeAndRandomize(friends: $0.friends,
+                                     others: $0.others,
+                                     percentage: 0.70) }
             .asDriver(onErrorJustReturn: [])
         
         self.lockedReplies = contactOnlyReplies
@@ -175,27 +179,18 @@ private func didUserCastScoreFor(reply: PromptReply,
 }
 
 private func sortReplies(_ replies: [PromptReply],
-                         locked: Bool,
+                         forLockedFeed: Bool,
                          currentUser: User) -> (friends: [PromptReply], others:[PromptReply]) {
     var userFriendsReplies = [PromptReply]()
     var notFriendsReplies = [PromptReply]()
     for reply in replies {
         let userDidVote = reply.doesScoreExistFor(userId: currentUser.id)
-        switch locked {
-        case true:
-            guard !userDidVote else { continue }
-            if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
-                userFriendsReplies.append(reply)
-            } else {
-                notFriendsReplies.append(reply)
-            }
-        case false:
-            guard userDidVote else { continue }
-            if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
-                userFriendsReplies.append(reply)
-            } else {
-                notFriendsReplies.append(reply)
-            }
+        if forLockedFeed && userDidVote { continue }
+        if !forLockedFeed && !userDidVote { continue }
+        if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
+            userFriendsReplies.append(reply)
+        } else {
+            notFriendsReplies.append(reply)
         }
     }
     return (userFriendsReplies, notFriendsReplies)
@@ -217,6 +212,23 @@ private func mergeAndRandomize(friends: [PromptReply], others:[PromptReply], per
     print(topRepliesRandomized.count + remainingReplies.count)
     return topRepliesRandomized + remainingReplies
 }
+
+//switch forLockedFeed {
+//case true:
+//    guard !userDidVote else { continue }
+//    if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
+//        userFriendsReplies.append(reply)
+//    } else {
+//        notFriendsReplies.append(reply)
+//    }
+//case false:
+//    guard userDidVote else { continue }
+//    if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
+//        userFriendsReplies.append(reply)
+//    } else {
+//        notFriendsReplies.append(reply)
+//    }
+//}
 
 extension Array {
     func split(at: Int) -> (left: [Element], right: [Element]) {
