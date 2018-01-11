@@ -2,10 +2,12 @@
 import Foundation
 import Contacts
 import RxSwift
+import PhoneNumberKit
 
 class ContactsStore {
     
     private let store = CNContactStore()
+    private let phoneNumberKit = PhoneNumberKit()
     
     func isAuthorized() -> Observable<Bool> {
         return Observable.create { (observer) -> Disposable in
@@ -58,8 +60,8 @@ class ContactsStore {
         do{
             try store.enumerateContacts(with: fetchRequest, usingBlock: {
                 (cnContact, stop) -> Void in
-                let allNumbers = cnContact.phoneNumbers.map { $0.value.stringValue }
-                let contact = Contact(id: cnContact.identifier,
+                let allNumbers = cnContact.phoneNumbers.map { $0.value.stringValue.digits }
+                let contact = Contact(id: UUID().uuidString,
                                       first: cnContact.givenName,
                                       last: cnContact.familyName,
                                       numbers: allNumbers)
@@ -73,4 +75,11 @@ class ContactsStore {
         return contacts
     }
     
+}
+
+extension String {
+    var digits: String {
+        return components(separatedBy: CharacterSet.decimalDigits.inverted)
+            .joined()
+    }
 }

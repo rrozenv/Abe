@@ -13,6 +13,7 @@ class User: Object {
     @objc dynamic var name: String = ""
     @objc dynamic var email: String = ""
     @objc dynamic var phoneNumber: String = ""
+    @objc dynamic var coins: Int = 0
     let contacts = List<Contact>()
     let prompts = List<Prompt>()
     let replies = List<PromptReply>()
@@ -34,7 +35,7 @@ class User: Object {
         self.init()
         self.id = syncUserId
         self.name = name
-        self.phoneNumber = "555-478-7672"
+        self.phoneNumber = phoneNumber
     }
     
     // MARK: - Meta
@@ -52,6 +53,11 @@ class User: Object {
         let predicate = NSPredicate(format: "promptId = %@", prompt.id)
         let userReplies = self.replies.filter(predicate)
         return userReplies.count > 0
+    }
+    
+    func reply(to prompt: Prompt) -> PromptReply? {
+        let predicate = NSPredicate(format: "promptId = %@", prompt.id)
+        return self.replies.filter(predicate).first
     }
     
     func allNumbersFromContacts() -> [String] {

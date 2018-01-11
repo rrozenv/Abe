@@ -16,7 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
-        Application.shared.configureMainInterface(in: window!)
+        window?.rootViewController = AppController.shared
+        //window?.rootViewController = UIViewController()
+        //Application.shared.configureMainInterface(in: window!)
         return true
     }
 

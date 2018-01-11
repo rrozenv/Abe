@@ -32,18 +32,26 @@ class PromptReply: Object {
                 "visibility": visibility,
                 "body": body]
     }
-    
+  
     func isAuthorInCurrentUserContacts(currentUser: User) -> Bool {
-        return self.user!.id != currentUser.id
-            &&
-            self.user!.allNumbersFromContacts()
-                .contains(currentUser.phoneNumber)
+        currentUser.allNumbersFromContacts().forEach { print($0) }
+//        return self.user!.id != currentUser.id
+//            &&
+           return currentUser.allNumbersFromContacts()
+                .contains(self.user!.phoneNumber)
     }
     
     func fetchCastedScoreIfExists(for userId: String) -> (score: ReplyScore?, reply: PromptReply) {
         let score = self.scores
             .filter(NSPredicate(format: "userId = %@", userId)).first
         return (score, self)
+    }
+    
+    func doesScoreExistFor(userId: String) -> Bool {
+        guard let _ = self.scores
+            .filter(NSPredicate(format: "userId = %@", userId))
+            .first else { return false }
+        return true
     }
     
     func percentageOfVotesCastesFor(scoreValue: Int) -> Double {
@@ -54,6 +62,7 @@ class PromptReply: Object {
         return (Double(numberOfVotesForScore.count) / Double(self.scores.count))
     }
     
+
 }
 
 class ReplyScore: Object {

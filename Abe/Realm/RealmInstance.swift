@@ -3,7 +3,6 @@ import Foundation
 import RealmSwift
 import RxSwift
 import RxCocoa
-import PromiseKit
 import RxRealm
 
 class RealmInstance {
@@ -123,16 +122,6 @@ class RealmInstance {
     func updateWrite(block: @escaping () -> Void) {
         try! self.realm.write {
             block()
-        }
-    }
-    
-    func fetchPromise<T: Object>(_ model: T.Type, with predicate: NSPredicate) -> Promise<[T]> {
-        return Promise { fullfill, _ in
-            let realm = self.realm
-            let objects = realm.objects(model)
-                .filter(predicate)
-                .toArray()
-            fullfill(objects)
         }
     }
     
