@@ -8,7 +8,6 @@ final class AppController: UIViewController {
     static let shared = AppController(userService: UserService())
     private let userService: UserService
     var currentUser = Variable<User?>(nil)
-    
     fileprivate var actingVC: UIViewController!
     
     private init(userService: UserService) {

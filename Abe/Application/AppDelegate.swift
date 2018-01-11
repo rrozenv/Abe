@@ -17,8 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
         window?.rootViewController = AppController.shared
-        //window?.rootViewController = UIViewController()
-        //Application.shared.configureMainInterface(in: window!)
         return true
     }
 

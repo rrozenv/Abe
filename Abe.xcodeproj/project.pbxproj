@@ -71,7 +71,6 @@
 		98FEE7BB1FE4BC5400CD80A8 /* PromptsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE7BA1FE4BC5400CD80A8 /* PromptsListViewController.swift */; };
 		98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE7BC1FE4BC5B00CD80A8 /* PromptsListViewModel.swift */; };
 		98FEE7BF1FE4BC6200CD80A8 /* PromptTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE7BE1FE4BC6200CD80A8 /* PromptTableCell.swift */; };
-		98FEE7C11FE4BC7400CD80A8 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE7C01FE4BC7400CD80A8 /* Application.swift */; };
 		98FEE7C31FE4C11C00CD80A8 /* CreatePromptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE7C21FE4C11C00CD80A8 /* CreatePromptViewModel.swift */; };
 		98FEE7C51FE4C12300CD80A8 /* CreatePromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE7C41FE4C12300CD80A8 /* CreatePromptViewController.swift */; };
 		98FEE7C71FE4C12800CD80A8 /* CreatePromptRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE7C61FE4C12800CD80A8 /* CreatePromptRouter.swift */; };
@@ -174,7 +173,6 @@
 		98FEE7BA1FE4BC5400CD80A8 /* PromptsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptsListViewController.swift; sourceTree = "<group>"; };
 		98FEE7BC1FE4BC5B00CD80A8 /* PromptsListViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptsListViewModel.swift; sourceTree = "<group>"; };
 		98FEE7BE1FE4BC6200CD80A8 /* PromptTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptTableCell.swift; sourceTree = "<group>"; };
-		98FEE7C01FE4BC7400CD80A8 /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		98FEE7C21FE4C11C00CD80A8 /* CreatePromptViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePromptViewModel.swift; sourceTree = "<group>"; };
 		98FEE7C41FE4C12300CD80A8 /* CreatePromptViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePromptViewController.swift; sourceTree = "<group>"; };
 		98FEE7C61FE4C12800CD80A8 /* CreatePromptRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePromptRouter.swift; sourceTree = "<group>"; };
@@ -233,7 +231,6 @@
 			isa = PBXGroup;
 			children = (
 				98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */,
-				98FEE7C01FE4BC7400CD80A8 /* Application.swift */,
 				980F50362004571E006C2B83 /* AppController.swift */,
 			);
 			path = Application;
@@ -827,7 +824,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */,
-				98FEE7C11FE4BC7400CD80A8 /* Application.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,

@@ -86,7 +86,7 @@ final class SignupViewModel {
             .flatMapLatest { [unowned self] in
                 return self.userService.createUser(syncUser: $0.0, name: $0.1.userName, email: $0.1.email, phoneNumber: "555-478-7672")
             }
-            .do(onNext: { Application.shared.currentUser.value = $0 })
+            .do(onNext: { AppController.shared.currentUser.value = $0 })
             .mapToVoid()
             .asDriverOnErrorJustComplete()
             .do(onNext: self.router.toHome)
@@ -94,7 +94,7 @@ final class SignupViewModel {
         let existingUser = login.elements()
             .flatMapLatest { [unowned self] in self.userService.fetchUserFor(key: $0.identity!)
             }
-            .do(onNext: { Application.shared.currentUser.value = $0 })
+            .do(onNext: { AppController.shared.currentUser.value = $0 })
             .mapToVoid()
             .do(onNext: self.router.toHome)
             .asDriverOnErrorJustComplete()
