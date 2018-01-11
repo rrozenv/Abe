@@ -177,7 +177,6 @@ extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
     }
     
     func didSelectScore(scoreViewModel: ScoreCellViewModel, at index: IndexPath) {
-        print("score selectd at index \(index)")
         viewModel.inputs.scoreSelected.onNext((scoreViewModel, index))
     }
     

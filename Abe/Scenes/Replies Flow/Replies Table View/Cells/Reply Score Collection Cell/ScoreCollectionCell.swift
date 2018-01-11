@@ -46,7 +46,6 @@ class ScoreCollectionCell: UICollectionViewCell, ValueCell {
         self.percentageBackgroundView.isHidden = value.userDidReply ? false : true
     }
     
-    
     fileprivate func setupContainerView() {
         containerView = UIView()
         containerView.backgroundColor = UIColor.orange

@@ -1,13 +1,11 @@
 
 import Foundation
-import RxSwift
-import RxCocoa
-import RealmSwift
+import UIKit
 
 struct ScoreCellViewModel {
     let value: Int
     let reply: PromptReply
-    var userDidReply: Bool
+    let userDidReply: Bool
     let placeholderImage: UIImage
     let userScore: ReplyScore?
     let percentage: String
