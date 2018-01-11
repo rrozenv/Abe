@@ -5,10 +5,12 @@ import RxSwift
 
 final class AppController: UIViewController {
     
+    //MARK: - Properties
     static let shared = AppController(userService: UserService())
-    private let userService: UserService
     var currentUser = Variable<User?>(nil)
-    fileprivate var actingVC: UIViewController!
+    
+    private let userService: UserService
+    private var actingVC: UIViewController!
     
     private init(userService: UserService) {
         self.userService = userService
@@ -42,7 +44,7 @@ extension AppController {
 extension AppController {
     
     fileprivate func loadInitialViewController() {
-        if let currentUser = self.fetchUser() {
+        if let currentUser = self.fetchCurrentUser() {
             self.currentUser.value = currentUser
             self.actingVC = createHomeViewController()
         } else {
@@ -50,13 +52,6 @@ extension AppController {
             self.actingVC = createEnableContactsViewController()
         }
         self.add(viewController: self.actingVC, animated: true)
-    }
-    
-    fileprivate func fetchUser() -> User? {
-        guard let currentSyncUser = RealmAuth.fetchCurrentSyncUser() else {
-            return nil
-        }
-        return self.userService.fetchUser(key: currentSyncUser.identity!)
     }
     
     private func createEnableContactsViewController() -> UIViewController {
@@ -77,13 +72,24 @@ extension AppController {
         return navVc
     }
     
+}
+
+// MARK: - Fetch Current User
+extension AppController {
+    
+    private func fetchCurrentUser() -> User? {
+        guard let currentSyncUser = RealmAuth.fetchCurrentSyncUser() else {
+            return nil
+        }
+        return self.userService.fetchUser(key: currentSyncUser.identity!)
+    }
     
 }
 
 // MARK: - Displaying VC's
 extension AppController {
     
-    fileprivate func add(viewController: UIViewController, animated: Bool = false) {
+    private func add(viewController: UIViewController, animated: Bool = false) {
         self.addChildViewController(viewController)
         view.addSubview(viewController.view)
         view.alpha = 0.0
@@ -102,14 +108,9 @@ extension AppController {
         switch notification.name {
         case Notification.Name.closeLoginVC:
             let homeVc = self.createHomeViewController()
-//            let mainMovieListVC = UINavigationController(rootViewController: HomeViewController(currentTabButton: .mainMovieList))
             switchToViewController(homeVc)
         case Notification.Name.closeOnboardingVC: break
-//            let masterTabBarVC = UINavigationController(rootViewController: UIViewController())
-//            switchToViewController(masterTabBarVC)
         case Notification.Name.logout: break
-//            let loginVC = LoginViewController()
-//            switchToViewController(loginVC)
         default:
             fatalError("\(#function) - Unable to match notficiation name.")
         }

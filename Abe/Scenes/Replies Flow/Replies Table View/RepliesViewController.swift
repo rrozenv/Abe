@@ -6,9 +6,8 @@ import RxCocoa
 
 class RepliesViewController: UIViewController {
     
-    let disposeBag = DisposeBag()
     var viewModel: RepliesViewModelType!
-    
+    private let disposeBag = DisposeBag()
     private let dataSource = RepliesDataSource()
     private var tableView: UITableView!
     private var tabBarView: TabBarView!
@@ -48,8 +47,8 @@ class RepliesViewController: UIViewController {
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: .locked)
         
-        createReplyButton.rx.tap.asObservable()
-            .bind(to: viewModel.inputs.createReplyTapped)
+        createReplyButton.rx.tap.asDriver()
+            .drive(viewModel.inputs.createReplyTapped)
             .disposed(by: disposeBag)
         
         filterOptionTapped
@@ -114,59 +113,21 @@ class RepliesViewController: UIViewController {
         
     }
     
-    deinit {
-        print("Prompt Detail Deinit")
-    }
+    deinit { print("Prompt Detail Deinit") }
     
-    private func scrollToTop(section: RepliesDataSource.Section) {
-        let indexPath = IndexPath(row: 0, section: section.rawValue)
-        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-    }
-    
-    fileprivate func setupTableView() {
-        //MARK: - tableView Properties
-        tableView = UITableView(frame: CGRect.zero, style: .plain)
-        tableView.delegate = self
-        tableView.dataSource = self.dataSource
-        tableView.estimatedRowHeight = 200
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.register(ReplyTableCell.self, forCellReuseIdentifier: ReplyTableCell.defaultReusableId)
-        tableView.register(PromptSummarySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: PromptSummarySectionHeaderView.reuseIdentifier)
-        tableView.register(TabBarSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: TabBarSectionHeaderView.reuseIdentifier)
-        tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
-        tableView.register(RepliesEmptyCell.self, forCellReuseIdentifier: RepliesEmptyCell.defaultReusableId)
-        
-        //MARK: - tableView Constraints
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { (make) in
-            make.left.right.bottom.equalTo(view)
-            make.top.equalTo(topLayoutGuide.snp.bottom)
-        }
-    }
-    
-    fileprivate func setupTabBarView() {
-        tabBarView = TabBarView(leftTitle: "Locked", centerTitle: "Unlocked", rightTitle: "My Reply")
-        tabBarView.selectedFilter = .locked
-    }
-    
-    fileprivate func setupCreatePromptReplyButton() {
-        //MARK: - createPromptButton Properties
-        createReplyButton = UIButton()
-        createReplyButton.backgroundColor = UIColor.black
-        createReplyButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
-        createReplyButton.setTitle("Reply", for: .normal)
-        
-        //MARK: - createPromptButton Constraints
-        view.addSubview(createReplyButton)
-        createReplyButton.snp.makeConstraints { (make) in
-            make.left.bottom.right.equalTo(view)
-            make.height.equalTo(60)
-        }
-    }
-
 }
 
-extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
+//MARK: - Reply Table Cell Delegate
+extension RepliesViewController: ReplyTableCellDelegate {
+    
+    func didSelectScore(scoreViewModel: ScoreCellViewModel, at index: IndexPath) {
+        viewModel.inputs.scoreSelected.onNext((scoreViewModel, index))
+    }
+    
+}
+
+//MARK: - Table View Delegate
+extension RepliesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView,
                    willDisplay cell: UITableViewCell,
@@ -175,11 +136,7 @@ extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
             cell.delegate = self
         }
     }
-    
-    func didSelectScore(scoreViewModel: ScoreCellViewModel, at index: IndexPath) {
-        viewModel.inputs.scoreSelected.onNext((scoreViewModel, index))
-    }
-    
+  
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
         switch section {
@@ -190,6 +147,62 @@ extension RepliesViewController: UITableViewDelegate, ReplyTableCellDelegate {
         case .replies:
             return tabBarView
         }
+    }
+    
+}
+
+//MARK: - Setup Views
+extension RepliesViewController {
+    
+    private func setupTableView() {
+        tableView = UITableView(frame: CGRect.zero, style: .plain)
+        tableView.delegate = self
+        tableView.dataSource = self.dataSource
+        tableView.estimatedRowHeight = 200
+        tableView.rowHeight = UITableViewAutomaticDimension
+        registerTableViewCells()
+        
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalTo(view)
+            make.top.equalTo(topLayoutGuide.snp.bottom)
+        }
+    }
+    
+    private func setupTabBarView() {
+        tabBarView = TabBarView(leftTitle: "Locked", centerTitle: "Unlocked", rightTitle: "My Reply")
+        tabBarView.selectedFilter = .locked
+    }
+    
+    private func setupCreatePromptReplyButton() {
+        createReplyButton = UIButton()
+        createReplyButton.backgroundColor = UIColor.black
+        createReplyButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
+        createReplyButton.setTitle("Reply", for: .normal)
+        
+        view.addSubview(createReplyButton)
+        createReplyButton.snp.makeConstraints { (make) in
+            make.left.bottom.right.equalTo(view)
+            make.height.equalTo(60)
+        }
+    }
+    
+}
+
+//MARK: - Helper Methods
+extension RepliesViewController {
+    
+    private func scrollToTop(section: RepliesDataSource.Section) {
+        let indexPath = IndexPath(row: 0, section: section.rawValue)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+    }
+    
+    private func registerTableViewCells() {
+        tableView.register(ReplyTableCell.self, forCellReuseIdentifier: ReplyTableCell.defaultReusableId)
+        tableView.register(PromptSummarySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: PromptSummarySectionHeaderView.reuseIdentifier)
+        tableView.register(TabBarSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: TabBarSectionHeaderView.reuseIdentifier)
+        tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
+        tableView.register(RepliesEmptyCell.self, forCellReuseIdentifier: RepliesEmptyCell.defaultReusableId)
     }
     
 }

@@ -13,12 +13,14 @@ class CreatePromptViewController: UIViewController {
     fileprivate var bodyTextView: UITextView!
     fileprivate var doneButton: UIBarButtonItem!
     fileprivate var dismissButton: UIBarButtonItem!
+    private var imageButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         setupTitleTextView()
         setupBodyTextView()
+        setupAddImageButton()
         setupDoneButton()
         setupCancelButton()
         bindViewModel()
@@ -30,26 +32,61 @@ class CreatePromptViewController: UIViewController {
     
     func bindViewModel() {
         //MARK: - Input
-        let input =
-            CreatePromptViewModel
-                .Input(title: titleTextView.rx.text.orEmpty.asObservable(),
-                       body: bodyTextView.rx.text.orEmpty.asObservable(),
-                       createPromptTrigger: doneButton.rx.tap.asObservable(),
-                       cancelTrigger: dismissButton.rx.tap.asDriver())
+        titleTextView.rx.text.orEmpty
+            .bind(to: viewModel.inputs.title)
+            .disposed(by: disposeBag)
+       
+        bodyTextView.rx.text.orEmpty
+            .bind(to: viewModel.inputs.title)
+            .disposed(by: disposeBag)
         
-        //MARK: - Output
-        let output = viewModel.transform(input: input)
+        doneButton.rx.tap
+            .bind(to: viewModel.inputs.createPromptTrigger)
+            .disposed(by: disposeBag)
         
-        output.inputIsValid
+        dismissButton.rx.tap
+            .bind(to: viewModel.inputs.createPromptTrigger)
+            .disposed(by: disposeBag)
+        
+        imageButton.rx.tap
+            .bind(to: viewModel.inputs.addImageTapped)
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.inputIsValid
             .drive(onNext: { [weak self] in
                 self?.doneButton.isEnabled = $0 ? true : false
                 self?.doneButton.tintColor = $0 ? UIColor.red : UIColor.gray
             })
             .disposed(by: disposeBag)
         
-        output.dismissViewController
+        viewModel.outputs.dismissViewController
             .drive()
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.routeToAddImage
+            .drive()
+            .disposed(by: disposeBag)
+        
+//        let input =
+//            CreatePromptViewModel
+//                .Input(title: titleTextView.rx.text.orEmpty.asObservable(),
+//                       body: bodyTextView.rx.text.orEmpty.asObservable(),
+//                       createPromptTrigger: doneButton.rx.tap.asObservable(),
+//                       cancelTrigger: dismissButton.rx.tap.asDriver())
+//        
+//        //MARK: - Output
+//        let output = viewModel.transform(input: input)
+//        
+//        output.inputIsValid
+//            .drive(onNext: { [weak self] in
+//                self?.doneButton.isEnabled = $0 ? true : false
+//                self?.doneButton.tintColor = $0 ? UIColor.red : UIColor.gray
+//            })
+//            .disposed(by: disposeBag)
+//        
+//        output.dismissViewController
+//            .drive()
+//            .disposed(by: disposeBag)
     }
     
     fileprivate func showError(_ error: Error) {
@@ -101,6 +138,19 @@ extension CreatePromptViewController {
             make.left.equalTo(view).offset(20)
             make.right.equalTo(view).offset(-20)
             make.top.equalTo(titleTextView.snp.bottom).offset(10)
+        }
+    }
+    
+    func setupAddImageButton() {
+        imageButton = UIButton()
+        imageButton.backgroundColor = UIColor.blue
+        imageButton.setTitle("Add Image", for: .normal)
+        
+        view.addSubview(imageButton)
+        imageButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(bodyTextView.snp.bottom).offset(10)
         }
     }
   

@@ -9,7 +9,7 @@ enum ContactServiceError: Error {
 
 struct ContactService {
     
-    fileprivate func withRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
+    private func withRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
         do {
             let realm = try Realm()
             return try action(realm)
@@ -19,7 +19,7 @@ struct ContactService {
         }
     }
     
-    fileprivate func withCommonRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
+    private func withCommonRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
         do {
             let realm = try Realm(configuration: RealmConfig.common.configuration)
             return try action(realm)

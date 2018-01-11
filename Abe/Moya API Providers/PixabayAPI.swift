@@ -4,26 +4,6 @@ import Moya
 
 typealias JSONDictionary = [String: Any]
 
-protocol ImageRepresentable {
-    var id: String { get }
-    var urlString: String { get }
-    var totalHitCount: Int { get }
-}
-
-struct PixaImage: ImageRepresentable {
-    var id: String
-    var urlString: String
-    var totalHitCount: Int
-    
-    init?(dictionary: JSONDictionary) {
-        guard let id = dictionary["id"] as? String,
-            let urlString = dictionary["url"] as? String else { return nil }
-        self.id = id
-        self.urlString = urlString
-        self.totalHitCount = 0
-    }
-}
-
 struct Secrets {
     static let API_Key = "vEuTgt5WkT4zs4hbPe6CXjEEiMIdTZXm"
     static let pixabayAPI_Key = "7195286-a0abf18d1b041a5e368666cee"

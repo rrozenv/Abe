@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9806B90B2007CEB2000CB497 /* PixaImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B90A2007CEB2000CB497 /* PixaImageService.swift */; };
+		9806B90E2007DCB1000CB497 /* ImageSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */; };
+		9806B9102007DD77000CB497 /* ImageSearchCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */; };
+		9806B9122007DDCB000CB497 /* ImageSearchCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B9112007DDCB000CB497 /* ImageSearchCollectionCell.swift */; };
+		9806B9142007DE5C000CB497 /* ImageSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */; };
+		9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B9152007E385000CB497 /* ImageSearchDataSource.swift */; };
+		9806B91A2007EB83000CB497 /* ImageSearchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B9192007EB83000CB497 /* ImageSearchRouter.swift */; };
 		980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A31FE589310087C6C3 /* Observable+Ext.swift */; };
 		980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A61FE5A3B40087C6C3 /* ErrorTracker.swift */; };
 		980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */; };
@@ -103,6 +110,13 @@
 		0B669BDC38B29A77D8985BAD /* Pods_Abe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Abe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ED6DE227012B4C169B41D2D /* Pods-Abe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Abe.release.xcconfig"; path = "Pods/Target Support Files/Pods-Abe/Pods-Abe.release.xcconfig"; sourceTree = "<group>"; };
 		8DD8E150FA4D35820E08A943 /* Pods-Abe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Abe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Abe/Pods-Abe.debug.xcconfig"; sourceTree = "<group>"; };
+		9806B90A2007CEB2000CB497 /* PixaImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixaImageService.swift; sourceTree = "<group>"; };
+		9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchViewController.swift; sourceTree = "<group>"; };
+		9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchCollectionViewLayout.swift; sourceTree = "<group>"; };
+		9806B9112007DDCB000CB497 /* ImageSearchCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchCollectionCell.swift; sourceTree = "<group>"; };
+		9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchViewModel.swift; sourceTree = "<group>"; };
+		9806B9152007E385000CB497 /* ImageSearchDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchDataSource.swift; sourceTree = "<group>"; };
+		9806B9192007EB83000CB497 /* ImageSearchRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchRouter.swift; sourceTree = "<group>"; };
 		980DE5A31FE589310087C6C3 /* Observable+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Observable+Ext.swift"; sourceTree = "<group>"; };
 		980DE5A61FE5A3B40087C6C3 /* ErrorTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorTracker.swift; sourceTree = "<group>"; };
 		980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -215,6 +229,35 @@
 				0B669BDC38B29A77D8985BAD /* Pods_Abe.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9806B90C2007DB46000CB497 /* Image Search */ = {
+			isa = PBXGroup;
+			children = (
+				9806B9182007EB02000CB497 /* Cells */,
+				9806B9172007EAEB000CB497 /* Data Source */,
+				9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */,
+				9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */,
+				9806B9192007EB83000CB497 /* ImageSearchRouter.swift */,
+			);
+			path = "Image Search";
+			sourceTree = "<group>";
+		};
+		9806B9172007EAEB000CB497 /* Data Source */ = {
+			isa = PBXGroup;
+			children = (
+				9806B9152007E385000CB497 /* ImageSearchDataSource.swift */,
+			);
+			path = "Data Source";
+			sourceTree = "<group>";
+		};
+		9806B9182007EB02000CB497 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				9806B9112007DDCB000CB497 /* ImageSearchCollectionCell.swift */,
+				9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		980DE5AA1FE5B3730087C6C3 /* Sign Up */ = {
@@ -400,6 +443,7 @@
 			isa = PBXGroup;
 			children = (
 				985C2A601FFDAE040034E116 /* ContactService.swift */,
+				9806B90A2007CEB2000CB497 /* PixaImageService.swift */,
 				9823322A1FF7E09800C3CB49 /* PromptService.swift */,
 			);
 			path = "Realm Data Services";
@@ -420,6 +464,7 @@
 			isa = PBXGroup;
 			children = (
 				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
+				9806B90C2007DB46000CB497 /* Image Search */,
 				980DE5B41FE5B56B0087C6C3 /* Create Prompt */,
 			);
 			path = "Home Screen Flow";
@@ -833,16 +878,19 @@
 				988658F61FE8049900FEB703 /* RealmError.swift in Sources */,
 				9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */,
 				985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */,
+				9806B9102007DD77000CB497 /* ImageSearchCollectionViewLayout.swift in Sources */,
 				984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */,
 				9854D252200053A700D7B7EB /* ValueCellDataSource.swift in Sources */,
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
 				9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */,
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
+				9806B9122007DDCB000CB497 /* ImageSearchCollectionCell.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
 				98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */,
 				988658FA1FE807B400FEB703 /* Contact.swift in Sources */,
 				980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */,
+				9806B90E2007DCB1000CB497 /* ImageSearchViewController.swift in Sources */,
 				98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */,
 				9836044120071021008A975D /* EmptyStateView.swift in Sources */,
 				9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */,
@@ -862,19 +910,23 @@
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				9836043F20070EC2008A975D /* Extensions.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
+				9806B9142007DE5C000CB497 /* ImageSearchViewModel.swift in Sources */,
 				98FEE7C31FE4C11C00CD80A8 /* CreatePromptViewModel.swift in Sources */,
 				9883ED6A1FE7062D002E538E /* ScoreCollectionCell.swift in Sources */,
 				98921BBA1FE735C4006CCCF6 /* ReplyOptionsRouter.swift in Sources */,
 				989317261FE6F3E400E2979F /* PromptDetailViewModel.swift in Sources */,
+				9806B90B2007CEB2000CB497 /* PixaImageService.swift in Sources */,
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
 				9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */,
 				98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */,
 				98FEE7C51FE4C12300CD80A8 /* CreatePromptViewController.swift in Sources */,
 				98F672031FFF0EA8001DE88E /* PixabayAPI.swift in Sources */,
+				9806B91A2007EB83000CB497 /* ImageSearchRouter.swift in Sources */,
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
 				980F50372004571F006C2B83 /* AppController.swift in Sources */,
+				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,

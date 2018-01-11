@@ -103,7 +103,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
 //MARK: - Locked Replies
         let _lockedRepliesNotMerged = _shouldFetchReplies
             .withLatestFrom(_currentFilterOption)
-            .filter { $0 == FilterOption.locked }
+            .filter { $0 == .locked }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,

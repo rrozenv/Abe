@@ -87,9 +87,6 @@ struct PromptService: PromptServiceType {
     
 }
 
-struct UserDataStore {
-    
-}
 
 struct UserService {
     
@@ -250,15 +247,4 @@ struct ReplyService {
     
 }
 
-struct IssueTrackerModel {
-    
-    let provider: MoyaProvider<PixabayAPI>
 
-//    func trackIssues() -> Observable<[Image]> {
-//       provider.rx.request(.search(query: "hey", page: 1))
-//            .mapJSON()
-//            .asObservable()
-//
-//    }
-    
-}
