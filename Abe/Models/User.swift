@@ -13,6 +13,7 @@ class User: Object {
     @objc dynamic var name: String = ""
     @objc dynamic var email: String = ""
     @objc dynamic var phoneNumber: String = ""
+    @objc dynamic var coins: Int = 0
     let contacts = List<Contact>()
     let prompts = List<Prompt>()
     let replies = List<PromptReply>()

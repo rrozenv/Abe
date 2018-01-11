@@ -215,6 +215,17 @@ struct ReplyService {
     }
     
     @discardableResult
+    func updateAuthorCoinsFor(reply: PromptReply,
+                              coins: Int) -> Observable<PromptReply> {
+        let result = withRealm("updating title") { realm -> Observable<PromptReply> in
+            try realm.write {
+                reply.user?.coins += coins
+            }
+            return .just(reply)
+        }
+        return result ?? .error(ReplyServiceError.saveScoreFailed(reply))
+    }
+    
     func saveScore(reply: PromptReply,
                    score: ReplyScore) -> Observable<(PromptReply, ReplyScore)> {
         let result = withRealm("updating title") { realm -> Observable<(PromptReply, ReplyScore)> in

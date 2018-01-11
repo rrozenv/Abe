@@ -16,7 +16,7 @@ protocol RepliesViewModelOutputs {
     var didUserReply: Driver<Bool> { get }
     var didSelectFilterOption: Driver<FilterOption> { get }
     var routeToCreateReply: Observable<Void> { get }
-    var lockedReplies: Driver<[PromptReply]> { get }
+    var lockedReplies: Driver<(replies: [PromptReply], userDidReply: Bool)> { get }
     var unlockedReplies: Driver<[PromptReply]> { get }
     var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
     var currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])> { get }
@@ -50,7 +50,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let didUserReply: Driver<Bool>
     let didSelectFilterOption: Driver<FilterOption>
     let routeToCreateReply: Observable<Void>
-    let lockedReplies: Driver<[PromptReply]>
+    let lockedReplies: Driver<(replies: [PromptReply], userDidReply: Bool)>
     let unlockedReplies: Driver<[PromptReply]>
     let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
     let currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])>
@@ -113,7 +113,12 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .map { mergeAndRandomize(friends: $0.friends,
                                      others: $0.others,
                                      percentage: 0.70) }
-            .asDriver(onErrorJustReturn: [])
+            .withLatestFrom(_didUserReply,
+                            resultSelector: { (replies, didUserReply) -> ([PromptReply], Bool) in
+                return (replies, didUserReply)
+            })
+            .asDriver(onErrorJustReturn: ([], false))
+            //.asDriver(onErrorJustReturn: [])
         
         let shouldDisplayUnreadFromFriendsView = _lockedRepliesNotMerged
             .map { $0.friends.isEmpty ? false : true }
@@ -152,12 +157,17 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         self.updateReplyWithSavedScore = _didSelectScore.asObservable()
             .flatMap { (inputs) -> Observable<(PromptReply, ReplyScore)> in
                 let scoreVm = inputs.0
-                let replyScore = ReplyScore(userId: currentUser.value.id,
+                let score = ReplyScore(userId: currentUser.value.id,
                                             replyId: scoreVm.reply.id,
                                             score: scoreVm.value)
-                return replyService.saveScore(reply: scoreVm.reply, score: replyScore)
+                return replyService.saveScore(reply: scoreVm.reply, score: score)
             }
-            .withLatestFrom(tableIndex, resultSelector: { (replyAndScore, tableIndex)  in (replyAndScore.0, tableIndex)
+            .flatMap { replyAndScore -> Observable<PromptReply> in
+                return replyService
+                    .updateAuthorCoinsFor(reply: replyAndScore.0,
+                                          coins: replyAndScore.1.score)
+            }
+            .withLatestFrom(tableIndex, resultSelector: { (reply, tableIndex)  in (reply, tableIndex)
             })
             .asDriverOnErrorJustComplete()
         

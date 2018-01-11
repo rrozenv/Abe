@@ -10,12 +10,57 @@ internal final class RepliesDataSource: ValueCellDataSource {
         case replies
     }
     
-    func load(replies: [PromptReply]) {
-        let section = Section.replies.rawValue
-        self.clearValues(section: section)
+    func load(replies: [PromptReply], userDidReply: Bool) {
+        self.clearValues(section: Section.replies.rawValue)
+        
+        if replies.isEmpty {
+            self.set(values: replies,
+                     cellClass: ReplyTableCell.self,
+                     inSection: Section.replies.rawValue)
+        }
+        
         self.set(values: replies,
                  cellClass: ReplyTableCell.self,
-                 inSection: section)
+                 inSection: Section.replies.rawValue)
+    }
+    
+    func loadBeforeUserRepliedState() {
+        self.clearValues(section: Section.replies.rawValue)
+        let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
+                                                             userDidReply: false)
+        self.set(values: [emptyStateViewModel],
+                 cellClass: RepliesEmptyCell.self,
+                 inSection: Section.replies.rawValue)
+    }
+    
+    func loadLocked(replies: [PromptReply], didReply: Bool) {
+        self.clearValues(section: Section.replies.rawValue)
+        let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
+                                                            userDidReply: didReply)
+        if replies.isEmpty {
+            self.set(values: [emptyStateViewModel],
+                     cellClass: RepliesEmptyCell.self,
+                     inSection: Section.replies.rawValue)
+        } else {
+            self.set(values: replies,
+                     cellClass: ReplyTableCell.self,
+                     inSection: Section.replies.rawValue)
+        }
+    }
+    
+    func loadUnlocked(replies: [PromptReply]) {
+        self.clearValues(section: Section.replies.rawValue)
+        let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
+                                                             userDidReply: true)
+        if replies.isEmpty {
+            self.set(values: [emptyStateViewModel],
+                     cellClass: RepliesEmptyCell.self,
+                     inSection: Section.replies.rawValue)
+        } else {
+            self.set(values: replies,
+                     cellClass: ReplyTableCell.self,
+                     inSection: Section.replies.rawValue)
+        }
     }
     
     func load(myReply: PromptReply, scores: [ReplyScore]) {
@@ -55,6 +100,8 @@ internal final class RepliesDataSource: ValueCellDataSource {
         case let (cell as ReplyTableCell, value as PromptReply):
             cell.configureWith(value: value)
         case let (cell as SavedReplyScoreTableCell, value as ReplyScore):
+            cell.configureWith(value: value)
+        case let (cell as RepliesEmptyCell, value as RepliesEmptyStateViewModel):
             cell.configureWith(value: value)
         default:
             assertionFailure("Unrecognized combo: \(cell), \(value)")

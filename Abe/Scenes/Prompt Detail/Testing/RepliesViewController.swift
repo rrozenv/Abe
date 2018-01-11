@@ -58,8 +58,11 @@ class RepliesViewController: UIViewController {
     
         //MARK: - Outputs
         viewModel.outputs.didUserReply
-            .drive()
-            //.drive(createReplyButton.rx.isHidden)
+            .drive(onNext: { [weak self] didReply in
+                self?.tabBarView.isHidden = didReply ? false : true
+                guard !didReply else { return }
+                self?.dataSource.loadBeforeUserRepliedState()
+            })
             .disposed(by: disposeBag)
         
         viewModel.outputs.didSelectFilterOption
@@ -68,19 +71,18 @@ class RepliesViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.lockedReplies.drive(onNext: { [weak self] replies in
-            self?.dataSource.load(replies: replies)
+        viewModel.outputs.lockedReplies.drive(onNext: { [weak self] inputs in
+            self?.dataSource.loadLocked(replies: inputs.replies,
+                                        didReply: inputs.userDidReply)
             self?.tableView.reloadData()
-            let indexPath = IndexPath(row: 0, section: RepliesDataSource.Section.replies.rawValue)
-            self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            self?.scrollToTop(section: .replies)
         })
         .disposed(by: disposeBag)
         
         viewModel.outputs.unlockedReplies.drive(onNext: { [weak self] replies in
-            self?.dataSource.load(replies: replies)
+            self?.dataSource.loadUnlocked(replies: replies)
             self?.tableView.reloadData()
-            let indexPath = IndexPath(row: 0, section: RepliesDataSource.Section.replies.rawValue)
-            self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            self?.scrollToTop(section: .replies)
         })
         .disposed(by: disposeBag)
         
@@ -116,6 +118,11 @@ class RepliesViewController: UIViewController {
         print("Prompt Detail Deinit")
     }
     
+    private func scrollToTop(section: RepliesDataSource.Section) {
+        let indexPath = IndexPath(row: 0, section: section.rawValue)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+    }
+    
     fileprivate func setupTableView() {
         //MARK: - tableView Properties
         tableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -127,6 +134,7 @@ class RepliesViewController: UIViewController {
         tableView.register(PromptSummarySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: PromptSummarySectionHeaderView.reuseIdentifier)
         tableView.register(TabBarSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: TabBarSectionHeaderView.reuseIdentifier)
         tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
+        tableView.register(RepliesEmptyCell.self, forCellReuseIdentifier: RepliesEmptyCell.defaultReusableId)
         
         //MARK: - tableView Constraints
         view.addSubview(tableView)
