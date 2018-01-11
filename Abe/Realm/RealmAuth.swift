@@ -1,7 +1,6 @@
 
 import Foundation
 import RealmSwift
-import PromiseKit
 import RxSwift
 import RxCocoa
 
