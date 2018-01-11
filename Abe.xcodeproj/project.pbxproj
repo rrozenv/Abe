@@ -256,7 +256,6 @@
 			isa = PBXGroup;
 			children = (
 				98FEE7B21FE4BBC000CD80A8 /* RealmInstance.swift */,
-				98F672021FFF0EA8001DE88E /* PixabayAPI.swift */,
 				9893171C1FE6EF4000E2979F /* RealmRepresentable.swift */,
 				980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */,
 				98FEE7B41FE4BBDB00CD80A8 /* RealmConfiguration.swift */,
@@ -319,6 +318,14 @@
 				98921BBB1FE735C9006CCCF6 /* Extra Reply Options */,
 			);
 			path = "Create Reply";
+			sourceTree = "<group>";
+		};
+		9827AF93200721C200357EBF /* Moya API Providers */ = {
+			isa = PBXGroup;
+			children = (
+				98F672021FFF0EA8001DE88E /* PixabayAPI.swift */,
+			);
+			path = "Moya API Providers";
 			sourceTree = "<group>";
 		};
 		984F378F20070A3E00C62E6E /* Cells */ = {
@@ -555,6 +562,7 @@
 			children = (
 				980DE5AB1FE5B3FB0087C6C3 /* Application */,
 				980DE5AC1FE5B43C0087C6C3 /* Models */,
+				9827AF93200721C200357EBF /* Moya API Providers */,
 				980DE5B11FE5B4EA0087C6C3 /* Realm */,
 				984F379720070CF200C62E6E /* Realm Data Services */,
 				980DE5B71FE5B5CD0087C6C3 /* Scenes */,

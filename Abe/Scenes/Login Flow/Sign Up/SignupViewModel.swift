@@ -30,9 +30,9 @@ final class SignupViewModel {
         let password: String
     }
     
-    private lazy var realm: RealmInstance = {
-        return RealmInstance(configuration: RealmConfig.common)
-    }()
+//    private lazy var realm: RealmInstance = {
+//        return RealmInstance(configuration: RealmConfig.common)
+//    }()
     
     private let userService: UserService
     private let router: SignupRouter

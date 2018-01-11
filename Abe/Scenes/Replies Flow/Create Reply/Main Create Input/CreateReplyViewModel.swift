@@ -28,15 +28,13 @@ struct CreateReplyViewModel {
         let errors: Driver<Error>
     }
     
-    private let realm: RealmInstance
     private let router: CreateReplyRoutingLogic
     private let prompt: Prompt
     
     var promptTitle: String { return prompt.title }
     
-    init(realm: RealmInstance, prompt: Prompt, router: CreateReplyRoutingLogic) {
+    init(prompt: Prompt, router: CreateReplyRoutingLogic) {
         self.prompt = prompt
-        self.realm = realm
         self.router = router
     }
     

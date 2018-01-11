@@ -36,26 +36,23 @@ struct ReplyOptionsViewModel {
     
     var promptTitle: String { return prompt.title }
     
-    private let commonRealm: RealmInstance
-    private let privateRealm: RealmInstance
     private let router: ReplyOptionsRoutingLogic
     private let prompt: Prompt
     private let contactsStore: ContactsStore
     private let savedReplyInput: SavedReplyInput
     private let replyService: ReplyService
     private let user: User
+    private let privateRealm: RealmInstance
     
-    init(commonRealm: RealmInstance,
+    init(replyService: ReplyService,
          privateRealm: RealmInstance,
-         replyService: ReplyService,
          prompt: Prompt,
          savedReplyInput: SavedReplyInput,
          router: ReplyOptionsRoutingLogic) {
         guard let user = AppController.shared.currentUser.value else { fatalError() }
         self.user = user
-        self.prompt = prompt
-        self.commonRealm = commonRealm
         self.privateRealm = privateRealm
+        self.prompt = prompt
         self.contactsStore = ContactsStore()
         self.savedReplyInput = savedReplyInput
         self.router = router
@@ -113,7 +110,8 @@ struct ReplyOptionsViewModel {
                                     return PromptReply(user: self.user,
                                                        promptId: prompt.id,
                                                        body: replyInput.body,
-                                                       visibility: visibility.rawValue)
+                                                       visibility:
+                                                       visibility.rawValue)
         }
         
         let didCreateReply = input.createTrigger
