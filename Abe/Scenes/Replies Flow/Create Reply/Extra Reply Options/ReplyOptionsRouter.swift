@@ -16,14 +16,14 @@ protocol ReplyOptionsRoutingLogic {
 
 final class ReplyOptionsRouter: ReplyOptionsRoutingLogic {
     
-    private let navigationController: UINavigationController
+    weak private var navigationController: UINavigationController?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 
     func toPromptDetail() {
-        navigationController.dismiss(animated: true)
+        navigationController?.dismiss(animated: true)
     }
     
 }

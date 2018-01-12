@@ -25,13 +25,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Realm Data Services/PixaImageService.swift"
-            timestampString = "537402714.213897"
+            filePath = "Abe/Realm/RealmAuth.swift"
+            timestampString = "537487638.240841"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "map(to:using:)"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
+            landmarkName = "authorize(email:password:register:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Realm/RealmAuth.swift"
+            timestampString = "537487638.241156"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "authorize(email:password:register:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

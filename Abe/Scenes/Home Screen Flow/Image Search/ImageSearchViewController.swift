@@ -30,6 +30,12 @@ final class ImageSearchViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("VC Ref count: \(CFGetRetainCount(self))")
+        print("ViewModel Ref count: \(CFGetRetainCount(viewModel))")
+    }
+    
     deinit {
         print("Search Controller deinit")
     }
@@ -49,15 +55,11 @@ final class ImageSearchViewController: UIViewController {
             .debounce(0.5, scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .filter { !$0.isEmpty }
-            .subscribe(onNext: { (text) in
-                self.viewModel.inputs.searchText.onNext(text)
-            })
-            //.bind(to: viewModel.inputs.searchText)
+            .bind(to: viewModel.inputs.searchText)
             .disposed(by: disposeBag)
         
         //MARK: - Outputs
         viewModel.outputs.fetchedImages.drive(onNext: { [weak self] images in
-            print("IMAGES \(images.count)")
             self?.dataSource.load(images: images)
             self?.collectionView.reloadData()
         })
@@ -70,10 +72,8 @@ final class ImageSearchViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.selectedImage
-            .drive(onNext: { (image) in
-                print("Selected image with url: \(image.webformatURL)")
-            })
+        viewModel.outputs.dismissViewController
+            .subscribe()
             .disposed(by: disposeBag)
     }
     

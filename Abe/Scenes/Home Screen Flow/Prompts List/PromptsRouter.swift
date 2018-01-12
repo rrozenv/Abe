@@ -35,12 +35,20 @@ class PromptsRouter: PromptsRoutingLogic {
         let router = CreatePromptRouter(navigationController: navVc)
         router.toMainInput()
         navigationController.present(navVc, animated: true, completion: nil)
+        
+//        let vc = CreatePromptViewController()
+//        let navVc = UINavigationController(rootViewController: vc)
+//        let router = CreatePromptRouter(navigationController: navVc)
+//        let promptService = PromptService()
+//        let viewModel = CreatePromptViewModel(promptService: promptService, router: router)
+//        vc.viewModel = viewModel
+//        navigationController.present(navVc, animated: true, completion: nil)
     }
 
     func toPrompt(_ prompt: Prompt) {
         let router = PromptDetailRouter(navigationController: navigationController)
-        let vm = RepliesViewModel(router: router, prompt: prompt)
         let viewCont = RepliesViewController()
+        let vm = RepliesViewModel(router: router, prompt: prompt)
         viewCont.viewModel = vm
         navigationController.pushViewController(viewCont, animated: true)
         

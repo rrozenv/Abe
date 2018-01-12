@@ -5,7 +5,7 @@ import UIKit
 class ImageSearchCollectionCell: UICollectionViewCell, ValueCell {
 
     static var defaultReusableId: String = "ScoreCollectionCell"
-    typealias Value = PixaImage
+    typealias Value = ImageRepresentable
     var imageView: UIImageView!
     
     override init(frame: CGRect) {
@@ -17,7 +17,7 @@ class ImageSearchCollectionCell: UICollectionViewCell, ValueCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureWith(value: PixaImage) {
+    func configureWith(value: ImageRepresentable) {
         if let url = URL(string: value.webformatURL) {
             imageView.kf.indicatorType = .activity
             UIView.animate(withDuration: 0.5, animations: {

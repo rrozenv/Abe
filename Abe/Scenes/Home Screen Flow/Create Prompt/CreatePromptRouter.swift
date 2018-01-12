@@ -8,7 +8,7 @@ protocol CreatePromptRoutingLogic {
 }
 
 final class CreatePromptRouter: CreatePromptRoutingLogic {
-    private let navigationController: UINavigationController
+    weak private var navigationController: UINavigationController?
     weak var createPromptViewModel: CreatePromptViewModel?
     
     init(navigationController: UINavigationController) {
@@ -21,24 +21,25 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
         let viewModel = CreatePromptViewModel(promptService: promptService, router: self)
         vc.viewModel = viewModel
         self.createPromptViewModel = viewModel
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func toImageSearch() {
         let vc = ImageSearchViewController()
-        let router = ImageSearchRouter(navigationController: navigationController)
+        let router = ImageSearchRouter(navigationController: navigationController!)
         let viewModel = ImageSearchViewModel(router: router)
         vc.viewModel = viewModel
         if createPromptViewModel != nil {
             viewModel.outputs.selectedImage
+                .debug()
                 .drive(createPromptViewModel!.selectedImage)
                 .disposed(by: viewModel.disposeBag)
         }
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func toPrompts() {
-        navigationController.dismiss(animated: true)
+        navigationController?.dismiss(animated: true)
     }
     
 }

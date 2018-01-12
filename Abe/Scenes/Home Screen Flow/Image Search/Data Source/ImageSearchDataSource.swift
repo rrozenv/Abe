@@ -18,7 +18,7 @@ final class ImageSearchDataSource: ValueCellDataSource {
 //    }
     
     //MARK: - Locked Replies Tab
-    func load(images: [PixaImage]) {
+    func load(images: [ImageRepresentable]) {
         //let emptyStateViewModel = ImageSearchEmptyStateViewModel(mainText: "No Images")
 //        if replies.isEmpty {
 //            self.set(values: [emptyStateViewModel],
@@ -39,7 +39,7 @@ final class ImageSearchDataSource: ValueCellDataSource {
     //MARK: - Configure Cell
     override func configureCell(collectionCell cell: UICollectionViewCell, withValue value: Any) {
         switch (cell, value) {
-        case let (cell as ImageSearchCollectionCell, value as PixaImage):
+        case let (cell as ImageSearchCollectionCell, value as ImageRepresentable):
             cell.configureWith(value: value)
         default:
             assertionFailure("Unrecognized combo: \(cell), \(value)")

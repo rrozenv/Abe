@@ -2,17 +2,19 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import RxOptional
 
 protocol ImageSearchViewModelInputs {
     var searchText: AnyObserver<String> { get }
-    var didSelectImage: AnyObserver<PixaImage> { get }
+    var didSelectImage: AnyObserver<ImageRepresentable> { get }
 }
 
 protocol ImageSearchViewModelOutputs {
-    var fetchedImages: Driver<[PixaImage]> { get }
-    var selectedImage: Driver<PixaImage> { get }
+    var fetchedImages: Driver<[ImageRepresentable]> { get }
+    var selectedImage: Driver<ImageRepresentable> { get }
     var activityIndicator: Driver<Bool> { get }
     var errorTracker: Driver<Error> { get }
+    var dismissViewController: Observable<Void> { get }
 }
 
 protocol ImageSearchViewModelType {
@@ -24,18 +26,20 @@ final class ImageSearchViewModel: ImageSearchViewModelType, ImageSearchViewModel
 
     let disposeBag = DisposeBag()
     
-    //MARK: - Inputs
+//MARK: - Inputs
     var inputs: ImageSearchViewModelInputs { return self }
     let searchText: AnyObserver<String>
-    let didSelectImage: AnyObserver<PixaImage>
+    let didSelectImage: AnyObserver<ImageRepresentable>
     
-    //MARK: - Outputs
+//MARK: - Outputs
     var outputs: ImageSearchViewModelOutputs { return self }
-    let fetchedImages: Driver<[PixaImage]>
-    let selectedImage: Driver<PixaImage>
+    let fetchedImages: Driver<[ImageRepresentable]>
+    let selectedImage: Driver<ImageRepresentable>
     let activityIndicator: Driver<Bool>
     let errorTracker: Driver<Error>
-    
+    let dismissViewController: Observable<Void>
+
+//MARK: - Init
     init(imageService: PixaImageService = PixaImageService(),
          router: ImageSearchRoutingLogic) {
         let activityIndicator = ActivityIndicator()
@@ -43,13 +47,10 @@ final class ImageSearchViewModel: ImageSearchViewModelType, ImageSearchViewModel
         self.activityIndicator = activityIndicator.asDriver()
         self.errorTracker = errorTracker.asDriver()
        
+//MARK: - Fetch Images
         let _searchText = PublishSubject<String>()
         self.searchText = _searchText.asObserver()
         let searchTextObservable = _searchText.asObservable()
-        
-        let _didSelectImage = PublishSubject<PixaImage>()
-        self.didSelectImage = _didSelectImage.asObserver()
-        let selectedImageObservable = _didSelectImage.asObservable()
         
         self.fetchedImages = searchTextObservable
             .flatMapLatest {
@@ -57,13 +58,19 @@ final class ImageSearchViewModel: ImageSearchViewModelType, ImageSearchViewModel
                     .trackActivity(activityIndicator)
                     .trackError(errorTracker)
             }
+            .replaceNilWith([])
             .asDriver(onErrorJustReturn: [])
-            .startWith([])
         
-        self.selectedImage = selectedImageObservable
-            .debug()
-            .map { $0 }
-            .asDriverOnErrorJustComplete()
+ //MARK: - Selected Image
+        let _didSelectImage = PublishSubject<ImageRepresentable>()
+        self.didSelectImage = _didSelectImage.asObserver()
+        let selectedImageObservable = _didSelectImage.asObservable()
+        //Passes value to create prompt vc
+        self.selectedImage = selectedImageObservable.asDriverOnErrorJustComplete()
+        
+        self.dismissViewController = selectedImageObservable
+            .mapToVoid()
+            .do(onNext: router.toMainCreateReplyInput)
     }
     
 }

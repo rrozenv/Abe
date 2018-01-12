@@ -25,6 +25,10 @@ final class CreatePromptReplyViewController: UIViewController {
         bindViewModel()
     }
     
+    deinit {
+        print("create reply deinit")
+    }
+    
     func bindViewModel() {
         titleTextView.text = viewModel.promptTitle
         

@@ -10,7 +10,7 @@ protocol CreateReplyRoutingLogic {
 
 final class CreateReplyRouter: CreateReplyRoutingLogic {
     
-    private let navigationController: UINavigationController
+    weak private var navigationController: UINavigationController?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -19,24 +19,24 @@ final class CreateReplyRouter: CreateReplyRoutingLogic {
     func toMainInput(for prompt: Prompt) {
         let vc = CreatePromptReplyViewController()
         vc.viewModel = CreateReplyViewModel(prompt: prompt, router: self)
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func toReplyOptions(with savedInput: SavedReplyInput) {
         let vc = ReplyOptionsViewController()
         let privateRealm = RealmInstance(configuration: RealmConfig.secret)
-        let router = ReplyOptionsRouter(navigationController: navigationController)
+        let router = ReplyOptionsRouter(navigationController: navigationController!)
         let replyService = ReplyService()
         let viewModel = ReplyOptionsViewModel(replyService: replyService,                   privateRealm: privateRealm,
                                               prompt: savedInput.prompt,
                                               savedReplyInput: savedInput,
                                               router: router)
         vc.viewModel = viewModel
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func toPromptDetail() {
-        navigationController.dismiss(animated: true)
+        navigationController?.dismiss(animated: true)
     }
     
 }

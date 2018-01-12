@@ -61,9 +61,9 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         
         collectionView.rx.modelSelected(ScoreCellViewModel.self)
             .throttle(0.5, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { (vm) in
-                guard let tableIndex = self.indexPath, !vm.userDidReply else { return }
-                self.delegate?.didSelectScore(scoreViewModel: vm, at: tableIndex)
+            .subscribe(onNext: { [weak self] (vm) in
+                guard let tableIndex = self?.indexPath, !vm.userDidReply else { return }
+                self?.delegate?.didSelectScore(scoreViewModel: vm, at: tableIndex)
             })
             .disposed(by: disposeBag)
     }

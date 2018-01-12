@@ -26,6 +26,10 @@ class ReplyOptionsViewController: UIViewController {
         tableView.reloadData()
     }
     
+    deinit {
+        print("reply options deinit")
+    }
+    
     func bindViewModel() {
         //MARK: - Input
         let input = ReplyOptionsViewModel

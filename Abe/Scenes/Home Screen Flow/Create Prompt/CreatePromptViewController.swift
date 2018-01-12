@@ -26,18 +26,24 @@ class CreatePromptViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("VC Ref count: \(CFGetRetainCount(self))")
+        print("ViewModel Ref count: \(CFGetRetainCount(viewModel))")
+    }
+    
     deinit {
         print("Create prompt deint")
     }
     
     func bindViewModel() {
-        //MARK: - Input
+//MARK: - Input
         titleTextView.rx.text.orEmpty
             .bind(to: viewModel.inputs.title)
             .disposed(by: disposeBag)
        
         bodyTextView.rx.text.orEmpty
-            .bind(to: viewModel.inputs.title)
+            .bind(to: viewModel.inputs.body)
             .disposed(by: disposeBag)
         
         doneButton.rx.tap
@@ -45,13 +51,14 @@ class CreatePromptViewController: UIViewController {
             .disposed(by: disposeBag)
         
         dismissButton.rx.tap
-            .bind(to: viewModel.inputs.createPromptTrigger)
+            .bind(to: viewModel.inputs.cancelTrigger)
             .disposed(by: disposeBag)
         
         imageButton.rx.tap
             .bind(to: viewModel.inputs.addImageTapped)
             .disposed(by: disposeBag)
         
+//MARK: - Output
         viewModel.outputs.inputIsValid
             .drive(onNext: { [weak self] in
                 self?.doneButton.isEnabled = $0 ? true : false
@@ -67,26 +74,9 @@ class CreatePromptViewController: UIViewController {
             .drive()
             .disposed(by: disposeBag)
         
-//        let input =
-//            CreatePromptViewModel
-//                .Input(title: titleTextView.rx.text.orEmpty.asObservable(),
-//                       body: bodyTextView.rx.text.orEmpty.asObservable(),
-//                       createPromptTrigger: doneButton.rx.tap.asObservable(),
-//                       cancelTrigger: dismissButton.rx.tap.asDriver())
-//        
-//        //MARK: - Output
-//        let output = viewModel.transform(input: input)
-//        
-//        output.inputIsValid
-//            .drive(onNext: { [weak self] in
-//                self?.doneButton.isEnabled = $0 ? true : false
-//                self?.doneButton.tintColor = $0 ? UIColor.red : UIColor.gray
-//            })
-//            .disposed(by: disposeBag)
-//        
-//        output.dismissViewController
-//            .drive()
-//            .disposed(by: disposeBag)
+        viewModel.outputs.didAddImage
+            .drive()
+            .disposed(by: disposeBag)
     }
     
     fileprivate func showError(_ error: Error) {
