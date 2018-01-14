@@ -185,6 +185,24 @@ private func sortReplies(_ replies: [PromptReply],
         let userDidVote = reply.doesScoreExistFor(userId: currentUser.id)
         if forLockedFeed && userDidVote { continue }
         if !forLockedFeed && !userDidVote { continue }
+        
+        //If reply is viewable only by certain contacts
+        guard reply.visibility != "individualContacts" else {
+            if reply.isViewableBy(currentUser: currentUser) {
+                userFriendsReplies.append(reply)
+            }
+            continue
+        }
+        
+        //If reply is viewable only by all of user contacts
+        guard reply.visibility != "contacts" else {
+            if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
+                userFriendsReplies.append(reply)
+            }
+            continue
+        }
+        
+        //If reply is viewable by everyone
         if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
             userFriendsReplies.append(reply)
         } else {

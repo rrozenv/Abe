@@ -15,7 +15,9 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     typealias Value = PromptReply
     static var defaultReusableId: String = "ReplyTableCell"
     private var disposeBag = DisposeBag()
-    private var viewModel = ReplyCellViewModel()
+    private var viewModel: ReplyCellViewModel! {
+        didSet { bindViewModel() }
+    }
     weak var delegate: ReplyTableCellDelegate?
     
     // MARK: - View Properties
@@ -39,14 +41,14 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         setupContainerView()
         setupCollectionView()
         setupTitleLabel()
+        viewModel = ReplyCellViewModel()
     }
     
     func configureWith(value: PromptReply) {
-        bindViewModel()
         viewModel.reply.onNext(value)
     }
     
-    private func bindViewModel() {
+    func bindViewModel() {
         viewModel.body
             .drive(replyBodyLabel.rx.text)
             .disposed(by: disposeBag)
@@ -108,7 +110,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         disposeBag = DisposeBag()
-        //viewModel = ReplyCellViewModel()
+        viewModel = ReplyCellViewModel()
     }
     
 }

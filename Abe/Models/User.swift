@@ -64,6 +64,27 @@ class User: Object {
         return self.contacts.flatMap { $0.numbers }
     }
     
+    func contactsWhoAreUsers(allUsers: Results<User>) -> [Contact] {
+        return self.contacts.filter { (contact) -> Bool in
+            return contact.numbers.contains(where: { (number) -> Bool in
+                return allUsers.contains(where: { (user) -> Bool in
+                    return user.phoneNumber == number
+                })
+            })
+        }
+    }
+    
+    func registeredUsersInContacts(allUsers: Results<User>) -> [User] {
+        return self.contacts.flatMap { (contact) -> User? in
+            guard let index = allUsers.index(where: { (user) -> Bool in
+                return contact.numbers.contains(user.phoneNumber)
+            }) else { return nil }
+            return allUsers[index]
+        }
+    }
+    
 }
+
+
 
 

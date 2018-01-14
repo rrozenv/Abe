@@ -54,6 +54,7 @@ final class RepliesDataSource: ValueCellDataSource {
     
     //MARK: - My Reply Tab
     func load(myReply: PromptReply, scores: [ReplyScore]) {
+        self.clearValues(section: Section.replies.rawValue)
         self.set(values: scores,
                  cellClass: SavedReplyScoreTableCell.self,
                  inSection: Section.replies.rawValue)

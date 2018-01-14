@@ -89,7 +89,7 @@ struct PhoneEntryViewModel {
                     .trackActivity(activityTracker)
                     .asDriverOnErrorJustComplete()
             }
-            
+        
         let saveContactsToUser = userContacts
             .withLatestFrom(currentUser, resultSelector: { (contacts, user) in
                 return self.contactService.add(contacts: contacts, to: user)

@@ -10,6 +10,7 @@ class PromptReply: Object {
     @objc dynamic var visibility: String = "all"
     @objc dynamic var createdAt = Date()
     let scores = List<ReplyScore>()
+    let visibleOnlyToPhoneNumbers = List<String>()
     
     override static func primaryKey() -> String? {
         return "id"
@@ -39,6 +40,10 @@ class PromptReply: Object {
 //            &&
            return currentUser.allNumbersFromContacts()
                 .contains(self.user!.phoneNumber)
+    }
+    
+    func isViewableBy(currentUser: User) -> Bool {
+        return visibleOnlyToPhoneNumbers.contains(currentUser.phoneNumber)
     }
     
     func fetchCastedScoreIfExists(for userId: String) -> (score: ReplyScore?, reply: PromptReply) {
