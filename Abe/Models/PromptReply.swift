@@ -27,6 +27,19 @@ class PromptReply: Object {
         self.visibility = visibility
     }
     
+    convenience init(user: User,
+                     promptId: String,
+                     body: String,
+                     visibility: String = "all",
+                     individualContactNumbers: [String]) {
+        self.init()
+        self.user = user
+        self.promptId = promptId
+        self.body = body
+        self.visibility = visibility
+        individualContactNumbers.forEach { self.visibleOnlyToPhoneNumbers.append($0) }
+    }
+    
     var value: [String: Any] {
         return ["id": UUID().uuidString,
                 "promptId": promptId,

@@ -15,6 +15,7 @@ class User: Object {
     @objc dynamic var phoneNumber: String = ""
     @objc dynamic var coins: Int = 0
     let contacts = List<Contact>()
+    let registeredContacts = List<User>()
     let prompts = List<Prompt>()
     let replies = List<PromptReply>()
     

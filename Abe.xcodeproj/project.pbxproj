@@ -26,6 +26,10 @@
 		9827AF922007208D00357EBF /* ScoresCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9827AF912007208D00357EBF /* ScoresCollectionViewFlowLayout.swift */; };
 		9836043F20070EC2008A975D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836043E20070EC2008A975D /* Extensions.swift */; };
 		9836044120071021008A975D /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836044020071021008A975D /* EmptyStateView.swift */; };
+		983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */; };
+		983DB1EA200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */; };
+		983DB1EC200C3B5A004FC2D0 /* UserContactTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */; };
+		983DB1EE200C3C33004FC2D0 /* ReplyVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */; };
 		98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */; };
 		984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F3785200704E700C62E6E /* ReplyCellViewModel.swift */; };
 		984F378C2007080E00C62E6E /* SavedReplyScoreTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */; };
@@ -130,6 +134,10 @@
 		9827AF912007208D00357EBF /* ScoresCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoresCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		9836043E20070EC2008A975D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9836044020071021008A975D /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityViewModel.swift; sourceTree = "<group>"; };
+		983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralVisibilityTableCell.swift; sourceTree = "<group>"; };
+		983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContactTableCell.swift; sourceTree = "<group>"; };
+		983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityViewController.swift; sourceTree = "<group>"; };
 		98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsDataSource.swift; sourceTree = "<group>"; };
 		984F3785200704E700C62E6E /* ReplyCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyCellViewModel.swift; sourceTree = "<group>"; };
 		984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedReplyScoreTableCell.swift; sourceTree = "<group>"; };
@@ -370,6 +378,18 @@
 			path = "Moya API Providers";
 			sourceTree = "<group>";
 		};
+		983DB1E6200C295C004FC2D0 /* Reply Visibility Options */ = {
+			isa = PBXGroup;
+			children = (
+				98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */,
+				983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */,
+				983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */,
+				983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */,
+				983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */,
+			);
+			path = "Reply Visibility Options";
+			sourceTree = "<group>";
+		};
 		984F378F20070A3E00C62E6E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -529,7 +549,7 @@
 				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
 				98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */,
 				98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */,
-				98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */,
+				983DB1E6200C295C004FC2D0 /* Reply Visibility Options */,
 			);
 			path = "Extra Reply Options";
 			sourceTree = "<group>";
@@ -898,11 +918,14 @@
 				9836044120071021008A975D /* EmptyStateView.swift in Sources */,
 				9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */,
 				9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */,
+				983DB1EE200C3C33004FC2D0 /* ReplyVisibilityViewController.swift in Sources */,
 				98FEE7BB1FE4BC5400CD80A8 /* PromptsListViewController.swift in Sources */,
+				983DB1EC200C3B5A004FC2D0 /* UserContactTableCell.swift in Sources */,
 				98FEE7C91FE4CB5000CD80A8 /* PromptView.swift in Sources */,
 				9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */,
 				985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */,
 				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
+				983DB1EA200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift in Sources */,
 				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				9862867A20006AF000502294 /* RepliesViewModel.swift in Sources */,
@@ -912,6 +935,7 @@
 				985C2A611FFDAE040034E116 /* ContactService.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				9836043F20070EC2008A975D /* Extensions.swift in Sources */,
+				983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */,
 				98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
 				9806B9142007DE5C000CB497 /* ImageSearchViewModel.swift in Sources */,

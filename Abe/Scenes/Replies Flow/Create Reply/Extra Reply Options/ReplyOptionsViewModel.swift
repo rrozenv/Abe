@@ -8,7 +8,7 @@ import Contacts
 
 enum Visibility: String {
     case all
-    case facebook
+    case individualContacts
     case contacts
     case userReply
 }
@@ -67,7 +67,7 @@ struct ReplyOptionsViewModel {
         let errors = errorTracker.asDriver()
         
         //MARK: - 1. let visibilityOptions: Driver<[Visibility]>
-        let _options: [Visibility] = [.all, .facebook, .contacts]
+        let _options: [Visibility] = [.all, .individualContacts, .contacts]
         let visbilityOptions = Driver.of(_options)
         
         //MARK: - 2. let savedContacts: Driver<Void>
