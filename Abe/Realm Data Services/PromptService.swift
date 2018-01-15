@@ -133,6 +133,23 @@ struct UserService {
         return user
     }
     
+    func fetchAll() -> Observable<Results<User>> {
+        let result = withRealm("getting prompts") { realm -> Observable<Results<User>> in
+            let users = realm.objects(User.self)
+            return Observable.collection(from: users)
+        }
+        return result ?? .empty()
+    }
+    
+//    func registedContactsFor(user: User, allUsers: Results<User>) -> Observable<[User]> {
+//        return self.contacts.flatMap { (contact) -> User? in
+//            guard let index = allUsers.index(where: { (user) -> Bool in
+//                return contact.numbers.contains(user.phoneNumber)
+//            }) else { return nil }
+//            return allUsers[index]
+//        }
+//    }
+    
 }
 
 enum ReplyServiceError: Error {

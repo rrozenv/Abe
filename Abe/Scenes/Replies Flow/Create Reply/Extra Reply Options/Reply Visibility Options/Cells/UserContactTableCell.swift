@@ -5,7 +5,7 @@ import UIKit
 final class UserContactTableCell: UITableViewCell, ValueCell {
     
     // MARK: - Properties
-    typealias Value = User
+    typealias Value = IndividualContactViewModel
     static var defaultReusableId: String = "UserContactTableCell"
     fileprivate var containerView: UIView!
     fileprivate var mainLabel: UILabel!
@@ -34,8 +34,9 @@ final class UserContactTableCell: UITableViewCell, ValueCell {
     }
     
     // MARK: - Configuration
-    func configureWith(value: User) {
-        mainLabel.text = value.name
+    func configureWith(value: IndividualContactViewModel) {
+        mainLabel.text = value.user.name
+        isSelect = value.isSelected
     }
     
 }

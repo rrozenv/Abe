@@ -381,11 +381,10 @@
 		983DB1E6200C295C004FC2D0 /* Reply Visibility Options */ = {
 			isa = PBXGroup;
 			children = (
-				98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */,
+				98A738D0200D4ED40001BC0C /* Cells */,
+				98A738D1200D4EE80001BC0C /* Data Source */,
 				983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */,
 				983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */,
-				983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */,
-				983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */,
 			);
 			path = "Reply Visibility Options";
 			sourceTree = "<group>";
@@ -588,6 +587,23 @@
 				989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */,
 			);
 			path = "Main Create Input";
+			sourceTree = "<group>";
+		};
+		98A738D0200D4ED40001BC0C /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */,
+				983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		98A738D1200D4EE80001BC0C /* Data Source */ = {
+			isa = PBXGroup;
+			children = (
+				98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */,
+			);
+			path = "Data Source";
 			sourceTree = "<group>";
 		};
 		98F671FB1FFEA1ED001DE88E /* Phone Entry */ = {

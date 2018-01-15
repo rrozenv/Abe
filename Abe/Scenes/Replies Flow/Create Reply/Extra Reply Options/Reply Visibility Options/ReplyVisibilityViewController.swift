@@ -26,9 +26,9 @@ class ReplyVisibilityViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
+        viewModel.inputs.viewWillAppear.onNext(())
     }
-    
+   
     deinit {
         print("reply options deinit")
     }
@@ -39,33 +39,46 @@ class ReplyVisibilityViewController: UIViewController {
             .drive(viewModel.inputs.createTrigger)
             .disposed(by: disposeBag)
         
-//        tableView.rx.itemSelected.asObservable()
-//            .do(onNext: { (indexPath) in
-//                if let cell = self.tableView.cellForRow(at: indexPath) as? UserContactTableCell {
-//                    cell.isSelect = !cell.isSelect
-//                }
-//            })
-//            .subscribe(onNext: { [weak self] indexPath in
-//                if let cell = self?.tableView.cellForRow(at: indexPath) as? UserContactTableCell {
-//                    cell.isSelect = !cell.isSelect
-//                }
-//            })
-//            .disposed(by: disposeBag)
-        
-        tableView.rx.modelSelected(User.self).asDriver()
-            .do(onNext: { self.selectedIndividuals.value.append($0) })
-            .map { _ in self.selectedIndividuals.value }
-            .drive(viewModel.inputs.selectedIndividualContacts)
-            .disposed(by: disposeBag)
-        
-        tableView.rx.modelSelected(Visibility.self).asDriver()
-            .drive(viewModel.inputs.generalVisibilitySelected)
+        tableView.rx.itemSelected.asObservable()
+            .subscribe(onNext: { indexPath in
+                guard let section = ReplyVisibilityDataSource.Section(rawValue: indexPath.section) else { fatalError() }
+                switch section {
+                case .generalVisibility:
+                    //Adjust Individual Contacts Section Header
+                    self.dataSource.updateGeneralVisibilitySelectedStatus(at: indexPath)
+                    guard let viewModel = self.dataSource.generalVisAtIndexPath(indexPath)
+                        else { return }
+                    self.viewModel.inputs.generalVisibilitySelected.onNext(viewModel.visibility)
+                    self.tableView.reloadData()
+                case .individualContacts:
+                    self.dataSource.updateContactSelectedStatus(at: indexPath)
+                    guard let viewModel = self.dataSource.contactViewModelAt(indexPath: indexPath)
+                        else { return }
+                    self.viewModel.inputs.selectedContact.onNext((viewModel.user, viewModel.isSelected))
+                    self.tableView.reloadData()
+                }
+            })
             .disposed(by: disposeBag)
         
         //MARK: - Output
         viewModel.outputs.generalVisibilityOptions
             .drive(onNext: { [weak self] (options) in
                 self?.dataSource.loadGeneralVisibility(options: options)
+                self?.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.currentlySelectedIndividualContacts
+            .subscribe(onNext: { (selectedContacts) in
+                if selectedContacts.isEmpty {
+                    //Adjust Individual Contacts Section Header
+                    self.dataSource.selectGeneralVisibility(.all)
+                    self.viewModel.inputs.generalVisibilitySelected.onNext(.all)
+                } else {
+                    self.dataSource.deselectAllInSection(section: .generalVisibility)
+                    self.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
+                }
+                self.tableView.reloadData()
             })
             .disposed(by: disposeBag)
         
@@ -80,33 +93,6 @@ class ReplyVisibilityViewController: UIViewController {
             .drive()
             .disposed(by: disposeBag)
         
-//        let output = viewModel.transform(input: input)
-//
-//        output.visibilityOptions
-//            .drive(tableView.rx.items) { tableView, index, visibility in
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "vis") else { fatalError() }
-//                cell.textLabel?.text = visibility.rawValue
-//                return cell
-//            }
-//            .disposed(by: disposeBag)
-//
-//        output.didCreateReply
-//            .subscribe()
-//            .disposed(by: disposeBag)
-//
-//        output.savedContacts
-//            .drive()
-//            .disposed(by: disposeBag)
-//
-//        output.loading
-//            .drive()
-//            .disposed(by: disposeBag)
-//
-//        output.errors
-//            .drive(onNext: { [weak self] error in
-//                self?.showError(error)
-//            })
-//            .disposed(by: disposeBag)
     }
     
 }
@@ -128,7 +114,10 @@ extension ReplyVisibilityViewController {
         //MARK: - tableView Properties
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "vis")
+        tableView.register(GeneralVisibilityTableCell.self, forCellReuseIdentifier: GeneralVisibilityTableCell.defaultReusableId)
+        tableView.register(UserContactTableCell.self, forCellReuseIdentifier: UserContactTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
+        tableView.dataSource = dataSource
         tableView.rowHeight = UITableViewAutomaticDimension
         
         //MARK: - tableView Constraints

@@ -5,10 +5,16 @@ import UIKit
 final class GeneralVisibilityTableCell: UITableViewCell, ValueCell {
     
     // MARK: - Properties
-    typealias Value = Visibility
+    typealias Value = VisibilityCellViewModel
     static var defaultReusableId: String = "GeneralVisibilityTableCell"
     fileprivate var containerView: UIView!
     fileprivate var mainLabel: UILabel!
+    
+    var isSelect: Bool = false {
+        didSet {
+            self.containerView.backgroundColor = isSelect ? UIColor.green : UIColor.white
+        }
+    }
     
     // MARK: - Initialization
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -28,8 +34,9 @@ final class GeneralVisibilityTableCell: UITableViewCell, ValueCell {
     }
     
     // MARK: - Configuration
-    func configureWith(value: Visibility) {
-        switch value {
+    func configureWith(value: VisibilityCellViewModel) {
+        isSelect = value.isSelected
+        switch value.visibility {
         case .all:
             mainLabel.text = "Everyone"
         case .contacts:
