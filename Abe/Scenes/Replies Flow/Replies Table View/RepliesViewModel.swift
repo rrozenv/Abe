@@ -89,13 +89,14 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
 //MARK: - Second Level Observables
         let didUserReplyObservable = viewWillAppearObservable
             .map { _ in currentUser.value.didReply(to: prompt) }
-        let repliesTupleObservable = tabSelectedObservable
+        let lockedRepliesTupleObservable = tabSelectedObservable
             .filter { $0 == .locked }
+            .filter { _ in currentUser.value.didReply(to: prompt) }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,
                                currentUser: currentUser.value) }
-        let lockedRepliesObservable = repliesTupleObservable.map { $0.friends + $0.others }
+        let lockedRepliesObservable = lockedRepliesTupleObservable.map { $0.friends + $0.others }
         
 //MARK: - Outer Observables
         self.didUserReply = didUserReplyObservable.asDriver(onErrorJustReturn: false)
@@ -144,7 +145,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             })
             .asDriverOnErrorJustComplete()
         
-        self.stillUnreadFromFriendsCount = repliesTupleObservable
+        self.stillUnreadFromFriendsCount = lockedRepliesTupleObservable
             .map { "\($0.friends.count) replies from friends still locked!" }
             .asDriver(onErrorJustReturn: "")
     }

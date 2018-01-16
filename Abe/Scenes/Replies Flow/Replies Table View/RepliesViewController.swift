@@ -89,7 +89,7 @@ class RepliesViewController: UIViewController {
         viewModel.outputs.updateReplyWithSavedScore
             .drive(onNext: { [weak self] (inputs) in
                 self?.dataSource.updateReply(inputs.0, at: inputs.1)
-                self?.tableView.reloadRows(at: [inputs.1], with: .none)
+                self?.tableView.reloadRows(at: [inputs.1], with: .automatic)
             })
             .disposed(by: disposeBag)
         
@@ -98,7 +98,7 @@ class RepliesViewController: UIViewController {
                 self?.dataSource.load(myReply: inputs.0, scores: inputs.1)
                 self?.tableView.reloadSections(
                     [RepliesDataSource.Section.replies.rawValue],
-                    animationStyle: .none)
+                    animationStyle: .automatic)
             })
             .disposed(by: disposeBag)
         
