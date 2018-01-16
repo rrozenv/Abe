@@ -28,6 +28,7 @@
 		9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */; };
 		9828ABC8200E745A00A3A9D1 /* AddWebLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */; };
 		9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */; };
+		9828ABCC200E9B3500A3A9D1 /* WebLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */; };
 		9836043F20070EC2008A975D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836043E20070EC2008A975D /* Extensions.swift */; };
 		9836044120071021008A975D /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836044020071021008A975D /* EmptyStateView.swift */; };
 		983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */; };
@@ -140,6 +141,7 @@
 		9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkViewModel.swift; sourceTree = "<group>"; };
 		9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkViewController.swift; sourceTree = "<group>"; };
 		9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkRouter.swift; sourceTree = "<group>"; };
+		9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkView.swift; sourceTree = "<group>"; };
 		9836043E20070EC2008A975D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9836044020071021008A975D /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityViewModel.swift; sourceTree = "<group>"; };
@@ -394,6 +396,7 @@
 				9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */,
 				9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */,
 				9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */,
+				9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */,
 			);
 			path = "Add Web Link";
 			sourceTree = "<group>";
@@ -992,6 +995,7 @@
 				98FEE7C51FE4C12300CD80A8 /* CreatePromptViewController.swift in Sources */,
 				98F672031FFF0EA8001DE88E /* PixabayAPI.swift in Sources */,
 				9806B91A2007EB83000CB497 /* ImageSearchRouter.swift in Sources */,
+				9828ABCC200E9B3500A3A9D1 /* WebLinkView.swift in Sources */,
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
 				9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */,

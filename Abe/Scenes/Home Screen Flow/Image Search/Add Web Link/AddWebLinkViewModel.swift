@@ -10,7 +10,7 @@ protocol AddWebLinkViewModelInputs {
 }
 
 protocol AddWebLinkViewModelOutputs {
-    var linkThumbnail: Observable<WebLinkThumbnail?> { get }
+    var linkThumbnail: Observable<WebLinkThumbnail> { get }
     var activityIndicator: Driver<Bool> { get }
     var errorTracker: Driver<Error> { get }
 }
@@ -31,7 +31,7 @@ final class AddWebLinkViewModel: AddWebLinkViewModelType, AddWebLinkViewModelInp
     
 //MARK: - Outputs
     var outputs: AddWebLinkViewModelOutputs { return self }
-    let linkThumbnail: Observable<WebLinkThumbnail?>
+    let linkThumbnail: Observable<WebLinkThumbnail>
     let activityIndicator: Driver<Bool>
     let errorTracker: Driver<Error>
     
@@ -62,6 +62,7 @@ final class AddWebLinkViewModel: AddWebLinkViewModelType, AddWebLinkViewModelInp
                     .trackError(errorTracker)
                     .trackActivity(activityIndicator)
             }
+            
     }
     
 }

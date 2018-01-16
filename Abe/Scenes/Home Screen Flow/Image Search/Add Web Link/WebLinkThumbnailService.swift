@@ -11,11 +11,28 @@ import RealmSwift
 import SwiftLinkPreview
 import RxSwift
 
+struct WebLinkThumbnailViewModel {
+    let url: String 
+    let canonicalUrl: String
+    let title: String
+    let imageUrl: String
+}
+
+extension WebLinkThumbnailViewModel {
+    init(thumbnail: WebLinkThumbnail) {
+        self.url = thumbnail.url
+        self.canonicalUrl = thumbnail.canonicalUrl
+        self.title = thumbnail.title
+        self.imageUrl = thumbnail.mainImageUrl
+    }
+}
+
 final class WebLinkThumbnail: Object {
     @objc dynamic var id: String = NSUUID().uuidString
     @objc dynamic var url: String = ""
     @objc dynamic var finalUrl: String = ""
     @objc dynamic var canonicalUrl: String = ""
+    @objc dynamic var descrip: String = ""
     @objc dynamic var title: String = ""
     @objc dynamic var mainImageUrl: String = ""
     @objc dynamic var icon: String = ""
@@ -25,33 +42,43 @@ final class WebLinkThumbnail: Object {
         return "id"
     }
     
-    convenience init(dictionary:  [SwiftLinkResponseKey: Any]) {
+    convenience init?(dictionary: [SwiftLinkResponseKey: Any]) {
         self.init()
-//        guard let url = dictionary[.url] as? String,
-//              let canonicalUrl = dictionary[.canonicalUrl] as? String,
-//              let title = dictionary[.title] as? String,
-//              let imageUrl = dictionary[.image] as? String else { return nil }
-        self.url = dictionary[.url] as? String ?? ""
-        self.canonicalUrl = dictionary[.canonicalUrl] as? String ?? ""
-        self.title = dictionary[.title] as? String ?? ""
-        self.mainImageUrl = dictionary[.image] as? String ?? ""
+        print("url: \(String(describing: dictionary[.url] as? NSURL))")
+        print("canonicalUrl: \(String(describing: dictionary[.canonicalUrl] as? NSURL))")
+        print("title: \(String(describing: dictionary[.title] as? String))")
+        print("imageUrl: \(String(describing: dictionary[.image] as? String))")
+        guard let url = (dictionary[.url] as? NSURL)?.absoluteString,
+              let title = dictionary[.title] as? String,
+              let imageUrl = dictionary[.image] as? String else { return nil }
+        self.url = url
+        self.canonicalUrl = (dictionary[.canonicalUrl] as? NSURL)?.absoluteString ?? ""
+        self.title = title
+        self.mainImageUrl = imageUrl
     }
     
+}
+
+enum WebLinkThumbnailServiceError: Error {
+    case missingInfo
 }
 
 struct WebLinkThumbnailService {
    
     let linkPreview = SwiftLinkPreview()
     
-    func fetchThumbnailFor(url: String) -> Observable<WebLinkThumbnail?> {
+    func fetchThumbnailFor(url: String) -> Observable<WebLinkThumbnail> {
         return Observable.create { (observer) -> Disposable in
-            self.linkPreview
-                .preview(url,
+            self.linkPreview.preview(url,
                          onSuccess: { (response) in
-                           observer.onNext(WebLinkThumbnail(dictionary: response) ?? nil)
-                           observer.onCompleted()
+                            if let thumbnail = WebLinkThumbnail(dictionary: response) {
+                                observer.onNext(thumbnail)
+                            } else {
+                                observer.onError(WebLinkThumbnailServiceError.missingInfo)
+                            }
+                            observer.onCompleted()
                          }, onError: { (error) in
-                           observer.onError(error)
+                            observer.onError(error)
                          })
             return Disposables.create()
         }

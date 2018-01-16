@@ -24,19 +24,24 @@ final class AddWebLinkViewController: UIViewController, BindableType {
     var viewModel: AddWebLinkViewModel!
     private var searchTextField: UITextField!
     private var searchButton: UIButton!
-    private var activityIndicator: UIActivityIndicatorView!
+    private var actionButtonsView: WebLinkActionButtonsView!
+    private var webThumbnailView: WebThumbnailView!
+    private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         setupSearchTextfield()
-        setupSearchButton()
+        //setupSearchButton()
+        setupWebLinkActionButtonsView()
+        setupWebThumbnailView()
+        setupLoadingIndicator()
     }
     
-    deinit {
-        print("Add Web Link deinit")
-    }
+    override var inputAccessoryView: UIView? { get { return actionButtonsView } }
+    override var canBecomeFirstResponder: Bool { return true }
+    deinit { print("Add Web Link deinit") }
     
     func bindViewModel() {
         
@@ -48,29 +53,43 @@ final class AddWebLinkViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.searchTextInput)
             .disposed(by: disposeBag)
         
-        searchButton.rx.tap
+        actionButtonsView.searchButton.rx.tap
             .throttle(0.5, scheduler: MainScheduler.instance)
             .bind(to: viewModel.inputs.searchTappedInput)
             .disposed(by: disposeBag)
         
         //MARK: - Outputs
         viewModel.outputs.linkThumbnail
-            .subscribe(onNext: { (thumbnail) in
-                if let thumbnail = thumbnail {
-                    print("thumbnail found: \(thumbnail)")
-                } else {
-                    print("no thumbnail")
-                }
+            .subscribe(onNext: { [weak self] (thumbnail) in
+                self?.webThumbnailView.isHidden = false
+                self?.webThumbnailView.thumbnail = thumbnail
+                self?.actionButtonsView.displayDone = true
             })
             .disposed(by: disposeBag)
         
         viewModel.outputs.errorTracker
-            .drive(onNext: { (error) in
-                print("ERRROR")
-                print(error.localizedDescription)
+            .drive(onNext: { [weak self] (error) in
+                self?.handleError(error)
             })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.activityIndicator
+            .drive(activityIndicator.rx.isAnimating)
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.activityIndicator
+            .drive(onNext: { [weak self] in
+                self?.actionButtonsView.isHidden = $0 ? true : false
+            })
+            .disposed(by: disposeBag)
+    }
     
+    private func handleError(_ error: Error) {
+        switch error {
+        case is WebLinkThumbnailServiceError:
+            print("missing info!")
+        default: break
+        }
     }
     
     private func setupSearchTextfield() {
@@ -81,6 +100,7 @@ final class AddWebLinkViewController: UIViewController, BindableType {
         searchTextField.layer.masksToBounds = true
         searchTextField.font = FontBook.AvenirMedium.of(size: 14)
         searchTextField.textColor = UIColor.black
+        searchTextField.becomeFirstResponder()
         
         view.addSubview(searchTextField)
         searchTextField.snp.makeConstraints { (make) in
@@ -93,14 +113,37 @@ final class AddWebLinkViewController: UIViewController, BindableType {
     
     private func setupSearchButton() {
         searchButton = UIButton()
-        searchButton.backgroundColor = UIColor.blue
+        searchButton.backgroundColor = UIColor.green
         searchButton.setTitle("Next", for: .normal)
-        
-        view.addSubview(searchButton)
+
         searchButton.snp.makeConstraints { (make) in
+            make.height.equalTo(100)
+        }
+    }
+    
+    private func setupWebLinkActionButtonsView() {
+        actionButtonsView = WebLinkActionButtonsView()
+        actionButtonsView.frame.size.height = 60
+    }
+    
+    private func setupWebThumbnailView() {
+        webThumbnailView = WebThumbnailView()
+        webThumbnailView.isHidden = true
+        
+        view.addSubview(webThumbnailView)
+        webThumbnailView.snp.makeConstraints { (make) in
             make.left.equalTo(view).offset(20)
             make.right.equalTo(view).offset(-20)
             make.top.equalTo(searchTextField.snp.bottom).offset(10)
+        }
+    }
+    
+    fileprivate func setupLoadingIndicator() {
+        activityIndicator.hidesWhenStopped = true
+        
+        view.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { (make) in
+            make.center.equalTo(view.snp.center)
         }
     }
     
