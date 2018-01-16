@@ -27,6 +27,7 @@ protocol ReplyVisibilityViewModelOutputs {
     var individualContacts: Driver<[IndividualContactViewModel]> { get }
     var didCreateReply: Driver<Void> { get }
     var currentlySelectedIndividualContacts: Observable<[String]> { get }
+    var latestSelectedGeneralVisibility: Observable<Visibility> { get }
 }
 
 protocol ReplyVisibilityViewModelType {
@@ -48,6 +49,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
 //MARK: - Outputs
     var outputs: ReplyVisibilityViewModelOutputs { return self }
     let generalVisibilityOptions: Driver<[VisibilityCellViewModel]>
+    let latestSelectedGeneralVisibility: Observable<Visibility>
     let individualContacts: Driver<[IndividualContactViewModel]>
     let didCreateReply: Driver<Void>
     let currentlySelectedIndividualContacts: Observable<[String]>
@@ -78,8 +80,12 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         }
         self.generalVisibilityOptions = Driver.of(_options)
         
-        let _generalVisSelected = BehaviorSubject<Visibility>(value: .all)
-        let generalVisSelected = _generalVisSelected.asObservable().distinctUntilChanged()
+        let _generalVisSelected = PublishSubject<Visibility>()
+        self.latestSelectedGeneralVisibility = _generalVisSelected
+            .asObservable()
+            .distinctUntilChanged()
+            .startWith(.all)
+        
         self.generalVisibilitySelected = _generalVisSelected.asObserver()
 
 //MARK: - Individual Contacts
@@ -117,22 +123,21 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let _reply =
             Observable.combineLatest(_currentPrompt,
                                      _savedReplyInput,
-                                     generalVisSelected,
+                                     self.latestSelectedGeneralVisibility,
                                      self.currentlySelectedIndividualContacts) { (prompt, replyInput, visibility, selectedIndividualNumbers) -> PromptReply in
-                                        if !selectedIndividualNumbers.isEmpty {
-                                           return PromptReply(user: currentUser.value,
-                                                        promptId: prompt.id,
-                                                        body: replyInput.body,
-                                                        visibility: Visibility.individualContacts.rawValue,
-                                                        individualContactNumbers: selectedIndividualNumbers)
-                                        } else {
+                                        guard visibility != .individualContacts else {
                                             return PromptReply(user: currentUser.value,
                                                                promptId: prompt.id,
                                                                body: replyInput.body,
-                                                               visibility:
-                                                               visibility.rawValue)
+                                                               visibility: Visibility.individualContacts.rawValue,
+                                                               individualContactNumbers: selectedIndividualNumbers)
                                         }
-                                   
+                                        
+                                        return PromptReply(user: currentUser.value,
+                                                           promptId: prompt.id,
+                                                           body: replyInput.body,
+                                                           visibility:
+                                                           visibility.rawValue)
         }
 
         self.didCreateReply = _createReplyTapped.asObservable()

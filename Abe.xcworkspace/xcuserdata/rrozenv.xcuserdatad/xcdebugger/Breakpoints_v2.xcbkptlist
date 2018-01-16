@@ -57,46 +57,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Replies Flow/Create Reply/Extra Reply Options/Reply Visibility Options/ReplyVisibilityViewController.swift"
-            timestampString = "537746513.690464"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Extra Reply Options/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "537754764.008859"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
-            landmarkName = "bindViewModel()"
+            startingLineNumber = "146"
+            endingLineNumber = "146"
+            landmarkName = "init(replyService:userService:router:prompt:savedReplyInput:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Foundation.IndexPath) -&gt; () in Abe.ReplyVisibilityViewController.bindViewModel() -&gt; ()"
-                  moduleName = "Abe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Extra%20Reply%20Options/Reply%20Visibility%20Options/ReplyVisibilityViewController.swift"
-                  timestampString = "537746513.890642"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "52"
-                  endingLineNumber = "52"
-                  offsetFromSymbolStart = "1064">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Foundation.IndexPath) -&gt; () in Abe.ReplyVisibilityViewController.bindViewModel() -&gt; ()"
-                  moduleName = "Abe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Extra%20Reply%20Options/Reply%20Visibility%20Options/ReplyVisibilityViewController.swift"
-                  timestampString = "537746513.893237"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "52"
-                  endingLineNumber = "52"
-                  offsetFromSymbolStart = "1221">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

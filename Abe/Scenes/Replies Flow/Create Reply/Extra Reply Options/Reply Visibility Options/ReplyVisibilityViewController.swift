@@ -68,7 +68,12 @@ class ReplyVisibilityViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
+        viewModel.outputs.latestSelectedGeneralVisibility
+            .subscribe()
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.currentlySelectedIndividualContacts
+            .skip(1)
             .subscribe(onNext: { (selectedContacts) in
                 if selectedContacts.isEmpty {
                     //Adjust Individual Contacts Section Header
@@ -78,7 +83,6 @@ class ReplyVisibilityViewController: UIViewController {
                     self.dataSource.deselectAllInSection(section: .generalVisibility)
                     self.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
                 }
-                self.tableView.reloadData()
             })
             .disposed(by: disposeBag)
         
