@@ -91,7 +91,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .map { _ in currentUser.value.didReply(to: prompt) }
         let lockedRepliesTupleObservable = tabSelectedObservable
             .filter { $0 == .locked }
-            .filter { _ in currentUser.value.didReply(to: prompt) }
+            .flatMap { _ in didUserReplyObservable }.filter { $0 }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,

@@ -4,7 +4,7 @@ import RxSwift
 import RxDataSources
 import Action
 
-class CreatePromptViewController: UIViewController {
+class CreatePromptViewController: UIViewController, BindableType {
     
     let disposeBag = DisposeBag()
     var viewModel: CreatePromptViewModel!
@@ -14,6 +14,7 @@ class CreatePromptViewController: UIViewController {
     fileprivate var doneButton: UIBarButtonItem!
     fileprivate var dismissButton: UIBarButtonItem!
     private var imageButton: UIButton!
+    private var addWebLinkButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,9 +22,9 @@ class CreatePromptViewController: UIViewController {
         setupTitleTextView()
         setupBodyTextView()
         setupAddImageButton()
+        setupAddWebLinkButton()
         setupDoneButton()
         setupCancelButton()
-        bindViewModel()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -56,6 +57,10 @@ class CreatePromptViewController: UIViewController {
         
         imageButton.rx.tap
             .bind(to: viewModel.inputs.addImageTapped)
+            .disposed(by: disposeBag)
+        
+        addWebLinkButton.rx.tap
+            .bind(to: viewModel.inputs.addWebLinkTappedInput)
             .disposed(by: disposeBag)
         
 //MARK: - Output
@@ -141,6 +146,19 @@ extension CreatePromptViewController {
             make.left.equalTo(view).offset(20)
             make.right.equalTo(view).offset(-20)
             make.top.equalTo(bodyTextView.snp.bottom).offset(10)
+        }
+    }
+    
+    func setupAddWebLinkButton() {
+        addWebLinkButton = UIButton()
+        addWebLinkButton.backgroundColor = UIColor.green
+        addWebLinkButton.setTitle("Add Web Link", for: .normal)
+        
+        view.addSubview(addWebLinkButton)
+        addWebLinkButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.top.equalTo(imageButton.snp.bottom).offset(10)
         }
     }
   

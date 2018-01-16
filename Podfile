@@ -15,4 +15,5 @@ target 'Abe' do
   pod 'PhoneNumberKit', '~> 2.1'
   pod 'Moya/RxSwift'
   pod 'RxOptional'
+  pod 'SwiftLinkPreview', '~> 2.2.0'
 end

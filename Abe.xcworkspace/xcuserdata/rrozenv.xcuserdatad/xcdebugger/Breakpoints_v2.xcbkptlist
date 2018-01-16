@@ -74,12 +74,12 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Extra%20Reply%20Options/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
-                  timestampString = "537766513.114954"
+                  timestampString = "537822204.586512"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "147"
                   endingLineNumber = "147"
-                  offsetFromSymbolStart = "21">
+                  offsetFromSymbolStart = "32">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -89,12 +89,12 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Extra%20Reply%20Options/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
-                  timestampString = "537766513.117841"
+                  timestampString = "537822204.588084"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "148"
                   endingLineNumber = "148"
-                  offsetFromSymbolStart = "12">
+                  offsetFromSymbolStart = "16">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -122,12 +122,12 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Models/User.swift"
-                  timestampString = "537766513.132638"
+                  timestampString = "537822204.5918601"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "79"
                   endingLineNumber = "79"
-                  offsetFromSymbolStart = "27">
+                  offsetFromSymbolStart = "36">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -137,12 +137,12 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Models/User.swift"
-                  timestampString = "537766513.1358"
+                  timestampString = "537822204.593533"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "80"
                   endingLineNumber = "80"
-                  offsetFromSymbolStart = "28">
+                  offsetFromSymbolStart = "32">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -240,6 +240,102 @@
             startingLineNumber = "98"
             endingLineNumber = "98"
             landmarkName = "bindViewModel()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Home Screen Flow/Image Search/Add Web Link/AddWebLinkViewController.swift"
+            timestampString = "537822204.3727551"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "bindViewModel()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Home Screen Flow/Image Search/Add Web Link/AddWebLinkViewController.swift"
+            timestampString = "537822204.372862"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "bindViewModel()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Home Screen Flow/Image Search/Add Web Link/WebLinkThumbnailService.swift"
+            timestampString = "537822204.372939"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "fetchThumbnailFor(url:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Dictionary&lt;SwiftLinkPreview.SwiftLinkResponseKey, Any&gt;) -&gt; () in closure #1 (RxSwift.AnyObserver&lt;Swift.Optional&lt;Abe.WebLinkThumbnail&gt;&gt;) -&gt; RxSwift.Disposable in Abe.WebLinkThumbnailService.fetchThumbnailFor(url: Swift.String) -&gt; RxSwift.Observable&lt;Swift.Optional&lt;Abe.WebLinkThumbnail&gt;&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Home%20Screen%20Flow/Image%20Search/Add%20Web%20Link/WebLinkThumbnailService.swift"
+                  timestampString = "537822205.452228"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "51"
+                  endingLineNumber = "51"
+                  offsetFromSymbolStart = "32">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "implicit closure #1 : @autoclosure () throws -&gt; Swift.Optional&lt;Abe.WebLinkThumbnail&gt; in closure #1 (Swift.Dictionary&lt;SwiftLinkPreview.SwiftLinkResponseKey, Any&gt;) -&gt; () in closure #1 (RxSwift.AnyObserver&lt;Swift.Optional&lt;Abe.WebLinkThumbnail&gt;&gt;) -&gt; RxSwift.Disposable in Abe.WebLinkThumbnailService.fetchThumbnailFor(url: Swift.String) -&gt; RxSwift.Observable&lt;Swift.Optional&lt;Abe.WebLinkThumbnail&gt;&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Home%20Screen%20Flow/Image%20Search/Add%20Web%20Link/WebLinkThumbnailService.swift"
+                  timestampString = "537822205.4537849"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "51"
+                  endingLineNumber = "51"
+                  offsetFromSymbolStart = "4">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Home Screen Flow/Image Search/Add Web Link/WebLinkThumbnailService.swift"
+            timestampString = "537822204.373368"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "fetchThumbnailFor(url:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

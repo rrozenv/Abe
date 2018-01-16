@@ -41,5 +41,10 @@
 	</array>
 	<key>NSContactsUsageDescription</key>
 	<string>To limit your replies visibility for contacts.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

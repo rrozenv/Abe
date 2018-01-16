@@ -12,6 +12,7 @@ protocol CreatePromptViewModelInputs {
     var cancelTrigger: AnyObserver<Void> { get }
     var selectedImage: AnyObserver<ImageRepresentable> { get }
     var addImageTapped: AnyObserver<Void> { get }
+    var addWebLinkTappedInput: AnyObserver<Void> { get }
 }
 
 protocol CreatePromptViewModelOutputs {
@@ -28,12 +29,15 @@ protocol CreatePromptViewModelType {
 
 final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptViewModelOutputs, CreatePromptViewModelType {
     
+    let disposeBag = DisposeBag()
+    
     var inputs: CreatePromptViewModelInputs { return self }
     let title: AnyObserver<String>
     let body: AnyObserver<String>
     let createPromptTrigger: AnyObserver<Void>
     let cancelTrigger: AnyObserver<Void>
     let addImageTapped: AnyObserver<Void>
+    let addWebLinkTappedInput: AnyObserver<Void>
     //Comes from image search vc
     let selectedImage: AnyObserver<ImageRepresentable>
     
@@ -81,6 +85,15 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
         
         self.routeToAddImage = addImageTapped
             .do(onNext: router.toImageSearch)
+        
+        let _addWebLinkTappedInput = PublishSubject<Void>()
+        let addWebLinkTappedObservable = _addWebLinkTappedInput.asObservable()
+        self.addWebLinkTappedInput = _addWebLinkTappedInput.asObserver()
+        
+        addWebLinkTappedObservable
+            .do(onNext: router.toAddWebLink)
+            .subscribe()
+            .disposed(by: disposeBag)
     
         self.inputIsValid = Observable
             .combineLatest(title, body) { (title, body) in

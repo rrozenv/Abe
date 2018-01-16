@@ -24,6 +24,10 @@
 		982531001FF41568000E6E20 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FF1FF41568000E6E20 /* TabBarView.swift */; };
 		9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9827AF8C20071D8200357EBF /* ScoreCollectioncellViewModel.swift */; };
 		9827AF922007208D00357EBF /* ScoresCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9827AF912007208D00357EBF /* ScoresCollectionViewFlowLayout.swift */; };
+		9828ABC3200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */; };
+		9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */; };
+		9828ABC8200E745A00A3A9D1 /* AddWebLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */; };
+		9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */; };
 		9836043F20070EC2008A975D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836043E20070EC2008A975D /* Extensions.swift */; };
 		9836044120071021008A975D /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836044020071021008A975D /* EmptyStateView.swift */; };
 		983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */; };
@@ -132,6 +136,10 @@
 		982530FF1FF41568000E6E20 /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		9827AF8C20071D8200357EBF /* ScoreCollectioncellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCollectioncellViewModel.swift; sourceTree = "<group>"; };
 		9827AF912007208D00357EBF /* ScoresCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoresCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkThumbnailService.swift; sourceTree = "<group>"; };
+		9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkViewModel.swift; sourceTree = "<group>"; };
+		9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkViewController.swift; sourceTree = "<group>"; };
+		9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkRouter.swift; sourceTree = "<group>"; };
 		9836043E20070EC2008A975D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9836044020071021008A975D /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityViewModel.swift; sourceTree = "<group>"; };
@@ -248,6 +256,7 @@
 				9806B9172007EAEB000CB497 /* Data Source */,
 				9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */,
 				9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */,
+				9828ABC4200E710900A3A9D1 /* Add Web Link */,
 				9806B9192007EB83000CB497 /* ImageSearchRouter.swift */,
 			);
 			path = "Image Search";
@@ -376,6 +385,17 @@
 				98F672021FFF0EA8001DE88E /* PixabayAPI.swift */,
 			);
 			path = "Moya API Providers";
+			sourceTree = "<group>";
+		};
+		9828ABC4200E710900A3A9D1 /* Add Web Link */ = {
+			isa = PBXGroup;
+			children = (
+				9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */,
+				9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */,
+				9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */,
+				9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */,
+			);
+			path = "Add Web Link";
 			sourceTree = "<group>";
 		};
 		983DB1E6200C295C004FC2D0 /* Reply Visibility Options */ = {
@@ -856,6 +876,7 @@
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftLinkPreview/SwiftLinkPreview.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -876,6 +897,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftLinkPreview.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -932,6 +954,7 @@
 				9806B90E2007DCB1000CB497 /* ImageSearchViewController.swift in Sources */,
 				98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */,
 				9836044120071021008A975D /* EmptyStateView.swift in Sources */,
+				9828ABC3200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift in Sources */,
 				9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */,
 				9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */,
 				983DB1EE200C3C33004FC2D0 /* ReplyVisibilityViewController.swift in Sources */,
@@ -951,6 +974,7 @@
 				985C2A611FFDAE040034E116 /* ContactService.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				9836043F20070EC2008A975D /* Extensions.swift in Sources */,
+				9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */,
 				983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */,
 				98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
@@ -963,12 +987,14 @@
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
 				9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */,
+				9828ABC8200E745A00A3A9D1 /* AddWebLinkViewController.swift in Sources */,
 				98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */,
 				98FEE7C51FE4C12300CD80A8 /* CreatePromptViewController.swift in Sources */,
 				98F672031FFF0EA8001DE88E /* PixabayAPI.swift in Sources */,
 				9806B91A2007EB83000CB497 /* ImageSearchRouter.swift in Sources */,
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
+				9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */,
 				980F50372004571F006C2B83 /* AppController.swift in Sources */,
 				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
