@@ -71,13 +71,13 @@ class CreatePromptViewController: UIViewController, BindableType {
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.dismissViewController
-            .drive()
-            .disposed(by: disposeBag)
-        
-        viewModel.outputs.routeToAddImage
-            .drive()
-            .disposed(by: disposeBag)
+//        viewModel.outputs.dismissViewController
+//            .drive()
+//            .disposed(by: disposeBag)
+//        
+//        viewModel.outputs.routeToAddImage
+//            .drive()
+//            .disposed(by: disposeBag)
         
         viewModel.outputs.didAddImage
             .drive()

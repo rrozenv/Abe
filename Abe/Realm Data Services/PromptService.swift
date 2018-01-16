@@ -14,7 +14,7 @@ enum PromptServiceError: Error {
 
 protocol PromptServiceType {
     @discardableResult
-    func createPrompt(title: String, body: String, user: User) -> Observable<Prompt>
+    func createPrompt(title: String, body: String, imageUrl: String, user: User) -> Observable<Prompt>
     
     @discardableResult
     func delete(prompt: Prompt) -> Observable<Void>
@@ -41,9 +41,10 @@ struct PromptService: PromptServiceType {
     @discardableResult
     func createPrompt(title: String,
                       body: String,
+                      imageUrl: String,
                       user: User) -> Observable<Prompt> {
         let result = withRealm("creating") { realm -> Observable<Prompt> in
-            let prompt = Prompt(title: title, body: body, user: user)
+            let prompt = Prompt(title: title, body: body, imageUrl: imageUrl, user: user)
             try realm.write {
                 realm.add(prompt)
             }
@@ -172,18 +173,18 @@ struct ReplyService {
     }
     
     @discardableResult
-    func createReply(title: String,
-                      body: String,
-                      user: User) -> Observable<Prompt> {
-        let result = withRealm("creating") { realm -> Observable<Prompt> in
-            let prompt = Prompt(title: title, body: body, user: user)
-            try realm.write {
-                realm.add(prompt)
-            }
-            return .just(prompt)
-        }
-        return result ?? .error(PromptServiceError.creationFailed)
-    }
+//    func createReply(title: String,
+//                      body: String,
+//                      user: User) -> Observable<Prompt> {
+//        let result = withRealm("creating") { realm -> Observable<Prompt> in
+//            let prompt = Prompt(title: title, body: body, user: user)
+//            try realm.write {
+//                realm.add(prompt)
+//            }
+//            return .just(prompt)
+//        }
+//        return result ?? .error(PromptServiceError.creationFailed)
+//    }
     
     func saveReply(_ reply: PromptReply) -> Observable<PromptReply> {
         let result = withRealm("creating") { realm -> Observable<PromptReply> in

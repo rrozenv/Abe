@@ -18,12 +18,13 @@ final class Prompt: Object {
 
     convenience init(title: String,
                      body: String,
+                     imageUrl: String,
                      user: User) {
         self.init()
         self.title = title
         self.body = body
         self.user = user
-        //self.imageURL = imageURL
+        self.imageURL = imageUrl
     }
 }
 

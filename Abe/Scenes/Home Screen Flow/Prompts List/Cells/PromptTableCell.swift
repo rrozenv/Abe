@@ -39,9 +39,9 @@ final class PromptTableCell: UITableViewCell {
         promptView.titleLabel.text = prompt.title
         promptView.replyTextLabel.text = "replies"
         //promptView.replyCountLabel.text = prompt.replyCount
-//        if let url = URL(string: prompt.imageUrl) {
-//            promptView.imageView.kf.setImage(with: url)
-//        }
+        if let url = URL(string: prompt.imageURL) {
+            promptView.imageView.kf.setImage(with: url)
+        }
     }
     
     override func prepareForReuse() {

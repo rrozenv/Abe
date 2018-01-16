@@ -258,7 +258,6 @@
 				9806B9172007EAEB000CB497 /* Data Source */,
 				9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */,
 				9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */,
-				9828ABC4200E710900A3A9D1 /* Add Web Link */,
 				9806B9192007EB83000CB497 /* ImageSearchRouter.swift */,
 			);
 			path = "Image Search";
@@ -508,6 +507,7 @@
 			isa = PBXGroup;
 			children = (
 				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
+				9828ABC4200E710900A3A9D1 /* Add Web Link */,
 				9806B90C2007DB46000CB497 /* Image Search */,
 				980DE5B41FE5B56B0087C6C3 /* Create Prompt */,
 			);
