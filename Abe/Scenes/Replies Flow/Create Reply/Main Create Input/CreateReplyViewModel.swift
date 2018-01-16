@@ -30,10 +30,13 @@ struct CreateReplyViewModel {
     
     private let router: CreateReplyRoutingLogic
     private let prompt: Prompt
+    private let user: User
     
     var promptTitle: String { return prompt.title }
     
     init(prompt: Prompt, router: CreateReplyRoutingLogic) {
+        guard let user = AppController.shared.currentUser.value else { fatalError() }
+        self.user = user
         self.prompt = prompt
         self.router = router
     }
@@ -48,8 +51,9 @@ struct CreateReplyViewModel {
         let currentPrompt = Driver.of(prompt)
 
         let savedInput = Driver
-            .combineLatest(currentPrompt, input.body.asDriver()) { (currentPrompt, replyBody) in
-            return SavedReplyInput(body: replyBody, prompt: currentPrompt)
+            .combineLatest(currentPrompt, input.body.asDriver()) { (currentPrompt, replyBody) -> SavedReplyInput in
+            let reply = PromptReply(user: self.user, promptId: currentPrompt.id, body: replyBody)
+            return SavedReplyInput(reply: reply, prompt: currentPrompt)
         }
   
         let promptDidUpdate = input.createTrigger

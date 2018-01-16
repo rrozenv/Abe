@@ -58,13 +58,93 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Abe/Scenes/Replies Flow/Create Reply/Extra Reply Options/Reply Visibility Options/ReplyVisibilityViewModel.swift"
-            timestampString = "537754764.008859"
+            timestampString = "537759539.6582021"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
-            landmarkName = "init(replyService:userService:router:prompt:savedReplyInput:)"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
+            landmarkName = "createContactViewModelsFor(registeredUsers:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.(createContactViewModelsFor in _4DBA41F03B0ACF061A0DFDAF5B0415C6)(registeredUsers: Swift.Array&lt;Abe.User&gt;) -&gt; Swift.Array&lt;Abe.IndividualContactViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Extra%20Reply%20Options/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "537758788.223263"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "147"
+                  endingLineNumber = "147"
+                  offsetFromSymbolStart = "32">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Abe.User) -&gt; Abe.IndividualContactViewModel in Abe.(createContactViewModelsFor in _4DBA41F03B0ACF061A0DFDAF5B0415C6)(registeredUsers: Swift.Array&lt;Abe.User&gt;) -&gt; Swift.Array&lt;Abe.IndividualContactViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Extra%20Reply%20Options/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "537758788.225289"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "148"
+                  endingLineNumber = "148"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Models/User.swift"
+            timestampString = "537759539.658338"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "registeredUsersInContacts(allUsers:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.User.registeredUsersInContacts(allUsers: RealmSwift.Results&lt;Abe.User&gt;) -&gt; Swift.Array&lt;Abe.User&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Models/User.swift"
+                  timestampString = "537758817.098284"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "79"
+                  endingLineNumber = "79"
+                  offsetFromSymbolStart = "27">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Abe.Contact) -&gt; Swift.Optional&lt;Abe.User&gt; in Abe.User.registeredUsersInContacts(allUsers: RealmSwift.Results&lt;Abe.User&gt;) -&gt; Swift.Array&lt;Abe.User&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Models/User.swift"
+                  timestampString = "537758817.100939"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -14,7 +14,7 @@ enum Visibility: String {
 }
 
 struct SavedReplyInput {
-    let body: String
+    let reply: PromptReply
     let prompt: Prompt
 }
 
@@ -108,8 +108,8 @@ struct ReplyOptionsViewModel {
                                  _savedReplyInput,
                                  _selectedVisibility) { (prompt, replyInput, visibility) -> PromptReply in
                                     return PromptReply(user: self.user,
-                                                       promptId: prompt.id,
-                                                       body: replyInput.body,
+                                                       promptId: replyInput.prompt.id,
+                                                       body: replyInput.reply.body,
                                                        visibility:
                                                        visibility.rawValue)
         }

@@ -4,17 +4,6 @@ import RxSwift
 import RxCocoa
 import RealmSwift
 
-//        let activityIndicator = ActivityIndicator()
-//        let errorTracker = ErrorTracker()
-//        self.activityIndicator = activityIndicator.asDriver()
-//        self.errorTracker = errorTracker.asDriver()
-
-//    let activityIndicator: Driver<Bool>
-//    let errorTracker: Driver<Error>
-//let dismissViewController: Observable<Void>
-    //let cancelTrigger: AnyObserver<Void>
-    //let selectedIndividualContacts: AnyObserver<[User]>
-
 protocol ReplyVisibilityViewModelInputs {
     var viewWillAppear: AnyObserver<Void> { get }
     var createTrigger: AnyObserver<Void> { get }
@@ -28,6 +17,7 @@ protocol ReplyVisibilityViewModelOutputs {
     var didCreateReply: Driver<Void> { get }
     var currentlySelectedIndividualContacts: Observable<[String]> { get }
     var latestSelectedGeneralVisibility: Observable<Visibility> { get }
+    var errorTracker: Driver<Error> { get }
 }
 
 protocol ReplyVisibilityViewModelType {
@@ -53,6 +43,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let individualContacts: Driver<[IndividualContactViewModel]>
     let didCreateReply: Driver<Void>
     let currentlySelectedIndividualContacts: Observable<[String]>
+    let errorTracker: Driver<Error>
 
 //MARK: - Init
     init?(replyService: ReplyService = ReplyService(),
@@ -68,6 +59,8 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         }
         
         let currentUser = Variable<User>(user)
+        let errorTracker = ErrorTracker()
+        self.errorTracker = errorTracker.asDriver()
         
 //MARK: - View Will Appear
         let _viewWillAppear = PublishSubject<Void>()
@@ -100,10 +93,11 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let selectedContactObservable = _selectedContact.asObservable()
         self.selectedContact = _selectedContact.asObserver()
         
-        self.currentlySelectedIndividualContacts = selectedContactObservable
+        let _currentlySelectedIndividualContacts = selectedContactObservable
             .scan([]) { (summary, user) -> [String] in
+                let shouldAdd = user.1
                 var summaryCopy = summary
-                if user.1 == true {
+                if shouldAdd {
                     summaryCopy.append(user.0.phoneNumber)
                 } else {
                     if let index = summaryCopy.index(where: { $0 == user.0.phoneNumber }) {
@@ -114,38 +108,29 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             }
             .startWith([])
         
+        self.currentlySelectedIndividualContacts = _currentlySelectedIndividualContacts
+        
 //MARK: - Create Reply Tapped
         let _createReplyTapped = PublishSubject<Void>()
         self.createTrigger = _createReplyTapped.asObserver()
         
-        let _currentPrompt = Observable.of(prompt)
-        let _savedReplyInput = Observable.of(savedReplyInput)
-        let _reply =
-            Observable.combineLatest(_currentPrompt,
-                                     _savedReplyInput,
-                                     self.latestSelectedGeneralVisibility,
-                                     self.currentlySelectedIndividualContacts) { (prompt, replyInput, visibility, selectedIndividualNumbers) -> PromptReply in
-                                        guard visibility != .individualContacts else {
-                                            return PromptReply(user: currentUser.value,
-                                                               promptId: prompt.id,
-                                                               body: replyInput.body,
-                                                               visibility: Visibility.individualContacts.rawValue,
-                                                               individualContactNumbers: selectedIndividualNumbers)
-                                        }
-                                        
-                                        return PromptReply(user: currentUser.value,
-                                                           promptId: prompt.id,
-                                                           body: replyInput.body,
-                                                           visibility:
-                                                           visibility.rawValue)
-        }
-
-        self.didCreateReply = _createReplyTapped.asObservable()
-            .withLatestFrom(_reply)
+        let createReplyWithIndividual = _createReplyTapped.asObservable()
+            .withLatestFrom(self.latestSelectedGeneralVisibility)
+            .filter { $0 == Visibility.individualContacts }
+            .flatMap { _ in _currentlySelectedIndividualContacts }
+            .map { updateReply(savedReplyInput.reply, contactNumbere: $0) }
+        
+        let createReplyWithGeneralVis = _createReplyTapped.asObservable()
+            .withLatestFrom(self.latestSelectedGeneralVisibility)
+            .filter { $0 != Visibility.individualContacts }
+            .map { updateReplyVisibility(savedReplyInput.reply, vis: $0) }
+        
+        self.didCreateReply = Observable.merge(createReplyWithIndividual, createReplyWithGeneralVis)
             .flatMapLatest { (reply) in
                 return replyService.saveReply(reply)
                     .flatMapLatest { replyService.add(reply: $0, to: prompt) }
                     .flatMapLatest { replyService.add(reply: $0.0, to: currentUser.value) }
+                    .trackError(errorTracker)
             }
             .do(onNext: { _ in
                 NotificationCenter.default.post(.init(name: .userUpdated, object: nil))
@@ -153,7 +138,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .mapToVoid()
             .do(onNext: router.toPromptDetail)
             .asDriverOnErrorJustComplete()
-        
+    
     }
     
 }
@@ -162,6 +147,18 @@ private func createContactViewModelsFor(registeredUsers: [User]) -> [IndividualC
     return registeredUsers.map {
         return IndividualContactViewModel(isSelected: false, user: $0)
     }
+}
+
+private func updateReply(_ reply: PromptReply, contactNumbere: [String]) -> PromptReply {
+    let replyCopy = reply
+    replyCopy.visibleOnlyToPhoneNumbers.append(objectsIn: contactNumbere)
+    replyCopy.visibility = Visibility.individualContacts.rawValue
+    return replyCopy
+}
+
+private func updateReplyVisibility(_ reply: PromptReply, vis: Visibility) -> PromptReply {
+    reply.visibility = vis.rawValue
+    return reply
 }
 
 struct IndividualContactViewModel {

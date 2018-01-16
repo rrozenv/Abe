@@ -40,22 +40,22 @@ class ReplyVisibilityViewController: UIViewController {
             .disposed(by: disposeBag)
         
         tableView.rx.itemSelected.asObservable()
-            .subscribe(onNext: { indexPath in
+            .subscribe(onNext: { [weak self] indexPath in
                 guard let section = ReplyVisibilityDataSource.Section(rawValue: indexPath.section) else { fatalError() }
                 switch section {
                 case .generalVisibility:
                     //Adjust Individual Contacts Section Header
-                    self.dataSource.updateGeneralVisibilitySelectedStatus(at: indexPath)
-                    guard let viewModel = self.dataSource.generalVisAtIndexPath(indexPath)
+                    self?.dataSource.updateGeneralVisibilitySelectedStatus(at: indexPath)
+                    guard let viewModel = self?.dataSource.generalVisAtIndexPath(indexPath)
                         else { return }
-                    self.viewModel.inputs.generalVisibilitySelected.onNext(viewModel.visibility)
-                    self.tableView.reloadData()
+                    self?.viewModel.inputs.generalVisibilitySelected.onNext(viewModel.visibility)
+                    self?.tableView.reloadData()
                 case .individualContacts:
-                    self.dataSource.updateContactSelectedStatus(at: indexPath)
-                    guard let viewModel = self.dataSource.contactViewModelAt(indexPath: indexPath)
+                    self?.dataSource.updateContactSelectedStatus(at: indexPath)
+                    guard let viewModel = self?.dataSource.contactViewModelAt(indexPath: indexPath)
                         else { return }
-                    self.viewModel.inputs.selectedContact.onNext((viewModel.user, viewModel.isSelected))
-                    self.tableView.reloadData()
+                    self?.viewModel.inputs.selectedContact.onNext((viewModel.user, viewModel.isSelected))
+                    self?.tableView.reloadData()
                 }
             })
             .disposed(by: disposeBag)
@@ -74,14 +74,14 @@ class ReplyVisibilityViewController: UIViewController {
         
         viewModel.outputs.currentlySelectedIndividualContacts
             .skip(1)
-            .subscribe(onNext: { (selectedContacts) in
+            .subscribe(onNext: { [weak self] (selectedContacts) in
                 if selectedContacts.isEmpty {
                     //Adjust Individual Contacts Section Header
-                    self.dataSource.selectGeneralVisibility(.all)
-                    self.viewModel.inputs.generalVisibilitySelected.onNext(.all)
+                    self?.dataSource.selectGeneralVisibility(.all)
+                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.all)
                 } else {
-                    self.dataSource.deselectAllInSection(section: .generalVisibility)
-                    self.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
+                    self?.dataSource.deselectAllInSection(section: .generalVisibility)
+                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
                 }
             })
             .disposed(by: disposeBag)
@@ -95,6 +95,12 @@ class ReplyVisibilityViewController: UIViewController {
         
         viewModel.outputs.didCreateReply
             .drive()
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.errorTracker
+            .drive(onNext: { [weak self] (error) in
+                self?.showError(error)
+            })
             .disposed(by: disposeBag)
         
     }

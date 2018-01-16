@@ -101,7 +101,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .filter { $0 }
         
 //MARK: - Locked Replies
-        let _lockedRepliesNotMerged = _shouldFetchReplies
+        let _friendsAndConctactRepliesSeperated = _shouldFetchReplies
             .withLatestFrom(_currentFilterOption)
             .filter { $0 == .locked }
             .map { _ in prompt.replies.toArray() }
@@ -109,22 +109,22 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
                                forLockedFeed: true,
                                currentUser: currentUser.value) }
         
-        self.lockedReplies = _lockedRepliesNotMerged
-            .map { mergeAndRandomize(friends: $0.friends,
-                                     others: $0.others,
-                                     percentage: 0.70) }
+        self.lockedReplies = _friendsAndConctactRepliesSeperated
+            .map { $0.friends + $0.others }
+//            .map { mergeAndRandomize(friends: $0.friends,
+//                                     others: $0.others,
+//                                     percentage: 0.70) }
             .withLatestFrom(_didUserReply,
                             resultSelector: { (replies, didUserReply) -> ([PromptReply], Bool) in
                 return (replies, didUserReply)
             })
             .asDriver(onErrorJustReturn: ([], false))
-            //.asDriver(onErrorJustReturn: [])
         
 //        let shouldDisplayUnreadFromFriendsView = _lockedRepliesNotMerged
 //            .map { $0.friends.isEmpty ? false : true }
 //            .asDriver(onErrorJustReturn: false)
         
-        self.stillUnreadFromFriendsCount = _lockedRepliesNotMerged
+        self.stillUnreadFromFriendsCount = _friendsAndConctactRepliesSeperated
             .map { "\($0.friends.count) replies from friends still locked!" }
             .asDriver(onErrorJustReturn: "")
 
@@ -187,7 +187,7 @@ private func sortReplies(_ replies: [PromptReply],
         if !forLockedFeed && !userDidVote { continue }
         
         //If reply is viewable only by certain contacts
-        guard reply.visibility != "individualContacts" else {
+        guard reply.visibility != Visibility.individualContacts.rawValue else {
             if reply.isViewableBy(currentUser: currentUser) {
                 userFriendsReplies.append(reply)
             }
@@ -195,7 +195,7 @@ private func sortReplies(_ replies: [PromptReply],
         }
         
         //If reply is viewable only by all of user contacts
-        guard reply.visibility != "contacts" else {
+        guard reply.visibility != Visibility.contacts.rawValue else {
             if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
                 userFriendsReplies.append(reply)
             }
