@@ -36,7 +36,7 @@ enum FilterOption: Int {
 
 final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, RepliesViewModelOutputs {
     
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
    
 //MARK: - Inputs
     var inputs: RepliesViewModelInputs { return self }
@@ -56,82 +56,59 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])>
     let stillUnreadFromFriendsCount: Driver<String>
 
+//MARK: - Init
     init?(replyService: ReplyService = ReplyService(),
          router: PromptDetailRoutingLogic,
          prompt: Prompt) {
-    
         guard let user = AppController.shared.currentUser.value else {
-            NotificationCenter
-                .default.post(name: Notification.Name.logout, object: nil)
+            NotificationCenter.default.post(name: Notification.Name.logout, object: nil)
             return nil
         }
-        
         let currentUser = Variable<User>(user)
         
-//MARK: - Filter Option
+//MARK: - Subjects
         let _didSelectFilterOption = PublishSubject<FilterOption>()
+        let _createReplyTapped = PublishSubject<Void>()
+        let _viewWillAppear = PublishSubject<Void>()
+        let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
+        
+//MARK: - Observers
         self.filterOptionSelected = _didSelectFilterOption.asObserver()
         self.didSelectFilterOption = _didSelectFilterOption.asDriver(onErrorJustReturn: .locked)
-
-//MARK: - Create Reply Tapped
-        let _createReplyTapped = PublishSubject<Void>()
         self.createReplyTapped = _createReplyTapped.asObserver()
-        self.routeToCreateReply = _createReplyTapped.asObservable()
-            .do(onNext: { router.toCreateReply(for: prompt) })
-        
-//MARK: - View Will Appear
-        let _viewWillAppear = PublishSubject<Void>()
         self.viewWillAppear = _viewWillAppear.asObserver()
-        let _viewWillAppearObservable = _viewWillAppear.asObservable()
-        
-//MARK: - Did User Reply
-        let _didUserReply = _viewWillAppearObservable
+        self.scoreSelected = _didSelectScore.asObserver()
+
+//MARK: - First Level Observables
+        let viewWillAppearObservable = _viewWillAppear.asObservable()
+        let tabSelectedObservable = _didSelectFilterOption.asObservable()
+        let createReplyTappedObservable = _createReplyTapped.asObservable()
+        let tableIndexObservable = _didSelectScore.asObservable().map { $0.1 }
+        let didSelectScoreObservable = _didSelectScore.asObservable()
+
+//MARK: - Second Level Observables
+        let didUserReplyObservable = viewWillAppearObservable
             .map { _ in currentUser.value.didReply(to: prompt) }
-        self.didUserReply = _didUserReply.asDriver(onErrorJustReturn: false)
-        
-//MARK: - Currently Selected Filter Option
-        let _filterWhenViewAppears = _viewWillAppearObservable
-            .map { FilterOption.locked }
-        
-        let _currentFilterOption = Observable
-            .merge(_filterWhenViewAppears, self.didSelectFilterOption.asObservable())
-        
-        let _shouldFetchReplies = _currentFilterOption.asObservable()
-            .withLatestFrom(_didUserReply)
-            .filter { $0 }
-        
-//MARK: - Locked Replies
-        let _friendsAndConctactRepliesSeperated = _shouldFetchReplies
-            .withLatestFrom(_currentFilterOption)
+        let repliesTupleObservable = tabSelectedObservable
             .filter { $0 == .locked }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,
                                currentUser: currentUser.value) }
+        let lockedRepliesObservable = repliesTupleObservable.map { $0.friends + $0.others }
         
-        self.lockedReplies = _friendsAndConctactRepliesSeperated
-            .map { $0.friends + $0.others }
-//            .map { mergeAndRandomize(friends: $0.friends,
-//                                     others: $0.others,
-//                                     percentage: 0.70) }
-            .withLatestFrom(_didUserReply,
+//MARK: - Outer Observables
+        self.didUserReply = didUserReplyObservable.asDriver(onErrorJustReturn: false)
+        
+        self.lockedReplies = lockedRepliesObservable
+            .withLatestFrom(didUserReplyObservable,
                             resultSelector: { (replies, didUserReply) -> ([PromptReply], Bool) in
-                return (replies, didUserReply)
+                                return (replies, didUserReply)
             })
             .asDriver(onErrorJustReturn: ([], false))
         
-//        let shouldDisplayUnreadFromFriendsView = _lockedRepliesNotMerged
-//            .map { $0.friends.isEmpty ? false : true }
-//            .asDriver(onErrorJustReturn: false)
-        
-        self.stillUnreadFromFriendsCount = _friendsAndConctactRepliesSeperated
-            .map { "\($0.friends.count) replies from friends still locked!" }
-            .asDriver(onErrorJustReturn: "")
-
-//MARK: - Unlocked Replies
-        self.unlockedReplies = _shouldFetchReplies
-            .withLatestFrom(_currentFilterOption)
-            .filter { $0 == FilterOption.unlocked }
+        self.unlockedReplies = tabSelectedObservable
+            .filter { $0 == .unlocked }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: false,
@@ -139,27 +116,22 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .map { $0.friends + $0.others }
             .asDriver(onErrorJustReturn: [])
         
-//MARK: - My Reply
-        self.currentUserReplyAndScores = _shouldFetchReplies
-            .withLatestFrom(_currentFilterOption)
-            .filter { $0 == FilterOption.myReply }
+        self.routeToCreateReply = createReplyTappedObservable
+            .do(onNext: { router.toCreateReply(for: prompt) })
+        
+        self.currentUserReplyAndScores = tabSelectedObservable
+            .filter { $0 == .myReply }
             .map { _ in currentUser.value.reply(to: prompt) }
             .unwrap()
             .map { ($0, $0.scores.toArray()) }
             .asDriverOnErrorJustComplete()
         
-//MARK: - Filter Option
-        let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
-        self.scoreSelected = _didSelectScore.asObserver()
-        let tableIndex = _didSelectScore.asObservable()
-            .map { $0.1 }
-        
-        self.updateReplyWithSavedScore = _didSelectScore.asObservable()
+        self.updateReplyWithSavedScore = didSelectScoreObservable
             .flatMap { (inputs) -> Observable<(PromptReply, ReplyScore)> in
                 let scoreVm = inputs.0
                 let score = ReplyScore(userId: currentUser.value.id,
-                                            replyId: scoreVm.reply.id,
-                                            score: scoreVm.value)
+                                       replyId: scoreVm.reply.id,
+                                       score: scoreVm.value)
                 return replyService.saveScore(reply: scoreVm.reply, score: score)
             }
             .flatMap { replyAndScore -> Observable<PromptReply> in
@@ -167,10 +139,14 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
                     .updateAuthorCoinsFor(reply: replyAndScore.0,
                                           coins: replyAndScore.1.score)
             }
-            .withLatestFrom(tableIndex, resultSelector: { (reply, tableIndex)  in (reply, tableIndex)
+            .withLatestFrom(tableIndexObservable, resultSelector: { (reply, tableIndex) in
+                (reply, tableIndex)
             })
             .asDriverOnErrorJustComplete()
         
+        self.stillUnreadFromFriendsCount = repliesTupleObservable
+            .map { "\($0.friends.count) replies from friends still locked!" }
+            .asDriver(onErrorJustReturn: "")
     }
     
 }

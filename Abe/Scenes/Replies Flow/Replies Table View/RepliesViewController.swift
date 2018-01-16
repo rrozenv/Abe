@@ -24,6 +24,7 @@ class RepliesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.inputs.viewWillAppear.onNext(())
+        viewModel.inputs.filterOptionSelected.onNext(.locked)
     }
     
     func bindViewModel() {
