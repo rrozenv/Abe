@@ -14,7 +14,7 @@ enum PromptServiceError: Error {
 
 protocol PromptServiceType {
     @discardableResult
-    func createPrompt(title: String, body: String, imageUrl: String, user: User) -> Observable<Prompt>
+    func createPrompt(title: String, body: String, imageUrl: String, webLink: WebLinkThumbnail?, user: User) -> Observable<Prompt>
     
     @discardableResult
     func delete(prompt: Prompt) -> Observable<Void>
@@ -42,9 +42,10 @@ struct PromptService: PromptServiceType {
     func createPrompt(title: String,
                       body: String,
                       imageUrl: String,
+                      webLink: WebLinkThumbnail?,
                       user: User) -> Observable<Prompt> {
         let result = withRealm("creating") { realm -> Observable<Prompt> in
-            let prompt = Prompt(title: title, body: body, imageUrl: imageUrl, user: user)
+            let prompt = Prompt(title: title, body: body, imageUrl: imageUrl, webLink: webLink, user: user)
             try realm.write {
                 realm.add(prompt)
             }

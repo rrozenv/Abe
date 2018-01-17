@@ -7,6 +7,7 @@ import RxOptional
 protocol AddWebLinkViewModelInputs {
     var searchTextInput: AnyObserver<String> { get }
     var searchTappedInput: AnyObserver<Void> { get }
+    var doneTappedInput: AnyObserver<Void> { get }
 }
 
 protocol AddWebLinkViewModelOutputs {
@@ -28,6 +29,7 @@ final class AddWebLinkViewModel: AddWebLinkViewModelType, AddWebLinkViewModelInp
     var inputs: AddWebLinkViewModelInputs { return self }
     let searchTextInput: AnyObserver<String>
     let searchTappedInput: AnyObserver<Void>
+    let doneTappedInput: AnyObserver<Void>
     
 //MARK: - Outputs
     var outputs: AddWebLinkViewModelOutputs { return self }
@@ -46,14 +48,17 @@ final class AddWebLinkViewModel: AddWebLinkViewModelType, AddWebLinkViewModelInp
 //MARK: - Subjects
         let _searchTextInput = PublishSubject<String>()
         let _searchTappedInput = PublishSubject<Void>()
+        let _doneTappedInput = PublishSubject<Void>()
 
 //MARK: - Observers
         self.searchTextInput = _searchTextInput.asObserver()
         self.searchTappedInput = _searchTappedInput.asObserver()
+        self.doneTappedInput = _doneTappedInput.asObserver()
 
 //MARK: - First Level Observables
         let searchTextObservable = _searchTextInput.asObservable()
         let searchTappedObservable = _searchTappedInput.asObservable()
+        let doneTappedObservable = _doneTappedInput.asObservable()
         
         self.linkThumbnail = searchTappedObservable
             .withLatestFrom(searchTextObservable)
@@ -62,7 +67,12 @@ final class AddWebLinkViewModel: AddWebLinkViewModelType, AddWebLinkViewModelInp
                     .trackError(errorTracker)
                     .trackActivity(activityIndicator)
             }
-            
-    }
+        
+        doneTappedObservable
+            .do(onNext: router.toMainCreateReplyInput)
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+        }
     
 }

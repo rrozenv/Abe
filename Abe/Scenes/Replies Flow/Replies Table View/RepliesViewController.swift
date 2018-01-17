@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 class RepliesViewController: UIViewController {
     
@@ -12,9 +13,13 @@ class RepliesViewController: UIViewController {
     private var tableView: UITableView!
     private var tabBarView: TabBarView!
     private var createReplyButton: UIButton!
+    private var headerView: PromptHeaderView!
+    private var summaryView: PromptSummaryView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupHeaderView()
+        setupSummaryView()
         setupTableView()
         setupCreatePromptReplyButton()
         setupTabBarView()
@@ -57,6 +62,17 @@ class RepliesViewController: UIViewController {
             .disposed(by: disposeBag)
     
         //MARK: - Outputs
+        viewModel.outputs.prompt
+            .drive(onNext: { [weak self] in
+                self?.setPromptHeaderInfo(with: $0)
+                self?.summaryView.bodyTextLabel.text = $0.body
+                guard let webLink = $0.webLinkThumbnail else {
+                    self?.summaryView.webLinkView.isHidden = true ; return
+                }
+                self?.summaryView.webLinkView.thumbnail = webLink
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.didUserReply
             .drive(onNext: { [weak self] didReply in
                 self?.tabBarView.isHidden = didReply ? false : true
@@ -118,6 +134,17 @@ class RepliesViewController: UIViewController {
     
 }
 
+extension RepliesViewController {
+    
+    func setPromptHeaderInfo(with prompt: Prompt) {
+        self.headerView.titleLabel.text = prompt.title
+        if let url = URL(string: prompt.imageURL) {
+            self.headerView.imageView.kf.setImage(with: url)
+        }
+    }
+    
+}
+
 //MARK: - Reply Table Cell Delegate
 extension RepliesViewController: ReplyTableCellDelegate {
     
@@ -141,12 +168,8 @@ extension RepliesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
         switch section {
-        case .summary:
-            let headerCell = tableView.dequeueReusableHeaderFooterView(withIdentifier: PromptSummarySectionHeaderView.reuseIdentifier) as? PromptSummarySectionHeaderView
-            headerCell?.titleLabel.text = "Prompt Summary Cell"
-            return headerCell
-        case .replies:
-            return tabBarView
+        case .summary: return summaryView
+        case .replies: return tabBarView
         }
     }
     
@@ -166,13 +189,27 @@ extension RepliesViewController {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
-            make.top.equalTo(topLayoutGuide.snp.bottom)
+            make.top.equalTo(headerView.snp.bottom)
         }
     }
     
     private func setupTabBarView() {
         tabBarView = TabBarView(leftTitle: "Locked", centerTitle: "Unlocked", rightTitle: "My Reply")
         tabBarView.selectedFilter = .locked
+    }
+    
+    private func setupSummaryView() {
+        summaryView = PromptSummaryView()
+    }
+    
+    private func setupHeaderView() {
+        headerView = PromptHeaderView()
+        
+        view.addSubview(headerView)
+        headerView.snp.makeConstraints { (make) in
+            make.top.left.right.equalTo(view)
+            make.height.equalTo(186)
+        }
     }
     
     private func setupCreatePromptReplyButton() {

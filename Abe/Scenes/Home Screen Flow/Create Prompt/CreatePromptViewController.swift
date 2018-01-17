@@ -26,37 +26,29 @@ class CreatePromptViewController: UIViewController, BindableType {
         setupDoneButton()
         setupCancelButton()
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        print("VC Ref count: \(CFGetRetainCount(self))")
-        print("ViewModel Ref count: \(CFGetRetainCount(viewModel))")
-    }
-    
-    deinit {
-        print("Create prompt deint")
-    }
+
+    deinit { print("Create prompt VC deint") }
     
     func bindViewModel() {
 //MARK: - Input
         titleTextView.rx.text.orEmpty
-            .bind(to: viewModel.inputs.title)
+            .bind(to: viewModel.inputs.titleTextInput)
             .disposed(by: disposeBag)
        
         bodyTextView.rx.text.orEmpty
-            .bind(to: viewModel.inputs.body)
+            .bind(to: viewModel.inputs.bodyTextInput)
             .disposed(by: disposeBag)
         
         doneButton.rx.tap
-            .bind(to: viewModel.inputs.createPromptTrigger)
+            .bind(to: viewModel.inputs.createTappedInput)
             .disposed(by: disposeBag)
         
         dismissButton.rx.tap
-            .bind(to: viewModel.inputs.cancelTrigger)
+            .bind(to: viewModel.inputs.cancelTappedInput)
             .disposed(by: disposeBag)
         
         imageButton.rx.tap
-            .bind(to: viewModel.inputs.addImageTapped)
+            .bind(to: viewModel.inputs.addImageTappedInput)
             .disposed(by: disposeBag)
         
         addWebLinkButton.rx.tap
@@ -71,15 +63,11 @@ class CreatePromptViewController: UIViewController, BindableType {
             })
             .disposed(by: disposeBag)
         
-//        viewModel.outputs.dismissViewController
-//            .drive()
-//            .disposed(by: disposeBag)
-//        
-//        viewModel.outputs.routeToAddImage
-//            .drive()
-//            .disposed(by: disposeBag)
+        viewModel.outputs.imageDelegateOutput
+            .drive()
+            .disposed(by: disposeBag)
         
-        viewModel.outputs.didAddImage
+        viewModel.outputs.weblinkDelegateOutput
             .drive()
             .disposed(by: disposeBag)
     }

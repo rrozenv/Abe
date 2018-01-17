@@ -34,7 +34,7 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
         if createPromptViewModel != nil {
             viewModel.outputs.selectedImage
                 .debug()
-                .drive(createPromptViewModel!.selectedImage)
+                .drive(createPromptViewModel!.imageDelegateInput)
                 .disposed(by: viewModel.disposeBag)
         }
         navigationController?.pushViewController(vc, animated: true)
@@ -45,13 +45,11 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
         let router = AddWebLinkRouter(navigationController: navigationController!)
         let viewModel = AddWebLinkViewModel(router: router)
         vc.setViewModelBinding(model: viewModel)
-        
-//        if createPromptViewModel != nil {
-//            viewModel.outputs.selectedImage
-//                .debug()
-//                .drive(createPromptViewModel!.selectedImage)
-//                .disposed(by: viewModel.disposeBag)
-//        }
+        if createPromptViewModel != nil {
+            viewModel.outputs.linkThumbnail
+                .bind(to: createPromptViewModel!.weblinkDelegateInput)
+                .disposed(by: viewModel.disposeBag)
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
 

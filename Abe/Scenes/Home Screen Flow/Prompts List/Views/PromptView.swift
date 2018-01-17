@@ -11,10 +11,11 @@ final class PromptView: UIView {
     var replyTextLabel: UILabel!
     var replyLabelsStackView: UIStackView!
     
-    var topContainerView: UIView!
-    var titleLabel: UILabel!
-    var imageView: UIImageView!
-    var opaqueView: UIView!
+//    var topContainerView: UIView!
+//    var titleLabel: UILabel!
+//    var imageView: UIImageView!
+//    var opaqueView: UIView!
+    var headerView: PromptHeaderView!
 //
 //    var height: CGFloat {
 //        return Screen.height * (height1X / Screen.height)
@@ -33,10 +34,11 @@ final class PromptView: UIView {
         setupReplyTextLabelProperties()
         setupReplyLabelsStackView()
         
-        setupTopContainerView()
-        setupImageView()
-        setupOpaqueView()
-        setupTitleLabel()
+        setupHeaderView()
+//        setupTopContainerView()
+//        setupImageView()
+//        setupOpaqueView()
+//        setupTitleLabel()
     }
     
     fileprivate func setupContainerView() {
@@ -87,13 +89,97 @@ final class PromptView: UIView {
         }
     }
     
+    private func setupHeaderView() {
+        headerView = PromptHeaderView()
+        
+        containerView.addSubview(headerView)
+        headerView.snp.makeConstraints { (make) in
+            make.right.left.top.equalTo(containerView)
+            make.bottom.equalTo(bottomContainerView.snp.top)
+            make.height.equalTo(186)
+        }
+    }
+    
+//    fileprivate func setupTopContainerView() {
+//        topContainerView = UIView()
+//
+//        containerView.addSubview(topContainerView)
+//        topContainerView.snp.makeConstraints { (make) in
+//            make.right.left.top.equalTo(containerView)
+//            make.bottom.equalTo(bottomContainerView.snp.top)
+//            make.height.equalTo(186)
+//        }
+//    }
+//
+//    fileprivate func setupImageView() {
+//        imageView = UIImageView()
+//
+//        topContainerView.addSubview(imageView)
+//        imageView.snp.makeConstraints { (make) in
+//            make.edges.equalTo(topContainerView)
+//        }
+//    }
+//
+//    fileprivate func setupOpaqueView() {
+//        opaqueView = UIView()
+//        opaqueView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+//
+//        topContainerView.addSubview(opaqueView)
+//        opaqueView.snp.makeConstraints { (make) in
+//            make.edges.equalTo(imageView)
+//        }
+//    }
+//
+//    fileprivate func setupTitleLabel() {
+//        titleLabel = UILabel()
+//        titleLabel.textColor = UIColor.white
+//        titleLabel.numberOfLines = 0
+//        titleLabel.font = FontBook.AvenirBlack.of(size: 19)
+//
+//        topContainerView.addSubview(titleLabel)
+//        titleLabel.snp.makeConstraints { (make) in
+//            make.left.equalTo(topContainerView).offset(20)
+//            make.bottom.equalTo(topContainerView).offset(-20)
+//            make.right.equalTo(topContainerView).offset(-20)
+//        }
+//    }
+    
+    func reset() {
+        headerView.imageView.image = nil
+        headerView.titleLabel.text = nil
+        replyTextLabel.text = nil
+        replyCountLabel.text = nil
+    }
+    
+}
+
+final class PromptHeaderView: UIView {
+    
+    var topContainerView: UIView!
+    var titleLabel: UILabel!
+    var imageView: UIImageView!
+    var opaqueView: UIView!
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        self.backgroundColor = UIColor.clear
+        setupTopContainerView()
+        setupImageView()
+        setupOpaqueView()
+        setupTitleLabel()
+    }
+    
+    
     fileprivate func setupTopContainerView() {
         topContainerView = UIView()
         
-        containerView.addSubview(topContainerView)
+        self.addSubview(topContainerView)
         topContainerView.snp.makeConstraints { (make) in
-            make.right.left.top.equalTo(containerView)
-            make.bottom.equalTo(bottomContainerView.snp.top)
+            make.right.left.top.equalTo(self)
             make.height.equalTo(186)
         }
     }
@@ -129,13 +215,6 @@ final class PromptView: UIView {
             make.bottom.equalTo(topContainerView).offset(-20)
             make.right.equalTo(topContainerView).offset(-20)
         }
-    }
-    
-    func reset() {
-        imageView.image = nil
-        titleLabel.text = nil
-        replyTextLabel.text = nil
-        replyCountLabel.text = nil
     }
     
 }

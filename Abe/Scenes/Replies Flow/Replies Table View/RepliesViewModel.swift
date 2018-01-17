@@ -21,6 +21,7 @@ protocol RepliesViewModelOutputs {
     var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
     var currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])> { get }
     var stillUnreadFromFriendsCount: Driver<String> { get }
+    var prompt: Driver<Prompt> { get }
 }
 
 protocol RepliesViewModelType {
@@ -55,6 +56,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
     let currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])>
     let stillUnreadFromFriendsCount: Driver<String>
+    let prompt: Driver<Prompt>
 
 //MARK: - Init
     init?(replyService: ReplyService = ReplyService(),
@@ -85,6 +87,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let createReplyTappedObservable = _createReplyTapped.asObservable()
         let tableIndexObservable = _didSelectScore.asObservable().map { $0.1 }
         let didSelectScoreObservable = _didSelectScore.asObservable()
+        let promptObservable = Observable.of(prompt)
 
 //MARK: - Second Level Observables
         let didUserReplyObservable = viewWillAppearObservable
@@ -99,6 +102,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let lockedRepliesObservable = lockedRepliesTupleObservable.map { $0.friends + $0.others }
         
 //MARK: - Outer Observables
+        self.prompt = promptObservable.asDriverOnErrorJustComplete()
         self.didUserReply = didUserReplyObservable.asDriver(onErrorJustReturn: false)
         
         self.lockedReplies = lockedRepliesObservable

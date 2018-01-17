@@ -58,6 +58,11 @@ final class AddWebLinkViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.searchTappedInput)
             .disposed(by: disposeBag)
         
+        actionButtonsView.doneButton.rx.tap
+            .throttle(0.5, scheduler: MainScheduler.instance)
+            .bind(to: viewModel.inputs.doneTappedInput)
+            .disposed(by: disposeBag)
+        
         //MARK: - Outputs
         viewModel.outputs.linkThumbnail
             .subscribe(onNext: { [weak self] (thumbnail) in

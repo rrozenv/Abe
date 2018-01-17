@@ -32,15 +32,16 @@ final class PromptTableCell: UITableViewCell {
         self.separatorInset = .zero
         self.preservesSuperviewLayoutMargins = false
         self.layoutMargins = .zero
+        self.selectionStyle = .none
         setupPromptView()
     }
     
     func configure(with prompt: Prompt) {
-        promptView.titleLabel.text = prompt.title
+        promptView.headerView.titleLabel.text = prompt.title
         promptView.replyTextLabel.text = "replies"
-        //promptView.replyCountLabel.text = prompt.replyCount
+        promptView.replyCountLabel.text = "\(prompt.replies.count)"
         if let url = URL(string: prompt.imageURL) {
-            promptView.imageView.kf.setImage(with: url)
+            promptView.headerView.imageView.kf.setImage(with: url)
         }
     }
     
