@@ -367,7 +367,8 @@
 			isa = PBXGroup;
 			children = (
 				984F379820070D5600C62E6E /* Login Flow */,
-				984F379920070D9400C62E6E /* Home Screen Flow */,
+				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
+				984F379920070D9400C62E6E /* Create Prompt Flow */,
 				984F379A20070DB600C62E6E /* Replies Flow */,
 			);
 			path = Scenes;
@@ -377,6 +378,7 @@
 			isa = PBXGroup;
 			children = (
 				989317271FE6F40700E2979F /* Main Create Input */,
+				983DB1E6200C295C004FC2D0 /* Reply Visibility Options */,
 				98921BBB1FE735C9006CCCF6 /* Extra Reply Options */,
 			);
 			path = "Create Reply";
@@ -409,6 +411,7 @@
 				98A738D1200D4EE80001BC0C /* Data Source */,
 				983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */,
 				983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */,
+				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
 			);
 			path = "Reply Visibility Options";
 			sourceTree = "<group>";
@@ -506,15 +509,14 @@
 			path = "Login Flow";
 			sourceTree = "<group>";
 		};
-		984F379920070D9400C62E6E /* Home Screen Flow */ = {
+		984F379920070D9400C62E6E /* Create Prompt Flow */ = {
 			isa = PBXGroup;
 			children = (
-				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
+				980DE5B41FE5B56B0087C6C3 /* Create Prompt */,
 				9828ABC4200E710900A3A9D1 /* Add Web Link */,
 				9806B90C2007DB46000CB497 /* Image Search */,
-				980DE5B41FE5B56B0087C6C3 /* Create Prompt */,
 			);
-			path = "Home Screen Flow";
+			path = "Create Prompt Flow";
 			sourceTree = "<group>";
 		};
 		984F379A20070DB600C62E6E /* Replies Flow */ = {
@@ -571,10 +573,8 @@
 		98921BBB1FE735C9006CCCF6 /* Extra Reply Options */ = {
 			isa = PBXGroup;
 			children = (
-				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
 				98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */,
 				98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */,
-				983DB1E6200C295C004FC2D0 /* Reply Visibility Options */,
 			);
 			path = "Extra Reply Options";
 			sourceTree = "<group>";
