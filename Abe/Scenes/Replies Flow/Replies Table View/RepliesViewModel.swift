@@ -75,10 +75,9 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
         
 //MARK: - Observers
-        self.filterOptionSelected = _didSelectFilterOption.asObserver()
-        self.didSelectFilterOption = _didSelectFilterOption.asDriver(onErrorJustReturn: .locked)
-        self.createReplyTapped = _createReplyTapped.asObserver()
         self.viewWillAppear = _viewWillAppear.asObserver()
+        self.filterOptionSelected = _didSelectFilterOption.asObserver()
+        self.createReplyTapped = _createReplyTapped.asObserver()
         self.scoreSelected = _didSelectScore.asObserver()
 
 //MARK: - First Level Observables
@@ -94,14 +93,16 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .map { _ in currentUser.value.didReply(to: prompt) }
         let lockedRepliesTupleObservable = tabSelectedObservable
             .filter { $0 == .locked }
-            .flatMap { _ in didUserReplyObservable }.filter { $0 }
+            .map { _ in currentUser.value.didReply(to: prompt) }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,
-                               currentUser: currentUser.value) }
+                               currentUser: currentUser.value)
+            }
         let lockedRepliesObservable = lockedRepliesTupleObservable.map { $0.friends + $0.others }
         
 //MARK: - Outer Observables
+        self.didSelectFilterOption = tabSelectedObservable.asDriver(onErrorJustReturn: .locked)
         self.prompt = promptObservable.asDriverOnErrorJustComplete()
         self.didUserReply = didUserReplyObservable.asDriver(onErrorJustReturn: false)
         

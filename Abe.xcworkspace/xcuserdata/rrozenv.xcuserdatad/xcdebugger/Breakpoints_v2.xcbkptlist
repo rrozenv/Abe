@@ -57,46 +57,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Models/User.swift"
-            timestampString = "537759539.658338"
+            filePath = "Abe/Scenes/Home Screen Flow/Create Prompt/CreatePromptViewModel.swift"
+            timestampString = "537919763.265839"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
-            landmarkName = "registeredUsersInContacts(allUsers:)"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "init(promptService:router:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Abe.User.registeredUsersInContacts(allUsers: RealmSwift.Results&lt;Abe.User&gt;) -&gt; Swift.Array&lt;Abe.User&gt;"
-                  moduleName = "Abe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Models/User.swift"
-                  timestampString = "537917814.569742"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "79"
-                  endingLineNumber = "79"
-                  offsetFromSymbolStart = "27">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Abe.Contact) -&gt; Swift.Optional&lt;Abe.User&gt; in Abe.User.registeredUsersInContacts(allUsers: RealmSwift.Results&lt;Abe.User&gt;) -&gt; Swift.Array&lt;Abe.User&gt;"
-                  moduleName = "Abe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Models/User.swift"
-                  timestampString = "537917814.572695"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "80"
-                  endingLineNumber = "80"
-                  offsetFromSymbolStart = "28">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -105,14 +73,46 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Home Screen Flow/Create Prompt/CreatePromptViewModel.swift"
-            timestampString = "537917970.092927"
+            filePath = "Abe/Scenes/Replies Flow/Replies Table View/RepliesViewController.swift"
+            timestampString = "537919763.265927"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
-            landmarkName = "init(promptService:router:)"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "bindViewModel()"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Replies Table View/RepliesViewModel.swift"
+            timestampString = "537919763.265991"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "init(replyService:router:prompt:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Replies Table View/RepliesViewModel.swift"
+            timestampString = "537919763.26605"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
+            landmarkName = "sortReplies(_:forLockedFeed:currentUser:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
