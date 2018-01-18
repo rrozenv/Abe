@@ -4,12 +4,10 @@ import Moya
 import RxSwift
 
 protocol ImageRepresentable {
-    var id: Int { get }
     var webformatURL: String { get }
 }
 
 struct PixaImage: ImageRepresentable, Codable {
-    let id: Int
     let webformatURL: String
 }
 

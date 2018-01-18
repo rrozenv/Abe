@@ -40,7 +40,7 @@ final class ImageSearchViewModel: ImageSearchViewModelType, ImageSearchViewModel
     let dismissViewController: Observable<Void>
 
 //MARK: - Init
-    init(imageService: PixaImageService = PixaImageService(),
+    init(imageService: ImageService<GifAPI> = ImageService<GifAPI>(),
          router: ImageSearchRoutingLogic) {
         let activityIndicator = ActivityIndicator()
         let errorTracker = ErrorTracker()
@@ -54,7 +54,7 @@ final class ImageSearchViewModel: ImageSearchViewModelType, ImageSearchViewModel
         
         self.fetchedImages = searchTextObservable
             .flatMapLatest {
-                imageService.fetchImages(query: $0, page: 1)
+                imageService.fetchGIFS(query: $0)
                     .trackActivity(activityIndicator)
                     .trackError(errorTracker)
             }

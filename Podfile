@@ -16,4 +16,5 @@ target 'Abe' do
   pod 'Moya/RxSwift'
   pod 'RxOptional'
   pod 'SwiftLinkPreview', '~> 2.2.0'
+  pod 'Gifu'
 end

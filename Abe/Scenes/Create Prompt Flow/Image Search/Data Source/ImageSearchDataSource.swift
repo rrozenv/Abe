@@ -32,8 +32,8 @@ final class ImageSearchDataSource: ValueCellDataSource {
     }
     
     //MARK: - Read Current Value Methods
-    func imageAtIndexPath(_ indexPath: IndexPath) -> PixaImage? {
-        return self[indexPath] as? PixaImage
+    func imageAtIndexPath(_ indexPath: IndexPath) -> ImageRepresentable? {
+        return self[indexPath] as? ImageRepresentable
     }
     
     //MARK: - Configure Cell

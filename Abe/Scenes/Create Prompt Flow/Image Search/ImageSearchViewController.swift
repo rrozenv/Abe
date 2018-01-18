@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
+import Gifu
 
 final class ImageSearchViewController: UIViewController {
     
@@ -12,6 +13,7 @@ final class ImageSearchViewController: UIViewController {
     var searchTextField: UITextField!
     var searchIcon: UIImageView!
     var clearSearchButton: UIButton!
+    var imageView: GIFImageView!
     
     fileprivate var currentPage = 1
     fileprivate var latestSearchText = ""
@@ -27,6 +29,7 @@ final class ImageSearchViewController: UIViewController {
         setupSearchTextFieldConstraints()
         setupClearSearchButton()
         setupCollectionView()
+        //setupImageView()
         bindViewModel()
     }
     
@@ -60,6 +63,9 @@ final class ImageSearchViewController: UIViewController {
         
         //MARK: - Outputs
         viewModel.outputs.fetchedImages.drive(onNext: { [weak self] images in
+            for image in images {
+                print(image.webformatURL)
+            }
             self?.dataSource.load(images: images)
             self?.collectionView.reloadData()
         })
@@ -176,13 +182,29 @@ extension ImageSearchViewController {
         }
     }
     
+    func setupImageView() {
+        imageView = GIFImageView(frame: CGRect(x: 0, y: 200, width: 400, height: 400))
+        //imageView.image = #imageLiteral(resourceName: "IC_Score_One_Unselected")
+        self.view.insertSubview(imageView, aboveSubview: collectionView)
+//        imageView.snp.makeConstraints { (make) in
+//            make.center.equalTo(view.snp.center)
+//        }
+    }
+    
 }
 
 extension ImageSearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard shouldLoadMoreResults(indexPath) else { return }
-        fetchNextPage()
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ImageSearchCollectionCell,
+              let image = self.dataSource.imageAtIndexPath(indexPath) else { return }
+//        guard shouldLoadMoreResults(indexPath) else { return }
+//        fetchNextPage()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+       guard let cell = collectionView.cellForItem(at: indexPath) as? ImageSearchCollectionCell else { return }
+       cell.endAnimation()
     }
     
     func shouldLoadMoreResults(_ indexPath: IndexPath) -> Bool {

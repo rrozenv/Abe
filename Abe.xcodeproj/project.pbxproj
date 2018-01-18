@@ -20,6 +20,10 @@
 		980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5AF1FE5B47D0087C6C3 /* User.swift */; };
 		980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */; };
 		980F50372004571F006C2B83 /* AppController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980F50362004571E006C2B83 /* AppController.swift */; };
+		981545D1201026EB0001F675 /* Gif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981545D0201026EB0001F675 /* Gif.swift */; };
+		981545D320102E9B0001F675 /* GiphyAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981545D220102E9B0001F675 /* GiphyAPI.swift */; };
+		981545D520102EEF0001F675 /* GIFImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981545D420102EEF0001F675 /* GIFImageService.swift */; };
+		981545D7201051340001F675 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981545D6201051340001F675 /* Cache.swift */; };
 		9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9823322A1FF7E09800C3CB49 /* PromptService.swift */; };
 		982531001FF41568000E6E20 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FF1FF41568000E6E20 /* TabBarView.swift */; };
 		9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9827AF8C20071D8200357EBF /* ScoreCollectioncellViewModel.swift */; };
@@ -134,6 +138,10 @@
 		980DE5AF1FE5B47D0087C6C3 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmConstants.swift; sourceTree = "<group>"; };
 		980F50362004571E006C2B83 /* AppController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppController.swift; sourceTree = "<group>"; };
+		981545D0201026EB0001F675 /* Gif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gif.swift; sourceTree = "<group>"; };
+		981545D220102E9B0001F675 /* GiphyAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiphyAPI.swift; sourceTree = "<group>"; };
+		981545D420102EEF0001F675 /* GIFImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFImageService.swift; sourceTree = "<group>"; };
+		981545D6201051340001F675 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		9823322A1FF7E09800C3CB49 /* PromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptService.swift; sourceTree = "<group>"; };
 		982530FF1FF41568000E6E20 /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		9827AF8C20071D8200357EBF /* ScoreCollectioncellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCollectioncellViewModel.swift; sourceTree = "<group>"; };
@@ -310,6 +318,8 @@
 				988658F91FE807B400FEB703 /* Contact.swift */,
 				98FEE7B61FE4BBFA00CD80A8 /* Prompt.swift */,
 				9883ED601FE6F810002E538E /* PromptReply.swift */,
+				981545D0201026EB0001F675 /* Gif.swift */,
+				981545D6201051340001F675 /* Cache.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -388,6 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				98F672021FFF0EA8001DE88E /* PixabayAPI.swift */,
+				981545D220102E9B0001F675 /* GiphyAPI.swift */,
 			);
 			path = "Moya API Providers";
 			sourceTree = "<group>";
@@ -493,6 +504,7 @@
 			children = (
 				985C2A601FFDAE040034E116 /* ContactService.swift */,
 				9806B90A2007CEB2000CB497 /* PixaImageService.swift */,
+				981545D420102EEF0001F675 /* GIFImageService.swift */,
 				9823322A1FF7E09800C3CB49 /* PromptService.swift */,
 			);
 			path = "Realm Data Services";
@@ -868,6 +880,7 @@
 				"${BUILT_PRODUCTS_DIR}/Action/Action.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
+				"${BUILT_PRODUCTS_DIR}/Gifu/Gifu.framework",
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/Moya/Moya.framework",
 				"${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework",
@@ -889,6 +902,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Action.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Gifu.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Moya.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhoneNumberKit.framework",
@@ -937,6 +951,7 @@
 			files = (
 				9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
+				981545D520102EEF0001F675 /* GIFImageService.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,
@@ -955,6 +970,7 @@
 				9806B9122007DDCB000CB497 /* ImageSearchCollectionCell.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
 				98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */,
+				981545D320102E9B0001F675 /* GiphyAPI.swift in Sources */,
 				988658FA1FE807B400FEB703 /* Contact.swift in Sources */,
 				980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */,
 				9806B90E2007DCB1000CB497 /* ImageSearchViewController.swift in Sources */,
@@ -981,6 +997,8 @@
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				9836043F20070EC2008A975D /* Extensions.swift in Sources */,
 				9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */,
+				981545D7201051340001F675 /* Cache.swift in Sources */,
+				981545D1201026EB0001F675 /* Gif.swift in Sources */,
 				983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */,
 				98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
