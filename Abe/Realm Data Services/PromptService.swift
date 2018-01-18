@@ -143,6 +143,18 @@ struct UserService {
         return result ?? .empty()
     }
     
+    func add(userFriends: [User],
+             to currentUser: User) -> Observable<([User], User)> {
+        let result = withRealm("updating title") { realm -> Observable<([User], User)> in
+            try realm.write {
+                currentUser.registeredContacts.append(objectsIn: userFriends)
+            }
+            return .just((userFriends, currentUser))
+        }
+        return result ?? .error(ReplyServiceError.creationFailed)
+    }
+    
+    
 //    func registedContactsFor(user: User, allUsers: Results<User>) -> Observable<[User]> {
 //        return self.contacts.flatMap { (contact) -> User? in
 //            guard let index = allUsers.index(where: { (user) -> Bool in
