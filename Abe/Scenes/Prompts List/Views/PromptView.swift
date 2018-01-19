@@ -205,7 +205,7 @@ final class PromptHeaderView: UIView {
     
    init() {
         super.init(frame: .zero)
-        self.backgroundColor = UIColor.red
+        self.backgroundColor = UIColor.clear
         //setupTopContainerView()
         setupImageView()
         setupOpaqueView()
@@ -215,6 +215,7 @@ final class PromptHeaderView: UIView {
     fileprivate func setupImageView() {
         imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
         
         self.addSubview(imageView)
         imageView.snp.makeConstraints { (make) in

@@ -85,6 +85,12 @@ final class WebThumbnailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        titleLabel.preferredMaxLayoutWidth = titleLabel.bounds.width
+        urlLabel.preferredMaxLayoutWidth = urlLabel.bounds.width
+    }
+    
     init() {
         super.init(frame: .zero)
         self.backgroundColor = UIColor.gray
@@ -116,6 +122,7 @@ final class WebThumbnailView: UIView {
         imageView.snp.makeConstraints { (make) in
             make.left.top.bottom.equalTo(self)
             make.width.equalTo(100)
+            make.height.equalTo(100)
         }
     }
     
@@ -140,8 +147,8 @@ final class WebThumbnailView: UIView {
             make.centerY.equalTo(self.snp.centerY)
             make.left.equalTo(imageView.snp.right).offset(10)
             make.right.equalTo(self.snp.right).offset(-10)
-            make.top.equalTo(self.snp.top).offset(-10)
-            make.bottom.equalTo(self.snp.bottom).offset(10)
+//            make.top.equalTo(self.snp.top).offset(-10)
+//            make.bottom.equalTo(self.snp.bottom).offset(10)
         }
     }
     

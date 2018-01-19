@@ -41,6 +41,7 @@ final class PromptTableCell: UITableViewCell {
         promptView.replyTextLabel.text = "replies"
         promptView.replyCountLabel.text = "\(prompt.replies.count)"
         if let url = URL(string: prompt.imageURL) {
+            print(url)
             promptView.headerView.imageView.kf.setImage(with: url)
         }
     }

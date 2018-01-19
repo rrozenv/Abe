@@ -21,6 +21,7 @@ class RepliesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.isHidden = true
         setupTabBarView()
         setupHeaderView()
         setupTableView()
@@ -31,28 +32,7 @@ class RepliesViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        sizeHeaderToFit()
-//        guard let headerView = tableView.tableHeaderView as? PromptSummaryView else { return }
-//        let size = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
-//        if headerView.frame.size.height != size.height {
-//            headerView.frame.size.height = size.height
-//            tableView.tableHeaderView = headerView
-//            tableView.layoutIfNeeded()
-//        }
-    }
-    
-    func sizeHeaderToFit() {
-        let headerView = tableView.tableHeaderView!
-        
-        headerView.setNeedsLayout()
-        headerView.layoutIfNeeded()
-        
-        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        var frame = headerView.frame
-        frame.size.height = height
-        headerView.frame = frame
-        
-        tableView.tableHeaderView = headerView
+        sizeTableHeaderToFit()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -95,10 +75,10 @@ class RepliesViewController: UIViewController {
             .drive(onNext: { [weak self] in
                 self?.setPromptHeaderInfo(with: $0)
                 self?.summaryView.bodyTextLabel.text = $0.body
-                guard let webLink = $0.webLinkThumbnail else { return
-                    //self?.summaryView.webLinkView.isHidden = true ; return
+                guard let webLink = $0.webLinkThumbnail else {
+                    self?.summaryView.webLinkView.isHidden = true ; return
                 }
-                //self?.summaryView.webLinkView.thumbnail = webLink
+                self?.summaryView.webLinkView.thumbnail = webLink
             })
             .disposed(by: disposeBag)
         
@@ -197,7 +177,6 @@ extension RepliesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
         switch section {
-        //case .summary: return summaryView
         case .replies: return tabBarView
         }
     }
@@ -207,25 +186,34 @@ extension RepliesViewController: UITableViewDelegate {
 extension RepliesViewController: UIScrollViewDelegate {
     
     func animateHeader() {
-        self.headerHeightConstraint.constant = 150
-        UIView.animate(withDuration: 0.2, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.5, options: [.curveEaseInOut], animations: {
+        self.headerHeightConstraint.constant = 200
+        UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
             self.view.layoutIfNeeded()
         }, completion: nil)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         print(scrollView.contentOffset.y)
+        guard let headerView = tableView.tableHeaderView else { return }
+        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        //Going down
         if scrollView.contentOffset.y < 0 {
             self.headerHeightConstraint.constant += abs(scrollView.contentOffset.y)
+        //Going up
+        } else if scrollView.contentOffset.y - height > 0 && self.headerHeightConstraint.constant >= 65 {
+            self.headerHeightConstraint.constant -= scrollView.contentOffset.y/140
+            if self.headerHeightConstraint.constant < 65 {
+                self.headerHeightConstraint.constant = 65
+            }
         }
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if self.headerHeightConstraint.constant > 150 { animateHeader() }
+        if self.headerHeightConstraint.constant > 210 { animateHeader() }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if self.headerHeightConstraint.constant > 150 { animateHeader() }
+        if self.headerHeightConstraint.constant > 210 { animateHeader() }
     }
     
 }
@@ -259,6 +247,17 @@ extension RepliesViewController {
         tableView.tableHeaderView = summaryView
     }
     
+    private func sizeTableHeaderToFit() {
+        guard let headerView = tableView.tableHeaderView else { return }
+        headerView.setNeedsLayout()
+        headerView.layoutIfNeeded()
+        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        var frame = headerView.frame
+        frame.size.height = height
+        headerView.frame = frame
+        tableView.tableHeaderView = headerView
+    }
+    
     private func setupHeaderView() {
         headerView = PromptHeaderView()
         headerView.translatesAutoresizingMaskIntoConstraints = false
@@ -271,15 +270,6 @@ extension RepliesViewController {
             headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
-        
-        //        headerHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: 150)
-        //        headerHeightConstraint.isActive = true
-        //        view.addSubview(headerView)
-        //        headerView.snp.makeConstraints { (make) in
-        //            make.left.top.right.equalTo(view)
-        //            make.height.equalTo(186)
-        //        }
-
     }
     
     private func setupCreatePromptReplyButton() {
