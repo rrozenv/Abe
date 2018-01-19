@@ -89,7 +89,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         replyBodyLabel.snp.makeConstraints { (make) in
             //make.bottom.equalTo(collectionView.snp.top).offset(-5)
             make.top.equalTo(containerView.snp.top)
-            //make.left.equalTo(containerView.snp.left).offset(10)
+            make.left.equalTo(containerView.snp.left).offset(20)
         }
     }
     
