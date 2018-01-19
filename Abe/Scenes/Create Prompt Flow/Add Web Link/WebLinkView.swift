@@ -87,34 +87,34 @@ final class WebThumbnailView: UIView {
     
     init() {
         super.init(frame: .zero)
-        self.backgroundColor = UIColor.clear
-        setupContainerView()
+        self.backgroundColor = UIColor.gray
+        //setupContainerView()
         setupImageView()
         setupLabelsStackView()
     }
     
-    private func setupContainerView() {
-        containerView = UIView()
-        containerView.backgroundColor = UIColor.lightGray
-        containerView.layer.cornerRadius = 5.0
-        containerView.layer.masksToBounds = true
-        containerView.dropShadow()
-        
-        self.addSubview(containerView)
-        containerView.snp.makeConstraints { (make) in
-            make.edges.equalTo(self)
-            make.height.equalTo(100)
-        }
-    }
+//    private func setupContainerView() {
+//        containerView = UIView()
+//        containerView.backgroundColor = UIColor.lightGray
+//        containerView.layer.cornerRadius = 5.0
+//        containerView.layer.masksToBounds = true
+//        containerView.dropShadow()
+//
+//        self.addSubview(containerView)
+//        containerView.snp.makeConstraints { (make) in
+//            make.edges.equalTo(self)
+//            make.height.equalTo(100)
+//        }
+//    }
     
     private func setupImageView() {
         imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
         
-        containerView.addSubview(imageView)
+        self.addSubview(imageView)
         imageView.snp.makeConstraints { (make) in
-            make.left.top.bottom.equalTo(containerView)
+            make.left.top.bottom.equalTo(self)
             make.width.equalTo(100)
         }
     }
@@ -135,13 +135,13 @@ final class WebThumbnailView: UIView {
         labelsStackView.spacing = 4.0
         labelsStackView.axis = .vertical
         
-        containerView.addSubview(labelsStackView)
+        self.addSubview(labelsStackView)
         labelsStackView.snp.makeConstraints { (make) in
-            make.centerY.equalTo(containerView.snp.centerY)
+            make.centerY.equalTo(self.snp.centerY)
             make.left.equalTo(imageView.snp.right).offset(10)
-            make.right.equalTo(containerView.snp.right).offset(-10)
-            make.top.equalTo(containerView.snp.top).offset(-10)
-            make.bottom.equalTo(containerView.snp.bottom).offset(10)
+            make.right.equalTo(self.snp.right).offset(-10)
+            make.top.equalTo(self.snp.top).offset(-10)
+            make.bottom.equalTo(self.snp.bottom).offset(10)
         }
     }
     

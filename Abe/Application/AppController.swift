@@ -26,6 +26,7 @@ final class AppController: UIViewController {
         super.viewDidLoad()
         addNotificationObservers()
         loadInitialViewController()
+        //setUpdateUsersFriendsSubscription()
     }
     
 }
@@ -46,17 +47,18 @@ extension AppController {
     
     private func setUpdateUsersFriendsSubscription() {
         currentUser.asObservable().unwrap()
-            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+            //.subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .flatMap { [unowned self] _ in self.userService.fetchAll() }
             .map { [unowned self] in self.currentUser.value?.registeredUsersInContacts(allUsers: $0) }.unwrap()
             .flatMap { [unowned self] in self.userService.add(userFriends: $0, to: self.currentUser.value!) }
+            //.observeOn(MainScheduler.instance)
             .subscribe(onNext: { [unowned self] (results) in
                 self.currentUser.value = results.1
             })
             .disposed(by: disposeBag)
     }
     
-    fileprivate func loadInitialViewController() {
+    private func loadInitialViewController() {
         if let currentUser = self.fetchCurrentUser() {
             self.currentUser.value = currentUser
             self.actingVC = createHomeViewController()

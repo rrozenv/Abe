@@ -137,6 +137,7 @@ struct UserService {
     
     func fetchAll() -> Observable<Results<User>> {
         let result = withRealm("getting prompts") { realm -> Observable<Results<User>> in
+            //let threadSafeRealm = try! Realm(configuration: RealmConfig.common.configuration)
             let users = realm.objects(User.self)
             return Observable.collection(from: users)
         }
@@ -146,6 +147,8 @@ struct UserService {
     func add(userFriends: [User],
              to currentUser: User) -> Observable<([User], User)> {
         let result = withRealm("updating title") { realm -> Observable<([User], User)> in
+//            let threadSafeRealm = try! Realm(configuration: RealmConfig.common.configuration)
+//            let user = threadSafeRealm.object(ofType: User.self, forPrimaryKey: currentUser.id)
             try realm.write {
                 currentUser.registeredContacts.append(objectsIn: userFriends)
             }

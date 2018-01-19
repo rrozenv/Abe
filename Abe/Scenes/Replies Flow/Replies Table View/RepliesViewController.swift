@@ -4,6 +4,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Kingfisher
+import GSKStretchyHeaderView
 
 class RepliesViewController: UIViewController {
     
@@ -14,16 +15,29 @@ class RepliesViewController: UIViewController {
     private var tabBarView: TabBarView!
     private var createReplyButton: UIButton!
     private var headerView: PromptHeaderView!
+    private var headerHeightConstraint:NSLayoutConstraint!
     private var summaryView: PromptSummaryView!
+    //private var stretchyHeader: StretchyPromptHeaderView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupHeaderView()
-        setupSummaryView()
-        setupTableView()
-        setupCreatePromptReplyButton()
         setupTabBarView()
+        setupHeaderView()
+        setupTableView()
+        setupSummaryView()
+        setupCreatePromptReplyButton()
         bindViewModel()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard let headerView = tableView.tableHeaderView as? PromptSummaryView else { return }
+        let size = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize)
+        if headerView.frame.size.height != size.height {
+            headerView.frame.size.height = size.height
+            tableView.tableHeaderView = headerView
+            tableView.layoutIfNeeded()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -66,10 +80,10 @@ class RepliesViewController: UIViewController {
             .drive(onNext: { [weak self] in
                 self?.setPromptHeaderInfo(with: $0)
                 self?.summaryView.bodyTextLabel.text = $0.body
-                guard let webLink = $0.webLinkThumbnail else {
-                    self?.summaryView.webLinkView.isHidden = true ; return
+                guard let webLink = $0.webLinkThumbnail else { return
+                    //self?.summaryView.webLinkView.isHidden = true ; return
                 }
-                self?.summaryView.webLinkView.thumbnail = webLink
+                //self?.summaryView.webLinkView.thumbnail = webLink
             })
             .disposed(by: disposeBag)
         
@@ -168,9 +182,35 @@ extension RepliesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
         switch section {
-        case .summary: return summaryView
+        //case .summary: return summaryView
         case .replies: return tabBarView
         }
+    }
+    
+}
+
+extension RepliesViewController: UIScrollViewDelegate {
+    
+    func animateHeader() {
+        self.headerHeightConstraint.constant = 150
+        UIView.animate(withDuration: 0.2, delay: 0.0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.5, options: [.curveEaseInOut], animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print(scrollView.contentOffset.y)
+        if scrollView.contentOffset.y < 0 {
+            self.headerHeightConstraint.constant += abs(scrollView.contentOffset.y)
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if self.headerHeightConstraint.constant > 150 { animateHeader() }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if self.headerHeightConstraint.constant > 150 { animateHeader() }
     }
     
 }
@@ -180,12 +220,13 @@ extension RepliesViewController {
     
     private func setupTableView() {
         tableView = UITableView(frame: CGRect.zero, style: .plain)
+        if #available(iOS 11.0, *) { tableView.contentInsetAdjustmentBehavior = .never }
         tableView.delegate = self
         tableView.dataSource = self.dataSource
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         registerTableViewCells()
-        
+       
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
@@ -200,16 +241,30 @@ extension RepliesViewController {
     
     private func setupSummaryView() {
         summaryView = PromptSummaryView()
+        tableView.tableHeaderView = summaryView
     }
     
     private func setupHeaderView() {
         headerView = PromptHeaderView()
-        
+        headerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(headerView)
-        headerView.snp.makeConstraints { (make) in
-            make.top.left.right.equalTo(view)
-            make.height.equalTo(186)
-        }
+        headerHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: 200)
+        headerHeightConstraint.isActive = true
+        let constraints:[NSLayoutConstraint] = [
+            headerView.topAnchor.constraint(equalTo: view.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ]
+        NSLayoutConstraint.activate(constraints)
+        
+        //        headerHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: 150)
+        //        headerHeightConstraint.isActive = true
+        //        view.addSubview(headerView)
+        //        headerView.snp.makeConstraints { (make) in
+        //            make.left.top.right.equalTo(view)
+        //            make.height.equalTo(186)
+        //        }
+
     }
     
     private func setupCreatePromptReplyButton() {

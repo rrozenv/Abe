@@ -59,7 +59,8 @@ final class AddWebLinkViewModel: AddWebLinkViewModelType, AddWebLinkViewModelInp
         let searchTextObservable = _searchTextInput.asObservable()
         let searchTappedObservable = _searchTappedInput.asObservable()
         let doneTappedObservable = _doneTappedInput.asObservable()
-        
+
+//MARK: - Outputs
         self.linkThumbnail = searchTappedObservable
             .withLatestFrom(searchTextObservable)
             .flatMapLatest {
@@ -67,7 +68,8 @@ final class AddWebLinkViewModel: AddWebLinkViewModelType, AddWebLinkViewModelInp
                     .trackError(errorTracker)
                     .trackActivity(activityIndicator)
             }
-        
+
+//MARK: - Routing
         doneTappedObservable
             .do(onNext: router.toMainCreateReplyInput)
             .subscribe()

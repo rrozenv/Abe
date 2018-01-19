@@ -5,6 +5,7 @@ PODS:
   - Alamofire (4.6.0)
   - Differentiator (3.0.2)
   - Gifu (3.0.0)
+  - GSKStretchyHeaderView (1.0.3)
   - Kingfisher (4.6.1)
   - Moya/Core (10.0.1):
     - Alamofire (~> 4.1)
@@ -52,6 +53,7 @@ PODS:
 DEPENDENCIES:
   - Action
   - Gifu
+  - GSKStretchyHeaderView
   - Kingfisher (~> 4.0)
   - Moya/RxSwift
   - PhoneNumberKit (~> 2.1)
@@ -71,6 +73,7 @@ SPEC CHECKSUMS:
   Alamofire: f41a599bd63041760b26d393ec1069d9d7b917f4
   Differentiator: a87be69eba49ec4ab460c7671143ee3a9eececfd
   Gifu: 6543ca2056a3d697097c09fe543ef49348ccc892
+  GSKStretchyHeaderView: 05afeffceced344c52334626a3b861e58dd82857
   Kingfisher: 1f9157d9c02b380cbd0b7cc890161195164eb634
   Moya: 9e621707ff754eeb51ff3ec51a3d54e517c0733a
   PhoneNumberKit: 62003f40ff75315fd3738286558bc365365ac222
@@ -87,6 +90,6 @@ SPEC CHECKSUMS:
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
   SwiftLinkPreview: ba2ec1f15a5309eb49aeabe7e20718162406aab2
 
-PODFILE CHECKSUM: 9759c3227c46f9252c574d9af42a33c76890f315
+PODFILE CHECKSUM: aa7e9125b0c061fc0063e0bad8c5a72cd642f147
 
 COCOAPODS: 1.3.1

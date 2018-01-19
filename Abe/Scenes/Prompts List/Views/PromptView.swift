@@ -1,6 +1,7 @@
 
 import Foundation
 import UIKit
+import GSKStretchyHeaderView
 
 final class PromptView: UIView {
     
@@ -153,6 +154,44 @@ final class PromptView: UIView {
     
 }
 
+final class PromptHeaderSummaryView: UIView {
+    
+    var headerView: PromptHeaderView!
+    var summaryView: PromptSummaryView!
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        self.backgroundColor = UIColor.red
+        setupHeaderView()
+        setupSummaryView()
+    }
+    
+    private func setupHeaderView() {
+        headerView = PromptHeaderView()
+        
+        self.addSubview(headerView)
+        headerView.snp.makeConstraints { (make) in
+            make.left.right.top.equalTo(self)
+            make.height.equalTo(150)
+        }
+    }
+    
+    private func setupSummaryView() {
+        summaryView = PromptSummaryView()
+        
+        self.addSubview(summaryView)
+        summaryView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalTo(self)
+            make.top.equalTo(headerView)
+        }
+    }
+    
+}
+
 final class PromptHeaderView: UIView {
     
     var topContainerView: UIView!
@@ -164,32 +203,22 @@ final class PromptHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init() {
+   init() {
         super.init(frame: .zero)
-        self.backgroundColor = UIColor.clear
-        setupTopContainerView()
+        self.backgroundColor = UIColor.red
+        //setupTopContainerView()
         setupImageView()
         setupOpaqueView()
         setupTitleLabel()
     }
     
-    
-    fileprivate func setupTopContainerView() {
-        topContainerView = UIView()
-        
-        self.addSubview(topContainerView)
-        topContainerView.snp.makeConstraints { (make) in
-            make.right.left.top.equalTo(self)
-            make.height.equalTo(186)
-        }
-    }
-    
     fileprivate func setupImageView() {
         imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
         
-        topContainerView.addSubview(imageView)
+        self.addSubview(imageView)
         imageView.snp.makeConstraints { (make) in
-            make.edges.equalTo(topContainerView)
+            make.edges.equalTo(self)
         }
     }
     
@@ -197,7 +226,70 @@ final class PromptHeaderView: UIView {
         opaqueView = UIView()
         opaqueView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
         
-        topContainerView.addSubview(opaqueView)
+        self.addSubview(opaqueView)
+        opaqueView.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
+    }
+    
+    fileprivate func setupTitleLabel() {
+        titleLabel = UILabel()
+        titleLabel.textColor = UIColor.white
+        titleLabel.numberOfLines = 0
+        titleLabel.font = FontBook.AvenirBlack.of(size: 19)
+        
+        self.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(self).offset(20)
+            make.bottom.equalTo(self).offset(-20)
+            make.right.equalTo(self).offset(-20)
+        }
+    }
+    
+}
+
+final class PromptHeaderPlusSummaryView: UIView {
+    
+    var topContainerView: UIView!
+    var titleLabel: UILabel!
+    var imageView: UIImageView!
+    var opaqueView: UIView!
+    var bodyTextLabel: UILabel!
+    var contentStackView: UIStackView!
+    var webLinkView: WebThumbnailView!
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        self.backgroundColor = UIColor.red
+        //setupTopContainerView()
+        setupImageView()
+        setupOpaqueView()
+        setupTitleLabel()
+        setupBodyTextProperties()
+        setupWebLinkViewProperties()
+        setupContentStackView()
+    }
+    
+    fileprivate func setupImageView() {
+        imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        
+        self.addSubview(imageView)
+        imageView.snp.makeConstraints { (make) in
+            make.left.right.top.equalTo(self)
+            make.height.equalTo(150)
+        }
+    }
+    
+    fileprivate func setupOpaqueView() {
+        opaqueView = UIView()
+        opaqueView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        
+        self.addSubview(opaqueView)
         opaqueView.snp.makeConstraints { (make) in
             make.edges.equalTo(imageView)
         }
@@ -209,11 +301,36 @@ final class PromptHeaderView: UIView {
         titleLabel.numberOfLines = 0
         titleLabel.font = FontBook.AvenirBlack.of(size: 19)
         
-        topContainerView.addSubview(titleLabel)
+        self.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
-            make.left.equalTo(topContainerView).offset(20)
-            make.bottom.equalTo(topContainerView).offset(-20)
-            make.right.equalTo(topContainerView).offset(-20)
+            make.left.equalTo(imageView).offset(20)
+            make.bottom.equalTo(imageView).offset(-20)
+            make.right.equalTo(imageView).offset(-20)
+        }
+    }
+    
+    fileprivate func setupBodyTextProperties() {
+        bodyTextLabel = UILabel()
+        bodyTextLabel.textColor = UIColor.black
+        bodyTextLabel.numberOfLines = 0
+        bodyTextLabel.font = FontBook.AvenirMedium.of(size: 12)
+    }
+    
+    fileprivate func setupWebLinkViewProperties() {
+        webLinkView = WebThumbnailView()
+    }
+    
+    fileprivate func setupContentStackView() {
+        let views: [UIView] = [bodyTextLabel, webLinkView]
+        contentStackView = UIStackView(arrangedSubviews: views)
+        contentStackView.spacing = 4.0
+        contentStackView.axis = .vertical
+        
+        self.addSubview(contentStackView)
+        contentStackView.snp.makeConstraints { (make) in
+            make.left.right.equalTo(self).inset(20)
+            make.top.equalTo(imageView.snp.bottom).offset(-10)
+            make.bottom.equalTo(self.snp.bottom)
         }
     }
     
