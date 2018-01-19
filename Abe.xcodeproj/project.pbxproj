@@ -57,6 +57,9 @@
 		9862867320005E0900502294 /* ReplyTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9862867220005E0900502294 /* ReplyTableCell.swift */; };
 		9862867820006AE300502294 /* RepliesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9862867720006AE300502294 /* RepliesViewController.swift */; };
 		9862867A20006AF000502294 /* RepliesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9862867920006AF000502294 /* RepliesViewModel.swift */; };
+		986768562012922C00D0421C /* WebLinkActionButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986768552012922C00D0421C /* WebLinkActionButtonsView.swift */; };
+		98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98676858201292E600D0421C /* WebLinkThumbnail.swift */; };
+		9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867685A201294B700D0421C /* PromptHeaderView.swift */; };
 		9883ED611FE6F810002E538E /* PromptReply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED601FE6F810002E538E /* PromptReply.swift */; };
 		9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */; };
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
@@ -175,6 +178,9 @@
 		9862867220005E0900502294 /* ReplyTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyTableCell.swift; sourceTree = "<group>"; };
 		9862867720006AE300502294 /* RepliesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesViewController.swift; sourceTree = "<group>"; };
 		9862867920006AF000502294 /* RepliesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesViewModel.swift; sourceTree = "<group>"; };
+		986768552012922C00D0421C /* WebLinkActionButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkActionButtonsView.swift; sourceTree = "<group>"; };
+		98676858201292E600D0421C /* WebLinkThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkThumbnail.swift; sourceTree = "<group>"; };
+		9867685A201294B700D0421C /* PromptHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptHeaderView.swift; sourceTree = "<group>"; };
 		9883ED601FE6F810002E538E /* PromptReply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptReply.swift; sourceTree = "<group>"; };
 		9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
@@ -319,7 +325,7 @@
 				98FEE7B61FE4BBFA00CD80A8 /* Prompt.swift */,
 				9883ED601FE6F810002E538E /* PromptReply.swift */,
 				981545D0201026EB0001F675 /* Gif.swift */,
-				981545D6201051340001F675 /* Cache.swift */,
+				98676858201292E600D0421C /* WebLinkThumbnail.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -327,6 +333,7 @@
 		980DE5B11FE5B4EA0087C6C3 /* Realm */ = {
 			isa = PBXGroup;
 			children = (
+				981545D6201051340001F675 /* Cache.swift */,
 				98FEE7B21FE4BBC000CD80A8 /* RealmInstance.swift */,
 				9893171C1FE6EF4000E2979F /* RealmRepresentable.swift */,
 				980DE5B21FE5B51B0087C6C3 /* RealmConstants.swift */,
@@ -406,11 +413,10 @@
 		9828ABC4200E710900A3A9D1 /* Add Web Link */ = {
 			isa = PBXGroup;
 			children = (
-				9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */,
 				9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */,
 				9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */,
 				9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */,
-				9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */,
+				986768572012927600D0421C /* Views */,
 			);
 			path = "Add Web Link";
 			sourceTree = "<group>";
@@ -484,6 +490,7 @@
 		984F379520070C6700C62E6E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9867685A201294B700D0421C /* PromptHeaderView.swift */,
 				982530FF1FF41568000E6E20 /* TabBarView.swift */,
 				9836044020071021008A975D /* EmptyStateView.swift */,
 				984BE286200FF3C900338C00 /* PromptSummaryView.swift */,
@@ -506,6 +513,7 @@
 				9806B90A2007CEB2000CB497 /* PixaImageService.swift */,
 				981545D420102EEF0001F675 /* GIFImageService.swift */,
 				9823322A1FF7E09800C3CB49 /* PromptService.swift */,
+				9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */,
 			);
 			path = "Realm Data Services";
 			sourceTree = "<group>";
@@ -571,6 +579,15 @@
 				984F379520070C6700C62E6E /* Views */,
 			);
 			path = "Replies Table View";
+			sourceTree = "<group>";
+		};
+		986768572012927600D0421C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */,
+				986768552012922C00D0421C /* WebLinkActionButtonsView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		9883ED661FE7061B002E538E /* Cells */ = {
@@ -957,6 +974,7 @@
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,
+				98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */,
 				98FEE7B71FE4BBFB00CD80A8 /* Prompt.swift in Sources */,
 				98FEE7C71FE4C12800CD80A8 /* CreatePromptRouter.swift in Sources */,
 				988658F61FE8049900FEB703 /* RealmError.swift in Sources */,
@@ -969,6 +987,7 @@
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
 				9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */,
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
+				9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */,
 				9806B9122007DDCB000CB497 /* ImageSearchCollectionCell.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
 				98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */,
@@ -992,6 +1011,7 @@
 				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				9862867A20006AF000502294 /* RepliesViewModel.swift in Sources */,
+				986768562012922C00D0421C /* WebLinkActionButtonsView.swift in Sources */,
 				98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */,
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,
 				985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */,

@@ -22,51 +22,23 @@ final class PromptSummaryView: UIView {
     init() {
         super.init(frame: .zero)
         self.backgroundColor = UIColor.clear
-        //setupContainerView()
         setupBodyTextProperties()
         setupWebLinkViewProperties()
-        //setupTestWebLinkView()
         setupContentStackView()
     }
-    
-//    fileprivate func setupContainerView() {
-//        containerView = UIView()
-//        containerView.backgroundColor = UIColor.yellow
-//
-//        self.addSubview(containerView)
-//        containerView.snp.makeConstraints { (make) in
-//            make.edges.equalTo(self)
-//        }
-//    }
 
-    fileprivate func setupBodyTextProperties() {
+    private func setupBodyTextProperties() {
         bodyTextLabel = UILabel()
         bodyTextLabel.textColor = UIColor.black
         bodyTextLabel.numberOfLines = 0
         bodyTextLabel.font = FontBook.AvenirMedium.of(size: 18)
-        
-//        self.addSubview(bodyTextLabel)
-//        bodyTextLabel.snp.makeConstraints { (make) in
-//            make.edges.equalTo(self).inset(20)
-//        }
     }
     
-    fileprivate func setupWebLinkViewProperties() {
+    private func setupWebLinkViewProperties() {
         webLinkView = WebThumbnailView()
-        //webLinkView.frame.size.height = 100
     }
     
-    func setupTestWebLinkView() {
-        testWebLinkView = UIView()
-        testWebLinkView.backgroundColor = UIColor.yellow
-        
-        testWebLinkView.snp.makeConstraints { (make) in
-            make.height.equalTo(100)
-            make.width.equalTo(300)
-        }
-    }
-    
-    fileprivate func setupContentStackView() {
+    private func setupContentStackView() {
         let views: [UIView] = [bodyTextLabel, webLinkView]
         contentStackView = UIStackView(arrangedSubviews: views)
         contentStackView.spacing = 4.0

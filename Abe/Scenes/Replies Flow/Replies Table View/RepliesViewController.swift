@@ -4,7 +4,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import Kingfisher
-import GSKStretchyHeaderView
 
 class RepliesViewController: UIViewController {
     
@@ -17,7 +16,6 @@ class RepliesViewController: UIViewController {
     private var headerView: PromptHeaderView!
     private var headerHeightConstraint:NSLayoutConstraint!
     private var summaryView: PromptSummaryView!
-    //private var stretchyHeader: StretchyPromptHeaderView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,11 +72,7 @@ class RepliesViewController: UIViewController {
         viewModel.outputs.prompt
             .drive(onNext: { [weak self] in
                 self?.setPromptHeaderInfo(with: $0)
-                self?.summaryView.bodyTextLabel.text = $0.body
-                guard let webLink = $0.webLinkThumbnail else {
-                    self?.summaryView.webLinkView.isHidden = true ; return
-                }
-                self?.summaryView.webLinkView.thumbnail = webLink
+                self?.setSummaryViewInfo(with: $0)
             })
             .disposed(by: disposeBag)
         
@@ -143,13 +137,22 @@ class RepliesViewController: UIViewController {
     
 }
 
+//MARK: - View Data Bindings
 extension RepliesViewController {
     
-    func setPromptHeaderInfo(with prompt: Prompt) {
+    private func setPromptHeaderInfo(with prompt: Prompt) {
         self.headerView.titleLabel.text = prompt.title
         if let url = URL(string: prompt.imageURL) {
             self.headerView.imageView.kf.setImage(with: url)
         }
+    }
+    
+    private func setSummaryViewInfo(with prompt: Prompt) {
+        self.summaryView.bodyTextLabel.text = prompt.body
+        guard let webLink = prompt.webLinkThumbnail else {
+            self.summaryView.webLinkView.isHidden = true ; return
+        }
+        self.summaryView.webLinkView.thumbnail = webLink
     }
     
 }
@@ -185,13 +188,6 @@ extension RepliesViewController: UITableViewDelegate {
 
 extension RepliesViewController: UIScrollViewDelegate {
     
-    func animateHeader() {
-        self.headerHeightConstraint.constant = 200
-        UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
-            self.view.layoutIfNeeded()
-        }, completion: nil)
-    }
-    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         print(scrollView.contentOffset.y)
         guard let headerView = tableView.tableHeaderView else { return }
@@ -199,9 +195,13 @@ extension RepliesViewController: UIScrollViewDelegate {
         //Going down
         if scrollView.contentOffset.y < 0 {
             self.headerHeightConstraint.constant += abs(scrollView.contentOffset.y)
+            self.headerView.incrementOpaqueViewAlpha(offset: self.headerHeightConstraint.constant)
+            self.headerView.incrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
         //Going up
         } else if scrollView.contentOffset.y - height > 0 && self.headerHeightConstraint.constant >= 65 {
-            self.headerHeightConstraint.constant -= scrollView.contentOffset.y/140
+            self.headerHeightConstraint.constant -= scrollView.contentOffset.y/20
+            self.headerView.decrementOpaqueViewAlpha(offset: scrollView.contentOffset.y)
+            self.headerView.decrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
             if self.headerHeightConstraint.constant < 65 {
                 self.headerHeightConstraint.constant = 65
             }
@@ -214,6 +214,25 @@ extension RepliesViewController: UIScrollViewDelegate {
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if self.headerHeightConstraint.constant > 210 { animateHeader() }
+    }
+    
+    private func animateHeader() {
+        self.headerHeightConstraint.constant = 200
+        UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+    }
+    
+    //Called in viewDidLayoutSubviews()
+    private func sizeTableHeaderToFit() {
+        guard let headerView = tableView.tableHeaderView else { return }
+        headerView.setNeedsLayout()
+        headerView.layoutIfNeeded()
+        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        var frame = headerView.frame
+        frame.size.height = height
+        headerView.frame = frame
+        tableView.tableHeaderView = headerView
     }
     
 }
@@ -245,17 +264,6 @@ extension RepliesViewController {
     private func setupSummaryView() {
         summaryView = PromptSummaryView()
         tableView.tableHeaderView = summaryView
-    }
-    
-    private func sizeTableHeaderToFit() {
-        guard let headerView = tableView.tableHeaderView else { return }
-        headerView.setNeedsLayout()
-        headerView.layoutIfNeeded()
-        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        var frame = headerView.frame
-        frame.size.height = height
-        headerView.frame = frame
-        tableView.tableHeaderView = headerView
     }
     
     private func setupHeaderView() {
