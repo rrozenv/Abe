@@ -15,6 +15,7 @@ class RepliesViewController: UIViewController {
     private var createReplyButton: UIButton!
     private var headerView: PromptHeaderView!
     private var headerHeightConstraint:NSLayoutConstraint!
+    private var tableHeightConstraint:NSLayoutConstraint!
     private var summaryView: PromptSummaryView!
     
     override func viewDidLoad() {
@@ -252,7 +253,7 @@ extension RepliesViewController {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
-            make.top.equalTo(headerView.snp.bottom)
+            make.height.ee
         }
     }
     
@@ -270,7 +271,7 @@ extension RepliesViewController {
         headerView = PromptHeaderView()
         headerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(headerView)
-        headerHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: 200)
+        headerHeightConstraint = headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.2)
         headerHeightConstraint.isActive = true
         let constraints:[NSLayoutConstraint] = [
             headerView.topAnchor.constraint(equalTo: view.topAnchor),
