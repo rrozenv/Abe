@@ -47,9 +47,10 @@ class PromptsRouter: PromptsRoutingLogic {
 
     func toPrompt(_ prompt: Prompt) {
         let router = PromptDetailRouter(navigationController: navigationController)
-        let viewCont = RepliesViewController()
+        var viewCont = RepliesViewController()
         let vm = RepliesViewModel(router: router, prompt: prompt)
-        viewCont.viewModel = vm
+        viewCont.setViewModelBinding(model: vm!)
+        navigationController.navigationBar.isHidden = true
         navigationController.pushViewController(viewCont, animated: true)
         
 //        let router = PromptDetailRouter(navigationController: navigationController)

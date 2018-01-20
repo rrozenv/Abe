@@ -21,7 +21,7 @@ final class RepliesDataSource: ValueCellDataSource {
     }
     
     //MARK: - Locked Replies Tab
-    func loadLocked(replies: [PromptReply], didReply: Bool) {
+    func loadLocked(replies: [ReplyViewModel], didReply: Bool) {
         self.clearValues(section: Section.replies.rawValue)
         let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
                                                             userDidReply: didReply)
@@ -31,13 +31,13 @@ final class RepliesDataSource: ValueCellDataSource {
                      inSection: Section.replies.rawValue)
         } else {
             self.set(values: replies,
-                     cellClass: ReplyTableCell.self,
+                     cellClass: RateReplyTableCell.self,
                      inSection: Section.replies.rawValue)
         }
     }
     
     //MARK: - Unlocked Replies Tab
-    func loadUnlocked(replies: [PromptReply]) {
+    func loadUnlocked(replies: [ReplyViewModel]) {
         self.clearValues(section: Section.replies.rawValue)
         let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
                                                              userDidReply: true)
@@ -47,7 +47,7 @@ final class RepliesDataSource: ValueCellDataSource {
                      inSection: Section.replies.rawValue)
         } else {
             self.set(values: replies,
-                     cellClass: ReplyTableCell.self,
+                     cellClass: RateReplyTableCell.self,
                      inSection: Section.replies.rawValue)
         }
     }
@@ -83,7 +83,9 @@ final class RepliesDataSource: ValueCellDataSource {
     //MARK: - Configure Cell
     override func configureCell(tableCell cell: UITableViewCell, withValue value: Any) {
         switch (cell, value) {
-        case let (cell as ReplyTableCell, value as PromptReply):
+//        case let (cell as ReplyTableCell, value as PromptReply):
+//            cell.configureWith(value: value)
+        case let (cell as RateReplyTableCell, value as ReplyViewModel):
             cell.configureWith(value: value)
         case let (cell as SavedReplyScoreTableCell, value as ReplyScore):
             cell.configureWith(value: value)

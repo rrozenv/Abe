@@ -41,11 +41,12 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
         setupContainerView()
         setupCollectionView()
         setupTitleLabel()
-        viewModel = ReplyCellViewModel()
+        //viewModel = ReplyCellViewModel()
     }
     
     func configureWith(value: PromptReply) {
-        viewModel.reply.onNext(value)
+        replyBodyLabel.text = value.body
+        //viewModel.reply.onNext(value)
     }
     
     func bindViewModel() {
@@ -95,7 +96,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     
     private func setupCollectionView() {
         collectionView = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: PointsGridLayout())
-        collectionView.backgroundColor = UIColor.orange
+        collectionView.backgroundColor = UIColor.white
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(ScoreCollectionCell.self, forCellWithReuseIdentifier: ScoreCollectionCell.defaultReusableId)
@@ -114,6 +115,125 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     }
     
 }
+
+final class RateReplyTableCell: UITableViewCell, ValueCell {
+    
+    // MARK: - Properties
+    typealias Value = ReplyViewModel
+    static var defaultReusableId: String = "RateReplyTableCell"
+    private var disposeBag = DisposeBag()
+    weak var delegate: ReplyTableCellDelegate?
+    
+    // MARK: - View Properties
+    private var containerView: UIView!
+    private var userImageView: UIImageView!
+    private var nameLabel: UILabel!
+    private var nameSubLabel: UILabel!
+    private var replyBodyLabel: UILabel!
+    private var rateReplyButton: UIButton!
+    
+    // MARK: - Initialization
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        commonInit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    private func commonInit() {
+        self.contentView.backgroundColor = UIColor.white
+        setupContainerView()
+        setupRateReplyButton()
+        setupReplyLabel()
+        setupUserImageView()
+        setupNameLabelsStackView()
+    }
+    
+    func configureWith(value: ReplyViewModel) {
+        nameLabel.text = "Identity Locked"
+        nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
+        replyBodyLabel.text = value.reply.body
+    }
+    
+    private func setupContainerView() {
+        containerView = UIView()
+        containerView.backgroundColor = UIColor.lightGray
+        
+        contentView.addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(contentView).inset(20)
+        }
+    }
+    
+    private func setupRateReplyButton() {
+        rateReplyButton = UIButton()
+        rateReplyButton.setTitle("Rate Reply", for: .normal)
+        rateReplyButton.backgroundColor = UIColor.green
+        
+        containerView.addSubview(rateReplyButton)
+        rateReplyButton.snp.makeConstraints { (make) in
+            make.left.bottom.right.equalTo(containerView)
+            make.height.equalTo(50)
+        }
+    }
+    
+    private func setupReplyLabel() {
+        replyBodyLabel = UILabel()
+        
+        containerView.addSubview(replyBodyLabel)
+        replyBodyLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(containerView.snp.left).offset(20)
+            make.right.equalTo(containerView.snp.right).offset(-20)
+            make.bottom.equalTo(rateReplyButton.snp.top).offset(-17)
+        }
+    }
+    
+    private func setupUserImageView() {
+        userImageView = UIImageView()
+        userImageView.backgroundColor = UIColor.purple
+        
+        containerView.addSubview(userImageView)
+        userImageView.snp.makeConstraints { (make) in
+            make.left.equalTo(containerView.snp.left).offset(20)
+            make.top.equalTo(containerView.snp.top).offset(17)
+            make.bottom.equalTo(replyBodyLabel.snp.top).offset(-17)
+            make.height.width.equalTo(35)
+        }
+    }
+    
+    private func setupNameLabelsStackView() {
+        nameLabel = UILabel()
+        nameLabel.textColor = UIColor.black
+        nameLabel.numberOfLines = 1
+        nameLabel.font = FontBook.AvenirHeavy.of(size: 13)
+        
+        nameSubLabel = UILabel()
+        nameSubLabel.textColor = UIColor.gray
+        nameSubLabel.numberOfLines = 1
+        nameSubLabel.font = FontBook.AvenirMedium.of(size: 12)
+        
+        let views: [UILabel] = [nameLabel, nameSubLabel]
+        let labelsStackView = UIStackView(arrangedSubviews: views)
+        labelsStackView.spacing = 2.0
+        labelsStackView.axis = .vertical
+        
+        containerView.addSubview(labelsStackView)
+        labelsStackView.snp.makeConstraints { (make) in
+            make.centerY.equalTo(userImageView.snp.centerY)
+            make.left.equalTo(userImageView.snp.right).offset(10)
+        }
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+    }
+    
+}
+
 
 
 

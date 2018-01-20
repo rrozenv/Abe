@@ -10,14 +10,15 @@ protocol RepliesViewModelInputs {
     var filterOptionSelected: AnyObserver<FilterOption> { get }
     var createReplyTapped: AnyObserver<Void> { get }
     var scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)> { get }
+    var backButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol RepliesViewModelOutputs {
     var didUserReply: Driver<Bool> { get }
     var didSelectFilterOption: Driver<FilterOption> { get }
     var routeToCreateReply: Observable<Void> { get }
-    var lockedReplies: Driver<(replies: [PromptReply], userDidReply: Bool)> { get }
-    var unlockedReplies: Driver<[PromptReply]> { get }
+    var lockedReplies: Driver<(replies: [ReplyViewModel], userDidReply: Bool)> { get }
+    var unlockedReplies: Driver<[ReplyViewModel]> { get }
     var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
     var currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])> { get }
     var stillUnreadFromFriendsCount: Driver<String> { get }
@@ -45,14 +46,15 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let filterOptionSelected: AnyObserver<FilterOption>
     let createReplyTapped: AnyObserver<Void>
     let scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)>
+    let backButtonTappedInput: AnyObserver<Void>
 
 //MARK: - Outputs
     var outputs: RepliesViewModelOutputs { return self }
     let didUserReply: Driver<Bool>
     let didSelectFilterOption: Driver<FilterOption>
     let routeToCreateReply: Observable<Void>
-    let lockedReplies: Driver<(replies: [PromptReply], userDidReply: Bool)>
-    let unlockedReplies: Driver<[PromptReply]>
+    let lockedReplies: Driver<(replies: [ReplyViewModel], userDidReply: Bool)>
+    let unlockedReplies: Driver<[ReplyViewModel]>
     let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
     let currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])>
     let stillUnreadFromFriendsCount: Driver<String>
@@ -73,12 +75,14 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let _createReplyTapped = PublishSubject<Void>()
         let _viewWillAppear = PublishSubject<Void>()
         let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
+        let _backButtonTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewWillAppear = _viewWillAppear.asObserver()
         self.filterOptionSelected = _didSelectFilterOption.asObserver()
         self.createReplyTapped = _createReplyTapped.asObserver()
         self.scoreSelected = _didSelectScore.asObserver()
+        self.backButtonTappedInput = _backButtonTappedInput.asObserver()
 
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppear.asObservable()
@@ -87,6 +91,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let tableIndexObservable = _didSelectScore.asObservable().map { $0.1 }
         let didSelectScoreObservable = _didSelectScore.asObservable()
         let promptObservable = Observable.of(prompt)
+        let backButtonTappedObservable = _backButtonTappedInput.asObservable()
 
 //MARK: - Second Level Observables
         let didUserReplyObservable = viewWillAppearObservable
@@ -108,7 +113,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         
         self.lockedReplies = lockedRepliesObservable
             .withLatestFrom(didUserReplyObservable,
-                            resultSelector: { (replies, didUserReply) -> ([PromptReply], Bool) in
+                            resultSelector: { (replies, didUserReply) -> ([ReplyViewModel], Bool) in
                                 return (replies, didUserReply)
             })
             .asDriver(onErrorJustReturn: ([], false))
@@ -153,25 +158,37 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         self.stillUnreadFromFriendsCount = lockedRepliesTupleObservable
             .map { "\($0.friends.count) replies from friends still locked!" }
             .asDriver(onErrorJustReturn: "")
+        
+        backButtonTappedObservable
+            .do(onNext: router.toPrompts)
+            .subscribe()
+            .disposed(by: disposeBag)
     }
     
+}
+
+struct ReplyViewModel {
+    let reply: PromptReply
+    let ratingScore: ReplyScore?
+    let isCurrentUsersFriend: Bool
 }
 
 //MARK: - Helper Methods
 private func sortReplies(_ replies: [PromptReply],
                          forLockedFeed: Bool,
-                         currentUser: User) -> (friends: [PromptReply], others:[PromptReply]) {
-    var userFriendsReplies = [PromptReply]()
-    var notFriendsReplies = [PromptReply]()
+                         currentUser: User) -> (friends: [ReplyViewModel], others:[ReplyViewModel]) {
+    var userFriendsReplies = [ReplyViewModel]()
+    var notFriendsReplies = [ReplyViewModel]()
     for reply in replies {
-        let userDidVote = reply.doesScoreExistFor(userId: currentUser.id)
+        let userRating = reply.fetchCastedScoreIfExists(for: currentUser.id)
+        let userDidVote = userRating.score != nil ? true : false
         if forLockedFeed && userDidVote { continue }
         if !forLockedFeed && !userDidVote { continue }
         
         //If reply is viewable only by certain contacts
         guard reply.visibility != Visibility.individualContacts.rawValue else {
             if reply.isViewableBy(currentUser: currentUser) {
-                userFriendsReplies.append(reply)
+                userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true))
             }
             continue
         }
@@ -179,16 +196,16 @@ private func sortReplies(_ replies: [PromptReply],
         //If reply is viewable only by all of user contacts
         guard reply.visibility != Visibility.contacts.rawValue else {
             if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
-                userFriendsReplies.append(reply)
+                userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true))
             }
             continue
         }
         
         //If reply is viewable by everyone
         if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
-            userFriendsReplies.append(reply)
+            userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true))
         } else {
-            notFriendsReplies.append(reply)
+            notFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: false))
         }
     }
     return (userFriendsReplies, notFriendsReplies)

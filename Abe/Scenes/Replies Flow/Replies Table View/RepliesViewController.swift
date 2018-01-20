@@ -5,33 +5,38 @@ import RxSwift
 import RxCocoa
 import Kingfisher
 
-class RepliesViewController: UIViewController {
+class RepliesViewController: UIViewController, BindableType {
     
     var viewModel: RepliesViewModelType!
     private let disposeBag = DisposeBag()
     private let dataSource = RepliesDataSource()
+    
+    private var headerView: PromptHeaderView!
     private var tableView: UITableView!
     private var tabBarView: TabBarView!
-    private var createReplyButton: UIButton!
-    private var headerView: PromptHeaderView!
-    private var headerHeightConstraint:NSLayoutConstraint!
-    private var tableHeightConstraint:NSLayoutConstraint!
     private var summaryView: PromptSummaryView!
+    private var headerHeightConstraint:NSLayoutConstraint!
+    private var createReplyButton: UIButton!
+    private var backButton: UIButton!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.navigationController?.navigationBar.isHidden = true
+    override func loadView() {
+        super.loadView()
         setupTabBarView()
         setupHeaderView()
         setupTableView()
         setupSummaryView()
         setupCreatePromptReplyButton()
-        bindViewModel()
+        setupBackButton()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //bindViewModel()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        sizeTableHeaderToFit()
+        //sizeTableHeaderToFit()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,6 +73,10 @@ class RepliesViewController: UIViewController {
         filterOptionTapped
             .drive(viewModel.inputs.filterOptionSelected)
             .disposed(by: disposeBag)
+        
+        backButton.rx.tap.asDriver()
+            .drive(viewModel.inputs.backButtonTappedInput)
+            .disposed(by: disposeBag)
     
         //MARK: - Outputs
         viewModel.outputs.prompt
@@ -95,14 +104,14 @@ class RepliesViewController: UIViewController {
             self?.dataSource.loadLocked(replies: inputs.replies,
                                         didReply: inputs.userDidReply)
             self?.tableView.reloadData()
-            self?.scrollToTop(section: .replies)
+            //self?.scrollToTop(section: .replies)
         })
         .disposed(by: disposeBag)
         
         viewModel.outputs.unlockedReplies.drive(onNext: { [weak self] replies in
             self?.dataSource.loadUnlocked(replies: replies)
             self?.tableView.reloadData()
-            self?.scrollToTop(section: .replies)
+            //self?.scrollToTop(section: .replies)
         })
         .disposed(by: disposeBag)
         
@@ -191,33 +200,34 @@ extension RepliesViewController: UITableViewDelegate {
 extension RepliesViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print(scrollView.contentOffset.y)
-        let summaryHeight = self.summaryView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         //Going down
         if scrollView.contentOffset.y < 0 {
-            self.headerHeightConstraint.constant = 200
-            UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
-                self.view.layoutIfNeeded()
-            }, completion: nil)
             self.headerView.incrementOpaqueViewAlpha(offset: self.headerHeightConstraint.constant)
             self.headerView.incrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
+            UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+                self.headerHeightConstraint.constant = 200
+                //self.view.layoutIfNeeded()
+            }, completion: nil)
         //Going up
-        } else if scrollView.contentOffset.y - summaryHeight > 0 && self.headerHeightConstraint.constant >= 65 {
+        } else if scrollView.contentOffset.y > 0 && self.headerHeightConstraint.constant >= 65 {
             self.headerHeightConstraint.constant -= scrollView.contentOffset.y/20
             self.headerView.decrementOpaqueViewAlpha(offset: scrollView.contentOffset.y)
             self.headerView.decrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
             if self.headerHeightConstraint.constant < 65 {
-                self.headerHeightConstraint.constant = 65
+                UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+                    self.headerHeightConstraint.constant = 65
+                    //self.view.layoutIfNeeded()
+                }, completion: nil)
             }
         }
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if self.headerHeightConstraint.constant > 210 { animateHeader() }
+        if self.headerHeightConstraint.constant > 199 { animateHeader() }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if self.headerHeightConstraint.constant > 210 { animateHeader() }
+        if self.headerHeightConstraint.constant > 199 { animateHeader() }
     }
     
     private func animateHeader() {
@@ -252,18 +262,7 @@ extension RepliesViewController {
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         registerTableViewCells()
-//
-//        tableView.translatesAutoresizingMaskIntoConstraints = false
-//        view.addSubview(tableView)
-//        tableHeightConstraint = tableView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8)
-//        tableHeightConstraint.isActive = true
-//        let constraints:[NSLayoutConstraint] = [
-//            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-//        ]
-//        NSLayoutConstraint.activate(constraints)
-//
+
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
@@ -308,6 +307,20 @@ extension RepliesViewController {
         }
     }
     
+    private func setupBackButton() {
+        let image = #imageLiteral(resourceName: "IC_BackArrow")
+        image.size.equalTo(CGSize(width: 9, height: 17))
+        backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 9, height: 17))
+        backButton.setImage(image, for: .normal)
+        backButton.contentEdgeInsets = UIEdgeInsets(top: 26, left: 20, bottom: 15, right: 15)
+        
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            make.top.equalTo(view.snp.top)
+        }
+    }
+    
 }
 
 //MARK: - Helper Methods
@@ -319,7 +332,8 @@ extension RepliesViewController {
     }
     
     private func registerTableViewCells() {
-        tableView.register(ReplyTableCell.self, forCellReuseIdentifier: ReplyTableCell.defaultReusableId)
+        tableView.register(RateReplyTableCell.self, forCellReuseIdentifier: RateReplyTableCell.defaultReusableId)
+        //tableView.register(ReplyTableCell.self, forCellReuseIdentifier: ReplyTableCell.defaultReusableId)
         tableView.register(PromptSummarySectionHeaderView.self, forHeaderFooterViewReuseIdentifier: PromptSummarySectionHeaderView.reuseIdentifier)
         tableView.register(TabBarSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: TabBarSectionHeaderView.reuseIdentifier)
         tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
