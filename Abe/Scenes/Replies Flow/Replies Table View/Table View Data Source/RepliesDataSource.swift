@@ -6,7 +6,7 @@ import RealmSwift
 final class RepliesDataSource: ValueCellDataSource {
     
     enum Section: Int {
-        //case summary
+        case summary
         case replies
     }
     

@@ -181,6 +181,7 @@ extension RepliesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
         switch section {
+        case .summary: return summaryView
         case .replies: return tabBarView
         }
     }
@@ -191,15 +192,17 @@ extension RepliesViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         print(scrollView.contentOffset.y)
-        guard let headerView = tableView.tableHeaderView else { return }
-        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        let summaryHeight = self.summaryView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         //Going down
         if scrollView.contentOffset.y < 0 {
-            self.headerHeightConstraint.constant += abs(scrollView.contentOffset.y)
+            self.headerHeightConstraint.constant = 200
+            UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+                self.view.layoutIfNeeded()
+            }, completion: nil)
             self.headerView.incrementOpaqueViewAlpha(offset: self.headerHeightConstraint.constant)
             self.headerView.incrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
         //Going up
-        } else if scrollView.contentOffset.y - height > 0 && self.headerHeightConstraint.constant >= 65 {
+        } else if scrollView.contentOffset.y - summaryHeight > 0 && self.headerHeightConstraint.constant >= 65 {
             self.headerHeightConstraint.constant -= scrollView.contentOffset.y/20
             self.headerView.decrementOpaqueViewAlpha(offset: scrollView.contentOffset.y)
             self.headerView.decrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
@@ -249,11 +252,22 @@ extension RepliesViewController {
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         registerTableViewCells()
-       
+//
+//        tableView.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(tableView)
+//        tableHeightConstraint = tableView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8)
+//        tableHeightConstraint.isActive = true
+//        let constraints:[NSLayoutConstraint] = [
+//            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+//        ]
+//        NSLayoutConstraint.activate(constraints)
+//
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
-            make.height.ee
+            make.top.equalTo(headerView.snp.bottom)
         }
     }
     
@@ -264,14 +278,14 @@ extension RepliesViewController {
     
     private func setupSummaryView() {
         summaryView = PromptSummaryView()
-        tableView.tableHeaderView = summaryView
+        //tableView.tableHeaderView = summaryView
     }
     
     private func setupHeaderView() {
         headerView = PromptHeaderView()
         headerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(headerView)
-        headerHeightConstraint = headerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.2)
+        headerHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: 200)
         headerHeightConstraint.isActive = true
         let constraints:[NSLayoutConstraint] = [
             headerView.topAnchor.constraint(equalTo: view.topAnchor),
