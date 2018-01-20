@@ -176,6 +176,16 @@ extension RepliesViewController: ReplyTableCellDelegate {
     
 }
 
+//MARK: - Reply Table Cell Delegate
+extension RepliesViewController: RateReplyTableCellDelegate {
+    
+    func didSelectRateReply(_ reply: PromptReply) {
+        print("rate tapped!")
+        viewModel.inputs.rateReplyButtonTappedInput.onNext(reply)
+    }
+    
+}
+
 //MARK: - Table View Delegate
 extension RepliesViewController: UITableViewDelegate {
     
@@ -183,6 +193,9 @@ extension RepliesViewController: UITableViewDelegate {
                    willDisplay cell: UITableViewCell,
                    forRowAt indexPath: IndexPath) {
         if let cell = cell as? ReplyTableCell, cell.delegate == nil {
+            cell.delegate = self
+        }
+        if let cell = cell as? RateReplyTableCell, cell.delegate == nil {
             cell.delegate = self
         }
     }

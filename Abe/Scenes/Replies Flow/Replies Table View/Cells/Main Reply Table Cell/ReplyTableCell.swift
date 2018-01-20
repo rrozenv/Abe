@@ -116,13 +116,17 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
     
 }
 
+protocol RateReplyTableCellDelegate: class {
+    func didSelectRateReply(_ reply: PromptReply)
+}
+
 final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     // MARK: - Properties
     typealias Value = ReplyViewModel
     static var defaultReusableId: String = "RateReplyTableCell"
     private var disposeBag = DisposeBag()
-    weak var delegate: ReplyTableCellDelegate?
+    weak var delegate: RateReplyTableCellDelegate?
     
     // MARK: - View Properties
     private var containerView: UIView!
@@ -156,11 +160,22 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         nameLabel.text = "Identity Locked"
         nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
         replyBodyLabel.text = value.reply.body
+        rateReplyButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.delegate?.didSelectRateReply(value.reply)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
     }
     
     private func setupContainerView() {
         containerView = UIView()
         containerView.backgroundColor = UIColor.lightGray
+        containerView.dropShadow()
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
@@ -227,11 +242,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         }
     }
 
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        disposeBag = DisposeBag()
-    }
-    
+
 }
 
 

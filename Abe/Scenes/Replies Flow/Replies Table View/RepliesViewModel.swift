@@ -11,6 +11,7 @@ protocol RepliesViewModelInputs {
     var createReplyTapped: AnyObserver<Void> { get }
     var scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)> { get }
     var backButtonTappedInput: AnyObserver<Void> { get }
+    var rateReplyButtonTappedInput: AnyObserver<PromptReply> { get }
 }
 
 protocol RepliesViewModelOutputs {
@@ -47,6 +48,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let createReplyTapped: AnyObserver<Void>
     let scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)>
     let backButtonTappedInput: AnyObserver<Void>
+    let rateReplyButtonTappedInput: AnyObserver<PromptReply>
 
 //MARK: - Outputs
     var outputs: RepliesViewModelOutputs { return self }
@@ -76,6 +78,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let _viewWillAppear = PublishSubject<Void>()
         let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
         let _backButtonTappedInput = PublishSubject<Void>()
+        let _rateReplyButtonTappedInput = PublishSubject<PromptReply>()
         
 //MARK: - Observers
         self.viewWillAppear = _viewWillAppear.asObserver()
@@ -83,6 +86,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         self.createReplyTapped = _createReplyTapped.asObserver()
         self.scoreSelected = _didSelectScore.asObserver()
         self.backButtonTappedInput = _backButtonTappedInput.asObserver()
+        self.rateReplyButtonTappedInput = _rateReplyButtonTappedInput.asObserver()
 
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppear.asObservable()
@@ -92,6 +96,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let didSelectScoreObservable = _didSelectScore.asObservable()
         let promptObservable = Observable.of(prompt)
         let backButtonTappedObservable = _backButtonTappedInput.asObservable()
+        let rateReplyButtonTappedObservable = _rateReplyButtonTappedInput.asObservable()
 
 //MARK: - Second Level Observables
         let didUserReplyObservable = viewWillAppearObservable
@@ -161,6 +166,11 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         
         backButtonTappedObservable
             .do(onNext: router.toPrompts)
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+        rateReplyButtonTappedObservable
+            .do(onNext: router.toRateReply)
             .subscribe()
             .disposed(by: disposeBag)
     }
