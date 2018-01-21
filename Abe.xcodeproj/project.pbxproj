@@ -33,6 +33,7 @@
 		9828ABC8200E745A00A3A9D1 /* AddWebLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */; };
 		9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */; };
 		9828ABCC200E9B3500A3A9D1 /* WebLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */; };
+		982B27CE20151BB700824E82 /* RateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982B27CD20151BB700824E82 /* RateReplyRouter.swift */; };
 		982CF8512013C98800EEB278 /* RateReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8502013C98800EEB278 /* RateReplyViewController.swift */; };
 		982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */; };
 		982CF8552013D58B00EEB278 /* RateReplyDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */; };
@@ -158,6 +159,7 @@
 		9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkViewController.swift; sourceTree = "<group>"; };
 		9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkRouter.swift; sourceTree = "<group>"; };
 		9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkView.swift; sourceTree = "<group>"; };
+		982B27CD20151BB700824E82 /* RateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyRouter.swift; sourceTree = "<group>"; };
 		982CF8502013C98800EEB278 /* RateReplyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyViewController.swift; sourceTree = "<group>"; };
 		982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyViewModel.swift; sourceTree = "<group>"; };
 		982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyDataSource.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 			children = (
 				982CF8502013C98800EEB278 /* RateReplyViewController.swift */,
 				982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */,
+				982B27CD20151BB700824E82 /* RateReplyRouter.swift */,
 				982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */,
 				982CF8562013D69800EEB278 /* RateReplyCell.swift */,
 			);
@@ -1028,6 +1031,7 @@
 				9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */,
 				985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */,
 				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
+				982B27CE20151BB700824E82 /* RateReplyRouter.swift in Sources */,
 				983DB1EA200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift in Sources */,
 				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,

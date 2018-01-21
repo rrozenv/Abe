@@ -117,7 +117,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
 }
 
 protocol RateReplyTableCellDelegate: class {
-    func didSelectRateReply(_ reply: PromptReply)
+    func didSelectRateReply(_ reply: PromptReply, isCurrentUsersFriend: Bool)
 }
 
 final class RateReplyTableCell: UITableViewCell, ValueCell {
@@ -162,7 +162,8 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         replyBodyLabel.text = value.reply.body
         rateReplyButton.rx.tap
             .subscribe(onNext: { [weak self] in
-                self?.delegate?.didSelectRateReply(value.reply)
+                self?.delegate?.didSelectRateReply(value.reply,
+                                                   isCurrentUsersFriend: value.isCurrentUsersFriend)
             })
             .disposed(by: disposeBag)
     }

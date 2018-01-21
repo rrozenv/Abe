@@ -5,7 +5,7 @@ import UIKit
 protocol PromptDetailRoutingLogic {
     func toPrompts()
     func toCreateReply(for prompt: Prompt)
-    func toRateReply(for reply: PromptReply)
+    func toRateReply(reply: PromptReply, isCurrentUsersFriend: Bool)
 }
 
 final class PromptDetailRouter: PromptDetailRoutingLogic {
@@ -28,11 +28,14 @@ final class PromptDetailRouter: PromptDetailRoutingLogic {
         navigationController.present(navVc, animated: true, completion: nil)
     }
     
-    func toRateReply(for reply: PromptReply) {
+    func toRateReply(reply: PromptReply, isCurrentUsersFriend: Bool) {
+        let navVc = UINavigationController()
+        let router = RateReplyRouter(navigationController: navVc)
         var vc = RateReplyViewController()
-        let viewModel = RateReplyViewModel(reply: reply)
-        vc.setViewModelBinding(model: viewModel)
-        navigationController.present(vc, animated: true, completion: nil)
+        let viewModel = RateReplyViewModel(reply: reply, isCurrentUsersFriend: isCurrentUsersFriend, router: router)
+        vc.setViewModelBinding(model: viewModel!)
+        navVc.pushViewController(vc, animated: false)
+        navigationController.present(navVc, animated: true, completion: nil)
     }
     
 }

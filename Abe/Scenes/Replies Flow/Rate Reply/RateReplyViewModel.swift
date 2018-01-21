@@ -11,11 +11,14 @@ struct RatingScore {
 protocol RateReplyViewModelInputs {
     var viewWillAppearInput: AnyObserver<Void> { get }
     var selectedScoreInput: AnyObserver<RatingScore> { get }
+    var nextButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol RateReplyViewModelOutputs {
     var ratingScores: Driver<[RatingScore]> { get }
     var previousAndCurrentScore: Observable<(previous: RatingScore, current: RatingScore)> { get }
+    var nextButtonTitle: Driver<String> { get }
+    var nextButtonIsEnabled: Driver<Bool> { get }
 }
 
 protocol RateReplyViewModelType {
@@ -27,33 +30,64 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
     
     let disposeBag = DisposeBag()
     
-    //MARK: - Inputs
+//MARK: - Inputs
     var inputs: RateReplyViewModelInputs { return self }
     let viewWillAppearInput: AnyObserver<Void>
     let selectedScoreInput: AnyObserver<RatingScore>
+    let nextButtonTappedInput: AnyObserver<Void>
     
-    //MARK: - Outputs
+//MARK: - Outputs
     var outputs: RateReplyViewModelOutputs { return self }
     let ratingScores: Driver<[RatingScore]>
     let previousAndCurrentScore: Observable<(previous: RatingScore, current: RatingScore)>
+    let nextButtonTitle: Driver<String>
+    let nextButtonIsEnabled: Driver<Bool>
     
-    //MARK: - Init
-    init(reply: PromptReply) {
+//MARK: - Init
+    init?(reply: PromptReply,
+          replyService: ReplyService = ReplyService(),
+          isCurrentUsersFriend: Bool,
+          router: RateReplyRoutingLogic) {
+        
+        guard let user = AppController.shared.currentUser.value else {
+            NotificationCenter.default.post(name: Notification.Name.logout, object: nil)
+            return nil
+        }
+        let currentUser = Variable<User>(user)
    
-        //MARK: - Subjects
+//MARK: - Subjects
         let _viewWillAppearInput = PublishSubject<Void>()
         let _selectedScoreInput = PublishSubject<RatingScore>()
+        let _nextButtonTappedInput = PublishSubject<Void>()
         
-        //MARK: - Observers
+//MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
         self.selectedScoreInput = _selectedScoreInput.asObserver()
+        self.nextButtonTappedInput = _nextButtonTappedInput.asObserver()
         
-        //MARK: - First Level Observables
+//MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
         let selectedScoreObservable = _selectedScoreInput.asObservable()
             .startWith(RatingScore(value: 0, isSelected: false))
+        let isCurrentUsersFriendObservable = Observable.of(isCurrentUsersFriend)
+        let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
         
-        //MARK: - Outputs
+//MARK: - Second Level Observables
+        let shouldRouteToNextNavVCObservable = nextButtonTappedObservable
+            .withLatestFrom(isCurrentUsersFriendObservable)
+            .filter { $0 }
+        let shouldDismissNavVCObservable = nextButtonTappedObservable
+            .withLatestFrom(isCurrentUsersFriendObservable)
+            .filter { !$0 }
+        let didSaveReplyScoreObservable = shouldDismissNavVCObservable.mapToVoid()
+            .withLatestFrom(selectedScoreObservable)
+            .map { ReplyScore(userId: currentUser.value.id,
+                              replyId: reply.id,
+                              score: $0.value) }
+            .flatMap { replyService.saveScore(reply: reply, score: $0) }
+            .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
+        
+//MARK: - Outputs
         self.ratingScores = viewWillAppearObservable
             .map { _ in
                 return [1, 2, 3, 4, 5].map { RatingScore(value: $0, isSelected: false) }
@@ -65,12 +99,21 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
                 (previous: $0, current: $1)
         }
         
-        //MARK: - Routing
-//        doneTappedObservable
-//            .do(onNext: router.toMainCreateReplyInput)
-//            .subscribe()
-//            .disposed(by: disposeBag)
+        self.nextButtonTitle = isCurrentUsersFriendObservable
+            .map { $0 ? "Next" : "Done" }
+            .asDriverOnErrorJustComplete()
         
+        self.nextButtonIsEnabled = selectedScoreObservable
+            .skip(1)
+            .map { _ in true }
+            .asDriverOnErrorJustComplete()
+        
+//MARK: - Routing
+        didSaveReplyScoreObservable.mapToVoid()
+            .do(onNext: router.toPromptDetail)
+            .subscribe()
+            .disposed(by: disposeBag)
+
     }
     
 }

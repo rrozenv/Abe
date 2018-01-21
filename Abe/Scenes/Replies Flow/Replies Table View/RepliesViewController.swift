@@ -179,9 +179,8 @@ extension RepliesViewController: ReplyTableCellDelegate {
 //MARK: - Reply Table Cell Delegate
 extension RepliesViewController: RateReplyTableCellDelegate {
     
-    func didSelectRateReply(_ reply: PromptReply) {
-        print("rate tapped!")
-        viewModel.inputs.rateReplyButtonTappedInput.onNext(reply)
+    func didSelectRateReply(_ reply: PromptReply, isCurrentUsersFriend: Bool) {
+        viewModel.inputs.rateReplyButtonTappedInput.onNext((reply, isCurrentUsersFriend))
     }
     
 }

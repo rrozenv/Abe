@@ -8,12 +8,18 @@ class RateReplyViewController: UIViewController, BindableType {
     let disposeBag = DisposeBag()
     let dataSource = RatingScoreDataSource()
     var viewModel: RateReplyViewModel!
+    private var nextButton: UIButton!
     
     var tableView: UITableView!
+    
+    override func loadView() {
+        super.loadView()
+        setupTableView()
+        setupNextButton()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -21,7 +27,7 @@ class RateReplyViewController: UIViewController, BindableType {
         viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
-    deinit { print("reply options deinit") }
+    deinit { print("rate reply deinit") }
     
     func bindViewModel() {
         //MARK: - Input
@@ -29,6 +35,10 @@ class RateReplyViewController: UIViewController, BindableType {
             .distinctUntilChanged()
             .map { [weak self] in self?.dataSource.rating($0) }.unwrap()
             .bind(to: viewModel.inputs.selectedScoreInput)
+            .disposed(by: disposeBag)
+        
+        nextButton.rx.tap
+            .bind(to: viewModel.inputs.nextButtonTappedInput)
             .disposed(by: disposeBag)
         
         //MARK: - Output
@@ -51,6 +61,17 @@ class RateReplyViewController: UIViewController, BindableType {
                 self?.tableView.reloadRows(at: [prevIndex], with: .none)
             })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.nextButtonIsEnabled
+            .drive(onNext: { [weak self] in
+                self?.nextButton.isEnabled = $0
+                self?.nextButton.alpha = 1.0
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.nextButtonTitle
+            .drive(nextButton.rx.title())
+            .disposed(by: disposeBag)
     }
     
 }
@@ -62,31 +83,32 @@ extension RateReplyViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-    
-//    fileprivate func setupCancelButton() {
-//        backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-//        self.navigationItem.leftBarButtonItem = backButton
-//    }
-    
+
     fileprivate func setupTableView() {
-        //MARK: - tableView Properties
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.dataSource = dataSource
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        //MARK: - tableView Constraints
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.edges.equalTo(view)
         }
     }
     
-//    fileprivate func setupCreateButton() {
-//        createReplyButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
-//        self.navigationItem.rightBarButtonItem = createReplyButton
-//    }
+    private func setupNextButton() {
+        nextButton = UIButton()
+        nextButton.backgroundColor = UIColor.blue
+        nextButton.alpha = 0.5
+        nextButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
+        
+        view.addSubview(nextButton)
+        nextButton.snp.makeConstraints { (make) in
+            make.left.bottom.right.equalTo(view)
+            make.height.equalTo(60)
+        }
+    }
     
     
 }

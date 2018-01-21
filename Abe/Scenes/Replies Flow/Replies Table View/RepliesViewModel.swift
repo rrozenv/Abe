@@ -11,7 +11,7 @@ protocol RepliesViewModelInputs {
     var createReplyTapped: AnyObserver<Void> { get }
     var scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)> { get }
     var backButtonTappedInput: AnyObserver<Void> { get }
-    var rateReplyButtonTappedInput: AnyObserver<PromptReply> { get }
+    var rateReplyButtonTappedInput: AnyObserver<(PromptReply, Bool)> { get }
 }
 
 protocol RepliesViewModelOutputs {
@@ -48,7 +48,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let createReplyTapped: AnyObserver<Void>
     let scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)>
     let backButtonTappedInput: AnyObserver<Void>
-    let rateReplyButtonTappedInput: AnyObserver<PromptReply>
+    let rateReplyButtonTappedInput: AnyObserver<(PromptReply, Bool)>
 
 //MARK: - Outputs
     var outputs: RepliesViewModelOutputs { return self }
@@ -78,7 +78,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let _viewWillAppear = PublishSubject<Void>()
         let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
         let _backButtonTappedInput = PublishSubject<Void>()
-        let _rateReplyButtonTappedInput = PublishSubject<PromptReply>()
+        let _rateReplyButtonTappedInput = PublishSubject<(PromptReply, Bool)>()
         
 //MARK: - Observers
         self.viewWillAppear = _viewWillAppear.asObserver()
@@ -170,7 +170,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .disposed(by: disposeBag)
         
         rateReplyButtonTappedObservable
-            .do(onNext: router.toRateReply)
+            .do(onNext: { router.toRateReply(reply: $0.0, isCurrentUsersFriend: $0.1) })
             .subscribe()
             .disposed(by: disposeBag)
     }
