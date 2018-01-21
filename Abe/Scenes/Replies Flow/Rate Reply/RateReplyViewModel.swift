@@ -79,6 +79,8 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
         let shouldDismissNavVCObservable = nextButtonTappedObservable
             .withLatestFrom(isCurrentUsersFriendObservable)
             .filter { !$0 }
+        
+//MARK: - Third Level Observables
         let didSaveReplyScoreObservable = shouldDismissNavVCObservable.mapToVoid()
             .withLatestFrom(selectedScoreObservable)
             .map { ReplyScore(userId: currentUser.value.id,

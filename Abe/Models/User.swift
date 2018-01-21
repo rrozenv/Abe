@@ -84,6 +84,10 @@ class User: Object {
         }
     }
     
+    class func defualtUser() -> User {
+        return User(syncUserId: "0", name: "default", phoneNumber: "default")
+    }
+    
 }
 
 

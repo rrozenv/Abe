@@ -2,6 +2,7 @@
 import UIKit
 import RealmSwift
 import RxSwift
+import RxRealm
 
 final class AppController: UIViewController {
     
@@ -24,9 +25,9 @@ final class AppController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //setUpdateUsersFriendsSubscription()
         addNotificationObservers()
         loadInitialViewController()
-        //setUpdateUsersFriendsSubscription()
     }
     
 }
@@ -46,12 +47,13 @@ extension AppController {
 extension AppController {
     
     private func setUpdateUsersFriendsSubscription() {
-        currentUser.asObservable().unwrap()
+        
+        currentUser.asObservable().unwrap().take(1)
             //.subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
             .flatMap { [unowned self] _ in self.userService.fetchAll() }
             .map { [unowned self] in self.currentUser.value?.registeredUsersInContacts(allUsers: $0) }.unwrap()
             .flatMap { [unowned self] in self.userService.add(userFriends: $0, to: self.currentUser.value!) }
-            //.observeOn(MainScheduler.instance)
+            .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [unowned self] (results) in
                 self.currentUser.value = results.1
             })

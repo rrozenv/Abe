@@ -34,6 +34,7 @@
 		9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */; };
 		9828ABCC200E9B3500A3A9D1 /* WebLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */; };
 		982B27CE20151BB700824E82 /* RateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982B27CD20151BB700824E82 /* RateReplyRouter.swift */; };
+		982B27D3201524A000824E82 /* GuessReplyAuthorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */; };
 		982CF8512013C98800EEB278 /* RateReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8502013C98800EEB278 /* RateReplyViewController.swift */; };
 		982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */; };
 		982CF8552013D58B00EEB278 /* RateReplyDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */; };
@@ -160,6 +161,7 @@
 		9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkRouter.swift; sourceTree = "<group>"; };
 		9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkView.swift; sourceTree = "<group>"; };
 		982B27CD20151BB700824E82 /* RateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyRouter.swift; sourceTree = "<group>"; };
+		982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorViewModel.swift; sourceTree = "<group>"; };
 		982CF8502013C98800EEB278 /* RateReplyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyViewController.swift; sourceTree = "<group>"; };
 		982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyViewModel.swift; sourceTree = "<group>"; };
 		982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyDataSource.swift; sourceTree = "<group>"; };
@@ -431,14 +433,38 @@
 			path = "Add Web Link";
 			sourceTree = "<group>";
 		};
+		982B27CF201523E200824E82 /* Data Source */ = {
+			isa = PBXGroup;
+			children = (
+				982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */,
+			);
+			path = "Data Source";
+			sourceTree = "<group>";
+		};
+		982B27D0201523ED00824E82 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				982CF8562013D69800EEB278 /* RateReplyCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		982B27D12015246C00824E82 /* Guess Reply Author */ = {
+			isa = PBXGroup;
+			children = (
+				982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */,
+			);
+			path = "Guess Reply Author";
+			sourceTree = "<group>";
+		};
 		982CF84F2013C96D00EEB278 /* Rate Reply */ = {
 			isa = PBXGroup;
 			children = (
 				982CF8502013C98800EEB278 /* RateReplyViewController.swift */,
 				982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */,
 				982B27CD20151BB700824E82 /* RateReplyRouter.swift */,
-				982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */,
-				982CF8562013D69800EEB278 /* RateReplyCell.swift */,
+				982B27CF201523E200824E82 /* Data Source */,
+				982B27D0201523ED00824E82 /* Cells */,
 			);
 			path = "Rate Reply";
 			sourceTree = "<group>";
@@ -564,6 +590,7 @@
 		984F379A20070DB600C62E6E /* Replies Flow */ = {
 			isa = PBXGroup;
 			children = (
+				982B27D12015246C00824E82 /* Guess Reply Author */,
 				982CF84F2013C96D00EEB278 /* Rate Reply */,
 				9862867420006A4B00502294 /* Replies Table View */,
 				9827AF8E2007202900357EBF /* Create Reply */,
@@ -1077,6 +1104,7 @@
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,
 				985C2A641FFDC1D80034E116 /* UserDetailsViewController.swift in Sources */,
+				982B27D3201524A000824E82 /* GuessReplyAuthorViewModel.swift in Sources */,
 				984F378E200708DB00C62E6E /* ReplyEmptyTableCell.swift in Sources */,
 				9854D2542000546B00D7B7EB /* RepliesDataSource.swift in Sources */,
 				9827AF922007208D00357EBF /* ScoresCollectionViewFlowLayout.swift in Sources */,
