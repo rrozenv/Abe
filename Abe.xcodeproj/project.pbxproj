@@ -85,6 +85,9 @@
 		9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */; };
 		9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317291FE6F41A00E2979F /* CreateReplyViewController.swift */; };
 		98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CB44921FFAC82A0085CBFD /* Notifications.swift */; };
+		98D26EE7201550E100B0A72E /* GuessReplyAuthorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */; };
+		98D26EE9201550F200B0A72E /* GuessReplyAuthorRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */; };
+		98D26EEB2015510400B0A72E /* GuessReplyAuthorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */; };
 		98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */; };
 		98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */; };
 		98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */; };
@@ -212,6 +215,9 @@
 		989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewModel.swift; sourceTree = "<group>"; };
 		989317291FE6F41A00E2979F /* CreateReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewController.swift; sourceTree = "<group>"; };
 		98CB44921FFAC82A0085CBFD /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorViewController.swift; sourceTree = "<group>"; };
+		98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorRouter.swift; sourceTree = "<group>"; };
+		98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorDataSource.swift; sourceTree = "<group>"; };
 		98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewController.swift; sourceTree = "<group>"; };
 		98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewModel.swift; sourceTree = "<group>"; };
 		98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryRouter.swift; sourceTree = "<group>"; };
@@ -453,6 +459,9 @@
 			isa = PBXGroup;
 			children = (
 				982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */,
+				98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */,
+				98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */,
+				98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */,
 			);
 			path = "Guess Reply Author";
 			sourceTree = "<group>";
@@ -1050,6 +1059,7 @@
 				9836044120071021008A975D /* EmptyStateView.swift in Sources */,
 				9828ABC3200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift in Sources */,
 				9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */,
+				98D26EE7201550E100B0A72E /* GuessReplyAuthorViewController.swift in Sources */,
 				9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */,
 				983DB1EE200C3C33004FC2D0 /* ReplyVisibilityViewController.swift in Sources */,
 				98FEE7BB1FE4BC5400CD80A8 /* PromptsListViewController.swift in Sources */,
@@ -1064,6 +1074,7 @@
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				9862867A20006AF000502294 /* RepliesViewModel.swift in Sources */,
 				986768562012922C00D0421C /* WebLinkActionButtonsView.swift in Sources */,
+				98D26EEB2015510400B0A72E /* GuessReplyAuthorDataSource.swift in Sources */,
 				98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */,
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,
 				985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */,
@@ -1103,6 +1114,7 @@
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,
+				98D26EE9201550F200B0A72E /* GuessReplyAuthorRouter.swift in Sources */,
 				985C2A641FFDC1D80034E116 /* UserDetailsViewController.swift in Sources */,
 				982B27D3201524A000824E82 /* GuessReplyAuthorViewModel.swift in Sources */,
 				984F378E200708DB00C62E6E /* ReplyEmptyTableCell.swift in Sources */,

@@ -198,6 +198,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     private func setupReplyLabel() {
         replyBodyLabel = UILabel()
+        replyBodyLabel.numberOfLines = 0
         
         containerView.addSubview(replyBodyLabel)
         replyBodyLabel.snp.makeConstraints { (make) in

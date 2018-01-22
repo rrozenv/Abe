@@ -5,13 +5,15 @@ import RxCocoa
 
 protocol GuessReplyAuthorViewModelInputs {
     var viewWillAppearInput: AnyObserver<Void> { get }
-    var selectedUserInput: AnyObserver<IndividualContactViewModel> { get }
+    var selectedIndexPathInput: AnyObserver<IndexPath> { get }
+    var selectedUserViewModelInput: AnyObserver<IndividualContactViewModel> { get }
     var nextButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol GuessReplyAuthorViewModelOutputs {
     var currentUsersFriends: Driver<[IndividualContactViewModel]> { get }
-    var previousAndCurrentUser: Observable<(previous: IndividualContactViewModel, current: IndividualContactViewModel)> { get }
+    var previousAndCurrentIndexPath: Observable<(previous: IndexPath, current: IndexPath)> { get }
+    var nextButtonIsEnabled: Driver<Bool> { get }
 }
 
 protocol GuessReplyAuthorViewModelType {
@@ -26,18 +28,20 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
 //MARK: - Inputs
     var inputs: GuessReplyAuthorViewModelInputs { return self }
     let viewWillAppearInput: AnyObserver<Void>
-    let selectedUserInput: AnyObserver<IndividualContactViewModel>
+    let selectedIndexPathInput: AnyObserver<IndexPath>
+    let selectedUserViewModelInput: AnyObserver<IndividualContactViewModel>
     let nextButtonTappedInput: AnyObserver<Void>
     
 //MARK: - Outputs
     var outputs: GuessReplyAuthorViewModelOutputs { return self }
     let currentUsersFriends: Driver<[IndividualContactViewModel]>
-    var previousAndCurrentUser: Observable<(previous: IndividualContactViewModel, current: IndividualContactViewModel)>
+    let previousAndCurrentIndexPath: Observable<(previous: IndexPath, current: IndexPath)>
+    let nextButtonIsEnabled: Driver<Bool>
     
 //MARK: - Init
     init?(reply: PromptReply,
           userService: UserService = UserService(),
-          router: RateReplyRoutingLogic) {
+          router: GuessReplyAuthorRoutingLogic) {
         
         guard let user = AppController.shared.currentUser.value else {
             NotificationCenter.default.post(name: Notification.Name.logout, object: nil)
@@ -47,17 +51,21 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
         
 //MARK: - Subjects
         let _viewWillAppearInput = PublishSubject<Void>()
-        let _selectedUserInput = PublishSubject<IndividualContactViewModel>()
+        let _selectedIndexPathInput = PublishSubject<IndexPath>()
+        let _selectedUserViewModelInput = PublishSubject<IndividualContactViewModel>()
         let _nextButtonTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
-        self.selectedUserInput = _selectedUserInput.asObserver()
+        self.selectedIndexPathInput = _selectedIndexPathInput.asObserver()
+        self.selectedUserViewModelInput = _selectedUserViewModelInput.asObserver()
         self.nextButtonTappedInput = _nextButtonTappedInput.asObserver()
         
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
-        let selectedUserObservable = _selectedUserInput.asObservable()
+        let selectedIndexObservable = _selectedIndexPathInput.asObservable()
+            .startWith(IndexPath(row: -1, section: 0))
+        let selectedUserViewModelObservable = _selectedUserViewModelInput.asObservable()
             .startWith(IndividualContactViewModel(isSelected: false, user: User.defualtUser()))
         let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
         
@@ -68,13 +76,22 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
             .map { createContactViewModelsFor(registeredUsers: $0) }
             .asDriverOnErrorJustComplete()
         
-        self.previousAndCurrentUser = Observable
-            .zip(selectedUserObservable, selectedUserObservable.skip(1)) {
+        self.previousAndCurrentIndexPath = Observable
+            .zip(selectedIndexObservable, selectedIndexObservable.skip(1)) {
                 (previous: $0, current: $1)
         }
         
-//        nextButtonTappedObservable
-//            .withLatestFrom(selectedUserObservable)
+        self.nextButtonIsEnabled = selectedIndexObservable
+            .skip(1)
+            .map { _ in true }
+            .asDriverOnErrorJustComplete()
+        
+//MARK: - Routing
+        nextButtonTappedObservable
+            .withLatestFrom(selectedUserViewModelObservable)
+            .do(onNext: { router.toInputWagerWith(selectedUser: $0.user) })
+            .subscribe()
+            .disposed(by: disposeBag)
 
     }
 }

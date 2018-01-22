@@ -88,9 +88,9 @@ class RepliesViewController: UIViewController, BindableType {
         
         viewModel.outputs.didUserReply
             .drive(onNext: { [weak self] didReply in
-                self?.tabBarView.isHidden = didReply ? false : true
-                guard !didReply else { return }
-                self?.dataSource.loadBeforeUserRepliedState()
+//                self?.tabBarView.isHidden = didReply ? false : true
+//                guard !didReply else { return }
+//                self?.dataSource.loadBeforeUserRepliedState()
             })
             .disposed(by: disposeBag)
         
@@ -101,6 +101,12 @@ class RepliesViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         viewModel.outputs.lockedReplies.drive(onNext: { [weak self] inputs in
+            self?.tabBarView.isHidden = inputs.userDidReply ? false : true
+            guard inputs.userDidReply else {
+                self?.dataSource.loadBeforeUserRepliedState()
+                return
+            }
+            
             self?.dataSource.loadLocked(replies: inputs.replies,
                                         didReply: inputs.userDidReply)
             self?.tableView.reloadData()

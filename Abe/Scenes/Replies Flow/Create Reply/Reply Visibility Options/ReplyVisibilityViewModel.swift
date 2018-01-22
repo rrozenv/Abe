@@ -166,6 +166,12 @@ struct IndividualContactViewModel {
     var user: User
 }
 
+extension IndividualContactViewModel: Equatable {
+    static func ==(lhs: IndividualContactViewModel, rhs: IndividualContactViewModel) -> Bool {
+        return lhs.user.id == rhs.user.id
+    }
+}
+
 struct VisibilityCellViewModel {
     var isSelected: Bool
     var visibility: Visibility

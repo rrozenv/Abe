@@ -1,12 +1,13 @@
 
 import Foundation
+import Foundation
 import RxSwift
 
-class RateReplyViewController: UIViewController, BindableType {
+class GuessReplyAuthorViewController: UIViewController, BindableType {
     
     let disposeBag = DisposeBag()
-    let dataSource = RatingScoreDataSource()
-    var viewModel: RateReplyViewModel!
+    let dataSource = GuessReplyAuthorDataSource()
+    var viewModel: GuessReplyAuthorViewModel!
     private var nextButton: UIButton!
     
     var tableView: UITableView!
@@ -16,7 +17,7 @@ class RateReplyViewController: UIViewController, BindableType {
         setupTableView()
         setupNextButton()
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -26,14 +27,20 @@ class RateReplyViewController: UIViewController, BindableType {
         viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
-    deinit { print("rate reply deinit") }
+    deinit { print("wager deinit") }
     
     func bindViewModel() {
+        
         //MARK: - Input
         tableView.rx.itemSelected.asObservable()
             .distinctUntilChanged()
-            .map { [weak self] in self?.dataSource.rating($0) }.unwrap()
-            .bind(to: viewModel.inputs.selectedScoreInput)
+            .bind(to: viewModel.inputs.selectedIndexPathInput)
+            .disposed(by: disposeBag)
+        
+        tableView.rx.itemSelected.asObservable()
+            .map { [weak self] in self?.dataSource.user(at: $0) }.unwrap()
+            .distinctUntilChanged()
+            .bind(to: viewModel.inputs.selectedUserViewModelInput)
             .disposed(by: disposeBag)
         
         nextButton.rx.tap
@@ -41,23 +48,21 @@ class RateReplyViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         //MARK: - Output
-        viewModel.outputs.ratingScores
+        viewModel.outputs.currentUsersFriends
             .drive(onNext: { [weak self] in
-                self?.dataSource.loadRatings(ratings: $0)
+                self?.dataSource.loadUsers(ratings: $0)
                 self?.tableView.reloadData()
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.previousAndCurrentScore
-            .subscribe(onNext: { [weak self] (inputs) in
-                let prevIndex = IndexPath(row: inputs.previous.value - 1, section: 0)
-                let currIndex = IndexPath(row: inputs.current.value - 1, section: 0)
-                self?.dataSource.toggleRating(at: currIndex)
-                self?.tableView.reloadRows(at: [currIndex], with: .none)
-               
-                guard prevIndex.row != -1 else { return }
-                self?.dataSource.toggleRating(at: prevIndex)
-                self?.tableView.reloadRows(at: [prevIndex], with: .none)
+        viewModel.outputs.previousAndCurrentIndexPath
+            .subscribe(onNext: { [weak self] (indexPaths) in
+                self?.dataSource.toggleUser(at: indexPaths.current)
+                self?.tableView.reloadRows(at: [indexPaths.current], with: .none)
+                
+                guard indexPaths.previous.row != -1 else { return }
+                self?.dataSource.toggleUser(at: indexPaths.previous)
+                self?.tableView.reloadRows(at: [indexPaths.previous], with: .none)
             })
             .disposed(by: disposeBag)
         
@@ -67,28 +72,25 @@ class RateReplyViewController: UIViewController, BindableType {
                 self?.nextButton.alpha = 1.0
             })
             .disposed(by: disposeBag)
-        
-        viewModel.outputs.nextButtonTitle
-            .drive(nextButton.rx.title())
-            .disposed(by: disposeBag)
     }
     
 }
 
-extension RateReplyViewController {
+extension GuessReplyAuthorViewController {
     
     fileprivate func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-
+    
     fileprivate func setupTableView() {
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.dataSource = dataSource
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.register(UserContactTableCell.self, forCellReuseIdentifier: UserContactTableCell.defaultReusableId)
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
@@ -101,6 +103,7 @@ extension RateReplyViewController {
         nextButton.backgroundColor = UIColor.blue
         nextButton.alpha = 0.5
         nextButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
+        nextButton.setTitle("Next", for: .normal)
         
         view.addSubview(nextButton)
         nextButton.snp.makeConstraints { (make) in

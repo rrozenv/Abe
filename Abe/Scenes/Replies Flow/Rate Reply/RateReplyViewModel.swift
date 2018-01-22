@@ -115,7 +115,11 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
             .do(onNext: router.toPromptDetail)
             .subscribe()
             .disposed(by: disposeBag)
-
+        
+        shouldRouteToNextNavVCObservable.mapToVoid()
+            .do(onNext: { router.toGuessReplyAuthorFor(reply: reply) })
+            .subscribe()
+            .disposed(by: disposeBag)
     }
     
 }

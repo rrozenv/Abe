@@ -169,14 +169,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Replies Flow/Replies Table View/RepliesViewModel.swift"
-            timestampString = "538257684.30509"
+            filePath = "Pods/RxSwift/RxSwift/Rx.swift"
+            timestampString = "538257523.0254411"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
-            landmarkName = "sortReplies(_:forLockedFeed:currentUser:)"
-            landmarkType = "9">
+            startingLineNumber = "97"
+            endingLineNumber = "97"
+            landmarkName = "register(synchronizationErrorMessage:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -185,13 +185,45 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Pods/RxSwift/RxSwift/Rx.swift"
-            timestampString = "538257523.0254411"
+            filePath = "Abe/Scenes/Login Flow/Phone Entry/PhoneEntryViewController.swift"
+            timestampString = "538275326.757068"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "register(synchronizationErrorMessage:)"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
+            landmarkName = "showError(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Replies Table View/Table View Data Source/RepliesDataSource.swift"
+            timestampString = "538274465.585095"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "loadLocked(replies:didReply:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Models/User.swift"
+            timestampString = "538274676.070992"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
+            landmarkName = "didReply(to:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
