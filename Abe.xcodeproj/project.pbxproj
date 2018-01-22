@@ -461,7 +461,7 @@
 				982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */,
 				98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */,
 				98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */,
-				98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */,
+				98D26EEC20156E8600B0A72E /* Data Source */,
 			);
 			path = "Guess Reply Author";
 			sourceTree = "<group>";
@@ -716,6 +716,14 @@
 			isa = PBXGroup;
 			children = (
 				98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */,
+			);
+			path = "Data Source";
+			sourceTree = "<group>";
+		};
+		98D26EEC20156E8600B0A72E /* Data Source */ = {
+			isa = PBXGroup;
+			children = (
+				98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */,
 			);
 			path = "Data Source";
 			sourceTree = "<group>";

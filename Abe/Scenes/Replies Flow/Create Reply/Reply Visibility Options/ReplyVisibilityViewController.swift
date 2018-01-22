@@ -11,6 +11,7 @@ class ReplyVisibilityViewController: UIViewController {
     var viewModel: ReplyVisibilityViewModel!
     
     var tableView: UITableView!
+    var individualContactsTableView: UITableView!
     var createReplyButton: UIBarButtonItem!
     var backButton: UIBarButtonItem!
     
@@ -49,12 +50,15 @@ class ReplyVisibilityViewController: UIViewController {
                     guard let viewModel = self?.dataSource.generalVisAtIndexPath(indexPath)
                         else { return }
                     self?.viewModel.inputs.generalVisibilitySelected.onNext(viewModel.visibility)
+                    self?.viewModel.inputs.selectedContact.onNext((nil, nil, true))
                     self?.tableView.reloadData()
                 case .individualContacts:
                     self?.dataSource.updateContactSelectedStatus(at: indexPath)
+                    //self?.dataSource.deselectAllInSection(section: .generalVisibility)
                     guard let viewModel = self?.dataSource.contactViewModelAt(indexPath: indexPath)
                         else { return }
-                    self?.viewModel.inputs.selectedContact.onNext((viewModel.user, viewModel.isSelected))
+                    self?.viewModel.inputs.selectedContact.onNext((viewModel.user, viewModel.isSelected, false))
+                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
                     self?.tableView.reloadData()
                 }
             })
@@ -72,16 +76,23 @@ class ReplyVisibilityViewController: UIViewController {
             .subscribe()
             .disposed(by: disposeBag)
         
+        viewModel.outputs.createButtonEnabled
+            .subscribe(onNext: { [weak self] in
+                self?.createReplyButton.isEnabled = $0
+                self?.createReplyButton.style = $0 ? UIBarButtonItemStyle.done : UIBarButtonItemStyle.plain
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.currentlySelectedIndividualContacts
-            .skip(1)
+            //.skip(1)
             .subscribe(onNext: { [weak self] (selectedContacts) in
                 if selectedContacts.isEmpty {
                     //Adjust Individual Contacts Section Header
-                    self?.dataSource.selectGeneralVisibility(.all)
-                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.all)
+                    //self?.dataSource.selectGeneralVisibility(.all)
+//                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.all)
                 } else {
                     self?.dataSource.deselectAllInSection(section: .generalVisibility)
-                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
+                    //self?.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
                 }
             })
             .disposed(by: disposeBag)
@@ -121,6 +132,23 @@ extension ReplyVisibilityViewController {
     }
     
     fileprivate func setupTableView() {
+        //MARK: - tableView Properties
+        tableView = UITableView(frame: CGRect.zero, style: .grouped)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "vis")
+        tableView.register(GeneralVisibilityTableCell.self, forCellReuseIdentifier: GeneralVisibilityTableCell.defaultReusableId)
+        tableView.register(UserContactTableCell.self, forCellReuseIdentifier: UserContactTableCell.defaultReusableId)
+        tableView.estimatedRowHeight = 200
+        tableView.dataSource = dataSource
+        tableView.rowHeight = UITableViewAutomaticDimension
+        
+        //MARK: - tableView Constraints
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { (make) in
+            make.edges.equalTo(view)
+        }
+    }
+    
+    fileprivate func setupIndividualContactsTableView() {
         //MARK: - tableView Properties
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "vis")

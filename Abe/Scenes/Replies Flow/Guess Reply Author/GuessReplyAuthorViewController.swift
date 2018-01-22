@@ -31,7 +31,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     
     func bindViewModel() {
         
-        //MARK: - Input
+//MARK: - Input
         tableView.rx.itemSelected.asObservable()
             .distinctUntilChanged()
             .bind(to: viewModel.inputs.selectedIndexPathInput)
@@ -47,7 +47,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.nextButtonTappedInput)
             .disposed(by: disposeBag)
         
-        //MARK: - Output
+//MARK: - Output
         viewModel.outputs.currentUsersFriends
             .drive(onNext: { [weak self] in
                 self?.dataSource.loadUsers(ratings: $0)
@@ -60,6 +60,8 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
                 self?.dataSource.toggleUser(at: indexPaths.current)
                 self?.tableView.reloadRows(at: [indexPaths.current], with: .none)
                 
+                //First value will contain a previous.row = -1
+                //because there is no previous indexPath selected initally
                 guard indexPaths.previous.row != -1 else { return }
                 self?.dataSource.toggleUser(at: indexPaths.previous)
                 self?.tableView.reloadRows(at: [indexPaths.previous], with: .none)

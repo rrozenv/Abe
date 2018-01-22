@@ -8,7 +8,7 @@ protocol ReplyVisibilityViewModelInputs {
     var viewWillAppear: AnyObserver<Void> { get }
     var createTrigger: AnyObserver<Void> { get }
     var generalVisibilitySelected: AnyObserver<Visibility> { get }
-    var selectedContact: AnyObserver<(User, Bool)> { get }
+    var selectedContact: AnyObserver<(User?, Bool?, Bool)> { get }
 }
 
 protocol ReplyVisibilityViewModelOutputs {
@@ -17,6 +17,8 @@ protocol ReplyVisibilityViewModelOutputs {
     var didCreateReply: Driver<Void> { get }
     var currentlySelectedIndividualContacts: Observable<[String]> { get }
     var latestSelectedGeneralVisibility: Observable<Visibility> { get }
+    var savedContactIndexPaths: Variable<[IndividualContactViewModel]> { get }
+    var createButtonEnabled: Observable<Bool> { get }
     var errorTracker: Driver<Error> { get }
 }
 
@@ -34,7 +36,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let viewWillAppear: AnyObserver<Void>
     let createTrigger: AnyObserver<Void>
     let generalVisibilitySelected: AnyObserver<Visibility>
-    let selectedContact: AnyObserver<(User, Bool)>
+    let selectedContact: AnyObserver<(User?, Bool?, Bool)>
 
 //MARK: - Outputs
     var outputs: ReplyVisibilityViewModelOutputs { return self }
@@ -43,7 +45,10 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let individualContacts: Driver<[IndividualContactViewModel]>
     let didCreateReply: Driver<Void>
     let currentlySelectedIndividualContacts: Observable<[String]>
+    let createButtonEnabled: Observable<Bool>
     let errorTracker: Driver<Error>
+    
+    let savedContactIndexPaths = Variable<[IndividualContactViewModel]>([])
 
 //MARK: - Init
     init?(replyService: ReplyService = ReplyService(),
@@ -76,7 +81,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let _generalVisSelected = PublishSubject<Visibility>()
         self.latestSelectedGeneralVisibility = _generalVisSelected
             .asObservable()
-            .distinctUntilChanged()
+            //.distinctUntilChanged()
             .startWith(.all)
         
         self.generalVisibilitySelected = _generalVisSelected.asObserver()
@@ -89,36 +94,57 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .asDriverOnErrorJustComplete()
 
 //MARK: - Selected Contact
-        let _selectedContact = PublishSubject<(User, Bool)>()
+        let _selectedContact = PublishSubject<(User?, Bool?, Bool)>()
         let selectedContactObservable = _selectedContact.asObservable()
         self.selectedContact = _selectedContact.asObserver()
         
         let _currentlySelectedIndividualContacts = selectedContactObservable
-            .scan([]) { (summary, user) -> [String] in
-                let shouldAdd = user.1
+            .scan([]) { (summary, inputs) -> [String] in
+                let removeAll = inputs.2
+                guard let shouldAppendUser = inputs.1, let user = inputs.0, !removeAll else {
+                    return [String]() }
                 var summaryCopy = summary
-                if shouldAdd {
-                    summaryCopy.append(user.0.phoneNumber)
+                if shouldAppendUser {
+                    summaryCopy.append(user.phoneNumber)
                 } else {
-                    if let index = summaryCopy.index(where: { $0 == user.0.phoneNumber }) {
+                    if let index = summaryCopy.index(where: { $0 == user.phoneNumber }) {
                         summaryCopy.remove(at: index)
                     }
                 }
                 return summaryCopy
             }
-            .startWith([])
         
         self.currentlySelectedIndividualContacts = _currentlySelectedIndividualContacts
+        
+        self.createButtonEnabled = latestSelectedGeneralVisibility
+            .withLatestFrom(_currentlySelectedIndividualContacts) { (vis, selectedContacts) in
+                switch vis {
+                case .all, .contacts:
+                    return true
+                case .individualContacts:
+                    return selectedContacts.isEmpty ? false : true
+                default:
+                    return false
+                }
+                //return vis != .individualContacts && !selectedContacts.isEmpty
+            }
         
 //MARK: - Create Reply Tapped
         let _createReplyTapped = PublishSubject<Void>()
         self.createTrigger = _createReplyTapped.asObserver()
         
         let createReplyWithIndividual = _createReplyTapped.asObservable()
+            .debug()
             .withLatestFrom(self.latestSelectedGeneralVisibility)
-            .filter { $0 == Visibility.individualContacts }
-            .flatMap { _ in _currentlySelectedIndividualContacts }
-            .map { updateReply(savedReplyInput.reply, contactNumbere: $0) }
+            .filter {
+                $0 == Visibility.individualContacts
+            }
+            .flatMap { _ in
+                _currentlySelectedIndividualContacts
+            }
+            .map {
+                updateReply(savedReplyInput.reply, contactNumbere: $0)
+            }
         
         let createReplyWithGeneralVis = _createReplyTapped.asObservable()
             .withLatestFrom(self.latestSelectedGeneralVisibility)
