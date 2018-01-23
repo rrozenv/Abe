@@ -9,8 +9,7 @@ protocol ReplyVisibilityViewModelInputs {
     var viewWillAppearInput: AnyObserver<Void> { get }
     var publicButtonTappedInput: AnyObserver<Void> { get }
     var selectedAllContactsTappedInput: AnyObserver<Void> { get }
-    var selectedIndexPathInput: AnyObserver<IndexPath> { get }
-    var selectedUserInput: AnyObserver<IndividualContactViewModel> { get }
+    var selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
     var createButtonTappedInput: AnyObserver<Void> { get }
 }
 
@@ -18,7 +17,7 @@ protocol ReplyVisibilityViewModelOutputs {
     var individualContacts: Driver<[IndividualContactViewModel]> { get }
     var publicButtonColor: Driver<UIColor> { get }
     var selectAllContacts: Driver<Void> { get }
-    var latestIndexPath: Driver<IndexPath> { get }
+    var latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
     var createButtonEnabled: Observable<Bool> { get }
     var errorTracker: Driver<Error> { get }
 }
@@ -37,8 +36,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let viewWillAppearInput: AnyObserver<Void>
     let publicButtonTappedInput: AnyObserver<Void>
     let selectedAllContactsTappedInput: AnyObserver<Void>
-    let selectedIndexPathInput: AnyObserver<IndexPath>
-    let selectedUserInput: AnyObserver<IndividualContactViewModel>
+    let selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let createButtonTappedInput: AnyObserver<Void>
 
 //MARK: - Outputs
@@ -46,7 +44,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let individualContacts: Driver<[IndividualContactViewModel]>
     let publicButtonColor: Driver<UIColor>
     let selectAllContacts: Driver<Void>
-    let latestIndexPath: Driver<IndexPath>
+    let latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let createButtonEnabled: Observable<Bool>
     let errorTracker: Driver<Error>
 
@@ -71,24 +69,21 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let _viewWillAppearInput = PublishSubject<Void>()
         let _publicButtonTappedInput = PublishSubject<Void>()
         let _selectedAllContactsTappedInput = PublishSubject<Void>()
-        let _selectedIndexPathInput = PublishSubject<IndexPath>()
-        let _selectedUserInput = PublishSubject<IndividualContactViewModel>()
+        let _selectedUserAndIndexPathInput = PublishSubject<(user: IndividualContactViewModel, indexPath: IndexPath)>()
         let _createButtonTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
         self.publicButtonTappedInput = _publicButtonTappedInput.asObserver()
         self.selectedAllContactsTappedInput = _selectedAllContactsTappedInput.asObserver()
-        self.selectedIndexPathInput = _selectedIndexPathInput.asObserver()
-        self.selectedUserInput = _selectedUserInput.asObserver()
+        self.selectedUserAndIndexPathInput = _selectedUserAndIndexPathInput.asObserver()
         self.createButtonTappedInput = _createButtonTappedInput.asObserver()
         
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
         let publicButtonTappedObservable = _publicButtonTappedInput.asObservable()
         let selectedAllContactsObservable = _selectedAllContactsTappedInput.asObservable()
-        let selectedIndexPathObsevable = _selectedIndexPathInput.asObservable()
-        let selectedUserObservable = _selectedUserInput.asObservable()
+        let selectedUserAndIndexPathObservable = _selectedUserAndIndexPathInput.asObservable()
         let createButtonTappedObservable = _createButtonTappedInput.asObservable()
 
 //MARK: - Second Level Observables
@@ -96,19 +91,27 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .map { Visibility.all }
         let allContactsVisibilityObservable = selectedAllContactsObservable
             .map { Visibility.contacts }
-        let individualContactsVisibilityObservable = selectedUserObservable
+        let individualContactsVisibilityObservable = selectedUserAndIndexPathObservable
             .map { _ in Visibility.individualContacts }
         let currentVisibilityObservable = Observable.of(publicVisibilityObservable, allContactsVisibilityObservable, individualContactsVisibilityObservable)
             .merge()
         
-        let selectedContactNumbersObservable = selectedUserObservable
+        let shouldClearSelectedNumbersObservable = publicButtonTappedObservable
+            .map { (user: IndividualContactViewModel(isSelected: false, user: User.defualtUser()),
+                    indexPath: IndexPath(row: -1, section: 0)) }
+        
+        let selectedContactNumbersObservable = Observable.of(selectedUserAndIndexPathObservable, shouldClearSelectedNumbersObservable).merge()
+            .map { $0.user }
             .scan([]) { (summary, contactViewModel) -> [String] in
+                guard contactViewModel.user.phoneNumber != "default" else { return [] }
                 var summaryCopy = summary
                 if !contactViewModel.isSelected {
                     summaryCopy.append(contactViewModel.user.phoneNumber)
                 } else {
                     if let index = summaryCopy
-                        .index(where: { $0 == user.phoneNumber }) { summaryCopy.remove(at: index) }
+                        .index(where: { $0 == contactViewModel.user.phoneNumber }) {
+                        summaryCopy.remove(at: index)
+                    }
                 }
                 return summaryCopy
         }
@@ -138,7 +141,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         self.selectAllContacts = selectedAllContactsObservable
             .asDriver(onErrorJustReturn: ())
         
-        self.latestIndexPath = selectedIndexPathObsevable
+        self.latestUserAndIndexPath = selectedUserAndIndexPathObservable
             .asDriverOnErrorJustComplete()
         
         self.createButtonEnabled = currentVisibilityObservable

@@ -4,17 +4,16 @@ import RxSwift
 import RxDataSources
 import Action
 
-class ReplyVisibilityViewController: UIViewController {
+class ReplyVisibilityViewController: UIViewController, BindableType {
     
     let disposeBag = DisposeBag()
-    let dataSource = ReplyVisibilityDataSource()
     var viewModel: ReplyVisibilityViewModel!
+    private let dataSource = ReplyVisibilityDataSource()
     
-    var publicButton: UIButton!
-    var tableView: UITableView!
-    var individualContactsTableView: UITableView!
-    var createReplyButton: UIBarButtonItem!
-    var backButton: UIBarButtonItem!
+    private var publicButton: UIButton!
+    private var tableView: UITableView!
+    private var createReplyButton: UIBarButtonItem!
+    private var backButton: UIBarButtonItem!
 
     override func loadView() {
         super.loadView()
@@ -27,7 +26,6 @@ class ReplyVisibilityViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        bindViewModel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -38,6 +36,7 @@ class ReplyVisibilityViewController: UIViewController {
     deinit { print("reply options deinit") }
     
     func bindViewModel() {
+        
         //MARK: - Input
         createReplyButton.rx.tap.asDriver()
             .drive(viewModel.inputs.createButtonTappedInput)
@@ -48,15 +47,8 @@ class ReplyVisibilityViewController: UIViewController {
             .disposed(by: disposeBag)
         
         tableView.rx.itemSelected.asObservable()
-            .map { [weak self] in
-                print("status: \(String(describing: self?.dataSource.contactViewModelAt(indexPath: $0)?.isSelected))")
-                return self?.dataSource.contactViewModelAt(indexPath: $0)
-            }.unwrap()
-            .bind(to: viewModel.inputs.selectedUserInput)
-            .disposed(by: disposeBag)
-        
-        tableView.rx.itemSelected.asObservable()
-            .bind(to: viewModel.inputs.selectedIndexPathInput)
+            .map { [unowned self] in (self.dataSource.contactViewModelAt(indexPath: $0)!, $0) }
+            .bind(to: viewModel.inputs.selectedUserAndIndexPathInput)
             .disposed(by: disposeBag)
         
         //MARK: - Output
@@ -67,10 +59,10 @@ class ReplyVisibilityViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.latestIndexPath
+        viewModel.outputs.latestUserAndIndexPath
             .drive(onNext: { [weak self] in
-                self?.dataSource.toggleContact(at: $0)
-                self?.tableView.reloadRows(at: [$0], with: .none)
+                self?.dataSource.toggleContact(at: $0.indexPath)
+                self?.tableView.reloadRows(at: [$0.indexPath], with: .none)
                 self?.publicButton.backgroundColor = UIColor.white
             })
             .disposed(by: disposeBag)
@@ -109,19 +101,18 @@ class ReplyVisibilityViewController: UIViewController {
 
 extension ReplyVisibilityViewController {
     
-    fileprivate func showError(_ error: Error) {
+    private func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func setupCancelButton() {
+    private func setupCancelButton() {
         backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         self.navigationItem.leftBarButtonItem = backButton
     }
     
-    fileprivate func setupTableView() {
-        //MARK: - tableView Properties
+    private func setupTableView() {
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "vis")
         tableView.register(GeneralVisibilityTableCell.self, forCellReuseIdentifier: GeneralVisibilityTableCell.defaultReusableId)
@@ -130,7 +121,6 @@ extension ReplyVisibilityViewController {
         tableView.dataSource = dataSource
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        //MARK: - tableView Constraints
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
@@ -162,42 +152,5 @@ extension ReplyVisibilityViewController {
         }
     }
     
-    
 }
 
-//        tableView.rx.itemSelected.asObservable()
-//            .subscribe(onNext: { [weak self] indexPath in
-//                guard let section = ReplyVisibilityDataSource.Section(rawValue: indexPath.section) else { fatalError() }
-//                switch section {
-//                case .generalVisibility:
-//                    //Adjust Individual Contacts Section Header
-//                    self?.dataSource.updateGeneralVisibilitySelectedStatus(at: indexPath)
-//                    guard let viewModel = self?.dataSource.generalVisAtIndexPath(indexPath)
-//                        else { return }
-//                    self?.viewModel.inputs.generalVisibilitySelected.onNext(viewModel.visibility)
-//                    self?.viewModel.inputs.selectedContact.onNext((nil, nil, true))
-//                    self?.tableView.reloadData()
-//                case .individualContacts:
-//                    self?.dataSource.updateContactSelectedStatus(at: indexPath)
-//                    //self?.dataSource.deselectAllInSection(section: .generalVisibility)
-//                    guard let viewModel = self?.dataSource.contactViewModelAt(indexPath: indexPath)
-//                        else { return }
-//                    self?.viewModel.inputs.selectedContact.onNext((viewModel.user, viewModel.isSelected, false))
-//                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
-//                    self?.tableView.reloadData()
-//                }
-//            })
-//            .disposed(by: disposeBag)
-
-
-//            .subscribe(onNext: { [weak self] (selectedContacts) in
-//                if selectedContacts.isEmpty {
-//                    //Adjust Individual Contacts Section Header
-//                    //self?.dataSource.selectGeneralVisibility(.all)
-////                    self?.viewModel.inputs.generalVisibilitySelected.onNext(.all)
-//                } else {
-//                    self?.dataSource.deselectAllInSection(section: .generalVisibility)
-//                    //self?.viewModel.inputs.generalVisibilitySelected.onNext(.individualContacts)
-//                }
-//            })
-//            .disposed(by: disposeBag)
