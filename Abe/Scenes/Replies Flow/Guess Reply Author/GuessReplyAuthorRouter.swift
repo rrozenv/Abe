@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 
 protocol GuessReplyAuthorRoutingLogic {
-    func toInputWagerWith(selectedUser: User)
+    func toInputWagerWith(selectedUser: User, ratingScoreValue: Int)
 }
 
 final class GuessReplyAuthorRouter: GuessReplyAuthorRoutingLogic {
@@ -14,7 +14,7 @@ final class GuessReplyAuthorRouter: GuessReplyAuthorRoutingLogic {
         self.navigationController = navigationController
     }
     
-    func toInputWagerWith(selectedUser: User) {
+    func toInputWagerWith(selectedUser: User, ratingScoreValue: Int) {
         print("selected user: \(selectedUser.name)")
         navigationController?.dismiss(animated: true)
     }

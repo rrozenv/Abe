@@ -117,7 +117,8 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
             .disposed(by: disposeBag)
         
         shouldRouteToNextNavVCObservable.mapToVoid()
-            .do(onNext: { router.toGuessReplyAuthorFor(reply: reply) })
+            .withLatestFrom(selectedScoreObservable)
+            .do(onNext: { router.toGuessReplyAuthorFor(reply: reply, ratingScoreValue: $0.value) })
             .subscribe()
             .disposed(by: disposeBag)
     }

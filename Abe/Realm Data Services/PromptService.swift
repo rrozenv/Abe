@@ -157,6 +157,18 @@ struct UserService {
         return result ?? .error(ReplyServiceError.creationFailed)
     }
     
+    func updateCoinsFor(user: User, wager: Int, shouldAdd: Bool) -> Observable<(user: User, wager: Int, isCorrect: Bool)> {
+        let result = withRealm("updating title") { realm -> Observable<(user: User, wager: Int, isCorrect: Bool)> in
+            try realm.write {
+                if shouldAdd { user.coins += wager }
+                else { user.coins -= wager }
+            }
+            return .just((user, wager, shouldAdd))
+        }
+        return result ?? .error(ReplyServiceError.creationFailed)
+    }
+    
+    
     
 //    func registedContactsFor(user: User, allUsers: Results<User>) -> Observable<[User]> {
 //        return self.contacts.flatMap { (contact) -> User? in

@@ -80,7 +80,6 @@ class PromptReply: Object {
         return (Double(numberOfVotesForScore.count) / Double(self.scores.count))
     }
     
-
 }
 
 class ReplyScore: Object {
@@ -88,6 +87,7 @@ class ReplyScore: Object {
     @objc dynamic var replyId: String = ""
     @objc dynamic var userId: String = ""
     @objc dynamic var score: Int = 0
+    @objc dynamic var user: User?
     
     override static func primaryKey() -> String? {
         return "id"
@@ -100,7 +100,19 @@ class ReplyScore: Object {
         self.score = score
     }
     
+    convenience init(user: User, replyId: String, score: Int) {
+        self.init()
+        self.user = user
+        self.replyId = replyId
+        self.score = score
+    }
+    
     static func valueDict(user: User, replyId: String, score: String) -> [String: Any] {
         return ["userId": user.id, "replyId": replyId, "score": score]
+    }
+    
+    func isAuthorInCurrentUserContacts(currentUser: User) -> Bool {
+        return currentUser.allNumbersFromContacts()
+            .contains(self.user!.phoneNumber)
     }
 }

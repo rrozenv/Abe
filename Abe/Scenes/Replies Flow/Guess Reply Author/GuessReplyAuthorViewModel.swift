@@ -40,6 +40,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
     
 //MARK: - Init
     init?(reply: PromptReply,
+          ratingScoreValue: Int,
           userService: UserService = UserService(),
           router: GuessReplyAuthorRoutingLogic) {
         
@@ -89,7 +90,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
 //MARK: - Routing
         nextButtonTappedObservable
             .withLatestFrom(selectedUserViewModelObservable)
-            .do(onNext: { router.toInputWagerWith(selectedUser: $0.user) })
+            .do(onNext: { router.toInputWagerWith(selectedUser: $0.user, ratingScoreValue: ratingScoreValue) })
             .subscribe()
             .disposed(by: disposeBag)
 

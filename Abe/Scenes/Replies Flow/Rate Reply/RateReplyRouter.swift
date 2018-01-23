@@ -4,7 +4,7 @@ import UIKit
 
 protocol RateReplyRoutingLogic {
     func toPromptDetail()
-    func toGuessReplyAuthorFor(reply: PromptReply)
+    func toGuessReplyAuthorFor(reply: PromptReply, ratingScoreValue: Int)
 }
 
 final class RateReplyRouter: RateReplyRoutingLogic {
@@ -19,10 +19,12 @@ final class RateReplyRouter: RateReplyRoutingLogic {
         navigationController?.dismiss(animated: true)
     }
     
-    func toGuessReplyAuthorFor(reply: PromptReply) {
+    func toGuessReplyAuthorFor(reply: PromptReply, ratingScoreValue: Int) {
         var vc = GuessReplyAuthorViewController()
         let router = GuessReplyAuthorRouter(navigationController: navigationController!)
-        let viewModel = GuessReplyAuthorViewModel(reply: reply, router: router)
+        let viewModel = GuessReplyAuthorViewModel(reply: reply,
+                                                  ratingScoreValue: ratingScoreValue,
+                                                  router: router)
         vc.setViewModelBinding(model: viewModel!)
         navigationController?.pushViewController(vc, animated: true)
     }

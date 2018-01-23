@@ -122,6 +122,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .filter { $0 == Visibility.individualContacts }
             .flatMap { _ in selectedContactNumbersObservable }
             .map { updateReply(savedReplyInput.reply, contactNumbere: $0) }
+        
         let createWithGeneralVis = createButtonTappedObservable
             .withLatestFrom(currentVisibilityObservable)
             .filter { $0 != Visibility.individualContacts }

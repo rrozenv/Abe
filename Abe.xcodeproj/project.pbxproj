@@ -14,6 +14,12 @@
 		9806B9142007DE5C000CB497 /* ImageSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */; };
 		9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B9152007E385000CB497 /* ImageSearchDataSource.swift */; };
 		9806B91A2007EB83000CB497 /* ImageSearchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B9192007EB83000CB497 /* ImageSearchRouter.swift */; };
+		980974AD2017C52900FBCE9B /* InputWagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980974AC2017C52900FBCE9B /* InputWagerViewController.swift */; };
+		980974B12017C58F00FBCE9B /* InputWagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980974B02017C58F00FBCE9B /* InputWagerViewModel.swift */; };
+		980974B32017C59B00FBCE9B /* InputWagerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980974B22017C59B00FBCE9B /* InputWagerRouter.swift */; };
+		980974B82017D51100FBCE9B /* GuessAndWagerValidationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980974B72017D51100FBCE9B /* GuessAndWagerValidationViewController.swift */; };
+		980974BA2017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980974B92017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift */; };
+		980974BC2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980974BB2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift */; };
 		980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A31FE589310087C6C3 /* Observable+Ext.swift */; };
 		980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A61FE5A3B40087C6C3 /* ErrorTracker.swift */; };
 		980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */; };
@@ -144,6 +150,12 @@
 		9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchViewModel.swift; sourceTree = "<group>"; };
 		9806B9152007E385000CB497 /* ImageSearchDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchDataSource.swift; sourceTree = "<group>"; };
 		9806B9192007EB83000CB497 /* ImageSearchRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchRouter.swift; sourceTree = "<group>"; };
+		980974AC2017C52900FBCE9B /* InputWagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputWagerViewController.swift; sourceTree = "<group>"; };
+		980974B02017C58F00FBCE9B /* InputWagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputWagerViewModel.swift; sourceTree = "<group>"; };
+		980974B22017C59B00FBCE9B /* InputWagerRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputWagerRouter.swift; sourceTree = "<group>"; };
+		980974B72017D51100FBCE9B /* GuessAndWagerValidationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessAndWagerValidationViewController.swift; sourceTree = "<group>"; };
+		980974B92017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessAndWagerValidationViewModel.swift; sourceTree = "<group>"; };
+		980974BB2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessAndWagerValidationRouter.swift; sourceTree = "<group>"; };
 		980DE5A31FE589310087C6C3 /* Observable+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Observable+Ext.swift"; sourceTree = "<group>"; };
 		980DE5A61FE5A3B40087C6C3 /* ErrorTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorTracker.swift; sourceTree = "<group>"; };
 		980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -312,6 +324,26 @@
 				9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		980974B42017D44300FBCE9B /* Input Wager */ = {
+			isa = PBXGroup;
+			children = (
+				980974AC2017C52900FBCE9B /* InputWagerViewController.swift */,
+				980974B02017C58F00FBCE9B /* InputWagerViewModel.swift */,
+				980974B22017C59B00FBCE9B /* InputWagerRouter.swift */,
+			);
+			path = "Input Wager";
+			sourceTree = "<group>";
+		};
+		980974B62017D4D800FBCE9B /* Guess And Reply Validation */ = {
+			isa = PBXGroup;
+			children = (
+				980974B72017D51100FBCE9B /* GuessAndWagerValidationViewController.swift */,
+				980974B92017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift */,
+				980974BB2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift */,
+			);
+			path = "Guess And Reply Validation";
 			sourceTree = "<group>";
 		};
 		980DE5AA1FE5B3730087C6C3 /* Sign Up */ = {
@@ -599,6 +631,8 @@
 		984F379A20070DB600C62E6E /* Replies Flow */ = {
 			isa = PBXGroup;
 			children = (
+				980974B62017D4D800FBCE9B /* Guess And Reply Validation */,
+				980974B42017D44300FBCE9B /* Input Wager */,
 				982B27D12015246C00824E82 /* Guess Reply Author */,
 				982CF84F2013C96D00EEB278 /* Rate Reply */,
 				9862867420006A4B00502294 /* Replies Table View */,
@@ -1035,6 +1069,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				980974BA2017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift in Sources */,
 				9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				981545D520102EEF0001F675 /* GIFImageService.swift in Sources */,
@@ -1051,6 +1086,7 @@
 				9806B9102007DD77000CB497 /* ImageSearchCollectionViewLayout.swift in Sources */,
 				984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */,
 				9854D252200053A700D7B7EB /* ValueCellDataSource.swift in Sources */,
+				980974AD2017C52900FBCE9B /* InputWagerViewController.swift in Sources */,
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
 				9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */,
@@ -1087,9 +1123,11 @@
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,
 				985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */,
 				985C2A611FFDAE040034E116 /* ContactService.swift in Sources */,
+				980974B82017D51100FBCE9B /* GuessAndWagerValidationViewController.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
 				9836043F20070EC2008A975D /* Extensions.swift in Sources */,
 				9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */,
+				980974B12017C58F00FBCE9B /* InputWagerViewModel.swift in Sources */,
 				981545D7201051340001F675 /* Cache.swift in Sources */,
 				981545D1201026EB0001F675 /* Gif.swift in Sources */,
 				983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */,
@@ -1105,6 +1143,7 @@
 				982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */,
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
+				980974B32017C59B00FBCE9B /* InputWagerRouter.swift in Sources */,
 				9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */,
 				9828ABC8200E745A00A3A9D1 /* AddWebLinkViewController.swift in Sources */,
 				98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */,
@@ -1120,6 +1159,7 @@
 				980F50372004571F006C2B83 /* AppController.swift in Sources */,
 				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
+				980974BC2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,
 				98D26EE9201550F200B0A72E /* GuessReplyAuthorRouter.swift in Sources */,
