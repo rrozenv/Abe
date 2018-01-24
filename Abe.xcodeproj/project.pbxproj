@@ -59,6 +59,7 @@
 		9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9854D2412000186F00D7B7EB /* PromptSummarySectionHeaderView.swift */; };
 		9854D252200053A700D7B7EB /* ValueCellDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9854D251200053A700D7B7EB /* ValueCellDataSource.swift */; };
 		9854D2542000546B00D7B7EB /* RepliesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9854D2532000546B00D7B7EB /* RepliesDataSource.swift */; };
+		985A7CCE201826490065BF38 /* GuessAndWagerValidationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985A7CCD201826490065BF38 /* GuessAndWagerValidationDataSource.swift */; };
 		985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */; };
 		985C2A5D1FFDAC8E0034E116 /* EnableContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */; };
 		985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */; };
@@ -195,6 +196,7 @@
 		9854D2412000186F00D7B7EB /* PromptSummarySectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSummarySectionHeaderView.swift; sourceTree = "<group>"; };
 		9854D251200053A700D7B7EB /* ValueCellDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueCellDataSource.swift; sourceTree = "<group>"; };
 		9854D2532000546B00D7B7EB /* RepliesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesDataSource.swift; sourceTree = "<group>"; };
+		985A7CCD201826490065BF38 /* GuessAndWagerValidationDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessAndWagerValidationDataSource.swift; sourceTree = "<group>"; };
 		985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewController.swift; sourceTree = "<group>"; };
 		985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewModel.swift; sourceTree = "<group>"; };
 		985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsRouter.swift; sourceTree = "<group>"; };
@@ -342,6 +344,7 @@
 				980974B72017D51100FBCE9B /* GuessAndWagerValidationViewController.swift */,
 				980974B92017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift */,
 				980974BB2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift */,
+				985A7CCD201826490065BF38 /* GuessAndWagerValidationDataSource.swift */,
 			);
 			path = "Guess And Reply Validation";
 			sourceTree = "<group>";
@@ -1073,6 +1076,7 @@
 				9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				981545D520102EEF0001F675 /* GIFImageService.swift in Sources */,
+				985A7CCE201826490065BF38 /* GuessAndWagerValidationDataSource.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,

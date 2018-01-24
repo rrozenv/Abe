@@ -90,7 +90,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
 //MARK: - Routing
         nextButtonTappedObservable
             .withLatestFrom(selectedUserViewModelObservable)
-            .do(onNext: { router.toInputWagerWith(selectedUser: $0.user, ratingScoreValue: ratingScoreValue) })
+            .do(onNext: { router.toInputWagerWith(selectedUser: $0.user, ratingScoreValue: ratingScoreValue, reply: reply) })
             .subscribe()
             .disposed(by: disposeBag)
 

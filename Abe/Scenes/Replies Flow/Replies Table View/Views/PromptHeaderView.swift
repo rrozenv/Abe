@@ -2,6 +2,133 @@
 import Foundation
 import UIKit
 
+final class GuessedUserView: UIView {
+    
+    var userImageView: UIImageView!
+    var nameLabel: UILabel!
+    var nameSubLabel: UILabel!
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        setupUserImageView()
+        setupNameLabelsStackView()
+    }
+    
+    private func setupUserImageView() {
+        userImageView = UIImageView()
+        userImageView.backgroundColor = UIColor.purple
+        
+        self.addSubview(userImageView)
+        userImageView.snp.makeConstraints { (make) in
+            make.left.equalTo(self.snp.left).offset(20)
+            make.centerY.equalTo(self.snp.centerY)
+            make.height.width.equalTo(35)
+        }
+    }
+    
+    private func setupNameLabelsStackView() {
+        nameLabel = UILabel()
+        nameLabel.textColor = UIColor.black
+        nameLabel.numberOfLines = 1
+        nameLabel.font = FontBook.AvenirHeavy.of(size: 13)
+        
+        nameSubLabel = UILabel()
+        nameSubLabel.textColor = UIColor.gray
+        nameSubLabel.numberOfLines = 1
+        nameSubLabel.font = FontBook.AvenirMedium.of(size: 12)
+        
+        let views: [UILabel] = [nameLabel, nameSubLabel]
+        let labelsStackView = UIStackView(arrangedSubviews: views)
+        labelsStackView.spacing = 2.0
+        labelsStackView.axis = .vertical
+        
+        self.addSubview(labelsStackView)
+        labelsStackView.snp.makeConstraints { (make) in
+            make.centerY.equalTo(userImageView.snp.centerY)
+            make.left.equalTo(userImageView.snp.right).offset(10)
+        }
+    }
+    
+}
+
+final class ReplyHeaderView: UIView {
+    
+    var userImageView: UIImageView!
+    var nameLabel: UILabel!
+    var nameSubLabel: UILabel!
+    var replyBodyLabel: UILabel!
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        setupReplyLabel()
+        setupUserImageView()
+        setupNameLabelsStackView()
+    }
+    
+    func populateInfoWith(reply: PromptReply) {
+        nameLabel.text = reply.user?.name
+        nameSubLabel.text = "From Contacts"
+        replyBodyLabel.text = reply.body
+    }
+    
+    private func setupReplyLabel() {
+        replyBodyLabel = UILabel()
+        replyBodyLabel.numberOfLines = 0
+        
+        self.addSubview(replyBodyLabel)
+        replyBodyLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(self.snp.left).offset(20)
+            make.right.equalTo(self.snp.right).offset(-20)
+            make.bottom.equalTo(self.snp.bottom).offset(-20)
+        }
+    }
+    
+    private func setupUserImageView() {
+        userImageView = UIImageView()
+        userImageView.backgroundColor = UIColor.purple
+        
+        self.addSubview(userImageView)
+        userImageView.snp.makeConstraints { (make) in
+            make.left.equalTo(self.snp.left).offset(20)
+            make.top.equalTo(self.snp.top).offset(17)
+            make.bottom.equalTo(replyBodyLabel.snp.top).offset(-17)
+            make.height.width.equalTo(35)
+        }
+    }
+    
+    private func setupNameLabelsStackView() {
+        nameLabel = UILabel()
+        nameLabel.textColor = UIColor.black
+        nameLabel.numberOfLines = 1
+        nameLabel.font = FontBook.AvenirHeavy.of(size: 13)
+        
+        nameSubLabel = UILabel()
+        nameSubLabel.textColor = UIColor.gray
+        nameSubLabel.numberOfLines = 1
+        nameSubLabel.font = FontBook.AvenirMedium.of(size: 12)
+        
+        let views: [UILabel] = [nameLabel, nameSubLabel]
+        let labelsStackView = UIStackView(arrangedSubviews: views)
+        labelsStackView.spacing = 2.0
+        labelsStackView.axis = .vertical
+        
+        self.addSubview(labelsStackView)
+        labelsStackView.snp.makeConstraints { (make) in
+            make.centerY.equalTo(userImageView.snp.centerY)
+            make.left.equalTo(userImageView.snp.right).offset(10)
+        }
+    }
+
+}
+
 final class PromptHeaderView: UIView {
     
     var topContainerView: UIView!

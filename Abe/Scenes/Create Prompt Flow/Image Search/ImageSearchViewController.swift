@@ -196,8 +196,8 @@ extension ImageSearchViewController {
 extension ImageSearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? ImageSearchCollectionCell,
-              let image = self.dataSource.imageAtIndexPath(indexPath) else { return }
+//        guard let cell = collectionView.cellForItem(at: indexPath) as? ImageSearchCollectionCell,
+//              let image = self.dataSource.imageAtIndexPath(indexPath) else { return }
 //        guard shouldLoadMoreResults(indexPath) else { return }
 //        fetchNextPage()
     }

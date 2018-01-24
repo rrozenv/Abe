@@ -87,7 +87,7 @@ class RepliesViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         viewModel.outputs.didUserReply
-            .drive(onNext: { [weak self] didReply in
+            .drive(onNext: { didReply in
 //                self?.tabBarView.isHidden = didReply ? false : true
 //                guard !didReply else { return }
 //                self?.dataSource.loadBeforeUserRepliedState()

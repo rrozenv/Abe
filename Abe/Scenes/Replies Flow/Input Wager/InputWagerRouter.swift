@@ -18,7 +18,15 @@ final class InputWagerRouter: InputWagerRoutingLogic {
                                    ratingScoreValue: Int,
                                    guessedUser: User,
                                    wager: Int) {
-        navigationController?.dismiss(animated: true)
+        var vc = GuessAndWagerValidationViewController()
+        let router = GuessAndWagerValidationRouter(navigationController: navigationController!)
+        let viewModel = GuessAndWagerValidationViewModel(reply: reply,
+                                                         ratingScoreValue: ratingScoreValue,
+                                                         guessedUser: guessedUser,
+                                                         wager: wager,
+                                                         router: router)
+        vc.setViewModelBinding(model: viewModel!)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

@@ -11,6 +11,8 @@ protocol GuessAndWagerValidationViewModelInputs {
 protocol GuessAndWagerValidationViewModelOutputs {
     var unlockedReply: Driver<PromptReply> { get }
     var userCoinsAndWagerResult: Driver<(user: User, wager: Int, isCorrect: Bool)> { get }
+    var isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User)> { get }
+    var replyScores: Driver<[ReplyScore]> { get }
 }
 
 protocol GuessAndWagerValidationViewModelType {
@@ -31,12 +33,14 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
     let unlockedReply: Driver<PromptReply>
     let userCoinsAndWagerResult: Driver<(user: User, wager: Int, isCorrect: Bool)>
     let replyScores: Driver<[ReplyScore]>
+    let isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User)>
     
 //MARK: - Init
     init?(reply: PromptReply,
           ratingScoreValue: Int,
           guessedUser: User,
           wager: Int,
+          router: GuessAndWagerValidationRoutingLogic,
           userService: UserService = UserService(),
           replyService: ReplyService = ReplyService()) {
         
@@ -56,12 +60,15 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
         let viewDidLoadObservable = _viewDidLoadInput.asObservable()
         
 //MARK: - Second Level Observables
-        let isUserCorrectObservable = viewDidLoadObservable
-            .map { reply.user!.id == guessedUser.id }
+        let isUserCorrectObservable = Observable
+            .of((isCorrect: reply.user!.id == guessedUser.id,
+                 guessedUser: guessedUser))
         
 //MARK: - Outputs
+        self.isUserCorrect = isUserCorrectObservable.asDriver(onErrorDriveWith: Driver.never())
         self.unlockedReply = Driver.of(reply)
         self.userCoinsAndWagerResult = isUserCorrectObservable
+            .map { $0.isCorrect }
             .flatMap {
                 userService.updateCoinsFor(user: currentUser.value,
                                            wager: $0 ? wager * 2 : wager,
@@ -69,7 +76,7 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             }
             .asDriver(onErrorDriveWith: Driver.never())
         
-        let didSaveAndUpdateAuthorCoinsObservable =  viewDidLoadObservable
+        let didSaveAndUpdateAuthorCoinsObservable =  isUserCorrectObservable.mapToVoid()
             .map { ReplyScore(user: currentUser.value,
                               replyId: reply.id,
                               score: ratingScoreValue) }

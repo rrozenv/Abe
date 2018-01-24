@@ -39,7 +39,9 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
     
 //MARK: - Init
     init?(reply: PromptReply,
-          guessedUser: User) {
+          guessedUser: User,
+          ratingScoreValue: Int,
+          router: InputWagerRoutingLogic) {
         
         guard let user = AppController.shared.currentUser.value else {
             NotificationCenter.default.post(name: Notification.Name.logout, object: nil)
@@ -90,7 +92,10 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
         
         //MARK: - Routing
         isInputValidObservable.filter { $0.isValid }
-            .do(onNext: { print("valid wager of \($0.int) coins selected") })
+            .do(onNext: { router.toGuessAndWagerValidation(reply: reply,
+                                                           ratingScoreValue: ratingScoreValue,
+                                                           guessedUser: guessedUser,
+                                                           wager: $0.int) })
             .subscribe()
             .disposed(by: disposeBag)
         
