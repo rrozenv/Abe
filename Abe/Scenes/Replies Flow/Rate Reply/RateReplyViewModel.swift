@@ -75,7 +75,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
 //MARK: - Second Level Observables
         let shouldRouteToNextNavVCObservable = nextButtonTappedObservable
             .withLatestFrom(isCurrentUsersFriendObservable)
-            .filter { $0 }
+            .filter { $0 } 
         let shouldDismissNavVCObservable = nextButtonTappedObservable
             .withLatestFrom(isCurrentUsersFriendObservable)
             .filter { !$0 }

@@ -8,10 +8,13 @@ protocol GuessReplyAuthorViewModelInputs {
     var selectedIndexPathInput: AnyObserver<IndexPath> { get }
     var selectedUserViewModelInput: AnyObserver<IndividualContactViewModel> { get }
     var nextButtonTappedInput: AnyObserver<Void> { get }
+    var searchTextInput: AnyObserver<String> { get }
+    var searchCancelTappedInput: AnyObserver<Void> { get }
 }
 
 protocol GuessReplyAuthorViewModelOutputs {
-    var currentUsersFriends: Driver<[IndividualContactViewModel]> { get }
+    var allUsersFriends: Driver<[IndividualContactViewModel]> { get }
+    //var filteredUsersFriends: Driver<[IndividualContactViewModel]> { get }
     var previousAndCurrentIndexPath: Observable<(previous: IndexPath, current: IndexPath)> { get }
     var nextButtonIsEnabled: Driver<Bool> { get }
 }
@@ -31,10 +34,13 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
     let selectedIndexPathInput: AnyObserver<IndexPath>
     let selectedUserViewModelInput: AnyObserver<IndividualContactViewModel>
     let nextButtonTappedInput: AnyObserver<Void>
+    let searchTextInput: AnyObserver<String>
+    let searchCancelTappedInput: AnyObserver<Void>
     
 //MARK: - Outputs
     var outputs: GuessReplyAuthorViewModelOutputs { return self }
-    let currentUsersFriends: Driver<[IndividualContactViewModel]>
+    let allUsersFriends: Driver<[IndividualContactViewModel]>
+    //let filteredUsersFriends: Driver<[IndividualContactViewModel]>
     let previousAndCurrentIndexPath: Observable<(previous: IndexPath, current: IndexPath)>
     let nextButtonIsEnabled: Driver<Bool>
     
@@ -55,12 +61,16 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
         let _selectedIndexPathInput = PublishSubject<IndexPath>()
         let _selectedUserViewModelInput = PublishSubject<IndividualContactViewModel>()
         let _nextButtonTappedInput = PublishSubject<Void>()
+        let _searchTextInput = PublishSubject<String>()
+        let _searchCancelTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
         self.selectedIndexPathInput = _selectedIndexPathInput.asObserver()
         self.selectedUserViewModelInput = _selectedUserViewModelInput.asObserver()
         self.nextButtonTappedInput = _nextButtonTappedInput.asObserver()
+        self.searchTextInput = _searchTextInput.asObserver()
+        self.searchCancelTappedInput = _searchCancelTappedInput.asObserver()
         
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
@@ -69,13 +79,32 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
         let selectedUserViewModelObservable = _selectedUserViewModelInput.asObservable()
             .startWith(IndividualContactViewModel(isSelected: false, user: User.defualtUser()))
         let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
-        
-//MARK: - Outputs
-        self.currentUsersFriends = viewWillAppearObservable
+        let searchTextObservable = _searchTextInput.asObservable()
+        let searchCancelTappedObservable = _searchCancelTappedInput.asObservable()
+
+//MARK: - Second Level Observables
+        let currentUsersFriendsObservable = viewWillAppearObservable
             .flatMap { _ in userService.fetchAll() }
             .map { currentUser.value.registeredUsersInContacts(allUsers: $0) }
             .map { createContactViewModelsFor(registeredUsers: $0) }
+        let filteredUserFriendsObservable = searchTextObservable
+            .withLatestFrom(currentUsersFriendsObservable, resultSelector: { (searchText, friends) in
+                return friends.filter { $0.user.name.contains(searchText) }
+            })
+        let resetUsersFriendsWhenCancelTappedObservable =  searchCancelTappedObservable
+            .withLatestFrom(currentUsersFriendsObservable)
+        
+//MARK: - Outputs
+        self.allUsersFriends = Observable.of(currentUsersFriendsObservable,
+                                             filteredUserFriendsObservable,
+                                             resetUsersFriendsWhenCancelTappedObservable).merge()
             .asDriverOnErrorJustComplete()
+        
+//        self.filteredUsersFriends = searchTextObservable
+//            .withLatestFrom(currentUsersFriendsObservable, resultSelector: { (searchText, friends) in
+//                return friends.filter { $0.user.name.contains(searchText) }
+//            })
+//            .asDriverOnErrorJustComplete()
         
         self.previousAndCurrentIndexPath = Observable
             .zip(selectedIndexObservable, selectedIndexObservable.skip(1)) {

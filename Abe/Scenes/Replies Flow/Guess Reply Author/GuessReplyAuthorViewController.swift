@@ -10,16 +10,20 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     var viewModel: GuessReplyAuthorViewModel!
     private var nextButton: UIButton!
     
-    var tableView: UITableView!
+    private var searchController = UISearchController(searchResultsController: nil)
+    //private var searchBar: UISearchBar!
+    private var tableView: UITableView!
     
     override func loadView() {
         super.loadView()
+        setupSearchController()
         setupTableView()
         setupNextButton()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.title = "Who do you think made this reply?"
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +36,10 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     func bindViewModel() {
         
 //MARK: - Input
+        searchController.searchBar.rx.cancelButtonClicked
+            .bind(to: viewModel.inputs.searchCancelTappedInput)
+            .disposed(by: disposeBag)
+        
         tableView.rx.itemSelected.asObservable()
             .distinctUntilChanged()
             .bind(to: viewModel.inputs.selectedIndexPathInput)
@@ -48,7 +56,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
 //MARK: - Output
-        viewModel.outputs.currentUsersFriends
+        viewModel.outputs.allUsersFriends
             .drive(onNext: { [weak self] in
                 self?.dataSource.loadUsers(ratings: $0)
                 self?.tableView.reloadData()
@@ -78,15 +86,39 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     
 }
 
+extension GuessReplyAuthorViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchText = searchController.searchBar.text,
+                  !searchText.isEmpty else { return }
+        viewModel.inputs.searchTextInput.onNext(searchText)
+    }
+    
+}
+
 extension GuessReplyAuthorViewController {
     
-    fileprivate func showError(_ error: Error) {
+    private func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func setupTableView() {
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Contacts"
+        definesPresentationContext = true
+        if #available(iOS 11.0, *) {
+            navigationItem.searchController = searchController
+            navigationController?.navigationBar.prefersLargeTitles = true
+        } else {
+            // Fallback on earlier versions
+        }
+        
+    }
+    
+    private func setupTableView() {
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
@@ -96,7 +128,12 @@ extension GuessReplyAuthorViewController {
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
-            make.edges.equalTo(view)
+            make.right.left.bottom.equalTo(view)
+            if #available(iOS 11.0, *) {
+                make.top.equalTo(view.safeAreaInsets.top)
+            } else {
+                make.top.equalTo(topLayoutGuide.snp.bottom)
+            }
         }
     }
     

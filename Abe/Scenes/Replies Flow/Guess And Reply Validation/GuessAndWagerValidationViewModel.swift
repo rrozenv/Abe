@@ -4,15 +4,20 @@ import RxSwift
 import RxCocoa
 import RxOptional
 
+struct PercentageGraphViewModel {
+    let orderedPercetages: [Double]
+}
+
 protocol GuessAndWagerValidationViewModelInputs {
     var viewDidLoadInput: AnyObserver<Void> { get }
 }
 
 protocol GuessAndWagerValidationViewModelOutputs {
-    var unlockedReply: Driver<PromptReply> { get }
+    var unlockedReplyViewModel: Driver<ReplyViewModel> { get }
     var userCoinsAndWagerResult: Driver<(user: User, wager: Int, isCorrect: Bool)> { get }
     var isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User)> { get }
     var replyScores: Driver<[ReplyScore]> { get }
+    var percentageGraphInfo: Driver<PercentageGraphViewModel> { get }
 }
 
 protocol GuessAndWagerValidationViewModelType {
@@ -30,10 +35,11 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
     
 //MARK: - Outputs
     var outputs: GuessAndWagerValidationViewModelOutputs { return self }
-    let unlockedReply: Driver<PromptReply>
+    let unlockedReplyViewModel: Driver<ReplyViewModel>
     let userCoinsAndWagerResult: Driver<(user: User, wager: Int, isCorrect: Bool)>
     let replyScores: Driver<[ReplyScore]>
     let isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User)>
+    let percentageGraphInfo: Driver<PercentageGraphViewModel>
     
 //MARK: - Init
     init?(reply: PromptReply,
@@ -57,16 +63,35 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
         self.viewDidLoadInput = _viewDidLoadInput.asObserver()
         
 //MARK: - First Level Observables
-        let viewDidLoadObservable = _viewDidLoadInput.asObservable()
+        //let viewDidLoadObservable = _viewDidLoadInput.asObservable()
         
 //MARK: - Second Level Observables
         let isUserCorrectObservable = Observable
             .of((isCorrect: reply.user!.id == guessedUser.id,
                  guessedUser: guessedUser))
+        let replyScore = Observable.of(ReplyScore(user: currentUser.value,
+                                                  replyId: reply.id,
+                                                  score: ratingScoreValue))
+        
+        let didSaveAndUpdateAuthorCoinsObservable =  isUserCorrectObservable.mapToVoid()
+            .flatMap { replyScore }
+            .flatMap { replyService.saveScore(reply: reply, score: $0) }
+            .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
         
 //MARK: - Outputs
         self.isUserCorrect = isUserCorrectObservable.asDriver(onErrorDriveWith: Driver.never())
-        self.unlockedReply = Driver.of(reply)
+        
+        self.percentageGraphInfo = isUserCorrectObservable
+            .map { _ in [1, 2, 3, 4, 5].map { reply.percentageOfVotesCastesFor(scoreValue: $0) } }
+            .map { PercentageGraphViewModel(orderedPercetages: $0) }
+            .asDriverOnErrorJustComplete()
+            
+        self.unlockedReplyViewModel = Observable.of(reply)
+            .withLatestFrom(replyScore, resultSelector: { (reply, score) in
+                return ReplyViewModel(reply: reply, ratingScore: score, isCurrentUsersFriend: true)
+            })
+            .asDriverOnErrorJustComplete()
+        
         self.userCoinsAndWagerResult = isUserCorrectObservable
             .map { $0.isCorrect }
             .flatMap {
@@ -75,13 +100,6 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
                                            shouldAdd: $0 ? true : false)
             }
             .asDriver(onErrorDriveWith: Driver.never())
-        
-        let didSaveAndUpdateAuthorCoinsObservable =  isUserCorrectObservable.mapToVoid()
-            .map { ReplyScore(user: currentUser.value,
-                              replyId: reply.id,
-                              score: ratingScoreValue) }
-            .flatMap { replyService.saveScore(reply: reply, score: $0) }
-            .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
         
        self.replyScores = didSaveAndUpdateAuthorCoinsObservable
         .map { $0.scores.toArray() }

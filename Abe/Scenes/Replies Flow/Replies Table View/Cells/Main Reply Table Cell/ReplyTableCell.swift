@@ -162,6 +162,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         replyHeaderView.nameLabel.text = "Identity Locked"
         replyHeaderView.nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
         replyHeaderView.replyBodyLabel.text = value.reply.body
+        rateReplyButton.isHidden = value.ratingScore == nil ? true : false
         rateReplyButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.delegate?.didSelectRateReply(value.reply,
@@ -190,9 +191,11 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         rateReplyButton = UIButton()
         rateReplyButton.setTitle("Rate Reply", for: .normal)
         rateReplyButton.backgroundColor = UIColor.green
+        let stackView = UIStackView()
+        stackView.addArrangedSubview(rateReplyButton)
         
-        contentView.addSubview(rateReplyButton)
-        rateReplyButton.snp.makeConstraints { (make) in
+        contentView.addSubview(stackView)
+        stackView.snp.makeConstraints { (make) in
             make.left.bottom.right.equalTo(contentView)
             make.height.equalTo(50)
         }

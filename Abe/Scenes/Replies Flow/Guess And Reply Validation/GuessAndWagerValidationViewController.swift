@@ -9,8 +9,8 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
     var viewModel: GuessAndWagerValidationViewModel!
     private var replyView: ReplyHeaderView!
     private var guessedUserView: GuessedUserView!
-    private var scoresTableView: UITableView!
-    private var scoresDataSource = GuessAndReplyValidationDataSource()
+    private var tableView: UITableView!
+    private var dataSource = GuessAndReplyValidationDataSource()
     private var doneButton: UIButton!
     private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
@@ -43,12 +43,6 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
 //            .disposed(by: disposeBag)
         
         //MARK: - Outputs
-        viewModel.outputs.unlockedReply
-            .drive(onNext: { [weak self] in
-                self?.replyView.populateInfoWith(reply: $0)
-            })
-            .disposed(by: disposeBag)
-        
         viewModel.outputs.isUserCorrect
             .drive(onNext: { [weak self] in
                 self?.guessedUserView.nameLabel.text = $0.guessedUser.name
@@ -57,10 +51,27 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
             })
             .disposed(by: disposeBag)
         
+        viewModel.outputs.unlockedReplyViewModel
+            .drive(onNext: { [weak self] in
+                let section = GuessAndReplyValidationDataSource.Section.reply.rawValue
+                self?.dataSource.loadUnlockedReply(viewModel: $0)
+                self?.tableView.reloadSections([section], animationStyle: .none)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.percentageGraphInfo
+            .drive(onNext: { [weak self] in
+                let section = GuessAndReplyValidationDataSource.Section.percentageGraph.rawValue
+                self?.dataSource.loadPercentageGraph(viewModel: $0)
+                self?.tableView.reloadSections([section], animationStyle: .none)
+            })
+            .disposed(by: disposeBag)
+    
         viewModel.outputs.replyScores
             .drive(onNext: { [weak self] in
-                self?.scoresDataSource.loadScores($0)
-                self?.scoresTableView.reloadData()
+                let section = GuessAndReplyValidationDataSource.Section.ratingScores.rawValue
+                self?.dataSource.loadScores($0)
+                self?.tableView.reloadSections([section], animationStyle: .none)
             })
             .disposed(by: disposeBag)
         
@@ -118,20 +129,21 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
     }
     
     private func setupTableView() {
-        scoresTableView = UITableView(frame: CGRect.zero, style: .grouped)
-        scoresTableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
-        scoresTableView.estimatedRowHeight = 200
-        scoresTableView.dataSource = scoresDataSource
-        scoresTableView.rowHeight = UITableViewAutomaticDimension
-        scoresTableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
+        tableView = UITableView(frame: CGRect.zero, style: .grouped)
+        tableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
+        tableView.estimatedRowHeight = 200
+        tableView.dataSource = dataSource
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.register(RateReplyTableCell.self, forCellReuseIdentifier: RateReplyTableCell.defaultReusableId)
+        tableView.register(RatingPercentageGraphCell.self, forCellReuseIdentifier: RatingPercentageGraphCell.defaultReusableId)
+        tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
         
-        view.addSubview(scoresTableView)
-        scoresTableView.snp.makeConstraints { (make) in
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
             make.top.equalTo(replyView.snp.bottom)
         }
     }
-    
     
     private func setupLoadingIndicator() {
         activityIndicator.hidesWhenStopped = true
