@@ -58,7 +58,7 @@ class RealmInstance {
     func fetchAll<T: Object>(_ model: T.Type) -> Observable<(AnyRealmCollection<T>, RealmChangeset?)> {
         return Observable.deferred {
             let realm = self.realm
-            let objects = realm.objects(model)
+            let objects = realm.objects(model).sorted(byKeyPath: "createdAt", ascending: false)
             return Observable.changeset(from: objects)
         }
     }

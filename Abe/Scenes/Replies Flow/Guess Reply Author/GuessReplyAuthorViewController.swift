@@ -6,10 +6,10 @@ import RxSwift
 class GuessReplyAuthorViewController: UIViewController, BindableType {
     
     let disposeBag = DisposeBag()
-    let dataSource = GuessReplyAuthorDataSource()
     var viewModel: GuessReplyAuthorViewModel!
-    private var nextButton: UIButton!
+    private let dataSource = GuessReplyAuthorDataSource()
     
+    private var nextButton: UIButton!
     private var searchController = UISearchController(searchResultsController: nil)
     //private var searchBar: UISearchBar!
     private var tableView: UITableView!
@@ -72,16 +72,16 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.previousAndCurrentIndexPath
-            .subscribe(onNext: { [unowned self] (indexPaths) in
-                if let currIndexPath = self.dataSource.toggleUser(indexPaths.current) {
+        viewModel.outputs.previousAndCurrentSelectedUser
+            .subscribe(onNext: { [unowned self] (users) in
+                if let currIndexPath = self.dataSource.toggleUser(users.current) {
                    self.tableView.reloadRows(at: [currIndexPath], with: .none)
                 }
                 
-                //First value will contain a previous.row = -1
-                //because there is no previous indexPath selected initally
-                guard indexPaths.previous.user.id != "0" else { return }
-                if let prevIndexPath = self.dataSource.toggleUser(indexPaths.previous) {
+                //First value will contain a a defualt user with "id" = 0
+                //because there is no previous user selected initally
+                guard users.previous.user.id != "0" else { return }
+                if let prevIndexPath = self.dataSource.toggleUser(users.previous) {
                     self.tableView.reloadRows(at: [prevIndexPath], with: .none)
                 }
             })

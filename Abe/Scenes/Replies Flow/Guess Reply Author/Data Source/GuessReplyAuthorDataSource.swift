@@ -43,14 +43,13 @@ final class GuessReplyAuthorDataSource: ValueCellDataSource {
                      inSection: 0,
                      row: Int(filteredUsersIndex))
             return IndexPath(row: Int(filteredUsersIndex), section: 0)
-        } else {
-            guard !isFiltering else { return nil }
+        } else if !isFiltering {
             self.set(value: storedUsers[allUsersIndex!],
                      cellClass: UserContactTableCell.self,
                      inSection: 0,
                      row: Int(allUsersIndex!))
             return IndexPath(row: Int(allUsersIndex!), section: 0)
-        }
+        } else { return nil }
     }
     
     func getUser(at indexPath: IndexPath) -> IndividualContactViewModel? {

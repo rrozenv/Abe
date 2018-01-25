@@ -1,6 +1,7 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 protocol InputWagerRoutingLogic {
     func toGuessAndWagerValidation(reply: PromptReply, ratingScoreValue: Int, guessedUser: User, wager: Int)

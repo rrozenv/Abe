@@ -67,8 +67,9 @@ class PromptReply: Object {
     
     func doesScoreExistFor(userId: String) -> Bool {
         guard let _ = self.scores
-            .filter(NSPredicate(format: "userId = %@", userId))
-            .first else { return false }
+            .filter(NSPredicate(format: "user.id = %@", userId))
+            .first
+            else { return false }
         return true
     }
     

@@ -10,6 +10,7 @@ struct PercentageGraphViewModel {
 
 protocol GuessAndWagerValidationViewModelInputs {
     var viewDidLoadInput: AnyObserver<Void> { get }
+    var doneButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol GuessAndWagerValidationViewModelOutputs {
@@ -32,6 +33,7 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
 //MARK: - Inputs
     var inputs: GuessAndWagerValidationViewModelInputs { return self }
     let viewDidLoadInput: AnyObserver<Void>
+    let doneButtonTappedInput: AnyObserver<Void>
     
 //MARK: - Outputs
     var outputs: GuessAndWagerValidationViewModelOutputs { return self }
@@ -58,38 +60,48 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
         
 //MARK: - Subjects
         let _viewDidLoadInput = PublishSubject<Void>()
+        let _doneButtonTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewDidLoadInput = _viewDidLoadInput.asObserver()
+        self.doneButtonTappedInput = _doneButtonTappedInput.asObserver()
         
 //MARK: - First Level Observables
-        //let viewDidLoadObservable = _viewDidLoadInput.asObservable()
+        let viewDidLoadObservable = _viewDidLoadInput.asObservable()
+        let doneButtonTappedObservable = _doneButtonTappedInput.asObservable()
         
 //MARK: - Second Level Observables
-        let isUserCorrectObservable = Observable
-            .of((isCorrect: reply.user!.id == guessedUser.id,
-                 guessedUser: guessedUser))
-        let replyScore = Observable.of(ReplyScore(user: currentUser.value,
-                                                  replyId: reply.id,
-                                                  score: ratingScoreValue))
+        let isUserCorrectObservable = viewDidLoadObservable
+            .map { (isCorrect: reply.user!.id == guessedUser.id, guessedUser: guessedUser) }
+            .share()
         
-        let didSaveAndUpdateAuthorCoinsObservable =  isUserCorrectObservable.mapToVoid()
-            .flatMap { replyScore }
+        let didSaveReplyObservable = viewDidLoadObservable
+            .map { ReplyScore(userId: currentUser.value.id,
+                              replyId: reply.id,
+                              score: ratingScoreValue) }
             .flatMap { replyService.saveScore(reply: reply, score: $0) }
             .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
+            .share()
         
 //MARK: - Outputs
-        self.isUserCorrect = isUserCorrectObservable.asDriver(onErrorDriveWith: Driver.never())
+        self.isUserCorrect = isUserCorrectObservable.asDriverOnErrorJustComplete()
         
-        self.percentageGraphInfo = isUserCorrectObservable
-            .map { _ in [1, 2, 3, 4, 5].map { reply.percentageOfVotesCastesFor(scoreValue: $0) } }
+        self.percentageGraphInfo = didSaveReplyObservable
+            .map { reply in
+                [1, 2, 3, 4, 5].enumerated().map { reply.percentageOfVotesCastesFor(scoreValue: $0.offset) }
+            }
             .map { PercentageGraphViewModel(orderedPercetages: $0) }
             .asDriverOnErrorJustComplete()
+        
+        self.replyScores = didSaveReplyObservable
+            .map { $0.scores.toArray() }
+            .asDriver(onErrorJustReturn: [])
             
         self.unlockedReplyViewModel = Observable.of(reply)
-            .withLatestFrom(replyScore, resultSelector: { (reply, score) in
-                return ReplyViewModel(reply: reply, ratingScore: score, isCurrentUsersFriend: true)
-            })
+            .map { ($0, ReplyScore(userId: currentUser.value.id,
+                              replyId: reply.id,
+                              score: ratingScoreValue)) }
+            .map { ReplyViewModel(reply: $0, ratingScore: $1, isCurrentUsersFriend: true) }
             .asDriverOnErrorJustComplete()
         
         self.userCoinsAndWagerResult = isUserCorrectObservable
@@ -101,10 +113,10 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             }
             .asDriver(onErrorDriveWith: Driver.never())
         
-       self.replyScores = didSaveAndUpdateAuthorCoinsObservable
-        .map { $0.scores.toArray() }
-        .asDriver(onErrorJustReturn: [])
-        
+        doneButtonTappedObservable
+            .do(onNext: router.toPromptDetail)
+            .subscribe()
+            .disposed(by: disposeBag)
     }
     
 }

@@ -217,14 +217,46 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Replies Flow/Guess And Reply Validation/RatingPercentageGraphCell.swift"
-            timestampString = "538544259.94011"
+            filePath = "Abe/Scenes/Replies Flow/Replies Table View/RepliesViewModel.swift"
+            timestampString = "538609762.632087"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
-            landmarkName = "constructWithDataAs(percentages:)"
-            landmarkType = "7">
+            startingLineNumber = "195"
+            endingLineNumber = "195"
+            landmarkName = "sortReplies(_:forLockedFeed:currentUser:)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.(sortReplies in _078EF076D131F56D989ED871807AB0A4)(Swift.Array&lt;Abe.PromptReply&gt;, forLockedFeed: Swift.Bool, currentUser: Abe.User) -&gt; (friends: Swift.Array&lt;Abe.ReplyViewModel&gt;, others: Swift.Array&lt;Abe.ReplyViewModel&gt;)"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Replies%20Table%20View/RepliesViewModel.swift"
+                  timestampString = "538605198.151489"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "195"
+                  endingLineNumber = "195"
+                  offsetFromSymbolStart = "596">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.(sortReplies in _078EF076D131F56D989ED871807AB0A4)(Swift.Array&lt;Abe.PromptReply&gt;, forLockedFeed: Swift.Bool, currentUser: Abe.User) -&gt; (friends: Swift.Array&lt;Abe.ReplyViewModel&gt;, others: Swift.Array&lt;Abe.ReplyViewModel&gt;)"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Replies%20Table%20View/RepliesViewModel.swift"
+                  timestampString = "538605198.153034"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "195"
+                  endingLineNumber = "195"
+                  offsetFromSymbolStart = "612">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -233,14 +265,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Replies Flow/Guess And Reply Validation/RatingPercentageGraphCell.swift"
-            timestampString = "538544259.940262"
+            filePath = "Abe/Scenes/Replies Flow/Replies Table View/RepliesViewModel.swift"
+            timestampString = "538609762.6321599"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
-            landmarkName = "newBarElementWith(percentage:)"
-            landmarkType = "7">
+            startingLineNumber = "199"
+            endingLineNumber = "199"
+            landmarkName = "sortReplies(_:forLockedFeed:currentUser:)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

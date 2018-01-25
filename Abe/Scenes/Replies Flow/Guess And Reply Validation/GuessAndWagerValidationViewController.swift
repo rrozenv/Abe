@@ -25,22 +25,22 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+         viewModel.inputs.viewDidLoadInput.onNext(())
     }
 
-    deinit { print("Add Web Link deinit") }
+    deinit { print("Validation deinit") }
     
     func bindViewModel() {
         
         //MARK: - Inputs
-//        searchButton.rx.tap
-//            .throttle(0.5, scheduler: MainScheduler.instance)
-//            .bind(to: viewModel.inputs.)
-//            .disposed(by: disposeBag)
-        
-//        actionButtonsView.doneButton.rx.tap
-//            .throttle(0.5, scheduler: MainScheduler.instance)
-//            .bind(to: viewModel.inputs.doneTappedInput)
-//            .disposed(by: disposeBag)
+        doneButton.rx.tap.asObservable()
+            .bind(to: viewModel.inputs.doneButtonTappedInput)
+            .disposed(by: disposeBag)
         
         //MARK: - Outputs
         viewModel.outputs.isUserCorrect
@@ -133,6 +133,7 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         tableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.dataSource = dataSource
+        tableView.delegate = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.register(RateReplyTableCell.self, forCellReuseIdentifier: RateReplyTableCell.defaultReusableId)
         tableView.register(RatingPercentageGraphCell.self, forCellReuseIdentifier: RatingPercentageGraphCell.defaultReusableId)
@@ -152,6 +153,18 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         activityIndicator.snp.makeConstraints { (make) in
             make.center.equalTo(view.snp.center)
         }
+    }
+    
+}
+
+extension GuessAndWagerValidationViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.1
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.1
     }
     
 }
