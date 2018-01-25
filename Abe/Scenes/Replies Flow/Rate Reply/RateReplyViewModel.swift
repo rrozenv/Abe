@@ -90,10 +90,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
             .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
         
 //MARK: - Outputs
-        self.ratingScores = viewWillAppearObservable
-            .map { _ in
-                return [1, 2, 3, 4, 5].map { RatingScore(value: $0, isSelected: false) }
-            }
+        self.ratingScores = Observable.of([1, 2, 3, 4, 5].map { RatingScore(value: $0, isSelected: false) })
             .asDriverOnErrorJustComplete()
         
         self.previousAndCurrentScore = Observable

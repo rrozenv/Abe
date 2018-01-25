@@ -77,7 +77,7 @@ class PromptReply: Object {
         let numberOfVotesForScore = self.scores
             .filter(NSPredicate(format: "score == %i", scoreValue))
         guard numberOfVotesForScore.count > 0 else { return 0.0 }
-        return (Double(numberOfVotesForScore.count) / Double(self.scores.count))
+        return (Double(numberOfVotesForScore.count) / Double(self.scores.count)) * 100.0
     }
     
 }

@@ -202,7 +202,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Abe/Scenes/Replies Flow/Replies Table View/Table View Data Source/RepliesDataSource.swift"
-            timestampString = "538274465.585095"
+            timestampString = "538528476.667514"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "25"
@@ -217,13 +217,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Models/User.swift"
-            timestampString = "538416389.836521"
+            filePath = "Abe/Scenes/Replies Flow/Guess And Reply Validation/RatingPercentageGraphCell.swift"
+            timestampString = "538544259.94011"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
-            landmarkName = "didReply(to:)"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "constructWithDataAs(percentages:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Guess And Reply Validation/RatingPercentageGraphCell.swift"
+            timestampString = "538544259.940262"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "newBarElementWith(percentage:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

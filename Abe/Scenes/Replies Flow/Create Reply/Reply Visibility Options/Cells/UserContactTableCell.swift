@@ -29,6 +29,7 @@ final class UserContactTableCell: UITableViewCell, ValueCell {
     
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
+        self.selectionStyle = .none
         setupContainerView()
         setupTitleLabel()
     }

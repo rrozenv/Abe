@@ -28,7 +28,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.inputs.viewWillAppearInput.onNext(())
+        //viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
     deinit { print("wager deinit") }
@@ -39,14 +39,9 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
         searchController.searchBar.rx.cancelButtonClicked
             .bind(to: viewModel.inputs.searchCancelTappedInput)
             .disposed(by: disposeBag)
-        
+
         tableView.rx.itemSelected.asObservable()
-            .distinctUntilChanged()
-            .bind(to: viewModel.inputs.selectedIndexPathInput)
-            .disposed(by: disposeBag)
-        
-        tableView.rx.itemSelected.asObservable()
-            .map { [weak self] in self?.dataSource.user(at: $0) }.unwrap()
+            .map { [weak self] in self?.dataSource.getUser(at: $0) }.unwrap()
             .distinctUntilChanged()
             .bind(to: viewModel.inputs.selectedUserViewModelInput)
             .disposed(by: disposeBag)
@@ -58,21 +53,37 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
 //MARK: - Output
         viewModel.outputs.allUsersFriends
             .drive(onNext: { [weak self] in
-                self?.dataSource.loadUsers(ratings: $0)
+                self?.dataSource.loadUsers(viewModels: $0)
+                self?.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.searchTextObservable
+            .subscribe(onNext: { [weak self] in
+                self?.dataSource.filterUsersFor(searchText: $0)
+                self?.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.cancelSearchTappedObservable
+            .subscribe(onNext: { [weak self] in
+                self?.dataSource.resetSearchFilter()
                 self?.tableView.reloadData()
             })
             .disposed(by: disposeBag)
         
         viewModel.outputs.previousAndCurrentIndexPath
-            .subscribe(onNext: { [weak self] (indexPaths) in
-                self?.dataSource.toggleUser(at: indexPaths.current)
-                self?.tableView.reloadRows(at: [indexPaths.current], with: .none)
+            .subscribe(onNext: { [unowned self] (indexPaths) in
+                if let currIndexPath = self.dataSource.toggleUser(indexPaths.current) {
+                   self.tableView.reloadRows(at: [currIndexPath], with: .none)
+                }
                 
                 //First value will contain a previous.row = -1
                 //because there is no previous indexPath selected initally
-                guard indexPaths.previous.row != -1 else { return }
-                self?.dataSource.toggleUser(at: indexPaths.previous)
-                self?.tableView.reloadRows(at: [indexPaths.previous], with: .none)
+                guard indexPaths.previous.user.id != "0" else { return }
+                if let prevIndexPath = self.dataSource.toggleUser(indexPaths.previous) {
+                    self.tableView.reloadRows(at: [prevIndexPath], with: .none)
+                }
             })
             .disposed(by: disposeBag)
         

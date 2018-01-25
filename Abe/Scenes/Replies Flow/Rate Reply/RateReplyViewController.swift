@@ -19,11 +19,11 @@ class RateReplyViewController: UIViewController, BindableType {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
     deinit { print("rate reply deinit") }

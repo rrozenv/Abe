@@ -129,11 +129,6 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     weak var delegate: RateReplyTableCellDelegate?
     
     // MARK: - View Properties
-//    private var containerView: UIView!
-//    private var userImageView: UIImageView!
-//    private var nameLabel: UILabel!
-//    private var nameSubLabel: UILabel!
-//    private var replyBodyLabel: UILabel!
     private var replyHeaderView: ReplyHeaderView!
     private var rateReplyButton: UIButton!
     
@@ -150,19 +145,15 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
-        //setupContainerView()
         setupRateReplyButton()
         setupReplyHeaderView()
-//        setupReplyLabel()
-//        setupUserImageView()
-//        setupNameLabelsStackView()
     }
     
     func configureWith(value: ReplyViewModel) {
         replyHeaderView.nameLabel.text = "Identity Locked"
         replyHeaderView.nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
         replyHeaderView.replyBodyLabel.text = value.reply.body
-        rateReplyButton.isHidden = value.ratingScore == nil ? true : false
+        //rateReplyButton.isHidden = value.ratingScore == nil ? false : true
         rateReplyButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.delegate?.didSelectRateReply(value.reply,
