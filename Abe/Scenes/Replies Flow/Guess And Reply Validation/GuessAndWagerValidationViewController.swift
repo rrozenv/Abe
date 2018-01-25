@@ -25,12 +25,11 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        //ViewDidLoadInput is done in InputWagerRouter
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-         viewModel.inputs.viewDidLoadInput.onNext(())
     }
 
     deinit { print("Validation deinit") }

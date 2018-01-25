@@ -27,6 +27,7 @@ final class InputWagerRouter: InputWagerRoutingLogic {
                                                          wager: wager,
                                                          router: router)
         vc.setViewModelBinding(model: viewModel!)
+        viewModel?.inputs.viewDidLoadInput.onNext(())
         navigationController?.pushViewController(vc, animated: true)
     }
     
