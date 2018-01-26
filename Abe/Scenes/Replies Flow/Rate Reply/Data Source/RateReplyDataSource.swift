@@ -4,10 +4,21 @@ import UIKit
 
 final class RatingScoreDataSource: ValueCellDataSource {
     
+    enum Section: Int {
+        case reply
+        case ratings
+    }
+    
+    func loadUnlockedReply(viewModel: ReplyViewModel) {
+        self.set(values: [viewModel],
+                 cellClass: RateReplyTableCell.self,
+                 inSection: Section.reply.rawValue)
+    }
+    
     func loadRatings(ratings: [RatingScore]) {
         self.set(values: ratings,
                  cellClass: RatingScoreTableCell.self,
-                 inSection: 0)
+                 inSection: Section.ratings.rawValue)
     }
     
     func toggleRating(at indexPath: IndexPath) {
@@ -15,7 +26,7 @@ final class RatingScoreDataSource: ValueCellDataSource {
         viewModel.isSelected = !viewModel.isSelected
         self.set(value: viewModel,
                  cellClass: RatingScoreTableCell.self,
-                 inSection: 0,
+                 inSection: Section.ratings.rawValue,
                  row: indexPath.row)
     }
     
@@ -28,6 +39,9 @@ final class RatingScoreDataSource: ValueCellDataSource {
         switch (cell, value) {
         case let (cell as RatingScoreTableCell, value as RatingScore):
             cell.configureWith(value: value)
+        case let (cell as RateReplyTableCell, value as ReplyViewModel):
+            cell.configureWith(value: value)
+            cell.hideRateButton()
         default:
             assertionFailure("Unrecognized combo: \(cell), \(value)")
         }

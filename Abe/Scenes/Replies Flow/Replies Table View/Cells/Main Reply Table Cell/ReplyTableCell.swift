@@ -129,6 +129,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     weak var delegate: RateReplyTableCellDelegate?
     
     // MARK: - View Properties
+    private var containerView: UIView!
     private var replyHeaderView: ReplyHeaderView!
     private var rateReplyButton: UIButton!
     
@@ -145,15 +146,17 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
-        setupRateReplyButton()
+        setupContainerView()
         setupReplyHeaderView()
+        setupRateReplyButton()
+        setupStackView()
     }
     
     func configureWith(value: ReplyViewModel) {
         replyHeaderView.nameLabel.text = "Identity Locked"
         replyHeaderView.nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
         replyHeaderView.replyBodyLabel.text = value.reply.body
-        //rateReplyButton.isHidden = value.ratingScore == nil ? false : true
+        rateReplyButton.isHidden = value.ratingScore == nil ? false : true
         rateReplyButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.delegate?.didSelectRateReply(value.reply,
@@ -167,89 +170,45 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         disposeBag = DisposeBag()
     }
     
-//    private func setupContainerView() {
-//        containerView = UIView()
-//        containerView.backgroundColor = UIColor.lightGray
-//        containerView.dropShadow()
-//
-//        contentView.addSubview(containerView)
-//        containerView.snp.makeConstraints { (make) in
-//            make.edges.equalTo(contentView).inset(20)
-//        }
-//    }
+    func hideRateButton() {
+        rateReplyButton.isHidden = true
+    }
+    
+    private func setupContainerView() {
+        containerView = UIView()
+        containerView.backgroundColor = UIColor.white
+        containerView.dropShadow()
+        
+        contentView.addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(contentView).inset(20)
+        }
+    }
+    
+    private func setupStackView() {
+        let views: [UIView] = [replyHeaderView, rateReplyButton]
+        let stackView = UIStackView(arrangedSubviews: views)
+        stackView.spacing = 0.0
+        stackView.axis = .vertical
+        
+        containerView.addSubview(stackView)
+        stackView.snp.makeConstraints { (make) in
+            make.edges.equalTo(containerView)
+        }
+    }
     
     private func setupRateReplyButton() {
         rateReplyButton = UIButton()
         rateReplyButton.setTitle("Rate Reply", for: .normal)
         rateReplyButton.backgroundColor = UIColor.green
-        let stackView = UIStackView()
-        stackView.addArrangedSubview(rateReplyButton)
-        
-        contentView.addSubview(stackView)
-        stackView.snp.makeConstraints { (make) in
-            make.left.bottom.right.equalTo(contentView)
+        rateReplyButton.snp.makeConstraints { (make) in
             make.height.equalTo(50)
         }
     }
     
     private func setupReplyHeaderView() {
         replyHeaderView = ReplyHeaderView()
-        
-        contentView.addSubview(replyHeaderView)
-        replyHeaderView.snp.makeConstraints { (make) in
-            make.bottom.equalTo(rateReplyButton.snp.top)
-            make.left.right.top.equalTo(contentView)
-        }
     }
-    
-//    private func setupReplyLabel() {
-//        replyBodyLabel = UILabel()
-//        replyBodyLabel.numberOfLines = 0
-//
-//        containerView.addSubview(replyBodyLabel)
-//        replyBodyLabel.snp.makeConstraints { (make) in
-//            make.left.equalTo(containerView.snp.left).offset(20)
-//            make.right.equalTo(containerView.snp.right).offset(-20)
-//            make.bottom.equalTo(rateReplyButton.snp.top).offset(-17)
-//        }
-//    }
-//
-//    private func setupUserImageView() {
-//        userImageView = UIImageView()
-//        userImageView.backgroundColor = UIColor.purple
-//
-//        containerView.addSubview(userImageView)
-//        userImageView.snp.makeConstraints { (make) in
-//            make.left.equalTo(containerView.snp.left).offset(20)
-//            make.top.equalTo(containerView.snp.top).offset(17)
-//            make.bottom.equalTo(replyBodyLabel.snp.top).offset(-17)
-//            make.height.width.equalTo(35)
-//        }
-//    }
-//
-//    private func setupNameLabelsStackView() {
-//        nameLabel = UILabel()
-//        nameLabel.textColor = UIColor.black
-//        nameLabel.numberOfLines = 1
-//        nameLabel.font = FontBook.AvenirHeavy.of(size: 13)
-//
-//        nameSubLabel = UILabel()
-//        nameSubLabel.textColor = UIColor.gray
-//        nameSubLabel.numberOfLines = 1
-//        nameSubLabel.font = FontBook.AvenirMedium.of(size: 12)
-//
-//        let views: [UILabel] = [nameLabel, nameSubLabel]
-//        let labelsStackView = UIStackView(arrangedSubviews: views)
-//        labelsStackView.spacing = 2.0
-//        labelsStackView.axis = .vertical
-//
-//        containerView.addSubview(labelsStackView)
-//        labelsStackView.snp.makeConstraints { (make) in
-//            make.centerY.equalTo(userImageView.snp.centerY)
-//            make.left.equalTo(userImageView.snp.right).offset(10)
-//        }
-//    }
-
 
 }
 

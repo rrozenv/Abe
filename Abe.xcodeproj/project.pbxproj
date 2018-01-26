@@ -47,6 +47,7 @@
 		982CF8572013D69800EEB278 /* RateReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8562013D69800EEB278 /* RateReplyCell.swift */; };
 		9836043F20070EC2008A975D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836043E20070EC2008A975D /* Extensions.swift */; };
 		9836044120071021008A975D /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836044020071021008A975D /* EmptyStateView.swift */; };
+		98365FDA201AB2F9008E58F6 /* PageReferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */; };
 		983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */; };
 		983DB1EA200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */; };
 		983DB1EC200C3B5A004FC2D0 /* UserContactTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */; };
@@ -185,6 +186,7 @@
 		982CF8562013D69800EEB278 /* RateReplyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyCell.swift; sourceTree = "<group>"; };
 		9836043E20070EC2008A975D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9836044020071021008A975D /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageReferenceView.swift; sourceTree = "<group>"; };
 		983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityViewModel.swift; sourceTree = "<group>"; };
 		983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralVisibilityTableCell.swift; sourceTree = "<group>"; };
 		983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContactTableCell.swift; sourceTree = "<group>"; };
@@ -516,6 +518,14 @@
 			path = "Rate Reply";
 			sourceTree = "<group>";
 		};
+		98365FD8201AB29C008E58F6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		983DB1E6200C295C004FC2D0 /* Reply Visibility Options */ = {
 			isa = PBXGroup;
 			children = (
@@ -809,6 +819,7 @@
 				980DE5B11FE5B4EA0087C6C3 /* Realm */,
 				984F379720070CF200C62E6E /* Realm Data Services */,
 				980DE5B71FE5B5CD0087C6C3 /* Scenes */,
+				98365FD8201AB29C008E58F6 /* Views */,
 				980DE5B61FE5B5BE0087C6C3 /* Utility */,
 				984F379620070CB300C62E6E /* Old Stuff */,
 				98FEE7821FE4BAD300CD80A8 /* Main.storyboard */,
@@ -1138,6 +1149,7 @@
 				981545D7201051340001F675 /* Cache.swift in Sources */,
 				981545D1201026EB0001F675 /* Gif.swift in Sources */,
 				983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */,
+				98365FDA201AB2F9008E58F6 /* PageReferenceView.swift in Sources */,
 				98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */,
 				982CF8512013C98800EEB278 /* RateReplyViewController.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,

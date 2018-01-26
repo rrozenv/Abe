@@ -19,6 +19,8 @@ protocol RateReplyViewModelOutputs {
     var previousAndCurrentScore: Observable<(previous: RatingScore, current: RatingScore)> { get }
     var nextButtonTitle: Driver<String> { get }
     var nextButtonIsEnabled: Driver<Bool> { get }
+    var currentPageIndicator: Driver<Int> { get }
+    var reply: Driver<ReplyViewModel> { get }
 }
 
 protocol RateReplyViewModelType {
@@ -42,6 +44,8 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
     let previousAndCurrentScore: Observable<(previous: RatingScore, current: RatingScore)>
     let nextButtonTitle: Driver<String>
     let nextButtonIsEnabled: Driver<Bool>
+    let currentPageIndicator: Driver<Int>
+    let reply: Driver<ReplyViewModel>
     
 //MARK: - Init
     init?(reply: PromptReply,
@@ -69,7 +73,8 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
         let selectedScoreObservable = _selectedScoreInput.asObservable()
             .startWith(RatingScore(value: 0, isSelected: false))
-        let isCurrentUsersFriendObservable = Observable.of(isCurrentUsersFriend)
+        let isCurrentUsersFriendObservable = viewWillAppearObservable
+            .map { _ in isCurrentUsersFriend }.share()
         let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
         
 //MARK: - Second Level Observables
@@ -90,6 +95,9 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
             .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
         
 //MARK: - Outputs
+        self.reply = Driver.of(reply)
+            .map { ReplyViewModel(reply: $0, ratingScore: nil, isCurrentUsersFriend: isCurrentUsersFriend) }
+        
         self.ratingScores = Observable.of([1, 2, 3, 4, 5].map { RatingScore(value: $0, isSelected: false) })
             .asDriverOnErrorJustComplete()
         
@@ -101,6 +109,10 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
         self.nextButtonTitle = isCurrentUsersFriendObservable
             .map { $0 ? "Next" : "Done" }
             .asDriverOnErrorJustComplete()
+        
+        self.currentPageIndicator = isCurrentUsersFriendObservable
+            .map { $0 ? 0 : -1 }
+            .asDriver(onErrorDriveWith: Driver.never())
         
         self.nextButtonIsEnabled = selectedScoreObservable
             .skip(1)

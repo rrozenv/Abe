@@ -270,8 +270,8 @@ struct ReplyService {
     }
     
     func saveScore(reply: PromptReply,
-                   score: ReplyScore) -> Observable<(PromptReply, ReplyScore)> {
-        let result = withRealm("updating title") { realm -> Observable<(PromptReply, ReplyScore)> in
+                   score: ReplyScore) -> Observable<(reply: PromptReply, score: ReplyScore)> {
+        let result = withRealm("updating title") { realm -> Observable<(reply: PromptReply, score: ReplyScore)> in
             try realm.write {
                 reply.scores.append(score)
             }

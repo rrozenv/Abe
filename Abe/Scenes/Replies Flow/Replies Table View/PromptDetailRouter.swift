@@ -30,6 +30,7 @@ final class PromptDetailRouter: PromptDetailRoutingLogic {
     
     func toRateReply(reply: PromptReply, isCurrentUsersFriend: Bool) {
         let navVc = UINavigationController()
+        navVc.navigationBar.isHidden = true
         let router = RateReplyRouter(navigationController: navVc)
         var vc = RateReplyViewController()
         let viewModel = RateReplyViewModel(reply: reply, isCurrentUsersFriend: isCurrentUsersFriend, router: router)

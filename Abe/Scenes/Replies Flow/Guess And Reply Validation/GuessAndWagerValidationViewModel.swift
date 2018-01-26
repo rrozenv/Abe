@@ -75,26 +75,27 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             .map { (isCorrect: reply.user!.id == guessedUser.id, guessedUser: guessedUser) }
             .share()
         
-        let didSaveReplyObservable = viewDidLoadObservable
+        let didSaveScoreObservable = viewDidLoadObservable.mapToVoid()
+            .flatMap { replyService.updateAuthorCoinsFor(reply: reply, coins: ratingScoreValue) }
             .map { ReplyScore(userId: currentUser.value.id,
-                              replyId: reply.id,
+                              replyId: $0.id,
                               score: ratingScoreValue) }
             .flatMap { replyService.saveScore(reply: reply, score: $0) }
-            .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
             .share()
         
 //MARK: - Outputs
         self.isUserCorrect = isUserCorrectObservable.asDriverOnErrorJustComplete()
         
-        self.percentageGraphInfo = didSaveReplyObservable
-            .map { reply in
-                [1, 2, 3, 4, 5].enumerated().map { reply.percentageOfVotesCastesFor(scoreValue: $0.offset) }
+        self.percentageGraphInfo = didSaveScoreObservable
+            .map { inputs in
+                [1, 2, 3, 4, 5].enumerated()
+                    .map { inputs.reply.percentageOfVotesCastesFor(scoreValue: $0.offset) }
             }
             .map { PercentageGraphViewModel(orderedPercetages: $0) }
             .asDriverOnErrorJustComplete()
         
-        self.replyScores = didSaveReplyObservable
-            .map { $0.scores.toArray() }
+        self.replyScores = didSaveScoreObservable
+            .map { $0.reply.scores.toArray() }
             .asDriver(onErrorJustReturn: [])
             
         self.unlockedReplyViewModel = Observable.of(reply)

@@ -7,29 +7,37 @@ class RateReplyViewController: UIViewController, BindableType {
     let disposeBag = DisposeBag()
     let dataSource = RatingScoreDataSource()
     var viewModel: RateReplyViewModel!
+   
+    private var titleContainerView: UIView!
+    private var pageIndicatorView: PageIndicatorView!
+    private var titleLabel: UILabel!
     private var nextButton: UIButton!
-    
-    var tableView: UITableView!
+    private var tableView: UITableView!
     
     override func loadView() {
         super.loadView()
+        view.backgroundColor = UIColor.white
+        setupTitleLabel()
         setupTableView()
         setupNextButton()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
     deinit { print("rate reply deinit") }
     
     func bindViewModel() {
         //MARK: - Input
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        
         tableView.rx.itemSelected.asObservable()
             .distinctUntilChanged()
             .map { [weak self] in self?.dataSource.rating($0) }.unwrap()
@@ -41,6 +49,14 @@ class RateReplyViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         //MARK: - Output
+        viewModel.outputs.reply
+            .drive(onNext: { [weak self] in
+                let section = RatingScoreDataSource.Section.reply.rawValue
+                self?.dataSource.loadUnlockedReply(viewModel: $0)
+                self?.tableView.reloadSections([section], animationStyle: .none)
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.ratingScores
             .drive(onNext: { [weak self] in
                 self?.dataSource.loadRatings(ratings: $0)
@@ -50,8 +66,9 @@ class RateReplyViewController: UIViewController, BindableType {
         
         viewModel.outputs.previousAndCurrentScore
             .subscribe(onNext: { [weak self] (inputs) in
-                let prevIndex = IndexPath(row: inputs.previous.value - 1, section: 0)
-                let currIndex = IndexPath(row: inputs.current.value - 1, section: 0)
+                let section = RatingScoreDataSource.Section.ratings.rawValue
+                let prevIndex = IndexPath(row: inputs.previous.value - 1, section: section)
+                let currIndex = IndexPath(row: inputs.current.value - 1, section: section)
                 self?.dataSource.toggleRating(at: currIndex)
                 self?.tableView.reloadRows(at: [currIndex], with: .none)
                
@@ -71,6 +88,22 @@ class RateReplyViewController: UIViewController, BindableType {
         viewModel.outputs.nextButtonTitle
             .drive(nextButton.rx.title())
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.currentPageIndicator
+            .drive(onNext: { [weak self] in
+                guard $0 != -1 else { return }
+                self?.setupPageIndicatorView(numberOfPages: 3)
+                self?.pageIndicatorView.currentPage = $0
+            })
+            .disposed(by: disposeBag)
+    }
+    
+}
+
+extension RateReplyViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
     }
     
 }
@@ -86,13 +119,17 @@ extension RateReplyViewController {
     fileprivate func setupTableView() {
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
+        tableView.register(RateReplyTableCell.self, forCellReuseIdentifier: RateReplyTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.dataSource = dataSource
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.estimatedSectionFooterHeight = 0
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
-            make.edges.equalTo(view)
+            make.left.right.bottom.equalTo(view)
+            make.top.equalTo(titleContainerView.snp.bottom)
         }
     }
     
@@ -109,5 +146,57 @@ extension RateReplyViewController {
         }
     }
     
+    private func setupPageIndicatorView(numberOfPages: Int) {
+        let spacing: CGFloat = 10.0
+        let itemWidthHeight: CGFloat = 6
+        let spacingMultiplier = CGFloat(numberOfPages - 1)
+        let widthMultiplier = CGFloat(numberOfPages)
+        let stackWidth = (spacing * spacingMultiplier) + (itemWidthHeight * widthMultiplier)
+        pageIndicatorView = PageIndicatorView(numberOfItems: numberOfPages, widthHeight: itemWidthHeight)
+        
+        view.addSubview(pageIndicatorView)
+        pageIndicatorView.snp.makeConstraints { (make) in
+            make.left.equalTo(view).offset(30)
+            make.top.equalTo(view).offset(50)
+            make.height.equalTo(itemWidthHeight)
+            make.width.equalTo(stackWidth)
+        }
+    }
+    
+    private func setupTitleLabel() {
+        titleContainerView = UIView()
+        titleContainerView.backgroundColor = UIColor.white
+        
+        let dividerView = UIView()
+        dividerView.backgroundColor = UIColor.gray
+        
+        titleLabel = UILabel()
+        titleLabel.numberOfLines = 0
+        titleLabel.font = FontBook.AvenirMedium.of(size: 17)
+        titleLabel.text = "On a scale of 1-5, how much do you agree with this reply?"
+        
+        titleContainerView.addSubview(dividerView)
+        dividerView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalTo(titleContainerView)
+            make.height.equalTo(2)
+        }
+        
+        titleContainerView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(titleContainerView)
+            make.left.equalTo(titleContainerView).offset(36)
+            make.right.equalTo(titleContainerView).offset(-36)
+            make.bottom.equalTo(dividerView.snp.top).offset(-15)
+        }
+        
+        view.addSubview(titleContainerView)
+        titleContainerView.snp.makeConstraints { (make) in
+            make.left.right.equalTo(view)
+            make.top.equalTo(view.snp.top).offset(100)
+        }
+        
+    }
     
 }
+
+

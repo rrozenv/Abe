@@ -143,17 +143,17 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .asDriverOnErrorJustComplete()
         
         self.updateReplyWithSavedScore = didSelectScoreObservable
-            .flatMap { (inputs) -> Observable<(PromptReply, ReplyScore)> in
+            .flatMap { (inputs) -> Observable<(reply: PromptReply, score: ReplyScore)> in
                 let scoreVm = inputs.0
                 let score = ReplyScore(userId: currentUser.value.id,
                                        replyId: scoreVm.reply.id,
                                        score: scoreVm.value)
                 return replyService.saveScore(reply: scoreVm.reply, score: score)
             }
-            .flatMap { replyAndScore -> Observable<PromptReply> in
+            .flatMap { inputs -> Observable<PromptReply> in
                 return replyService
-                    .updateAuthorCoinsFor(reply: replyAndScore.0,
-                                          coins: replyAndScore.1.score)
+                    .updateAuthorCoinsFor(reply: inputs.reply,
+                                          coins: inputs.score.score)
             }
             .withLatestFrom(tableIndexObservable, resultSelector: { (reply, tableIndex) in
                 (reply, tableIndex)
@@ -163,7 +163,8 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         self.stillUnreadFromFriendsCount = lockedRepliesTupleObservable
             .map { "\($0.friends.count) replies from friends still locked!" }
             .asDriver(onErrorJustReturn: "")
-        
+
+//MARK: - Routing
         backButtonTappedObservable
             .do(onNext: router.toPrompts)
             .subscribe()

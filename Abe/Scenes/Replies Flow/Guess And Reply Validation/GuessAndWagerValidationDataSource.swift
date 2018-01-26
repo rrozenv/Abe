@@ -11,19 +11,15 @@ final class GuessAndReplyValidationDataSource: ValueCellDataSource {
     }
     
     func loadUnlockedReply(viewModel: ReplyViewModel) {
-        self.set(values: [viewModel], cellClass: RateReplyTableCell.self, inSection: Section.reply.rawValue)
-//        self.set(value: viewModel,
-//                 cellClass: RateReplyTableCell.self,
-//                 inSection: Section.reply.rawValue,
-//                 row: 0)
+        self.set(values: [viewModel],
+                 cellClass: RateReplyTableCell.self,
+                 inSection: Section.reply.rawValue)
     }
     
     func loadPercentageGraph(viewModel: PercentageGraphViewModel) {
-         self.set(values: [viewModel], cellClass: RatingPercentageGraphCell.self, inSection: Section.percentageGraph.rawValue)
-//        self.set(value: viewModel,
-//                 cellClass: RatingPercentageGraphCell.self,
-//                 inSection: Section.percentageGraph.rawValue,
-//                 row: 0)
+         self.set(values: [viewModel],
+                  cellClass: RatingPercentageGraphCell.self,
+                  inSection: Section.percentageGraph.rawValue)
     }
     
     func loadScores(_ scores: [ReplyScore]) {
