@@ -506,8 +506,8 @@
 		982B27D12015246C00824E82 /* Guess Reply Author */ = {
 			isa = PBXGroup;
 			children = (
-				982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */,
 				98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */,
+				982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */,
 				98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */,
 				98D26EEC20156E8600B0A72E /* Data Source */,
 			);

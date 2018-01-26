@@ -36,6 +36,7 @@ extension PageIndicatorView {
     }
     
     private func setupStackView(numberOfItems: Int, widthHeight: CGFloat) {
+        guard numberOfItems > 0 else { return }
         for i in 0...numberOfItems - 1 {
             let view = UIView(frame: CGRect.zero)
             view.tag = i

@@ -9,9 +9,10 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     var viewModel: GuessReplyAuthorViewModel!
     private let dataSource = GuessReplyAuthorDataSource()
     
+    private var titleLabel: UILabel!
     private var nextButton: UIButton!
     private var searchController = UISearchController(searchResultsController: nil)
-    //private var searchBar: UISearchBar!
+    private var searchBar: UISearchBar!
     private var tableView: UITableView!
     
     override func loadView() {
@@ -161,6 +162,23 @@ extension GuessReplyAuthorViewController {
             make.height.equalTo(60)
         }
     }
+    
+//    private func setupTitleLabel() {
+//        titleLabel = UILabel()
+//        titleLabel.numberOfLines = 0
+//        titleLabel.font = FontBook.BariolBold.of(size: 18)
+//        let attributedString = NSMutableAttributedString(string: "On a scale of 1-5, how much do you agree with this reply?")
+//        let paragraphStyle = NSMutableParagraphStyle()
+//        paragraphStyle.lineSpacing = 9
+//        attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
+//        titleLabel.attributedText = attributedString
+//
+//        view.addSubview(titleLabel)
+//        titleLabel.snp.makeConstraints { (make) in
+//            make.left.right.equalTo(view)
+//            make.top.equalTo(backButton.snp.bottom)
+//        }
+//    }
     
     
 }
