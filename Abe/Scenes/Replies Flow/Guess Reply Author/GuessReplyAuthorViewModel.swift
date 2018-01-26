@@ -18,6 +18,7 @@ protocol GuessReplyAuthorViewModelOutputs {
     var nextButtonIsEnabled: Driver<Bool> { get }
     var searchTextObservable: Observable<String> { get }
     var cancelSearchTappedObservable: Observable<Void> { get }
+    var currentPageIndicator: Driver<Int> { get }
 }
 
 protocol GuessReplyAuthorViewModelType {
@@ -45,6 +46,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
     let nextButtonIsEnabled: Driver<Bool>
     let searchTextObservable: Observable<String>
     let cancelSearchTappedObservable: Observable<Void>
+    let currentPageIndicator: Driver<Int>
     
 //MARK: - Init
     init?(reply: PromptReply,
@@ -98,6 +100,8 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
             .skip(1)
             .map { _ in true }
             .asDriverOnErrorJustComplete()
+        
+        self.currentPageIndicator = Driver.of(1)
         
 //MARK: - Routing
         nextButtonTappedObservable

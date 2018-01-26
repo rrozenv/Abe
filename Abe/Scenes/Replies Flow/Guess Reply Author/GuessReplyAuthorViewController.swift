@@ -9,6 +9,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     var viewModel: GuessReplyAuthorViewModel!
     private let dataSource = GuessReplyAuthorDataSource()
     
+    private var backAndPagerView: BackButtonPageIndicatorView!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
     private var searchController = UISearchController(searchResultsController: nil)
@@ -17,7 +18,11 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     
     override func loadView() {
         super.loadView()
-        setupSearchController()
+        self.view.backgroundColor = UIColor.white
+        setupBackAndPagerView(numberOfPages: 3)
+        setupTitleLabel()
+        setupSearchBar()
+        //setupSearchController()
         setupTableView()
         setupNextButton()
     }
@@ -37,7 +42,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     func bindViewModel() {
         
 //MARK: - Input
-        searchController.searchBar.rx.cancelButtonClicked
+        searchBar.rx.cancelButtonClicked
             .bind(to: viewModel.inputs.searchCancelTappedInput)
             .disposed(by: disposeBag)
 
@@ -94,6 +99,12 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
                 self?.nextButton.alpha = 1.0
             })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.currentPageIndicator
+            .drive(onNext: { [weak self] in
+                self?.backAndPagerView.pageIndicatorView.currentPage = $0
+            })
+            .disposed(by: disposeBag)
     }
     
 }
@@ -103,6 +114,16 @@ extension GuessReplyAuthorViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let searchText = searchController.searchBar.text,
                   !searchText.isEmpty else { return }
+        viewModel.inputs.searchTextInput.onNext(searchText)
+    }
+    
+}
+
+extension GuessReplyAuthorViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let searchText = searchBar.text,
+            !searchText.isEmpty else { return }
         viewModel.inputs.searchTextInput.onNext(searchText)
     }
     
@@ -141,11 +162,12 @@ extension GuessReplyAuthorViewController {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.right.left.bottom.equalTo(view)
-            if #available(iOS 11.0, *) {
-                make.top.equalTo(view.safeAreaInsets.top)
-            } else {
-                make.top.equalTo(topLayoutGuide.snp.bottom)
-            }
+            make.top.equalTo(searchBar.snp.bottom).offset(10)
+//            if #available(iOS 11.0, *) {
+//
+//            } else {
+//                make.top.equalTo(topLayoutGuide.snp.bottom)
+//            }
         }
     }
     
@@ -163,22 +185,43 @@ extension GuessReplyAuthorViewController {
         }
     }
     
-//    private func setupTitleLabel() {
-//        titleLabel = UILabel()
-//        titleLabel.numberOfLines = 0
-//        titleLabel.font = FontBook.BariolBold.of(size: 18)
-//        let attributedString = NSMutableAttributedString(string: "On a scale of 1-5, how much do you agree with this reply?")
-//        let paragraphStyle = NSMutableParagraphStyle()
-//        paragraphStyle.lineSpacing = 9
-//        attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
-//        titleLabel.attributedText = attributedString
-//
-//        view.addSubview(titleLabel)
-//        titleLabel.snp.makeConstraints { (make) in
-//            make.left.right.equalTo(view)
-//            make.top.equalTo(backButton.snp.bottom)
-//        }
-//    }
+    private func setupBackAndPagerView(numberOfPages: Int) {
+        backAndPagerView = BackButtonPageIndicatorView(numberOfPages: numberOfPages)
+        view.addSubview(backAndPagerView)
+        backAndPagerView.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            make.top.equalTo(view.snp.top)
+        }
+    }
     
+    private func setupTitleLabel() {
+        titleLabel = UILabel()
+        titleLabel.numberOfLines = 0
+        titleLabel.font = FontBook.BariolBold.of(size: 18)
+        let attributedString = NSMutableAttributedString(string: "On a scale of 1-5, how much do you agree with this reply?")
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 9
+        attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
+        titleLabel.attributedText = attributedString
+
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(backAndPagerView.snp.bottom)
+            make.left.equalTo(view).offset(30)
+            make.right.equalTo(view).offset(-40)
+        }
+    }
     
+    private func setupSearchBar() {
+        searchBar = UISearchBar()
+        
+        view.addSubview(searchBar)
+        searchBar.snp.makeConstraints { (make) in
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.left.equalTo(view).offset(30)
+            make.right.equalTo(view).offset(-30)
+            make.height.equalTo(50)
+        }
+    }
+
 }

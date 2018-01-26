@@ -10,7 +10,7 @@ class RateReplyViewController: UIViewController, BindableType {
    
     private var titleContainerView: UIView!
     private var backAndPagerView: BackButtonPageIndicatorView!
-    private var pageIndicatorView: PageIndicatorView!
+    //private var pageIndicatorView: PageIndicatorView!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
     private var tableView: UITableView!
@@ -101,7 +101,7 @@ class RateReplyViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 guard $0 != -1 else { return }
                 self?.backAndPagerView.updatePageNumber = 3
-                self?.pageIndicatorView.currentPage = $0
+                self?.backAndPagerView.pageIndicatorView.currentPage = $0
             })
             .disposed(by: disposeBag)
     }
@@ -246,10 +246,11 @@ extension RateReplyViewController {
     
 }
 
+
 final class BackButtonPageIndicatorView: UIView {
     
     var backButton: UIButton!
-    private var pageIndicatorView: PageIndicatorView!
+    var pageIndicatorView: PageIndicatorView!
     private let itemWidthHeight: CGFloat = 6
     var updatePageNumber: Int = 0 {
         didSet {
