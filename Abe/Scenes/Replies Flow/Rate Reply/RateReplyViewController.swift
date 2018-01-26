@@ -191,7 +191,11 @@ extension RateReplyViewController {
         titleLabel = UILabel()
         titleLabel.numberOfLines = 0
         titleLabel.font = FontBook.BariolBold.of(size: 18)
-        titleLabel.text = "On a scale of 1-5, how much do you agree with this reply?"
+        let attributedString = NSMutableAttributedString(string: "On a scale of 1-5, how much do you agree with this reply?")
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 9
+        attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
+        titleLabel.attributedText = attributedString
         
         titleContainerView.addSubview(dividerView)
         dividerView.snp.makeConstraints { (make) in

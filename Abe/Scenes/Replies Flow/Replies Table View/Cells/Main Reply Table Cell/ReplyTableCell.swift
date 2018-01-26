@@ -184,13 +184,17 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.edges.equalTo(contentView).inset(26)
+            make.left.equalTo(contentView).offset(26)
+            make.right.equalTo(contentView).offset(-26)
+            make.top.equalTo(contentView).offset(13)
+            make.bottom.equalTo(contentView).offset(-13)
         }
     }
     
     private func setupStackView() {
         let views: [UIView] = [replyHeaderView, rateReplyButton]
         let stackView = UIStackView(arrangedSubviews: views)
+        stackView.layer.masksToBounds = true
         stackView.spacing = 0.0
         stackView.axis = .vertical
         
@@ -206,7 +210,6 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         rateReplyButton.layer.masksToBounds = true
         rateReplyButton.backgroundColor = Palette.maroon.color
         rateReplyButton.setTitle("Rate Reply", for: .normal)
-        rateReplyButton.backgroundColor = UIColor.green
         rateReplyButton.snp.makeConstraints { (make) in
             make.height.equalTo(50)
         }
