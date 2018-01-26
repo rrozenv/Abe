@@ -82,6 +82,7 @@ final class ReplyHeaderView: UIView {
     private func setupReplyLabel() {
         replyBodyLabel = UILabel()
         replyBodyLabel.numberOfLines = 0
+        replyBodyLabel.font = FontBook.AvenirMedium.of(size: 14)
         
         self.addSubview(replyBodyLabel)
         replyBodyLabel.snp.makeConstraints { (make) in
@@ -93,14 +94,16 @@ final class ReplyHeaderView: UIView {
     
     private func setupUserImageView() {
         userImageView = UIImageView()
-        userImageView.backgroundColor = UIColor.purple
+        userImageView.layer.cornerRadius = 36/2
+        userImageView.layer.masksToBounds = true
+        userImageView.backgroundColor = Palette.faintGrey.color
         
         self.addSubview(userImageView)
         userImageView.snp.makeConstraints { (make) in
             make.left.equalTo(self.snp.left).offset(20)
             make.top.equalTo(self.snp.top).offset(17)
             make.bottom.equalTo(replyBodyLabel.snp.top).offset(-17)
-            make.height.width.equalTo(35)
+            make.height.width.equalTo(36)
         }
     }
     

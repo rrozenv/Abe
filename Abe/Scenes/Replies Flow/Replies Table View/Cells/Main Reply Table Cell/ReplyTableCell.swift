@@ -146,6 +146,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
+        self.selectionStyle = .none
         setupContainerView()
         setupReplyHeaderView()
         setupRateReplyButton()
@@ -177,11 +178,13 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     private func setupContainerView() {
         containerView = UIView()
         containerView.backgroundColor = UIColor.white
+        containerView.layer.cornerRadius = 5.0
+        containerView.layer.masksToBounds = true
         containerView.dropShadow()
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.edges.equalTo(contentView).inset(20)
+            make.edges.equalTo(contentView).inset(26)
         }
     }
     
@@ -199,6 +202,9 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     private func setupRateReplyButton() {
         rateReplyButton = UIButton()
+        rateReplyButton.titleLabel?.font = FontBook.AvenirMedium.of(size: 13)
+        rateReplyButton.layer.masksToBounds = true
+        rateReplyButton.backgroundColor = Palette.maroon.color
         rateReplyButton.setTitle("Rate Reply", for: .normal)
         rateReplyButton.backgroundColor = UIColor.green
         rateReplyButton.snp.makeConstraints { (make) in

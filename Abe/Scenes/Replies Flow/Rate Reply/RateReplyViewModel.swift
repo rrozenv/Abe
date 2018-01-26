@@ -12,6 +12,7 @@ protocol RateReplyViewModelInputs {
     var viewWillAppearInput: AnyObserver<Void> { get }
     var selectedScoreInput: AnyObserver<RatingScore> { get }
     var nextButtonTappedInput: AnyObserver<Void> { get }
+    var backButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol RateReplyViewModelOutputs {
@@ -37,6 +38,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
     let viewWillAppearInput: AnyObserver<Void>
     let selectedScoreInput: AnyObserver<RatingScore>
     let nextButtonTappedInput: AnyObserver<Void>
+    let backButtonTappedInput: AnyObserver<Void>
     
 //MARK: - Outputs
     var outputs: RateReplyViewModelOutputs { return self }
@@ -63,11 +65,13 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
         let _viewWillAppearInput = PublishSubject<Void>()
         let _selectedScoreInput = PublishSubject<RatingScore>()
         let _nextButtonTappedInput = PublishSubject<Void>()
+        let _backButtonTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
         self.selectedScoreInput = _selectedScoreInput.asObserver()
         self.nextButtonTappedInput = _nextButtonTappedInput.asObserver()
+        self.backButtonTappedInput = _backButtonTappedInput.asObserver()
         
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
@@ -76,6 +80,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
         let isCurrentUsersFriendObservable = viewWillAppearObservable
             .map { _ in isCurrentUsersFriend }.share()
         let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
+        let backButtonTappedObservable = _backButtonTappedInput.asObservable()
         
 //MARK: - Second Level Observables
         let shouldRouteToNextNavVCObservable = nextButtonTappedObservable
@@ -120,7 +125,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
             .asDriverOnErrorJustComplete()
         
 //MARK: - Routing
-        didSaveReplyScoreObservable.mapToVoid()
+        Observable.of(backButtonTappedObservable, didSaveReplyScoreObservable.mapToVoid()).merge()
             .do(onNext: router.toPromptDetail)
             .subscribe()
             .disposed(by: disposeBag)

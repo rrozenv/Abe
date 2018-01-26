@@ -12,7 +12,7 @@ final class RatingScoreTableCell: UITableViewCell, ValueCell {
     
     var isSelect: Bool = false {
         didSet {
-            self.containerView.backgroundColor = isSelect ? UIColor.green : UIColor.white
+            self.containerView.backgroundColor = isSelect ? Palette.mustard.color : Palette.maroon.color
         }
     }
     
@@ -47,17 +47,25 @@ extension RatingScoreTableCell {
     //MARK: View Setup
     private func setupContainerView() {
         containerView = UIView()
-        containerView.backgroundColor = UIColor.white
+        containerView.backgroundColor = Palette.maroon.color
+        containerView.layer.cornerRadius = 5.0
+        containerView.layer.masksToBounds = true
+        containerView.dropShadow()
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.edges.equalTo(contentView)
-            make.height.equalTo(50)
+            make.top.equalTo(contentView)
+            make.left.equalTo(contentView).offset(26)
+            make.right.equalTo(contentView).offset(-26)
+            make.bottom.equalTo(contentView).offset(-12)
+            make.height.equalTo(60)
         }
     }
     
     private func setupTitleLabel() {
         mainLabel = UILabel()
+        mainLabel.font = FontBook.AvenirMedium.of(size: 14)
+        mainLabel.textColor = UIColor.white
         
         containerView.addSubview(mainLabel)
         mainLabel.translatesAutoresizingMaskIntoConstraints = false

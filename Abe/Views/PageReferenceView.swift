@@ -31,7 +31,7 @@ extension PageIndicatorView {
     private func adjustButtonColors(selected tag: Int) {
         views.forEach {
             $0.backgroundColor =
-                ($0.tag == tag) ? UIColor.black : UIColor.gray
+                ($0.tag == tag) ? UIColor.black : Palette.faintGrey.color
         }
     }
     

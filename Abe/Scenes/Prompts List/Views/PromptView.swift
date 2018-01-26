@@ -98,39 +98,4 @@ final class PromptView: UIView {
 
 
 
-extension UIView {
-    
-    func dropShadow(scale: Bool = true) {
-        self.clipsToBounds = false
-        self.layer.masksToBounds = false
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOpacity = 0.5
-        self.layer.shadowOffset = CGSize(width: -1, height: 1)
-        self.layer.shadowRadius = 5
-    }
-    
-}
 
-enum FontBook: String {
-    case AvenirMedium = "Avenir-Medium"
-    case AvenirHeavy = "Avenir-Heavy"
-    case AvenirBlack = "Avenir-Black"
-    
-    func of(size: CGFloat) -> UIFont {
-        return UIFont(name: self.rawValue, size: size)!
-    }
-}
-
-extension String {
-    
-    var date: Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        let calendar = Calendar.current
-        guard let date = formatter.date(from: self) else { return nil }
-        let components = calendar.dateComponents([.month, .day, .hour, .minute], from: date)
-        let finalDate = calendar.date(from:components)
-        return finalDate
-    }
-    
-}

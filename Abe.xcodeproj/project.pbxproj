@@ -94,6 +94,9 @@
 		9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */; };
 		9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317291FE6F41A00E2979F /* CreateReplyViewController.swift */; };
 		98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CB44921FFAC82A0085CBFD /* Notifications.swift */; };
+		98D04DD4201B84A90099EF29 /* Bariol_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 98D04DD2201B84A90099EF29 /* Bariol_Regular.otf */; };
+		98D04DD7201B85260099EF29 /* Bariol_Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 98D04DD6201B85260099EF29 /* Bariol_Bold.otf */; };
+		98D04DD9201B86760099EF29 /* FontBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D04DD8201B86760099EF29 /* FontBook.swift */; };
 		98D26EE7201550E100B0A72E /* GuessReplyAuthorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */; };
 		98D26EE9201550F200B0A72E /* GuessReplyAuthorRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */; };
 		98D26EEB2015510400B0A72E /* GuessReplyAuthorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */; };
@@ -233,6 +236,9 @@
 		989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewModel.swift; sourceTree = "<group>"; };
 		989317291FE6F41A00E2979F /* CreateReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewController.swift; sourceTree = "<group>"; };
 		98CB44921FFAC82A0085CBFD /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		98D04DD2201B84A90099EF29 /* Bariol_Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bariol_Regular.otf; sourceTree = "<group>"; };
+		98D04DD6201B85260099EF29 /* Bariol_Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bariol_Bold.otf; sourceTree = "<group>"; };
+		98D04DD8201B86760099EF29 /* FontBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontBook.swift; sourceTree = "<group>"; };
 		98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorViewController.swift; sourceTree = "<group>"; };
 		98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorRouter.swift; sourceTree = "<group>"; };
 		98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorDataSource.swift; sourceTree = "<group>"; };
@@ -427,7 +433,9 @@
 		980DE5B61FE5B5BE0087C6C3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				98D04DD0201B848D0099EF29 /* Fonts */,
 				9854D251200053A700D7B7EB /* ValueCellDataSource.swift */,
+				98D04DD8201B86760099EF29 /* FontBook.swift */,
 				9836043E20070EC2008A975D /* Extensions.swift */,
 				988658F31FE8045A00FEB703 /* ViewModelType.swift */,
 				988658F71FE8073C00FEB703 /* ContactStore.swift */,
@@ -770,6 +778,23 @@
 			path = "Data Source";
 			sourceTree = "<group>";
 		};
+		98D04DD0201B848D0099EF29 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				98D04DD1201B84A90099EF29 /* Bariol_Font */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		98D04DD1201B84A90099EF29 /* Bariol_Font */ = {
+			isa = PBXGroup;
+			children = (
+				98D04DD6201B85260099EF29 /* Bariol_Bold.otf */,
+				98D04DD2201B84A90099EF29 /* Bariol_Regular.otf */,
+			);
+			path = Bariol_Font;
+			sourceTree = "<group>";
+		};
 		98D26EEC20156E8600B0A72E /* Data Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -968,8 +993,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				98FEE7891FE4BAD300CD80A8 /* LaunchScreen.storyboard in Resources */,
+				98D04DD7201B85260099EF29 /* Bariol_Bold.otf in Resources */,
 				98FEE7861FE4BAD300CD80A8 /* Assets.xcassets in Resources */,
 				98FEE7841FE4BAD300CD80A8 /* Main.storyboard in Resources */,
+				98D04DD4201B84A90099EF29 /* Bariol_Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1175,6 +1202,7 @@
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				9842FAB6201929A90069F71F /* RatingPercentageGraphCell.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
+				98D04DD9201B86760099EF29 /* FontBook.swift in Sources */,
 				9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */,
 				980F50372004571F006C2B83 /* AppController.swift in Sources */,
 				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,

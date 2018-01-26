@@ -53,3 +53,30 @@ extension UITableViewCell {
         return tableView?.indexPath(for: self)
     }
 }
+
+extension UIView {
+    
+    func dropShadow(scale: Bool = true) {
+        self.clipsToBounds = false
+        self.layer.masksToBounds = false
+        self.layer.shadowColor = UIColor.lightGray.cgColor
+        self.layer.shadowOpacity = 0.5
+        self.layer.shadowOffset = CGSize(width: -1, height: 1)
+        self.layer.shadowRadius = 5
+    }
+    
+}
+
+extension String {
+    
+    var date: Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        let calendar = Calendar.current
+        guard let date = formatter.date(from: self) else { return nil }
+        let components = calendar.dateComponents([.month, .day, .hour, .minute], from: date)
+        let finalDate = calendar.date(from:components)
+        return finalDate
+    }
+    
+}

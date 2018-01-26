@@ -13,10 +13,12 @@ class RateReplyViewController: UIViewController, BindableType {
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
     private var tableView: UITableView!
+    private var backButton: UIButton!
     
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
+        setupBackButton()
         setupTitleLabel()
         setupTableView()
         setupNextButton()
@@ -46,6 +48,10 @@ class RateReplyViewController: UIViewController, BindableType {
         
         nextButton.rx.tap
             .bind(to: viewModel.inputs.nextButtonTappedInput)
+            .disposed(by: disposeBag)
+        
+        backButton.rx.tap
+            .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
         
         //MARK: - Output
@@ -106,6 +112,17 @@ extension RateReplyViewController: UITableViewDelegate {
         return CGFloat.leastNonzeroMagnitude
     }
     
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        guard let section = RatingScoreDataSource.Section(rawValue: section) else { fatalError() }
+        switch section {
+        case .ratings:
+            return nextButton
+                .systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        case .reply:
+            return CGFloat.leastNonzeroMagnitude
+        }
+    }
+    
 }
 
 extension RateReplyViewController {
@@ -125,6 +142,7 @@ extension RateReplyViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedSectionHeaderHeight = 0
         tableView.estimatedSectionFooterHeight = 0
+        tableView.separatorStyle = .none
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
@@ -135,7 +153,7 @@ extension RateReplyViewController {
     
     private func setupNextButton() {
         nextButton = UIButton()
-        nextButton.backgroundColor = UIColor.blue
+        nextButton.backgroundColor = Palette.mustard.color
         nextButton.alpha = 0.5
         nextButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
         
@@ -156,8 +174,8 @@ extension RateReplyViewController {
         
         view.addSubview(pageIndicatorView)
         pageIndicatorView.snp.makeConstraints { (make) in
-            make.left.equalTo(view).offset(30)
-            make.top.equalTo(view).offset(50)
+            make.left.equalTo(backButton.snp.right).offset(20)
+            make.centerY.equalTo(backButton.snp.centerY)
             make.height.equalTo(itemWidthHeight)
             make.width.equalTo(stackWidth)
         }
@@ -168,11 +186,11 @@ extension RateReplyViewController {
         titleContainerView.backgroundColor = UIColor.white
         
         let dividerView = UIView()
-        dividerView.backgroundColor = UIColor.gray
+        dividerView.backgroundColor = Palette.faintGrey.color
         
         titleLabel = UILabel()
         titleLabel.numberOfLines = 0
-        titleLabel.font = FontBook.AvenirMedium.of(size: 17)
+        titleLabel.font = FontBook.BariolBold.of(size: 18)
         titleLabel.text = "On a scale of 1-5, how much do you agree with this reply?"
         
         titleContainerView.addSubview(dividerView)
@@ -184,17 +202,31 @@ extension RateReplyViewController {
         titleContainerView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
             make.top.equalTo(titleContainerView)
-            make.left.equalTo(titleContainerView).offset(36)
-            make.right.equalTo(titleContainerView).offset(-36)
+            make.left.equalTo(titleContainerView).offset(30)
+            make.right.equalTo(titleContainerView).offset(-40)
             make.bottom.equalTo(dividerView.snp.top).offset(-15)
         }
         
         view.addSubview(titleContainerView)
         titleContainerView.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
-            make.top.equalTo(view.snp.top).offset(100)
+            make.top.equalTo(backButton.snp.bottom)
         }
         
+    }
+    
+    private func setupBackButton() {
+        let image = #imageLiteral(resourceName: "IC_BackArrow_Black")
+        image.size.equalTo(CGSize(width: 9, height: 17))
+        backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 9, height: 17))
+        backButton.setImage(image, for: .normal)
+        backButton.contentEdgeInsets = UIEdgeInsets(top: 38, left: 26, bottom: 15, right: 15)
+        
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            make.top.equalTo(view.snp.top)
+        }
     }
     
 }
