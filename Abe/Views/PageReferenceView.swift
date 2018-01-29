@@ -31,7 +31,7 @@ extension PageIndicatorView {
     private func adjustButtonColors(selected tag: Int) {
         views.forEach {
             $0.backgroundColor =
-                ($0.tag == tag) ? UIColor.black : Palette.faintGrey.color
+                ($0.tag == tag) ? UIColor.black : Palette.lightGrey.color
         }
     }
     
@@ -49,7 +49,6 @@ extension PageIndicatorView {
         stackView.spacing = 10.0
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-        //stackView.alignment = .fill
         
         self.addSubview(stackView)
         stackView.snp.makeConstraints { (make) in

@@ -80,6 +80,7 @@
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
 		9883ED681FE70627002E538E /* PromptReplyTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED671FE70627002E538E /* PromptReplyTableCell.swift */; };
 		9883ED6A1FE7062D002E538E /* ScoreCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */; };
+		988594B7201E98CC0034825E /* UserImageNameSublabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988594B6201E98CC0034825E /* UserImageNameSublabelView.swift */; };
 		988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988658F31FE8045A00FEB703 /* ViewModelType.swift */; };
 		988658F61FE8049900FEB703 /* RealmError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988658F51FE8049900FEB703 /* RealmError.swift */; };
 		988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988658F71FE8073C00FEB703 /* ContactStore.swift */; };
@@ -222,6 +223,7 @@
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
 		9883ED671FE70627002E538E /* PromptReplyTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptReplyTableCell.swift; sourceTree = "<group>"; };
 		9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreCollectionCell.swift; sourceTree = "<group>"; };
+		988594B6201E98CC0034825E /* UserImageNameSublabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageNameSublabelView.swift; sourceTree = "<group>"; };
 		988658F31FE8045A00FEB703 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		988658F51FE8049900FEB703 /* RealmError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmError.swift; sourceTree = "<group>"; };
 		988658F71FE8073C00FEB703 /* ContactStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactStore.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 		980974B42017D44300FBCE9B /* Input Wager */ = {
 			isa = PBXGroup;
 			children = (
+				988594B6201E98CC0034825E /* UserImageNameSublabelView.swift */,
 				980974AC2017C52900FBCE9B /* InputWagerViewController.swift */,
 				980974B02017C58F00FBCE9B /* InputWagerViewModel.swift */,
 				980974B22017C59B00FBCE9B /* InputWagerRouter.swift */,
@@ -1163,6 +1166,7 @@
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				9862867A20006AF000502294 /* RepliesViewModel.swift in Sources */,
 				986768562012922C00D0421C /* WebLinkActionButtonsView.swift in Sources */,
+				988594B7201E98CC0034825E /* UserImageNameSublabelView.swift in Sources */,
 				98D26EEB2015510400B0A72E /* GuessReplyAuthorDataSource.swift in Sources */,
 				98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */,
 				98FEE7B91FE4BC4D00CD80A8 /* PromptsRouter.swift in Sources */,

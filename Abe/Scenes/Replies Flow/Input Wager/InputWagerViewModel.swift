@@ -17,6 +17,7 @@ protocol InputWagerViewModelInputs {
 
 protocol InputWagerViewModelOutputs {
     var wagerError: Observable<InputWagerError> { get }
+    var guessedUser: Driver<User> { get }
 }
 
 protocol InputWagerViewModelType {
@@ -36,6 +37,7 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
 //MARK: - Outputs
     var outputs: InputWagerViewModelOutputs { return self }
     let wagerError: Observable<InputWagerError>
+    let guessedUser: Driver<User>
     
 //MARK: - Init
     init?(reply: PromptReply,
@@ -90,7 +92,9 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
                                         notValidNumberErrorObservable,
                                         greaterThanMaxErrorObservable).merge()
         
-        //MARK: - Routing
+        self.guessedUser = Driver.of(guessedUser)
+        
+//MARK: - Routing
         isInputValidObservable.filter { $0.isValid }
             .do(onNext: { router.toGuessAndWagerValidation(reply: reply,
                                                            ratingScoreValue: ratingScoreValue,

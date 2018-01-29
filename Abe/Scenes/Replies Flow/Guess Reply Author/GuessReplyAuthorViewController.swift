@@ -12,7 +12,6 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     private var backAndPagerView: BackButtonPageIndicatorView!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
-    private var searchController = UISearchController(searchResultsController: nil)
     private var searchBar: UISearchBar!
     private var tableView: UITableView!
     
@@ -22,14 +21,12 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
         setupBackAndPagerView(numberOfPages: 3)
         setupTitleLabel()
         setupSearchBar()
-        //setupSearchController()
         setupTableView()
         setupNextButton()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Who do you think made this reply?"
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,13 +34,20 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
         //viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        self.resignFirstResponder()
+    }
+    
+    override var inputAccessoryView: UIView? { get { return nextButton } }
+    override var canBecomeFirstResponder: Bool { return true }
     deinit { print("wager deinit") }
     
     func bindViewModel() {
         
 //MARK: - Input
-        searchBar.rx.cancelButtonClicked
-            .bind(to: viewModel.inputs.searchCancelTappedInput)
+        backAndPagerView.backButton.rx.tap
+            .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
 
         tableView.rx.itemSelected.asObservable()
@@ -66,14 +70,11 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
         
         viewModel.outputs.searchTextObservable
             .subscribe(onNext: { [weak self] in
-                self?.dataSource.filterUsersFor(searchText: $0)
-                self?.tableView.reloadData()
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel.outputs.cancelSearchTappedObservable
-            .subscribe(onNext: { [weak self] in
-                self?.dataSource.resetSearchFilter()
+                if $0.isEmpty {
+                    self?.dataSource.resetSearchFilter()
+                } else {
+                    self?.dataSource.filterUsersFor(searchText: $0)
+                }
                 self?.tableView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -109,21 +110,10 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     
 }
 
-extension GuessReplyAuthorViewController: UISearchResultsUpdating {
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let searchText = searchController.searchBar.text,
-                  !searchText.isEmpty else { return }
-        viewModel.inputs.searchTextInput.onNext(searchText)
-    }
-    
-}
-
 extension GuessReplyAuthorViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard let searchText = searchBar.text,
-            !searchText.isEmpty else { return }
+        guard let searchText = searchBar.text else { return }
         viewModel.inputs.searchTextInput.onNext(searchText)
     }
     
@@ -135,20 +125,6 @@ extension GuessReplyAuthorViewController {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
-    }
-    
-    private func setupSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Contacts"
-        definesPresentationContext = true
-        if #available(iOS 11.0, *) {
-            navigationItem.searchController = searchController
-            navigationController?.navigationBar.prefersLargeTitles = true
-        } else {
-            // Fallback on earlier versions
-        }
-        
     }
     
     private func setupTableView() {
@@ -177,12 +153,7 @@ extension GuessReplyAuthorViewController {
         nextButton.alpha = 0.5
         nextButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
         nextButton.setTitle("Next", for: .normal)
-        
-        view.addSubview(nextButton)
-        nextButton.snp.makeConstraints { (make) in
-            make.left.bottom.right.equalTo(view)
-            make.height.equalTo(60)
-        }
+        nextButton.frame.size.height = 60
     }
     
     private func setupBackAndPagerView(numberOfPages: Int) {
@@ -198,9 +169,9 @@ extension GuessReplyAuthorViewController {
         titleLabel = UILabel()
         titleLabel.numberOfLines = 0
         titleLabel.font = FontBook.BariolBold.of(size: 18)
-        let attributedString = NSMutableAttributedString(string: "On a scale of 1-5, how much do you agree with this reply?")
+        let attributedString = NSMutableAttributedString(string: "One of your friends wrote this reply,/n who do you think it is?")
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 9
+        paragraphStyle.lineSpacing = 7
         attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
         titleLabel.attributedText = attributedString
 
@@ -214,14 +185,34 @@ extension GuessReplyAuthorViewController {
     
     private func setupSearchBar() {
         searchBar = UISearchBar()
+        searchBar.searchBarStyle = .minimal
+        searchBar.placeholder = "Search Contacts"
+        searchBar.barTintColor = Palette.faintGrey.color
+        searchBar.backgroundColor = UIColor.white
+        searchBar.delegate = self
         
         view.addSubview(searchBar)
         searchBar.snp.makeConstraints { (make) in
             make.top.equalTo(titleLabel.snp.bottom).offset(10)
-            make.left.equalTo(view).offset(30)
-            make.right.equalTo(view).offset(-30)
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
             make.height.equalTo(50)
         }
     }
 
 }
+
+//    private func setupSearchController() {
+//        searchController.searchResultsUpdater = self
+//        searchController.obscuresBackgroundDuringPresentation = false
+//        searchController.searchBar.placeholder = "Search Contacts"
+//        definesPresentationContext = true
+//        if #available(iOS 11.0, *) {
+//            navigationItem.searchController = searchController
+//            navigationController?.navigationBar.prefersLargeTitles = true
+//        } else {
+//            // Fallback on earlier versions
+//        }
+//
+//    }
+

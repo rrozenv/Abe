@@ -16,9 +16,8 @@ final class GuessReplyAuthorDataSource: ValueCellDataSource {
     }
     
     func filterUsersFor(searchText: String) {
-        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return }
         self.isFiltering = true
-        let updatedViewModels = viewModels.filter { $0.user.name.contains(searchText) }
+        let updatedViewModels = storedUsers.filter { $0.user.name.contains(searchText) }
         self.latestFilteredUsers = updatedViewModels
         self.set(values: updatedViewModels,
                  cellClass: UserContactTableCell.self,

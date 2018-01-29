@@ -10,17 +10,14 @@ class RateReplyViewController: UIViewController, BindableType {
    
     private var titleContainerView: UIView!
     private var backAndPagerView: BackButtonPageIndicatorView!
-    //private var pageIndicatorView: PageIndicatorView!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
     private var tableView: UITableView!
-    //private var backButton: UIButton!
     
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
-        setupBackAndPagerView(numberOfPages: 0)
-        //setupBackButton()
+        setupBackAndPagerView(numberOfPages: 3)
         setupTitleLabel()
         setupTableView()
         setupNextButton()
@@ -35,6 +32,8 @@ class RateReplyViewController: UIViewController, BindableType {
         viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
+    override var inputAccessoryView: UIView? { get { return nextButton } }
+    override var canBecomeFirstResponder: Bool { return true }
     deinit { print("rate reply deinit") }
     
     func bindViewModel() {
@@ -99,8 +98,7 @@ class RateReplyViewController: UIViewController, BindableType {
         
         viewModel.outputs.currentPageIndicator
             .drive(onNext: { [weak self] in
-                guard $0 != -1 else { return }
-                self?.backAndPagerView.updatePageNumber = 3
+                guard $0 != -1 else { self?.backAndPagerView.isHidden = true ; return }
                 self?.backAndPagerView.pageIndicatorView.currentPage = $0
             })
             .disposed(by: disposeBag)
@@ -158,30 +156,8 @@ extension RateReplyViewController {
         nextButton.backgroundColor = Palette.mustard.color
         nextButton.alpha = 0.5
         nextButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
-        
-        view.addSubview(nextButton)
-        nextButton.snp.makeConstraints { (make) in
-            make.left.bottom.right.equalTo(view)
-            make.height.equalTo(60)
-        }
+        nextButton.frame.size.height = 60
     }
-    
-//    private func setupPageIndicatorView(numberOfPages: Int) {
-//        let spacing: CGFloat = 10.0
-//        let itemWidthHeight: CGFloat = 6
-//        let spacingMultiplier = CGFloat(numberOfPages - 1)
-//        let widthMultiplier = CGFloat(numberOfPages)
-//        let stackWidth = (spacing * spacingMultiplier) + (itemWidthHeight * widthMultiplier)
-//        pageIndicatorView = PageIndicatorView(numberOfItems: numberOfPages, widthHeight: itemWidthHeight)
-//
-//        view.addSubview(pageIndicatorView)
-//        pageIndicatorView.snp.makeConstraints { (make) in
-//            make.left.equalTo(backButton.snp.right).offset(20)
-//            make.centerY.equalTo(backButton.snp.centerY)
-//            make.height.equalTo(itemWidthHeight)
-//            make.width.equalTo(stackWidth)
-//        }
-//    }
     
     private func setupTitleLabel() {
         titleContainerView = UIView()
@@ -218,22 +194,7 @@ extension RateReplyViewController {
             make.left.right.equalTo(view)
             make.top.equalTo(backAndPagerView.snp.bottom)
         }
-        
     }
-    
-//    private func setupBackButton() {
-//        let image = #imageLiteral(resourceName: "IC_BackArrow_Black")
-//        image.size.equalTo(CGSize(width: 9, height: 17))
-//        backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 9, height: 17))
-//        backButton.setImage(image, for: .normal)
-//        backButton.contentEdgeInsets = UIEdgeInsets(top: 38, left: 26, bottom: 15, right: 15)
-//
-//        view.addSubview(backButton)
-//        backButton.snp.makeConstraints { (make) in
-//            make.left.equalTo(view.snp.left)
-//            make.top.equalTo(view.snp.top)
-//        }
-//    }
     
     private func setupBackAndPagerView(numberOfPages: Int) {
         backAndPagerView = BackButtonPageIndicatorView(numberOfPages: numberOfPages)
@@ -252,12 +213,7 @@ final class BackButtonPageIndicatorView: UIView {
     var backButton: UIButton!
     var pageIndicatorView: PageIndicatorView!
     private let itemWidthHeight: CGFloat = 6
-    var updatePageNumber: Int = 0 {
-        didSet {
-            pageIndicatorView = PageIndicatorView(numberOfItems: updatePageNumber, widthHeight: itemWidthHeight)
-        }
-    }
-    
+  
     //MARK: Initalizer Setup
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -292,9 +248,9 @@ final class BackButtonPageIndicatorView: UIView {
         
         self.addSubview(pageIndicatorView)
         pageIndicatorView.snp.makeConstraints { (make) in
-            make.left.equalTo(backButton.snp.right).offset(20)
+            make.left.equalTo(backButton.snp.right).offset(10)
             make.right.equalTo(self)
-            make.centerY.equalTo(backButton.snp.centerY)
+            make.centerY.equalTo(backButton.snp.centerY).offset(10)
             make.height.equalTo(itemWidthHeight)
             make.width.equalTo(stackWidth)
         }

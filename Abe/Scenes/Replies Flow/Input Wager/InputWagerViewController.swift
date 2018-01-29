@@ -7,14 +7,23 @@ final class InputWagerViewController: UIViewController, BindableType {
     
     let disposeBag = DisposeBag()
     var viewModel: InputWagerViewModel!
+    
+    private var backAndPagerView: BackButtonPageIndicatorView!
+    private var selectedUserView: UserImageNameSublabelView!
     private var wagerTextField: UITextField!
     private var doneButton: UIButton!
+    private var titleLabel: UILabel!
+    private var dividerView: UIView!
    
     override func loadView() {
         super.loadView()
         self.view.backgroundColor = UIColor.white
+        setupBackAndPagerView(numberOfPages: 3)
+        setupSelectedUserView()
+        setupDividerView()
+        setupTitleLabel()
         setupDoneButton()
-        setupSearchTextfield()
+        setupWagerTextfield()
     }
     // MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -44,6 +53,13 @@ final class InputWagerViewController: UIViewController, BindableType {
                 self?.handleError($0)
             })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.guessedUser
+            .drive(onNext: { [weak self] in
+                self?.selectedUserView.populateInfoWith(name: $0.name,
+                                                        subLabel: "YOUR GUESS")
+            })
+            .disposed(by: disposeBag)
     }
     
     private func handleError(_ error: InputWagerError) {
@@ -65,14 +81,14 @@ final class InputWagerViewController: UIViewController, BindableType {
         present(alert, animated: true, completion: nil)
     }
     
-    private func setupSearchTextfield() {
+    private func setupWagerTextfield() {
         wagerTextField = UITextField()
-        wagerTextField.placeholder = "Search Images..."
-        wagerTextField.backgroundColor = UIColor.red
+        wagerTextField.placeholder = "0"
+        wagerTextField.backgroundColor = UIColor.white
         wagerTextField.layer.cornerRadius = 4.0
         wagerTextField.layer.masksToBounds = true
-        wagerTextField.font = FontBook.AvenirMedium.of(size: 14)
-        wagerTextField.textColor = UIColor.black
+        wagerTextField.font = FontBook.BariolBold.of(size: 26)
+        wagerTextField.textColor = Palette.maroon.color
         wagerTextField.becomeFirstResponder()
         
         view.addSubview(wagerTextField)
@@ -89,6 +105,56 @@ final class InputWagerViewController: UIViewController, BindableType {
         doneButton.backgroundColor = UIColor.green
         doneButton.setTitle("Next", for: .normal)
         doneButton.frame.size.height = 60
+    }
+    
+    private func setupBackAndPagerView(numberOfPages: Int) {
+        backAndPagerView = BackButtonPageIndicatorView(numberOfPages: numberOfPages)
+        
+        view.addSubview(backAndPagerView)
+        backAndPagerView.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            make.top.equalTo(view.snp.top)
+        }
+    }
+    
+    private func setupSelectedUserView() {
+        selectedUserView = UserImageNameSublabelView()
+        
+        view.addSubview(selectedUserView)
+        selectedUserView.snp.makeConstraints { (make) in
+            make.left.equalTo(view).offset(30)
+            make.top.equalTo(backAndPagerView.snp.bottom)
+        }
+    }
+    
+    private func setupTitleLabel() {
+        titleLabel = UILabel()
+        titleLabel.numberOfLines = 0
+        titleLabel.font = FontBook.BariolBold.of(size: 18)
+        let attributedString = NSMutableAttributedString(string: "Would you like to wager any of your crystals that you are correct?")
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 7
+        attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
+        titleLabel.attributedText = attributedString
+        
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(dividerView.snp.bottom).offset(10)
+            make.left.equalTo(view).offset(30)
+            make.right.equalTo(view).offset(-40)
+        }
+    }
+    
+    private func setupDividerView() {
+        dividerView = UIView()
+        dividerView.backgroundColor = Palette.faintGrey.color
+        
+        view.addSubview(dividerView)
+        dividerView.snp.makeConstraints { (make) in
+            make.top.equalTo(selectedUserView.snp.bottom).offset(10)
+            make.left.right.equalTo(view)
+            make.height.equalTo(2)
+        }
     }
     
 }

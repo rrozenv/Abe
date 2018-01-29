@@ -9,7 +9,7 @@ protocol GuessReplyAuthorViewModelInputs {
     var selectedUserViewModelInput: AnyObserver<IndividualContactViewModel> { get }
     var nextButtonTappedInput: AnyObserver<Void> { get }
     var searchTextInput: AnyObserver<String> { get }
-    var searchCancelTappedInput: AnyObserver<Void> { get }
+    var backButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol GuessReplyAuthorViewModelOutputs {
@@ -17,7 +17,6 @@ protocol GuessReplyAuthorViewModelOutputs {
     var previousAndCurrentSelectedUser: Observable<(previous: IndividualContactViewModel, current: IndividualContactViewModel)> { get }
     var nextButtonIsEnabled: Driver<Bool> { get }
     var searchTextObservable: Observable<String> { get }
-    var cancelSearchTappedObservable: Observable<Void> { get }
     var currentPageIndicator: Driver<Int> { get }
 }
 
@@ -37,7 +36,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
     let selectedUserViewModelInput: AnyObserver<IndividualContactViewModel>
     let nextButtonTappedInput: AnyObserver<Void>
     let searchTextInput: AnyObserver<String>
-    let searchCancelTappedInput: AnyObserver<Void>
+    let backButtonTappedInput: AnyObserver<Void>
     
 //MARK: - Outputs
     var outputs: GuessReplyAuthorViewModelOutputs { return self }
@@ -45,7 +44,6 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
     let previousAndCurrentSelectedUser: Observable<(previous: IndividualContactViewModel, current: IndividualContactViewModel)>
     let nextButtonIsEnabled: Driver<Bool>
     let searchTextObservable: Observable<String>
-    let cancelSearchTappedObservable: Observable<Void>
     let currentPageIndicator: Driver<Int>
     
 //MARK: - Init
@@ -66,7 +64,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
         let _selectedUserViewModelInput = PublishSubject<IndividualContactViewModel>()
         let _nextButtonTappedInput = PublishSubject<Void>()
         let _searchTextInput = PublishSubject<String>()
-        let _searchCancelTappedInput = PublishSubject<Void>()
+        let _backButtonTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
@@ -74,7 +72,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
         self.selectedUserViewModelInput = _selectedUserViewModelInput.asObserver()
         self.nextButtonTappedInput = _nextButtonTappedInput.asObserver()
         self.searchTextInput = _searchTextInput.asObserver()
-        self.searchCancelTappedInput = _searchCancelTappedInput.asObserver()
+        self.backButtonTappedInput = _backButtonTappedInput.asObserver()
         
 //MARK: - First Level Observables
         let selectedIndexObservable = _selectedIndexPathInput.asObservable()
@@ -82,8 +80,8 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
         let selectedUserViewModelObservable = _selectedUserViewModelInput.asObservable()
             .startWith(IndividualContactViewModel(isSelected: false, user: User.defualtUser()))
         let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
+        let backButtonTappedObservable = _backButtonTappedInput.asObservable()
         self.searchTextObservable = _searchTextInput.asObservable()
-        self.cancelSearchTappedObservable = _searchCancelTappedInput.asObservable()
 
 //MARK: - Second Level Observables
         let allUsersFriendsObservable = userService.fetchAll()
@@ -109,12 +107,17 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
             .do(onNext: { router.toInputWagerWith(selectedUser: $0.user, ratingScoreValue: ratingScoreValue, reply: reply) })
             .subscribe()
             .disposed(by: disposeBag)
-
+        
+        backButtonTappedObservable
+            .do(onNext: router.toPreviousNavViewController)
+            .subscribe()
+            .disposed(by: disposeBag)
     }
 }
 
 private func createContactViewModelsFor(registeredUsers: [User]) -> [IndividualContactViewModel] {
-    return registeredUsers.map {
+    let users = Set<User>(registeredUsers)
+    return users.map {
         return IndividualContactViewModel(isSelected: false, user: $0)
     }
 }

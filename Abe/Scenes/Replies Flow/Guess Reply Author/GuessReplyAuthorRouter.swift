@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 
 protocol GuessReplyAuthorRoutingLogic {
+    func toPreviousNavViewController()
     func toInputWagerWith(selectedUser: User, ratingScoreValue: Int, reply: PromptReply)
 }
 
@@ -23,6 +24,10 @@ final class GuessReplyAuthorRouter: GuessReplyAuthorRoutingLogic {
                                             router: router)
         vc.setViewModelBinding(model: viewModel!)
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func toPreviousNavViewController() {
+        navigationController?.popViewController(animated: true)
     }
     
 }
