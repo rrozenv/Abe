@@ -24,6 +24,7 @@ final class PromptsListViewModel: ViewModelType {
     
     private let realm: RealmInstance
     private let router: PromptsRoutingLogic
+    private let promptService = PromptService()
     
     init(realm: RealmInstance, router: PromptsRouter) {
         self.realm = realm
@@ -35,6 +36,11 @@ final class PromptsListViewModel: ViewModelType {
         let errorTracker = ErrorTracker()
         let fetching = activityIndicator.asDriver()
         let errors = errorTracker.asDriver()
+        let predicate = NSPredicate(format: "visibility = %@", "contacts")
+        
+//        let contactsOnlyPrompts = self.promptService
+//            .fetchPromptsWith(predicate: predicate)
+//            .map { $0.filter { $0.isViewableBy(currentUser: <#T##User#>)} }
 
         let prompts = self.realm
             .fetchAll(Prompt.self)

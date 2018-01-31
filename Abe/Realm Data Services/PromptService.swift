@@ -87,6 +87,17 @@ struct PromptService: PromptServiceType {
         return result ?? .empty()
     }
     
+    func fetchPromptsWith(predicate: NSPredicate) -> Observable<Results<Prompt>> {
+        let result = withRealm("getting replies") { realm -> Observable<Results<Prompt>> in
+            let prompts = realm
+                .objects(Prompt.self)
+                .filter(predicate)
+
+            return .just(prompts)
+        }
+        return result ?? .empty()
+    }
+    
 }
 
 
