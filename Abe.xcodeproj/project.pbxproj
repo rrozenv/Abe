@@ -69,6 +69,7 @@
 		985C2A641FFDC1D80034E116 /* UserDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A631FFDC1D80034E116 /* UserDetailsViewController.swift */; };
 		985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A651FFDC1E40034E116 /* UserDetailsViewModel.swift */; };
 		985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A671FFDC1F40034E116 /* UserDetailsRouter.swift */; };
+		985F34752022666D008D2759 /* PromptsListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985F34742022666D008D2759 /* PromptsListDataSource.swift */; };
 		9862867320005E0900502294 /* ReplyTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9862867220005E0900502294 /* ReplyTableCell.swift */; };
 		9862867820006AE300502294 /* RepliesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9862867720006AE300502294 /* RepliesViewController.swift */; };
 		9862867A20006AF000502294 /* RepliesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9862867920006AF000502294 /* RepliesViewModel.swift */; };
@@ -212,6 +213,7 @@
 		985C2A631FFDC1D80034E116 /* UserDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewController.swift; sourceTree = "<group>"; };
 		985C2A651FFDC1E40034E116 /* UserDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsViewModel.swift; sourceTree = "<group>"; };
 		985C2A671FFDC1F40034E116 /* UserDetailsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsRouter.swift; sourceTree = "<group>"; };
+		985F34742022666D008D2759 /* PromptsListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptsListDataSource.swift; sourceTree = "<group>"; };
 		9862867220005E0900502294 /* ReplyTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyTableCell.swift; sourceTree = "<group>"; };
 		9862867720006AE300502294 /* RepliesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesViewController.swift; sourceTree = "<group>"; };
 		9862867920006AF000502294 /* RepliesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesViewModel.swift; sourceTree = "<group>"; };
@@ -429,6 +431,7 @@
 				98FEE7B81FE4BC4C00CD80A8 /* PromptsRouter.swift */,
 				98FEE7BA1FE4BC5400CD80A8 /* PromptsListViewController.swift */,
 				98FEE7BC1FE4BC5B00CD80A8 /* PromptsListViewModel.swift */,
+				985F34742022666D008D2759 /* PromptsListDataSource.swift */,
 			);
 			path = "Prompts List";
 			sourceTree = "<group>";
@@ -1221,6 +1224,7 @@
 				9854D2542000546B00D7B7EB /* RepliesDataSource.swift in Sources */,
 				9827AF922007208D00357EBF /* ScoresCollectionViewFlowLayout.swift in Sources */,
 				985C2A5D1FFDAC8E0034E116 /* EnableContactsViewModel.swift in Sources */,
+				985F34752022666D008D2759 /* PromptsListDataSource.swift in Sources */,
 				982531001FF41568000E6E20 /* TabBarView.swift in Sources */,
 				9862867320005E0900502294 /* ReplyTableCell.swift in Sources */,
 				98FEE7BF1FE4BC6200CD80A8 /* PromptTableCell.swift in Sources */,

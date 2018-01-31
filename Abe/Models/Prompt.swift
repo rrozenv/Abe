@@ -33,7 +33,7 @@ final class Prompt: Object {
     }
     
     func isViewableBy(currentUser: User) -> Bool {
-        return visibleOnlyToPhoneNumbers.contains(currentUser.phoneNumber)
+        return visibleOnlyToPhoneNumbers.contains(currentUser.phoneNumber) || self.user?.id == currentUser.id
     }
 }
 

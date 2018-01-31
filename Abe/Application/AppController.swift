@@ -80,11 +80,7 @@ extension AppController {
     
     private func createHomeViewController() -> UINavigationController {
         let navVc = UINavigationController()
-        let promptsVc = PromptsListViewController()
-        let router = PromptsRouter(navigationController: navVc,
-                                   viewController: promptsVc)
-        let realm = RealmInstance(configuration: RealmConfig.common)
-        promptsVc.viewModel = PromptsListViewModel(realm: realm, router: router)
+        let router = PromptsRouter(navigationController: navVc)
         router.toPrompts()
         return navVc
     }

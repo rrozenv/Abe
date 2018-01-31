@@ -1,80 +1,112 @@
 
 import Foundation
 import RxSwift
-import RealmSwift
-import RxDataSources
-import Action
-import RxRealm
-import RxRealmDataSources
-//import NSObject_Rx
-
-import RxSwift
 import RxCocoa
 
-class PromptsListViewController: UIViewController {
-    private let disposeBag = DisposeBag()
+class PromptsListViewController: UIViewController, BindableType {
     
-    var viewModel: PromptsListViewModel!
-    var tableView: UITableView!
-    var createPromptButton: UIBarButtonItem!
+    let disposeBag = DisposeBag()
+    let dataSource = PromptListDataSource()
+    var viewModel: PromptListViewModel!
+    
+    private var createPromptButton: UIBarButtonItem!
+    private var tableView: UITableView!
+    private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    
+    override func loadView() {
+        super.loadView()
+        view.backgroundColor = UIColor.white
+        setupTableView()
+        setupCreatePromptButton()
+        setupActivityIndicator()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
-        setupCreatePromptButton()
-        bindViewModel()
     }
     
-    private func bindViewModel() {
-        assert(viewModel != nil)
-
-        let pull = tableView.refreshControl!.rx
-            .controlEvent(.valueChanged)
-            .asDriver()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    deinit { print("rate reply deinit") }
+    
+    func bindViewModel() {
+        //MARK: - Input
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
         
-        let input =
-            PromptsListViewModel
-            .Input(createPostTrigger: createPromptButton.rx.tap.asDriver(),
-                   selection: tableView.rx.realmModelSelected(Prompt.self).asDriver())
+        tableView.rx.itemSelected.asObservable()
+            .distinctUntilChanged()
+            .map { [weak self] in self?.dataSource.promptAtIndexPath($0) }.unwrap()
+            .bind(to: viewModel.inputs.promptSelectedInput)
+            .disposed(by: disposeBag)
+        
+        createPromptButton.rx.tap
+            .bind(to: viewModel.inputs.createTappedInput)
+            .disposed(by: disposeBag)
         
         //MARK: - Output
-        let output = viewModel.transform(input: input)
-        
-        let dataSource = RxTableViewRealmDataSource<Prompt>(cellIdentifier: PromptTableCell.reuseIdentifier, cellType: PromptTableCell.self) {cell, indexPath, prompt in
-            cell.configure(with: prompt)
-        }
-        
-        output.posts
-            .bind(to: tableView.rx.realmChanges(dataSource))
+        viewModel.outputs.contactsOnlyPrompts
+            .drive(onNext: { [weak self] in
+                self?.dataSource.loadContactsOnly(prompts: $0)
+                self?.tableView.reloadData()
+            })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.publicPrompts
+            .drive(onNext: { [weak self] in
+                self?.dataSource.loadPublic(prompts: $0)
+                self?.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.promptsChangeSet
+            .subscribe(onNext: { [weak self] results, changes in
+                if let changes = changes {
+                    let initialOffset = self?.tableView.contentOffset.y
+                    let section = PromptListDataSource.Section.publicOnly.rawValue
+                    let prompts = changes.inserted.map { results[$0] }
+                    self?.dataSource.addNewPublic(prompts: prompts)
+                    self?.tableView.reloadSections([section], with: .none)
+                    self?.tableView.scrollToRow(at: IndexPath(row: prompts.count, section: 1), at: .top, animated: false)
+                    self?.tableView.contentOffset.y += initialOffset ?? 0
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.errorTracker
+            .drive(onNext: { [weak self] (error) in
+                self?.showError(error)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.activityIndicator
+            .drive(activityIndicator.rx.isAnimating)
+            .disposed(by: disposeBag)
+    }
+    
+}
 
-        pull.drive(onNext: { [weak self] in
-            self?.tableView.reloadData()
-            self?.tableView.refreshControl?.endRefreshing()
-        })
-        .disposed(by: disposeBag)
-        
-        output.fetching
-            .drive(tableView.refreshControl!.rx.isRefreshing)
-            .disposed(by: disposeBag)
-        
-        output.createPrompt
-            .drive()
-            .disposed(by: disposeBag)
-        
-        output.selectedPrompt
-            .drive()
-            .disposed(by: disposeBag)
-        
-        output.error
-            .drive()
-            .disposed(by: disposeBag)
-
+extension PromptsListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
     }
     
 }
 
 extension PromptsListViewController {
+    
+    fileprivate func showError(_ error: Error) {
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
     
     fileprivate func setupCreatePromptButton() {
         createPromptButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
@@ -84,11 +116,12 @@ extension PromptsListViewController {
     fileprivate func setupTableView() {
         //MARK: - tableView Properties
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
-        tableView.register(PromptTableCell.self, forCellReuseIdentifier: PromptTableCell.reuseIdentifier)
+        tableView.register(PromptTableCell.self, forCellReuseIdentifier: PromptTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
         tableView.refreshControl = UIRefreshControl()
+        tableView.dataSource = dataSource
         
         //MARK: - tableView Constraints
         view.addSubview(tableView)
@@ -97,8 +130,16 @@ extension PromptsListViewController {
         }
     }
     
+    private func setupActivityIndicator() {
+        activityIndicator.hidesWhenStopped = true
+        
+        view.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { (make) in
+            make.center.equalTo(view.snp.center)
+        }
+    }
+    
 }
-
 
 
 

@@ -4,10 +4,11 @@ import UIKit
 import Kingfisher
 import SnapKit
 
-final class PromptTableCell: UITableViewCell {
-    
+final class PromptTableCell: UITableViewCell, ValueCell {
+
     // MARK: - Type Properties
-    static let reuseIdentifier = "PromptTableCell"
+    typealias Value = Prompt
+    static var defaultReusableId: String = "PromptTableCell"
     
     // MARK: - Properties
     fileprivate var promptView: PromptView!
@@ -36,11 +37,11 @@ final class PromptTableCell: UITableViewCell {
         setupPromptView()
     }
     
-    func configure(with prompt: Prompt) {
-        promptView.headerView.titleLabel.text = prompt.title
+    func configureWith(value: Prompt) {
+        promptView.headerView.titleLabel.text = value.title
         promptView.replyTextLabel.text = "replies"
-        promptView.replyCountLabel.text = "\(prompt.replies.count)"
-        if let url = URL(string: prompt.imageURL) {
+        promptView.replyCountLabel.text = "\(value.replies.count)"
+        if let url = URL(string: value.imageURL) {
             print(url)
             promptView.headerView.imageView.kf.setImage(with: url)
         }

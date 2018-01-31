@@ -87,13 +87,35 @@ struct PromptService: PromptServiceType {
         return result ?? .empty()
     }
     
-    func fetchPromptsWith(predicate: NSPredicate) -> Observable<Results<Prompt>> {
-        let result = withRealm("getting replies") { realm -> Observable<Results<Prompt>> in
+    func fetchPromptsWith(predicate: NSPredicate) -> Observable<[Prompt]> {
+        let result = withRealm("getting replies") { realm -> Observable<[Prompt]> in
             let prompts = realm
-                .objects(Prompt.self)
+                .objects(Prompt.self).sorted(byKeyPath: "createdAt",
+                                             ascending: false)
                 .filter(predicate)
+                .toArray()
 
             return .just(prompts)
+        }
+        return result ?? .empty()
+    }
+    
+    func fetchAll() -> Observable<[Prompt]> {
+        let result = withRealm("getting replies") { realm -> Observable<[Prompt]> in
+            let prompts = realm
+                .objects(Prompt.self).sorted(byKeyPath: "createdAt",
+                                             ascending: false)
+                .toArray()
+            
+            return .just(prompts)
+        }
+        return result ?? .empty()
+    }
+    
+    func changeSet() -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> {
+        let result = withRealm("getting replies") { realm -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> in
+            let objects = realm.objects(Prompt.self)
+            return Observable.changeset(from: objects)
         }
         return result ?? .empty()
     }
