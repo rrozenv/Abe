@@ -5,6 +5,7 @@ import RxSwift
 
 protocol InputWagerRoutingLogic {
     func toGuessAndWagerValidation(reply: PromptReply, ratingScoreValue: Int, guessedUser: User, wager: Int)
+    func toPreviousNavViewController()
 }
 
 final class InputWagerRouter: InputWagerRoutingLogic {
@@ -29,6 +30,10 @@ final class InputWagerRouter: InputWagerRoutingLogic {
         vc.setViewModelBinding(model: viewModel!)
         viewModel?.inputs.viewDidLoadInput.onNext(())
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func toPreviousNavViewController() {
+        navigationController?.popViewController(animated: true)
     }
     
 }

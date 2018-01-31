@@ -116,7 +116,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
 }
 
 private func createContactViewModelsFor(registeredUsers: [User]) -> [IndividualContactViewModel] {
-    let users = Set<User>(registeredUsers)
+    let users = Set<User>(registeredUsers).sorted { $0.name < $1.name }
     return users.map {
         return IndividualContactViewModel(isSelected: false, user: $0)
     }

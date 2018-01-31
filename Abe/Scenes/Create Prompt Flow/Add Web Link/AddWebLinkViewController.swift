@@ -143,7 +143,7 @@ final class AddWebLinkViewController: UIViewController, BindableType {
         }
     }
     
-    fileprivate func setupLoadingIndicator() {
+   private func setupLoadingIndicator() {
         activityIndicator.hidesWhenStopped = true
         
         view.addSubview(activityIndicator)

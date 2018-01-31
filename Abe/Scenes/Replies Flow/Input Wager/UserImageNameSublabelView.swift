@@ -60,6 +60,7 @@ final class UserImageNameSublabelView: UIView {
         labelsStackView.snp.makeConstraints { (make) in
             make.centerY.equalTo(userImageView.snp.centerY)
             make.left.equalTo(userImageView.snp.right).offset(10)
+            make.right.equalTo(self)
         }
     }
     
