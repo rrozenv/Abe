@@ -45,6 +45,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let selectAllContacts: Driver<Bool>
     let latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let errorTracker: Driver<Error>
+    
 
 //MARK: - Init
     init?(replyService: ReplyService = ReplyService(),
