@@ -32,6 +32,14 @@ final class GuessReplyAuthorDataSource: ValueCellDataSource {
                  inSection: 0)
     }
     
+    func selectedCount() -> Int {
+        return storedUsers.filter { $0.isSelected }.count
+    }
+    
+    func totalCount() -> Int {
+        return self.numberOfItems()
+    }
+    
     func toggleUser(_ viewModel: IndividualContactViewModel) -> IndexPath? {
         let allUsersIndex = storedUsers.index(of: viewModel)
         storedUsers[allUsersIndex!].isSelected = !storedUsers[allUsersIndex!].isSelected
@@ -49,6 +57,28 @@ final class GuessReplyAuthorDataSource: ValueCellDataSource {
                      row: Int(allUsersIndex!))
             return IndexPath(row: Int(allUsersIndex!), section: 0)
         } else { return nil }
+    }
+    
+    func toggleAll(shouldSelect: Bool) {
+        let allUpdatedUsers = storedUsers
+            .map { inputs -> IndividualContactViewModel in
+                return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
+        }
+        self.storedUsers = allUpdatedUsers
+        if isFiltering {
+            let filteredUpdatedUsers = latestFilteredUsers
+                .map { inputs -> IndividualContactViewModel in
+                    return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
+            }
+            self.latestFilteredUsers = filteredUpdatedUsers
+            self.set(values: filteredUpdatedUsers,
+                     cellClass: UserContactTableCell.self,
+                     inSection: 0)
+        } else {
+            self.set(values: allUpdatedUsers,
+                     cellClass: UserContactTableCell.self,
+                     inSection: 0)
+        }
     }
     
     func getUser(at indexPath: IndexPath) -> IndividualContactViewModel? {

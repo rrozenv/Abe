@@ -8,7 +8,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
     
     let disposeBag = DisposeBag()
     var viewModel: ReplyVisibilityViewModel!
-    private let dataSource = ReplyVisibilityDataSource()
+    private let dataSource = GuessReplyAuthorDataSource()
     
     private var publicButton: UIButton!
     private var tableView: UITableView!
@@ -16,12 +16,14 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
     private var backButton: UIBarButtonItem!
     private var selectAllContactsButton: UIButton!
     private var contactsTableHeaderView: ContactsTableHeaderView!
+    private var searchBar: UISearchBar!
     private var isAllContactsSelected = Variable<Bool>(true)
 
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
         setupPublicButton()
+        setupSearchBar()
         setupTableView()
         setupCreateButton()
         setupCancelButton()
@@ -55,7 +57,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         
         tableView.rx.itemSelected.asObservable()
             .map { [unowned self] in
-                (self.dataSource.contactViewModelAt(indexPath: $0)!, $0) }
+                (self.dataSource.getUser(at: $0)!, $0) }
             .bind(to: viewModel.inputs.selectedUserAndIndexPathInput)
             .disposed(by: disposeBag)
         
@@ -73,9 +75,22 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             })
             .disposed(by: disposeBag)
         
+        viewModel.outputs.searchTextObservable
+            .subscribe(onNext: { [weak self] in
+                if $0.isEmpty {
+                    self?.dataSource.resetSearchFilter()
+                    self?.contactsTableHeaderView.actionButton.isHidden = false
+                } else {
+                    self?.dataSource.filterUsersFor(searchText: $0)
+                    self?.contactsTableHeaderView.actionButton.isHidden = true
+                }
+                self?.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.latestUserAndIndexPath
             .drive(onNext: { [weak self] in
-                self?.dataSource.toggleContact(at: $0.indexPath)
+                let _ = self?.dataSource.toggleUser($0.user)
                 self?.tableView.reloadRows(at: [$0.indexPath], with: .none)
                 self?.publicButton.backgroundColor = UIColor.white
                 
@@ -108,7 +123,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         
         viewModel.outputs.individualContacts
             .drive(onNext: { [weak self] (users) in
-                self?.dataSource.loadIndividualContacts(contacts: users)
+                self?.dataSource.loadUsers(viewModels: users)
                 self?.tableView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -126,6 +141,15 @@ extension ReplyVisibilityViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return contactsTableHeaderView
+    }
+    
+}
+
+extension ReplyVisibilityViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let searchText = searchBar.text else { return }
+        viewModel.inputs.searchTextInput.onNext(searchText)
     }
     
 }
@@ -184,7 +208,7 @@ extension ReplyVisibilityViewController {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
-            make.top.equalTo(publicButton.snp.bottom).offset(10)
+            make.top.equalTo(searchBar.snp.bottom).offset(10)
         }
     }
     
@@ -201,6 +225,7 @@ extension ReplyVisibilityViewController {
         publicButton.alpha = 0.5
         publicButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
         publicButton.setTitle("Public", for: .normal)
+        publicButton.setTitleColor(UIColor.blue, for: .normal)
         publicButton.titleLabel?.textColor = UIColor.blue
         publicButton.backgroundColor = UIColor.white
         
@@ -216,6 +241,23 @@ extension ReplyVisibilityViewController {
         contactsTableHeaderView = ContactsTableHeaderView()
         contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
         contactsTableHeaderView.titleLabel.text = "Select From Contacts"
+    }
+    
+    private func setupSearchBar() {
+        searchBar = UISearchBar()
+        searchBar.searchBarStyle = .minimal
+        searchBar.placeholder = "Search Contacts"
+        searchBar.barTintColor = Palette.faintGrey.color
+        searchBar.backgroundColor = UIColor.white
+        searchBar.delegate = self
+        
+        view.addSubview(searchBar)
+        searchBar.snp.makeConstraints { (make) in
+            make.top.equalTo(publicButton.snp.bottom).offset(10)
+            make.left.equalTo(view).offset(20)
+            make.right.equalTo(view).offset(-20)
+            make.height.equalTo(50)
+        }
     }
     
 }

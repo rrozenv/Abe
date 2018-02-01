@@ -11,6 +11,7 @@ protocol ReplyVisibilityViewModelInputs {
     var selectedAllContactsTappedInput: AnyObserver<Bool> { get }
     var selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
     var createButtonTappedInput: AnyObserver<Void> { get }
+    var searchTextInput: AnyObserver<String> { get }
 }
 
 protocol ReplyVisibilityViewModelOutputs {
@@ -20,6 +21,7 @@ protocol ReplyVisibilityViewModelOutputs {
     var currentIndividualNumbers: Driver<[String]> { get }
     var latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
     var errorTracker: Driver<Error> { get }
+    var searchTextObservable: Observable<String> { get }
 }
 
 protocol ReplyVisibilityViewModelType {
@@ -38,6 +40,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let selectedAllContactsTappedInput: AnyObserver<Bool>
     let selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let createButtonTappedInput: AnyObserver<Void>
+    let searchTextInput: AnyObserver<String>
 
 //MARK: - Outputs
     var outputs: ReplyVisibilityViewModelOutputs { return self }
@@ -47,6 +50,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let currentIndividualNumbers: Driver<[String]>
     let errorTracker: Driver<Error>
+    let searchTextObservable: Observable<String>
     
 //MARK: - Init
     init?(replyService: ReplyService = ReplyService(),
@@ -73,6 +77,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let _selectedAllContactsTappedInput = PublishSubject<Bool>()
         let _selectedUserAndIndexPathInput = PublishSubject<(user: IndividualContactViewModel, indexPath: IndexPath)>()
         let _createButtonTappedInput = PublishSubject<Void>()
+        let _searchTextInput = PublishSubject<String>()
         
 //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
@@ -80,6 +85,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         self.selectedAllContactsTappedInput = _selectedAllContactsTappedInput.asObserver()
         self.selectedUserAndIndexPathInput = _selectedUserAndIndexPathInput.asObserver()
         self.createButtonTappedInput = _createButtonTappedInput.asObserver()
+        self.searchTextInput = _searchTextInput.asObserver()
         
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
@@ -87,6 +93,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let selectedAllContactsObservable = _selectedAllContactsTappedInput.asObservable()
         let selectedUserAndIndexPathObservable = _selectedUserAndIndexPathInput.asObservable()
         let createButtonTappedObservable = _createButtonTappedInput.asObservable()
+       
 
 //MARK: - Second Level Observables
         let publicVisibilityObservable = publicButtonTappedObservable
@@ -182,6 +189,8 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         
         self.currentIndividualNumbers = selectedContactNumbersObservable
             .asDriver(onErrorJustReturn: [])
+        
+        self.searchTextObservable = _searchTextInput.asObservable()
 
 //MARK: - Routing
         Observable.merge(createWithIndividualContactsVis,
@@ -218,7 +227,8 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
 }
 
 private func createContactViewModelsFor(registeredUsers: [User]) -> [IndividualContactViewModel] {
-    return registeredUsers.map {
+    let users = Set<User>(registeredUsers).sorted { $0.name < $1.name }
+    return users.map {
         return IndividualContactViewModel(isSelected: false, user: $0)
     }
 }
