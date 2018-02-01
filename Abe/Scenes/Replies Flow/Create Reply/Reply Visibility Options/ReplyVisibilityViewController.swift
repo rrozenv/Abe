@@ -14,6 +14,8 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
     private var tableView: UITableView!
     private var createReplyButton: UIBarButtonItem!
     private var backButton: UIBarButtonItem!
+    private var selectAllContactsButton: UIButton!
+    private var contactsTableHeaderView: ContactsTableHeaderView!
 
     override func loadView() {
         super.loadView()
@@ -22,6 +24,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         setupTableView()
         setupCreateButton()
         setupCancelButton()
+        setupContatsTableHeaderView()
     }
 
     override func viewDidLoad() {
@@ -38,6 +41,9 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
     func bindViewModel() {
         
         //MARK: - Input
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        
         createReplyButton.rx.tap.asDriver()
             .drive(viewModel.inputs.createButtonTappedInput)
             .disposed(by: disposeBag)
@@ -49,6 +55,11 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         tableView.rx.itemSelected.asObservable()
             .map { [unowned self] in (self.dataSource.contactViewModelAt(indexPath: $0)!, $0) }
             .bind(to: viewModel.inputs.selectedUserAndIndexPathInput)
+            .disposed(by: disposeBag)
+        
+        contactsTableHeaderView.actionButton.rx.tap
+            .scan(false) { lastState, _ in return !lastState }
+            .bind(to: viewModel.inputs.selectedAllContactsTappedInput)
             .disposed(by: disposeBag)
         
         //MARK: - Output
@@ -63,6 +74,8 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 self?.dataSource.toggleContact(at: $0.indexPath)
                 self?.tableView.reloadRows(at: [$0.indexPath], with: .none)
+                let selectedCount = self?.dataSource.selectedCount()
+                self?.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
                 self?.publicButton.backgroundColor = UIColor.white
             })
             .disposed(by: disposeBag)
@@ -72,13 +85,23 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
                 self?.publicButton.backgroundColor = $0
                 self?.dataSource.toggleAll(shouldSelect: false)
                 self?.tableView.reloadData()
+                self?.contactsTableHeaderView.titleLabel.text = "Select From Contacts"
             })
             .disposed(by: disposeBag)
         
         viewModel.outputs.selectAllContacts
             .drive(onNext: { [weak self] in
-                self?.dataSource.toggleAll(shouldSelect: true)
+                self?.dataSource.toggleAll(shouldSelect: $0)
                 self?.tableView.reloadData()
+                
+                if $0 {
+                    let selectedCount = self?.dataSource.selectedCount()
+                    self?.contactsTableHeaderView.actionButton.setTitle("Deselect All", for: .normal)
+                    self?.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
+                } else {
+                    self?.contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
+                    self?.contactsTableHeaderView.titleLabel.text = "Select From Contacts"
+                }
             })
             .disposed(by: disposeBag)
         
@@ -96,6 +119,18 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
     }
+    
+}
+
+extension ReplyVisibilityViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return contactsTableHeaderView
+    }
+    
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 60
+//    }
     
 }
 
@@ -150,6 +185,12 @@ extension ReplyVisibilityViewController {
             make.top.equalTo(view).offset(100)
             make.height.equalTo(60)
         }
+    }
+    
+    private func setupContatsTableHeaderView() {
+        contactsTableHeaderView = ContactsTableHeaderView()
+        contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
+        contactsTableHeaderView.titleLabel.text = "Select From Contacts"
     }
     
 }

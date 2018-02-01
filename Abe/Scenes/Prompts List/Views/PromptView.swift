@@ -1,7 +1,6 @@
 
 import Foundation
 import UIKit
-import GSKStretchyHeaderView
 
 final class PromptView: UIView {
     

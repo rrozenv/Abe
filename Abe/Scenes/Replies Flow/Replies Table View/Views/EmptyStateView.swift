@@ -54,3 +54,55 @@ final class RepliesEmptyView: UIView {
     }
     
 }
+
+final class ContactsTableHeaderView: UIView {
+    
+    var containerView: UIView!
+    var actionButton: UIButton!
+    var titleLabel: UILabel!
+    
+    //MARK: Initalizer Setup
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        self.backgroundColor = UIColor.orange
+        setupContainerView()
+        setupTitleLabel()
+        setupActionButton()
+    }
+    
+    private func setupContainerView() {
+        containerView = UIView()
+        
+        self.addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+            make.height.equalTo(60)
+        }
+    }
+    
+    private func setupActionButton() {
+        actionButton = UIButton()
+        actionButton.backgroundColor = UIColor.red
+        
+        containerView.addSubview(actionButton)
+        actionButton.snp.makeConstraints { (make) in
+            make.top.right.bottom.equalTo(containerView)
+            make.width.equalTo(100)
+        }
+    }
+    
+    private func setupTitleLabel() {
+        titleLabel = UILabel()
+        
+        containerView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(containerView).offset(26)
+            make.centerY.equalTo(containerView.snp.centerY)
+        }
+    }
+    
+}

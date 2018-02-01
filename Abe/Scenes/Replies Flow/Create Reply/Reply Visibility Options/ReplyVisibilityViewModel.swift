@@ -8,7 +8,7 @@ import UIKit
 protocol ReplyVisibilityViewModelInputs {
     var viewWillAppearInput: AnyObserver<Void> { get }
     var publicButtonTappedInput: AnyObserver<Void> { get }
-    var selectedAllContactsTappedInput: AnyObserver<Void> { get }
+    var selectedAllContactsTappedInput: AnyObserver<Bool> { get }
     var selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
     var createButtonTappedInput: AnyObserver<Void> { get }
 }
@@ -16,7 +16,7 @@ protocol ReplyVisibilityViewModelInputs {
 protocol ReplyVisibilityViewModelOutputs {
     var individualContacts: Driver<[IndividualContactViewModel]> { get }
     var publicButtonColor: Driver<UIColor> { get }
-    var selectAllContacts: Driver<Void> { get }
+    var selectAllContacts: Driver<Bool> { get }
     var latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
     var createButtonEnabled: Observable<Bool> { get }
     var errorTracker: Driver<Error> { get }
@@ -35,7 +35,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     var inputs: ReplyVisibilityViewModelInputs { return self }
     let viewWillAppearInput: AnyObserver<Void>
     let publicButtonTappedInput: AnyObserver<Void>
-    let selectedAllContactsTappedInput: AnyObserver<Void>
+    let selectedAllContactsTappedInput: AnyObserver<Bool>
     let selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let createButtonTappedInput: AnyObserver<Void>
 
@@ -43,7 +43,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     var outputs: ReplyVisibilityViewModelOutputs { return self }
     let individualContacts: Driver<[IndividualContactViewModel]>
     let publicButtonColor: Driver<UIColor>
-    let selectAllContacts: Driver<Void>
+    let selectAllContacts: Driver<Bool>
     let latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let createButtonEnabled: Observable<Bool>
     let errorTracker: Driver<Error>
@@ -68,7 +68,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
 //MARK: - Subjects
         let _viewWillAppearInput = PublishSubject<Void>()
         let _publicButtonTappedInput = PublishSubject<Void>()
-        let _selectedAllContactsTappedInput = PublishSubject<Void>()
+        let _selectedAllContactsTappedInput = PublishSubject<Bool>()
         let _selectedUserAndIndexPathInput = PublishSubject<(user: IndividualContactViewModel, indexPath: IndexPath)>()
         let _createButtonTappedInput = PublishSubject<Void>()
         
@@ -90,7 +90,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let publicVisibilityObservable = publicButtonTappedObservable
             .map { Visibility.all }
         let allContactsVisibilityObservable = selectedAllContactsObservable
-            .map { Visibility.contacts }
+            .map { _ in Visibility.contacts }
         let individualContactsVisibilityObservable = selectedUserAndIndexPathObservable
             .map { _ in Visibility.individualContacts }
         let currentVisibilityObservable = Observable.of(publicVisibilityObservable, allContactsVisibilityObservable, individualContactsVisibilityObservable)
@@ -121,11 +121,16 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .withLatestFrom(currentVisibilityObservable)
             .filter { $0 == Visibility.individualContacts }
             .flatMap { _ in selectedContactNumbersObservable }
-            .map { updateReply(savedReplyInput.reply, contactNumbere: $0) }
+            .map { updateReply(savedReplyInput.reply, contactNumbers: $0) }
+        
+        let createWithAllContactsVis = createButtonTappedObservable
+            .withLatestFrom(currentVisibilityObservable)
+            .filter { $0 == Visibility.contacts }
+            .map { _ in updateReply(savedReplyInput.reply, contactNumbers: currentUser.value.allNumbersFromContacts()) }
         
         let createWithGeneralVis = createButtonTappedObservable
             .withLatestFrom(currentVisibilityObservable)
-            .filter { $0 != Visibility.individualContacts }
+            .filter { $0 == Visibility.all }
             .map { updateReplyVisibility(savedReplyInput.reply, vis: $0) }
         
 //MARK: - Outputs
@@ -140,7 +145,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .asDriver(onErrorJustReturn: UIColor.green)
         
         self.selectAllContacts = selectedAllContactsObservable
-            .asDriver(onErrorJustReturn: ())
+            .asDriver(onErrorJustReturn: false)
         
         self.latestUserAndIndexPath = selectedUserAndIndexPathObservable
             .asDriverOnErrorJustComplete()
@@ -157,7 +162,9 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         }
 
 //MARK: - Routing
-        Observable.merge(createWithIndividualContactsVis, createWithGeneralVis)
+        Observable.merge(createWithIndividualContactsVis,
+                         createWithAllContactsVis,
+                         createWithGeneralVis)
             .flatMapLatest { (reply) in
                 return replyService.saveReply(reply)
                     .flatMapLatest { replyService.add(reply: $0, to: prompt) }
@@ -182,9 +189,9 @@ private func createContactViewModelsFor(registeredUsers: [User]) -> [IndividualC
     }
 }
 
-private func updateReply(_ reply: PromptReply, contactNumbere: [String]) -> PromptReply {
+private func updateReply(_ reply: PromptReply, contactNumbers: [String]) -> PromptReply {
     let replyCopy = reply
-    replyCopy.visibleOnlyToPhoneNumbers.append(objectsIn: contactNumbere)
+    replyCopy.visibleOnlyToPhoneNumbers.append(objectsIn: contactNumbers)
     replyCopy.visibility = Visibility.individualContacts.rawValue
     return replyCopy
 }

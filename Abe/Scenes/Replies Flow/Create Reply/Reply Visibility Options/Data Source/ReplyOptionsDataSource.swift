@@ -68,6 +68,11 @@ final class ReplyVisibilityDataSource: ValueCellDataSource {
                  inSection: 0)
     }
     
+    func selectedCount() -> Int {
+        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return 0 }
+        return viewModels.filter { $0.isSelected }.count
+    }
+    
 //    func deselectAllInSection(section: Section) {
 //        switch section {
 //        case .generalVisibility:

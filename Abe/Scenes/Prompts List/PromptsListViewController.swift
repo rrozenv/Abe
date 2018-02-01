@@ -64,13 +64,14 @@ class PromptsListViewController: UIViewController, BindableType {
         viewModel.outputs.promptsChangeSet
             .subscribe(onNext: { [weak self] results, changes in
                 if let changes = changes {
-                    let initialOffset = self?.tableView.contentOffset.y
+                    //let initialOffset = self?.tableView.contentOffset.y
                     let section = PromptListDataSource.Section.publicOnly.rawValue
                     let prompts = changes.inserted.map { results[$0] }
+                    guard prompts.count > 0 else { return }
                     self?.dataSource.addNewPublic(prompts: prompts)
                     self?.tableView.reloadSections([section], with: .none)
-                    self?.tableView.scrollToRow(at: IndexPath(row: prompts.count, section: 1), at: .top, animated: false)
-                    self?.tableView.contentOffset.y += initialOffset ?? 0
+                    //self?.tableView.scrollToRow(at: IndexPath(row: prompts.count, section: 1), at: .top, animated: false)
+                    //self?.tableView.contentOffset.y += initialOffset ?? 0
                 }
             })
             .disposed(by: disposeBag)
