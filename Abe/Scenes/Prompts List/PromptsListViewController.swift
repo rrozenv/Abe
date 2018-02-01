@@ -37,7 +37,6 @@ class PromptsListViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         tableView.rx.itemSelected.asObservable()
-            .distinctUntilChanged()
             .map { [weak self] in self?.dataSource.promptAtIndexPath($0) }.unwrap()
             .bind(to: viewModel.inputs.promptSelectedInput)
             .disposed(by: disposeBag)

@@ -16,6 +16,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
     private var backButton: UIBarButtonItem!
     private var selectAllContactsButton: UIButton!
     private var contactsTableHeaderView: ContactsTableHeaderView!
+    private var isAllContactsSelected = Variable<Bool>(true)
 
     override func loadView() {
         super.loadView()
@@ -57,26 +58,20 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.selectedUserAndIndexPathInput)
             .disposed(by: disposeBag)
         
-        contactsTableHeaderView.actionButton.rx.tap
-            .scan(false) { lastState, _ in return !lastState }
+        contactsTableHeaderView.actionButton.rx.tap.asObservable()
+            //.scan(false) { lastState, _ in return !lastState }
+            .withLatestFrom(isAllContactsSelected.asObservable())
             .bind(to: viewModel.inputs.selectedAllContactsTappedInput)
             .disposed(by: disposeBag)
         
         //MARK: - Output
-        viewModel.outputs.createButtonEnabled
-            .subscribe(onNext: { [weak self] in
-                self?.createReplyButton.isEnabled = $0
-                self?.createReplyButton.style = $0 ? UIBarButtonItemStyle.done : UIBarButtonItemStyle.plain
-            })
-            .disposed(by: disposeBag)
-        
         viewModel.outputs.latestUserAndIndexPath
             .drive(onNext: { [weak self] in
                 self?.dataSource.toggleContact(at: $0.indexPath)
                 self?.tableView.reloadRows(at: [$0.indexPath], with: .none)
-                let selectedCount = self?.dataSource.selectedCount()
-                self?.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
                 self?.publicButton.backgroundColor = UIColor.white
+                self?.updateContactsHeaderView()
+                self?.setCreateButtonEnabledStatus(publicVisIsSelected: false)
             })
             .disposed(by: disposeBag)
         
@@ -85,7 +80,9 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
                 self?.publicButton.backgroundColor = $0
                 self?.dataSource.toggleAll(shouldSelect: false)
                 self?.tableView.reloadData()
-                self?.contactsTableHeaderView.titleLabel.text = "Select From Contacts"
+                
+                self?.updateContactsHeaderView()
+                self?.setCreateButtonEnabledStatus(publicVisIsSelected: true)
             })
             .disposed(by: disposeBag)
         
@@ -93,15 +90,10 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 self?.dataSource.toggleAll(shouldSelect: $0)
                 self?.tableView.reloadData()
+                self?.publicButton.backgroundColor = UIColor.white
                 
-                if $0 {
-                    let selectedCount = self?.dataSource.selectedCount()
-                    self?.contactsTableHeaderView.actionButton.setTitle("Deselect All", for: .normal)
-                    self?.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
-                } else {
-                    self?.contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
-                    self?.contactsTableHeaderView.titleLabel.text = "Select From Contacts"
-                }
+                self?.updateContactsHeaderView()
+                self?.setCreateButtonEnabledStatus(publicVisIsSelected: false)
             })
             .disposed(by: disposeBag)
         
@@ -135,6 +127,30 @@ extension ReplyVisibilityViewController: UITableViewDelegate {
 }
 
 extension ReplyVisibilityViewController {
+    
+    private func setCreateButtonEnabledStatus(publicVisIsSelected: Bool) {
+        guard !publicVisIsSelected else {
+            self.createReplyButton.isEnabled = true
+            self.createReplyButton.style = UIBarButtonItemStyle.done
+            return
+        }
+        let selectedCount = self.dataSource.selectedCount()
+        self.createReplyButton.isEnabled =  selectedCount > 0 ? true : false 
+        self.createReplyButton.style = selectedCount > 0 ? UIBarButtonItemStyle.done : UIBarButtonItemStyle.plain
+    }
+    
+    private func updateContactsHeaderView() {
+        let selectedCount = self.dataSource.selectedCount()
+        if selectedCount > 0 {
+            self.contactsTableHeaderView.actionButton.setTitle("Deselect All", for: .normal)
+            self.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
+            self.isAllContactsSelected.value = false
+        } else {
+            self.contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
+            self.contactsTableHeaderView.titleLabel.text = "Select From Contacts"
+            self.isAllContactsSelected.value = true
+        }
+    }
     
     private func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)

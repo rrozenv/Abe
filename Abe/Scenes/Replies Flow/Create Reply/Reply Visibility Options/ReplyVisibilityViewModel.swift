@@ -18,7 +18,6 @@ protocol ReplyVisibilityViewModelOutputs {
     var publicButtonColor: Driver<UIColor> { get }
     var selectAllContacts: Driver<Bool> { get }
     var latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
-    var createButtonEnabled: Observable<Bool> { get }
     var errorTracker: Driver<Error> { get }
 }
 
@@ -45,7 +44,6 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let publicButtonColor: Driver<UIColor>
     let selectAllContacts: Driver<Bool>
     let latestUserAndIndexPath: Driver<(user: IndividualContactViewModel, indexPath: IndexPath)>
-    let createButtonEnabled: Observable<Bool>
     let errorTracker: Driver<Error>
 
 //MARK: - Init
@@ -95,15 +93,25 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .map { _ in Visibility.individualContacts }
         let currentVisibilityObservable = Observable.of(publicVisibilityObservable, allContactsVisibilityObservable, individualContactsVisibilityObservable)
             .merge()
-        
-        let shouldClearSelectedNumbersObservable = publicButtonTappedObservable
+   
+        let shouldClearSelectedNumbersObservable = Observable.of(publicButtonTappedObservable,selectedAllContactsObservable.filter{ !$0 }.mapToVoid()).merge()
             .map { (user: IndividualContactViewModel(isSelected: false, user: User.defualtUser()),
                     indexPath: IndexPath(row: -1, section: 0)) }
         
-        let selectedContactNumbersObservable = Observable.of(selectedUserAndIndexPathObservable, shouldClearSelectedNumbersObservable).merge()
+        let shouldSelectAllContactsObservable = selectedAllContactsObservable
+            .filter { $0 }
+            .map { _ in
+                (user: IndividualContactViewModel(isSelected: true, user: User.defualtUser()),
+                    indexPath: IndexPath(row: -1, section: 0))
+            }
+        
+        let selectedContactNumbersObservable = Observable
+            .of(selectedUserAndIndexPathObservable,         shouldClearSelectedNumbersObservable,
+                shouldSelectAllContactsObservable).merge()
             .map { $0.user }
             .scan([]) { (summary, contactViewModel) -> [String] in
-                guard contactViewModel.user.phoneNumber != "default" else { return [] }
+                guard contactViewModel.user.phoneNumber != "default" && !contactViewModel.isSelected else { return [] }
+                guard contactViewModel.user.phoneNumber != "default" && contactViewModel.isSelected else { return currentUser.value.allNumbersFromContacts() }
                 var summaryCopy = summary
                 if !contactViewModel.isSelected {
                     summaryCopy.append(contactViewModel.user.phoneNumber)
@@ -149,17 +157,6 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         
         self.latestUserAndIndexPath = selectedUserAndIndexPathObservable
             .asDriverOnErrorJustComplete()
-        
-        self.createButtonEnabled = currentVisibilityObservable
-            .withLatestFrom(selectedContactNumbersObservable) { (vis, selectedContacts) in
-                switch vis {
-                case .all, .contacts:
-                    return true
-                case .individualContacts:
-                    return selectedContacts.isEmpty ? false : true
-                default: return false
-                }
-        }
 
 //MARK: - Routing
         Observable.merge(createWithIndividualContactsVis,
