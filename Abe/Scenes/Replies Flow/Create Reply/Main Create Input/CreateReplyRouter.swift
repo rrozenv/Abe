@@ -27,7 +27,8 @@ final class CreateReplyRouter: CreateReplyRoutingLogic {
         let router = ReplyOptionsRouter(navigationController: navigationController!)
         let viewModel = ReplyVisibilityViewModel(router: router,
                                                  prompt: savedInput.prompt,
-                                                 savedReplyInput: savedInput)
+                                                 savedReplyInput: savedInput,
+                                                 isForReply: true)
         
         vc.setViewModelBinding(model: viewModel!)
         navigationController?.pushViewController(vc, animated: true)

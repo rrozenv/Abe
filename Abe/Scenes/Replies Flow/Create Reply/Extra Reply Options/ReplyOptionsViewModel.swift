@@ -14,7 +14,7 @@ enum Visibility: String {
 }
 
 struct SavedReplyInput {
-    let reply: PromptReply
+    let reply: PromptReply?
     let prompt: Prompt
 }
 
@@ -109,7 +109,7 @@ struct ReplyOptionsViewModel {
                                  _selectedVisibility) { (prompt, replyInput, visibility) -> PromptReply in
                                     return PromptReply(user: self.user,
                                                        promptId: replyInput.prompt.id,
-                                                       body: replyInput.reply.body,
+                                                       body: replyInput.reply!.body,
                                                        visibility:
                                                        visibility.rawValue)
         }
@@ -126,7 +126,7 @@ struct ReplyOptionsViewModel {
                 NotificationCenter.default.post(.init(name: .userUpdated, object: nil))
             })
             .mapToVoid()
-            .do(onNext: router.toPromptDetail)
+            .do(onNext: router.toDismissNavVc)
         
         return Output(visibilityOptions: visbilityOptions,
                       didCreateReply: didCreateReply,

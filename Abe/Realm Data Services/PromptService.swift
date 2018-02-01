@@ -54,6 +54,16 @@ struct PromptService: PromptServiceType {
         return result ?? .error(PromptServiceError.creationFailed)
     }
     
+    func save(_ prompt: Prompt) -> Observable<Prompt> {
+        let result = withRealm("creating") { realm -> Observable<Prompt> in
+            try realm.write {
+                realm.add(prompt)
+            }
+            return .just(prompt)
+        }
+        return result ?? .error(PromptServiceError.creationFailed)
+    }
+    
     @discardableResult
     func delete(prompt: Prompt) -> Observable<Void> {
         let result = withRealm("deleting") { realm-> Observable<Void> in

@@ -11,7 +11,7 @@ import UIKit
 import Contacts
 
 protocol ReplyOptionsRoutingLogic {
-    func toPromptDetail()
+    func toDismissNavVc()
 }
 
 final class ReplyOptionsRouter: ReplyOptionsRoutingLogic {
@@ -22,7 +22,7 @@ final class ReplyOptionsRouter: ReplyOptionsRoutingLogic {
         self.navigationController = navigationController
     }
 
-    func toPromptDetail() {
+    func toDismissNavVc() {
         navigationController?.dismiss(animated: true)
     }
     

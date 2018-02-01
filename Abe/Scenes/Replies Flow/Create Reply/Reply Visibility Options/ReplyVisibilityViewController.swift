@@ -54,7 +54,8 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         tableView.rx.itemSelected.asObservable()
-            .map { [unowned self] in (self.dataSource.contactViewModelAt(indexPath: $0)!, $0) }
+            .map { [unowned self] in
+                (self.dataSource.contactViewModelAt(indexPath: $0)!, $0) }
             .bind(to: viewModel.inputs.selectedUserAndIndexPathInput)
             .disposed(by: disposeBag)
         
@@ -65,19 +66,27 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         //MARK: - Output
+        viewModel.outputs.currentIndividualNumbers
+            .drive(onNext: {
+                $0.forEach { print($0) }
+                print("------")
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.latestUserAndIndexPath
             .drive(onNext: { [weak self] in
                 self?.dataSource.toggleContact(at: $0.indexPath)
                 self?.tableView.reloadRows(at: [$0.indexPath], with: .none)
                 self?.publicButton.backgroundColor = UIColor.white
+                
                 self?.updateContactsHeaderView()
                 self?.setCreateButtonEnabledStatus(publicVisIsSelected: false)
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.publicButtonColor
+        viewModel.outputs.publicButtonTapped
             .drive(onNext: { [weak self] in
-                self?.publicButton.backgroundColor = $0
+                self?.publicButton.backgroundColor = UIColor.green
                 self?.dataSource.toggleAll(shouldSelect: false)
                 self?.tableView.reloadData()
                 
@@ -109,7 +118,6 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
                 self?.showError(error)
             })
             .disposed(by: disposeBag)
-        
     }
     
 }
@@ -119,10 +127,6 @@ extension ReplyVisibilityViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return contactsTableHeaderView
     }
-    
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 60
-//    }
     
 }
 
@@ -135,16 +139,21 @@ extension ReplyVisibilityViewController {
             return
         }
         let selectedCount = self.dataSource.selectedCount()
-        self.createReplyButton.isEnabled =  selectedCount > 0 ? true : false 
+        self.createReplyButton.isEnabled = selectedCount > 0 ? true : false
         self.createReplyButton.style = selectedCount > 0 ? UIBarButtonItemStyle.done : UIBarButtonItemStyle.plain
     }
     
     private func updateContactsHeaderView() {
         let selectedCount = self.dataSource.selectedCount()
-        if selectedCount > 0 {
+        let totalCount = self.dataSource.totalCount()
+        if selectedCount > 0 && totalCount == selectedCount {
             self.contactsTableHeaderView.actionButton.setTitle("Deselect All", for: .normal)
             self.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
             self.isAllContactsSelected.value = false
+        } else if selectedCount > 0 {
+            self.contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
+            self.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
+            self.isAllContactsSelected.value = true
         } else {
             self.contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
             self.contactsTableHeaderView.titleLabel.text = "Select From Contacts"

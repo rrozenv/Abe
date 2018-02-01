@@ -4,27 +4,12 @@ import UIKit
 
 final class ReplyVisibilityDataSource: ValueCellDataSource {
 
-//    enum Section: Int {
-//        case generalVisibility
-//        case individualContacts
-//    }
-
-    //MARK: - Locked Replies Tab
-//    func loadGeneralVisibility(options: [VisibilityCellViewModel]) {
-//        //self.clearValues(section: Section.generalVisibility.rawValue)
-//        self.set(values: options,
-//                 cellClass: GeneralVisibilityTableCell.self,
-//                 inSection: Section.generalVisibility.rawValue)
-//    }
-
-    //MARK: - Unlocked Replies Tab
     func loadIndividualContacts(contacts: [IndividualContactViewModel]) {
         self.set(values: contacts,
                  cellClass: UserContactTableCell.self,
                  inSection: 0)
     }
 
-    //MARK: - Read Current Value Methods
     func toggleContact(at indexPath: IndexPath) {
         guard var viewModel = contactViewModelAt(indexPath: indexPath) else { return }
         viewModel.isSelected = !viewModel.isSelected
@@ -34,6 +19,57 @@ final class ReplyVisibilityDataSource: ValueCellDataSource {
                  row: indexPath.row)
     }
     
+    func toggleAll(shouldSelect: Bool) {
+        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return }
+        let updatedViewModels = viewModels
+            .map { inputs -> IndividualContactViewModel in
+                return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
+        }
+        self.set(values: updatedViewModels,
+                 cellClass: UserContactTableCell.self,
+                 inSection: 0)
+    }
+    
+    func selectedCount() -> Int {
+        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return 0 }
+        return viewModels.filter { $0.isSelected }.count
+    }
+    
+    func totalCount() -> Int {
+        return self.numberOfItems()
+    }
+    
+    func contactViewModelAt(indexPath: IndexPath) -> IndividualContactViewModel? {
+        return self[indexPath] as? IndividualContactViewModel
+    }
+
+    //MARK: - Configure Cell
+    override func configureCell(tableCell cell: UITableViewCell, withValue value: Any) {
+        switch (cell, value) {
+        case let (cell as GeneralVisibilityTableCell, value as VisibilityCellViewModel):
+            cell.configureWith(value: value)
+        case let (cell as UserContactTableCell, value as IndividualContactViewModel):
+            cell.configureWith(value: value)
+        default:
+            assertionFailure("Unrecognized combo: \(cell), \(value)")
+        }
+    }
+
+}
+
+//    enum Section: Int {
+//        case generalVisibility
+//        case individualContacts
+//    }
+
+//MARK: - Locked Replies Tab
+//    func loadGeneralVisibility(options: [VisibilityCellViewModel]) {
+//        //self.clearValues(section: Section.generalVisibility.rawValue)
+//        self.set(values: options,
+//                 cellClass: GeneralVisibilityTableCell.self,
+//                 inSection: Section.generalVisibility.rawValue)
+//    }
+
 //    func updateGeneralVisibilitySelectedStatus(at indexPath: IndexPath) {
 //        //Updated General Section
 //        guard let visViewModels = self[section: Section.generalVisibility.rawValue] as? [VisibilityCellViewModel] else { return }
@@ -56,23 +92,9 @@ final class ReplyVisibilityDataSource: ValueCellDataSource {
 //                 cellClass: UserContactTableCell.self,
 //                 inSection: Section.individualContacts.rawValue)
 //    }
-    
-    func toggleAll(shouldSelect: Bool) {
-        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return }
-        let updatedViewModels = viewModels
-            .map { inputs -> IndividualContactViewModel in
-                return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
-            }
-        self.set(values: updatedViewModels,
-                 cellClass: UserContactTableCell.self,
-                 inSection: 0)
-    }
-    
-    func selectedCount() -> Int {
-        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return 0 }
-        return viewModels.filter { $0.isSelected }.count
-    }
-    
+
+
+
 //    func deselectAllInSection(section: Section) {
 //        switch section {
 //        case .generalVisibility:
@@ -89,7 +111,7 @@ final class ReplyVisibilityDataSource: ValueCellDataSource {
 //        default: break
 //        }
 //    }
-    
+
 //    func selectGeneralVisibility(_ vis: Visibility) {
 //        let indexPath = IndexPath(row: 0, section: Section.generalVisibility.rawValue)
 //        guard var viewModel = generalVisAtIndexPath(indexPath) else { return }
@@ -104,21 +126,4 @@ final class ReplyVisibilityDataSource: ValueCellDataSource {
 //        return self[indexPath] as? VisibilityCellViewModel
 //    }
 
-    func contactViewModelAt(indexPath: IndexPath) -> IndividualContactViewModel? {
-        return self[indexPath] as? IndividualContactViewModel
-    }
-
-    //MARK: - Configure Cell
-    override func configureCell(tableCell cell: UITableViewCell, withValue value: Any) {
-        switch (cell, value) {
-        case let (cell as GeneralVisibilityTableCell, value as VisibilityCellViewModel):
-            cell.configureWith(value: value)
-        case let (cell as UserContactTableCell, value as IndividualContactViewModel):
-            cell.configureWith(value: value)
-        default:
-            assertionFailure("Unrecognized combo: \(cell), \(value)")
-        }
-    }
-
-}
 
