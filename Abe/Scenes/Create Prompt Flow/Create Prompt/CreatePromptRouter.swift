@@ -23,6 +23,7 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
         let viewModel = CreatePromptViewModel(promptService: promptService, router: self)
         vc.setViewModelBinding(model: viewModel!)
         self.createPromptViewModel = viewModel
+        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -37,6 +38,7 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
                 .drive(createPromptViewModel!.imageDelegateInput)
                 .disposed(by: viewModel.disposeBag)
         }
+        navigationController?.isNavigationBarHidden = false
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -54,6 +56,7 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
     }
 
     func toPrompts() {
+        navigationController?.isNavigationBarHidden = false
         navigationController?.dismiss(animated: true)
     }
     

@@ -73,7 +73,10 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
         let selectedPromptObservable = _promptSelectedInput.asObservable()
         
 //MARK: - Outputs
-        let contactsVisOnly = NSPredicate(format: "visibility = %@", "contacts")
+        let contactsVisOnly = NSPredicate(format: "visibility = %@", "individualContacts")
+        let onlyUserFriendPrompts = NSPredicate(format:"user.value.phoneNumber IN %@", currentUser.value.allNumbersFromContacts())
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [contactsVisOnly, onlyUserFriendPrompts])
+        
         self.contactsOnlyPrompts = viewDidLoadObservable
             .flatMapLatest {
                 promptService

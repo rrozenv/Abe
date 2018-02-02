@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		980240662023CF2000674F07 /* CreatePromptOptionsBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980240652023CF2000674F07 /* CreatePromptOptionsBarView.swift */; };
 		9806B90B2007CEB2000CB497 /* PixaImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B90A2007CEB2000CB497 /* PixaImageService.swift */; };
 		9806B90E2007DCB1000CB497 /* ImageSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */; };
 		9806B9102007DD77000CB497 /* ImageSearchCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */; };
@@ -151,6 +152,7 @@
 		0B669BDC38B29A77D8985BAD /* Pods_Abe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Abe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ED6DE227012B4C169B41D2D /* Pods-Abe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Abe.release.xcconfig"; path = "Pods/Target Support Files/Pods-Abe/Pods-Abe.release.xcconfig"; sourceTree = "<group>"; };
 		8DD8E150FA4D35820E08A943 /* Pods-Abe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Abe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Abe/Pods-Abe.debug.xcconfig"; sourceTree = "<group>"; };
+		980240652023CF2000674F07 /* CreatePromptOptionsBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePromptOptionsBarView.swift; sourceTree = "<group>"; };
 		9806B90A2007CEB2000CB497 /* PixaImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixaImageService.swift; sourceTree = "<group>"; };
 		9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchViewController.swift; sourceTree = "<group>"; };
 		9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSearchCollectionViewLayout.swift; sourceTree = "<group>"; };
@@ -419,6 +421,7 @@
 				98FEE7C61FE4C12800CD80A8 /* CreatePromptRouter.swift */,
 				98FEE7C41FE4C12300CD80A8 /* CreatePromptViewController.swift */,
 				98FEE7C21FE4C11C00CD80A8 /* CreatePromptViewModel.swift */,
+				980240652023CF2000674F07 /* CreatePromptOptionsBarView.swift */,
 			);
 			path = "Create Prompt";
 			sourceTree = "<group>";
@@ -1195,6 +1198,7 @@
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
 				980974B32017C59B00FBCE9B /* InputWagerRouter.swift in Sources */,
+				980240662023CF2000674F07 /* CreatePromptOptionsBarView.swift in Sources */,
 				9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */,
 				9828ABC8200E745A00A3A9D1 /* AddWebLinkViewController.swift in Sources */,
 				98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */,

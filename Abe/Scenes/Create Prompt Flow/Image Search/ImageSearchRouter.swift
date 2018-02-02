@@ -15,6 +15,7 @@ final class ImageSearchRouter: ImageSearchRoutingLogic {
     }
     
     func toMainCreateReplyInput() {
+        navigationController.isNavigationBarHidden = true
         navigationController.popViewController(animated: true)
     }
     
