@@ -139,11 +139,6 @@ extension GuessReplyAuthorViewController {
         tableView.snp.makeConstraints { (make) in
             make.right.left.bottom.equalTo(view)
             make.top.equalTo(searchBar.snp.bottom).offset(10)
-//            if #available(iOS 11.0, *) {
-//
-//            } else {
-//                make.top.equalTo(topLayoutGuide.snp.bottom)
-//            }
         }
     }
     

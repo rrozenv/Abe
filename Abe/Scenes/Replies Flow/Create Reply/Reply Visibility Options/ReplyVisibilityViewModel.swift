@@ -93,7 +93,6 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let selectedAllContactsObservable = _selectedAllContactsTappedInput.asObservable()
         let selectedUserAndIndexPathObservable = _selectedUserAndIndexPathInput.asObservable()
         let createButtonTappedObservable = _createButtonTappedInput.asObservable()
-       
 
 //MARK: - Second Level Observables
         let publicVisibilityObservable = publicButtonTappedObservable
@@ -149,7 +148,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .filter { isForReply }
             .withLatestFrom(currentVisibilityObservable)
             .filter { $0 == Visibility.individualContacts }
-            .flatMap { _ in selectedContactNumbersObservable }
+            .withLatestFrom(selectedContactNumbersObservable)
             .map { updateReply(savedReplyInput.reply, contactNumbers: $0) }
         
         let createWithGeneralVis = createButtonTappedObservable
@@ -162,7 +161,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             .filter { !isForReply }
             .withLatestFrom(currentVisibilityObservable)
             .filter { $0 == Visibility.individualContacts }
-            .flatMap { _ in selectedContactNumbersObservable }
+            .withLatestFrom(selectedContactNumbersObservable)
             .map { updatePrompt(savedReplyInput.prompt, contactNumbers: $0) }
         
         let createPromptWithGeneralVis = createButtonTappedObservable

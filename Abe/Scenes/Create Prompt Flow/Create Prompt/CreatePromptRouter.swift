@@ -7,6 +7,7 @@ protocol CreatePromptRoutingLogic {
     func toPrompts()
     func toAddWebLink()
     func toImageSearch()
+    func toVisibilityOptions(with savedInput: SavedReplyInput)
 }
 
 final class CreatePromptRouter: CreatePromptRoutingLogic {
@@ -24,6 +25,18 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
         vc.setViewModelBinding(model: viewModel!)
         self.createPromptViewModel = viewModel
         navigationController?.isNavigationBarHidden = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func toVisibilityOptions(with savedInput: SavedReplyInput) {
+        var vc = ReplyVisibilityViewController()
+        let router = ReplyOptionsRouter(navigationController: navigationController!)
+        let viewModel = ReplyVisibilityViewModel(router: router,
+                                                 prompt: savedInput.prompt,
+                                                 savedReplyInput: savedInput,
+                                                 isForReply: false)
+        vc.setViewModelBinding(model: viewModel!)
+        navigationController?.isNavigationBarHidden = false
         navigationController?.pushViewController(vc, animated: true)
     }
     

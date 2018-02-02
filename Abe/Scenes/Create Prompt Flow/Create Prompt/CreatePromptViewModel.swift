@@ -78,15 +78,6 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
                 (title: $0, body: $1, image: $2, webLink: $3)
             }
         
-        let didCreatePromptObservable = createTappedObservable
-            .withLatestFrom(promptInputsObservable)
-            .filter { $0.image != nil }
-            .flatMapLatest {
-                return promptService
-                    .createPrompt(title: $0.title, body: $0.body, imageUrl: $0.image!.webformatURL, webLink: $0.webLink, user: currentUser.value)
-            }
-            .mapToVoid()
-
 //MARK: - Outputs
         self.weblinkDelegateOutput = weblinkDelegateInputObservable.asDriverOnErrorJustComplete()
         self.imageDelegateOutput = imageDelegateInputObservable.asDriverOnErrorJustComplete()
@@ -108,8 +99,26 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
             .drive()
             .disposed(by: disposeBag)
         
-        Observable.of(didCreatePromptObservable, cancelTappedObservable)
-            .merge()
+        createTappedObservable
+            .withLatestFrom(promptInputsObservable)
+            .filter { $0.image != nil }
+            .map { Prompt(title: $0.title,
+                          body: $0.body,
+                          imageUrl: $0.image!.webformatURL,
+                          webLink: $0.webLink,
+                          user: currentUser.value) }
+            .map { SavedReplyInput(reply: nil, prompt: $0) }
+            .do(onNext: router.toVisibilityOptions(with:))
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+//            .flatMapLatest {
+//                return promptService
+//                    .createPrompt(title: $0.title, body: $0.body, imageUrl: $0.image!.webformatURL, webLink: $0.webLink, user: currentUser.value)
+//            }
+//            .mapToVoid()
+
+         cancelTappedObservable
             .do(onNext: router.toPrompts)
             .subscribe()
             .disposed(by: disposeBag)

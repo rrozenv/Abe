@@ -4,9 +4,9 @@ import UIKit
 
 final class GuessReplyAuthorDataSource: ValueCellDataSource {
     
-    var storedUsers: [IndividualContactViewModel] = []
-    var latestFilteredUsers: [IndividualContactViewModel] = []
-    var isFiltering: Bool = false
+    private var storedUsers: [IndividualContactViewModel] = []
+    private var latestFilteredUsers: [IndividualContactViewModel] = []
+    private var isFiltering: Bool = false
     
     func loadUsers(viewModels: [IndividualContactViewModel]) {
         self.storedUsers = viewModels
@@ -41,8 +41,9 @@ final class GuessReplyAuthorDataSource: ValueCellDataSource {
     }
     
     func toggleUser(_ viewModel: IndividualContactViewModel) -> IndexPath? {
-        let allUsersIndex = storedUsers.index(of: viewModel)
-        storedUsers[allUsersIndex!].isSelected = !storedUsers[allUsersIndex!].isSelected
+        guard let allUsersIndex = storedUsers.index(of: viewModel)
+            else { return nil }
+        storedUsers[allUsersIndex].isSelected = !storedUsers[allUsersIndex].isSelected
         if let filteredUsersIndex = latestFilteredUsers.index(of: viewModel), isFiltering {
             latestFilteredUsers[filteredUsersIndex].isSelected = !latestFilteredUsers[filteredUsersIndex].isSelected
             self.set(value: latestFilteredUsers[filteredUsersIndex],
@@ -51,11 +52,11 @@ final class GuessReplyAuthorDataSource: ValueCellDataSource {
                      row: Int(filteredUsersIndex))
             return IndexPath(row: Int(filteredUsersIndex), section: 0)
         } else if !isFiltering {
-            self.set(value: storedUsers[allUsersIndex!],
+            self.set(value: storedUsers[allUsersIndex],
                      cellClass: UserContactTableCell.self,
                      inSection: 0,
-                     row: Int(allUsersIndex!))
-            return IndexPath(row: Int(allUsersIndex!), section: 0)
+                     row: Int(allUsersIndex))
+            return IndexPath(row: Int(allUsersIndex), section: 0)
         } else { return nil }
     }
     

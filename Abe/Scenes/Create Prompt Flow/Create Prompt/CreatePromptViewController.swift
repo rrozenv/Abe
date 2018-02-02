@@ -49,7 +49,7 @@ class CreatePromptViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.bodyTextInput)
             .disposed(by: disposeBag)
         
-        doneButton.rx.tap
+        optionsBarView.nextButton.rx.tap
             .bind(to: viewModel.inputs.createTappedInput)
             .disposed(by: disposeBag)
         
