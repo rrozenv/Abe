@@ -3,6 +3,15 @@ import Foundation
 import RealmSwift
 import RxSwift
 
+class StringObject: Object {
+    @objc dynamic var string = ""
+    
+    convenience init(_ string: String) {
+        self.init()
+        self.string = string
+    }
+}
+
 final class Prompt: Object {
     @objc dynamic var id: String = NSUUID().uuidString
     @objc dynamic var title: String = ""
@@ -12,7 +21,8 @@ final class Prompt: Object {
     @objc dynamic var createdAt = Date()
     @objc dynamic var user: User?
     @objc dynamic var webLinkThumbnail: WebLinkThumbnail?
-    let visibleOnlyToPhoneNumbers = List<String>()
+    let visibleOnlyToContactNumbers = List<StringObject>()
+    let visibleOnlyToUserIds = List<String>()
     let replies = List<PromptReply>()
     
     override static func primaryKey() -> String? {
@@ -33,7 +43,7 @@ final class Prompt: Object {
     }
     
     func isViewableBy(currentUser: User) -> Bool {
-        return visibleOnlyToPhoneNumbers.contains(currentUser.phoneNumber) || self.user?.id == currentUser.id
+        return visibleOnlyToContactNumbers.contains(StringObject(currentUser.id)) || self.user?.id == currentUser.id
     }
 }
 

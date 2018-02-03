@@ -111,12 +111,6 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
             .do(onNext: router.toVisibilityOptions(with:))
             .subscribe()
             .disposed(by: disposeBag)
-        
-//            .flatMapLatest {
-//                return promptService
-//                    .createPrompt(title: $0.title, body: $0.body, imageUrl: $0.image!.webformatURL, webLink: $0.webLink, user: currentUser.value)
-//            }
-//            .mapToVoid()
 
          cancelTappedObservable
             .do(onNext: router.toPrompts)

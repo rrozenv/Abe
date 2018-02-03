@@ -65,6 +65,10 @@ class User: Object {
         return self.contacts.flatMap { $0.numbers }
     }
     
+    func friendsPhoneNumbers() -> [String] {
+        return self.registeredContacts.flatMap { $0.phoneNumber }
+    }
+    
     func contactsWhoAreUsers(allUsers: Results<User>) -> [Contact] {
         return self.contacts.filter { (contact) -> Bool in
             return contact.numbers.contains(where: { (number) -> Bool in

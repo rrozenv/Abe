@@ -77,6 +77,7 @@
 		986768562012922C00D0421C /* WebLinkActionButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986768552012922C00D0421C /* WebLinkActionButtonsView.swift */; };
 		98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98676858201292E600D0421C /* WebLinkThumbnail.swift */; };
 		9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867685A201294B700D0421C /* PromptHeaderView.swift */; };
+		98691C35202547E800FE2180 /* TabOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98691C34202547E800FE2180 /* TabOptionsView.swift */; };
 		9883ED611FE6F810002E538E /* PromptReply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED601FE6F810002E538E /* PromptReply.swift */; };
 		9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */; };
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
@@ -222,6 +223,7 @@
 		986768552012922C00D0421C /* WebLinkActionButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkActionButtonsView.swift; sourceTree = "<group>"; };
 		98676858201292E600D0421C /* WebLinkThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkThumbnail.swift; sourceTree = "<group>"; };
 		9867685A201294B700D0421C /* PromptHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptHeaderView.swift; sourceTree = "<group>"; };
+		98691C34202547E800FE2180 /* TabOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabOptionsView.swift; sourceTree = "<group>"; };
 		9883ED601FE6F810002E538E /* PromptReply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptReply.swift; sourceTree = "<group>"; };
 		9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 				98FEE7BA1FE4BC5400CD80A8 /* PromptsListViewController.swift */,
 				98FEE7BC1FE4BC5B00CD80A8 /* PromptsListViewModel.swift */,
 				985F34742022666D008D2759 /* PromptsListDataSource.swift */,
+				98691C34202547E800FE2180 /* TabOptionsView.swift */,
 			);
 			path = "Prompts List";
 			sourceTree = "<group>";
@@ -1215,6 +1218,7 @@
 				9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */,
 				980F50372004571F006C2B83 /* AppController.swift in Sources */,
 				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,
+				98691C35202547E800FE2180 /* TabOptionsView.swift in Sources */,
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
 				980974BC2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,

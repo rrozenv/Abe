@@ -4,6 +4,8 @@ import UIKit
 
 final class PromptListDataSource: ValueCellDataSource {
     
+    private var currentTabVisibility = Visibility.all
+    
     enum Section: Int {
         case contactsOnly
         case publicOnly
@@ -11,22 +13,26 @@ final class PromptListDataSource: ValueCellDataSource {
     
     func loadContactsOnly(prompts: [Prompt]) {
         //guard prompts.isNotEmpty else { return }
+        self.currentTabVisibility = .individualContacts
         self.set(values: prompts,
                  cellClass: PromptTableCell.self,
-                 inSection: Section.contactsOnly.rawValue)
+                 inSection: 0)
     }
     
     func loadPublic(prompts: [Prompt]) {
+        self.currentTabVisibility = .all
         self.set(values: prompts,
                  cellClass: PromptTableCell.self,
-                 inSection: Section.publicOnly.rawValue)
+                 inSection: 0)
     }
     
     func addNewPublic(prompts: [Prompt]) {
         prompts.forEach {
-            self.prependRow(value: $0,
-                            cellClass: PromptTableCell.self,
-                            toSection: Section.publicOnly.rawValue)
+            if $0.visibility == currentTabVisibility.rawValue {
+                self.prependRow(value: $0,
+                                cellClass: PromptTableCell.self,
+                                toSection: 0)
+            }
         }
     }
     

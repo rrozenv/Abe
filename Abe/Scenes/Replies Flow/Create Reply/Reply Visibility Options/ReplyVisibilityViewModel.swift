@@ -247,7 +247,8 @@ private func updateReplyVisibility(_ reply: PromptReply?, vis: Visibility) -> Pr
 
 private func updatePrompt(_ prompt: Prompt, contactNumbers: [String]) -> Prompt {
     let promptCopy = prompt
-    promptCopy.visibleOnlyToPhoneNumbers.append(objectsIn: contactNumbers)
+    let stringObjects = contactNumbers.map { StringObject($0) }
+    promptCopy.visibleOnlyToContactNumbers.append(objectsIn: stringObjects)
     promptCopy.visibility = Visibility.individualContacts.rawValue
     return promptCopy
 }
