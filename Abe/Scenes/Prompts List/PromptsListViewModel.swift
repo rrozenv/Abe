@@ -58,7 +58,7 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
 
 //MARK: - Init
     init?(promptService: PromptService = PromptService(),
-         router: PromptsRoutingLogic) {
+          router: PromptsRoutingLogic) {
         
         guard let user = AppController.shared.currentUser.value else {
             NotificationCenter.default.post(name: Notification.Name.logout, object: nil)

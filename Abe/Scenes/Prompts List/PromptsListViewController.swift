@@ -14,6 +14,12 @@ class PromptsListViewController: UIViewController, BindableType {
     private var tableView: UITableView!
     private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
+    static func configuredWith(visibility: Visibility) -> PromptsListViewController {
+        let vc = PromptsListViewController()
+        vc.viewModel.inputs.configureWith(visibility: sort)
+        return vc
+    }
+    
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
