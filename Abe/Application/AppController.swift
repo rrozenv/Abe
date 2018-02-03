@@ -79,9 +79,13 @@ extension AppController {
     }
     
     private func createHomeViewController() -> UINavigationController {
-        let navVc = UINavigationController()
-        let router = PromptsRouter(navigationController: navVc)
-        router.toPrompts()
+        var pageVc = PromptPageViewController()
+        let vm = PromptPageViewModel()
+        pageVc.setViewModelBinding(model: vm!)
+        let navVc = UINavigationController(rootViewController: pageVc)
+//        let navVc = UINavigationController()
+//        let router = PromptsRouter(navigationController: navVc)
+//        router.toPrompts()
         return navVc
     }
     

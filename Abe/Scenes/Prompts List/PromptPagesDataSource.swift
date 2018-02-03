@@ -7,9 +7,10 @@ final class PromptPagesDataSource: NSObject, UIPageViewControllerDataSource {
     private let viewControllers: [UIViewController]
     private let visibilites: [Visibility]
     
-    internal init(visibilites: [Visibility]) {
+    internal init(visibilites: [Visibility], navVc: UINavigationController) {
         self.visibilites = visibilites
-        //self.viewControllers = sorts.map(DiscoveryPageViewController.configuredWith(sort:))
+        self.viewControllers = visibilites
+            .map { PromptsListViewController.configuredWith(visibility: $0, navVc: navVc) }
     }
     
 //    internal func load(filter: DiscoveryParams) {

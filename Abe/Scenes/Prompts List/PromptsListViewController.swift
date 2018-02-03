@@ -14,16 +14,20 @@ class PromptsListViewController: UIViewController, BindableType {
     private var tableView: UITableView!
     private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
-    static func configuredWith(visibility: Visibility) -> PromptsListViewController {
-        let vc = PromptsListViewController()
-        vc.viewModel.inputs.configureWith(visibility: sort)
+    static func configuredWith(visibility: Visibility,
+                               navVc: UINavigationController) -> PromptsListViewController {
+        var vc = PromptsListViewController()
+        let router = PromptsRouter(navigationController: navVc)
+        let viewModel = PromptListViewModel(router: router)
+        vc.setViewModelBinding(model: viewModel!)
+        vc.viewModel.inputs.tabVisSelectedInput.onNext(visibility)
         return vc
     }
     
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
-        setupTabOptionsView()
+        //setupTabOptionsView()
         setupTableView()
         setupCreatePromptButton()
         setupActivityIndicator()
@@ -53,29 +57,30 @@ class PromptsListViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.createTappedInput)
             .disposed(by: disposeBag)
         
-        let publicTapped = tabOptionsView.button(at: 0).rx.tap
-            .map { _ in Visibility.all }
-            .asDriverOnErrorJustComplete()
-        
-        let privateTapped = tabOptionsView.button(at: 1).rx.tap
-            .map { _ in Visibility.individualContacts }
-            .asDriverOnErrorJustComplete()
-        
-       Observable.of(publicTapped, privateTapped)
-            .merge()
-            .distinctUntilChanged()
-            .bind(to: viewModel.inputs.tabVisSelectedInput)
-            .disposed(by: disposeBag)
+//        let publicTapped = tabOptionsView.button(at: 0).rx.tap
+//            .map { _ in Visibility.all }
+//            .asDriverOnErrorJustComplete()
+//
+//        let privateTapped = tabOptionsView.button(at: 1).rx.tap
+//            .map { _ in Visibility.individualContacts }
+//            .asDriverOnErrorJustComplete()
+//
+//       Observable.of(publicTapped, privateTapped)
+//            .merge()
+//            .distinctUntilChanged()
+//            .bind(to: viewModel.inputs.tabVisSelectedInput)
+//            .disposed(by: disposeBag)
         
         //MARK: - Output
         viewModel.outputs.tabVisSelected
-            .drive(onNext: { [weak self] in
-                switch $0 {
-                case .all: self?.tabOptionsView.currentTab = 0
-                case .individualContacts: self?.tabOptionsView.currentTab = 1
-                default: break
-                }
-            })
+            .drive()
+//            .drive(onNext: { [weak self] in
+//                switch $0 {
+//                case .all: self?.tabOptionsView.currentTab = 0
+//                case .individualContacts: self?.tabOptionsView.currentTab = 1
+//                default: break
+//                }
+//            })
             .disposed(by: disposeBag)
         
         viewModel.outputs.contactsOnlyPrompts
@@ -169,7 +174,7 @@ extension PromptsListViewController {
         tableView.dataSource = dataSource
         
         //MARK: - tableView Constraints
-        view.insertSubview(tableView, belowSubview: tabOptionsView)
+        view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.edges.equalTo(view)
         }

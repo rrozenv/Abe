@@ -94,11 +94,22 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
         
 //MARK: - Outputs
         self.tabVisSelected = tabVisSelectedObservable.asDriver(onErrorJustReturn: .all)
-        self.publicPrompts = Observable
-            .of(viewDidLoadObservable.map { Visibility.all },
-                tabVisSelectedObservable.filter { $0 == Visibility.all })
-            .merge()
-            .map { NSPredicate(format: "visibility = %@", $0.rawValue) }
+//        self.publicPrompts = Observable
+//            .of(viewDidLoadObservable.map { Visibility.all },
+//                tabVisSelectedObservable.filter { $0 == Visibility.all })
+//            .merge()
+//            .map { NSPredicate(format: "visibility = %@", $0.rawValue) }
+//            .flatMapLatest {
+//                promptService
+//                    .fetchPromptsWith(predicate: $0)
+//                    .trackActivity(activityIndicator)
+//                    .trackError(errorTracker)
+//            }
+//            .asDriver(onErrorJustReturn: [])
+        
+        self.publicPrompts = tabVisSelectedObservable
+            .map { $0.queryPredicateFor(currentUser: currentUser.value) }
+            .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
             .flatMapLatest {
                 promptService
                     .fetchPromptsWith(predicate: $0)

@@ -11,6 +11,16 @@ enum Visibility: String {
     case individualContacts
     case contacts
     case userReply
+    
+    func queryPredicateFor(currentUser: User) -> [NSPredicate] {
+        switch self {
+        case .all:
+            return [NSPredicate(format: "visibility = %@", self.rawValue)]
+        case .individualContacts:
+            return [NSPredicate(format: "visibility = %@", self.rawValue), NSPredicate(format: "ANY visibleOnlyToContactNumbers = %@", StringObject(currentUser.phoneNumber))]
+        default: return []
+        }
+    }
 }
 
 struct SavedReplyInput {

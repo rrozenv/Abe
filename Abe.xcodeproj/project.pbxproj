@@ -64,6 +64,8 @@
 		9854D2542000546B00D7B7EB /* RepliesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9854D2532000546B00D7B7EB /* RepliesDataSource.swift */; };
 		985A7CCE201826490065BF38 /* GuessAndWagerValidationDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985A7CCD201826490065BF38 /* GuessAndWagerValidationDataSource.swift */; };
 		985B14BE202633AA0017306E /* PromptPagesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B14BD202633AA0017306E /* PromptPagesDataSource.swift */; };
+		985B14C0202646BD0017306E /* PromptPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B14BF202646BD0017306E /* PromptPageViewController.swift */; };
+		985B14C2202647B20017306E /* PromptPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B14C1202647B20017306E /* PromptPageViewModel.swift */; };
 		985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */; };
 		985C2A5D1FFDAC8E0034E116 /* EnableContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */; };
 		985C2A5F1FFDAC9A0034E116 /* EnableContactsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */; };
@@ -211,6 +213,8 @@
 		9854D2532000546B00D7B7EB /* RepliesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepliesDataSource.swift; sourceTree = "<group>"; };
 		985A7CCD201826490065BF38 /* GuessAndWagerValidationDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessAndWagerValidationDataSource.swift; sourceTree = "<group>"; };
 		985B14BD202633AA0017306E /* PromptPagesDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptPagesDataSource.swift; sourceTree = "<group>"; };
+		985B14BF202646BD0017306E /* PromptPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptPageViewController.swift; sourceTree = "<group>"; };
+		985B14C1202647B20017306E /* PromptPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptPageViewModel.swift; sourceTree = "<group>"; };
 		985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewController.swift; sourceTree = "<group>"; };
 		985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsViewModel.swift; sourceTree = "<group>"; };
 		985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableContactsRouter.swift; sourceTree = "<group>"; };
@@ -435,11 +439,13 @@
 			children = (
 				9893171F1FE6F05200E2979F /* Views */,
 				9893171E1FE6F04C00E2979F /* Cells */,
+				985B14BF202646BD0017306E /* PromptPageViewController.swift */,
+				985B14BD202633AA0017306E /* PromptPagesDataSource.swift */,
+				985B14C1202647B20017306E /* PromptPageViewModel.swift */,
 				98FEE7B81FE4BC4C00CD80A8 /* PromptsRouter.swift */,
 				98FEE7BA1FE4BC5400CD80A8 /* PromptsListViewController.swift */,
 				98FEE7BC1FE4BC5B00CD80A8 /* PromptsListViewModel.swift */,
 				985F34742022666D008D2759 /* PromptsListDataSource.swift */,
-				985B14BD202633AA0017306E /* PromptPagesDataSource.swift */,
 				98691C34202547E800FE2180 /* TabOptionsView.swift */,
 			);
 			path = "Prompts List";
@@ -1171,6 +1177,7 @@
 				985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */,
 				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
 				982B27CE20151BB700824E82 /* RateReplyRouter.swift in Sources */,
+				985B14C2202647B20017306E /* PromptPageViewModel.swift in Sources */,
 				983DB1EA200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift in Sources */,
 				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
@@ -1203,6 +1210,7 @@
 				9806B90B2007CEB2000CB497 /* PixaImageService.swift in Sources */,
 				982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */,
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
+				985B14C0202646BD0017306E /* PromptPageViewController.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
 				980974B32017C59B00FBCE9B /* InputWagerRouter.swift in Sources */,
 				980240662023CF2000674F07 /* CreatePromptOptionsBarView.swift in Sources */,
