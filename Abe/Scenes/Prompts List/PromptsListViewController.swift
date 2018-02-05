@@ -20,7 +20,7 @@ class PromptsListViewController: UIViewController, BindableType {
         let router = PromptsRouter(navigationController: navVc)
         let viewModel = PromptListViewModel(router: router)
         vc.setViewModelBinding(model: viewModel!)
-        vc.viewModel.inputs.tabVisSelectedInput.onNext(visibility)
+        vc.viewModel.inputs.visWhenViewLoadsInput.onNext(visibility)
         return vc
     }
     
@@ -52,47 +52,11 @@ class PromptsListViewController: UIViewController, BindableType {
             .map { [weak self] in self?.dataSource.promptAtIndexPath($0) }.unwrap()
             .bind(to: viewModel.inputs.promptSelectedInput)
             .disposed(by: disposeBag)
-        
-        createPromptButton.rx.tap
-            .bind(to: viewModel.inputs.createTappedInput)
-            .disposed(by: disposeBag)
-        
-//        let publicTapped = tabOptionsView.button(at: 0).rx.tap
-//            .map { _ in Visibility.all }
-//            .asDriverOnErrorJustComplete()
-//
-//        let privateTapped = tabOptionsView.button(at: 1).rx.tap
-//            .map { _ in Visibility.individualContacts }
-//            .asDriverOnErrorJustComplete()
-//
-//       Observable.of(publicTapped, privateTapped)
-//            .merge()
-//            .distinctUntilChanged()
-//            .bind(to: viewModel.inputs.tabVisSelectedInput)
-//            .disposed(by: disposeBag)
-        
+
         //MARK: - Output
-        viewModel.outputs.tabVisSelected
-            .drive()
-//            .drive(onNext: { [weak self] in
-//                switch $0 {
-//                case .all: self?.tabOptionsView.currentTab = 0
-//                case .individualContacts: self?.tabOptionsView.currentTab = 1
-//                default: break
-//                }
-//            })
-            .disposed(by: disposeBag)
-        
-        viewModel.outputs.contactsOnlyPrompts
+        viewModel.outputs.promptsToDisplay
             .drive(onNext: { [weak self] in
-                self?.dataSource.loadContactsOnly(prompts: $0)
-                self?.tableView.reloadData()
-            })
-            .disposed(by: disposeBag)
-        
-        viewModel.outputs.publicPrompts
-            .drive(onNext: { [weak self] in
-                self?.dataSource.loadPublic(prompts: $0)
+                self?.dataSource.load(prompts: $0)
                 self?.tableView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -104,7 +68,7 @@ class PromptsListViewController: UIViewController, BindableType {
                     //let section = PromptListDataSource.Section.publicOnly.rawValue
                     let prompts = changes.inserted.map { results[$0] }
                     guard prompts.count > 0 else { return }
-                    self?.dataSource.addNewPublic(prompts: prompts)
+                    self?.dataSource.add(prompts: prompts)
                     self?.tableView.reloadData()
                     //self?.tableView.scrollToRow(at: IndexPath(row: prompts.count, section: 1), at: .top, animated: false)
                     //self?.tableView.contentOffset.y += initialOffset ?? 0

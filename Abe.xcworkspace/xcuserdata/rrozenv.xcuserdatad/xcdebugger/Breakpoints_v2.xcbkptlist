@@ -121,45 +121,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Prompts List/PromptsListViewModel.swift"
-            timestampString = "539566008.920499"
+            filePath = "Abe/Scenes/Prompts List/PromptPageViewController.swift"
+            timestampString = "539567870.73726"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
-            landmarkName = "init(promptService:router:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Prompts List/PromptsListViewModel.swift"
-            timestampString = "539566008.9205821"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "126"
-            endingLineNumber = "126"
-            landmarkName = "init(promptService:router:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Abe/Scenes/Prompts List/PromptsListDataSource.swift"
-            timestampString = "539566008.9206361"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
-            landmarkName = "loadPublic(prompts:)"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "pageViewController(_:willTransitionTo:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -23,6 +23,18 @@ enum Visibility: String {
     }
 }
 
+extension Visibility: Equatable {
+    static func ==(lhs: Visibility, rhs: Visibility) -> Bool {
+        return lhs.rawValue == rhs.rawValue
+    }
+}
+
+extension Visibility: Hashable {
+    var hashValue: Int {
+        return rawValue.hashValue
+    }
+}
+
 struct SavedReplyInput {
     let reply: PromptReply?
     let prompt: Prompt

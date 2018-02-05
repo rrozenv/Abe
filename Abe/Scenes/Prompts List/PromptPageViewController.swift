@@ -60,9 +60,15 @@ final class PromptPageViewController: UIViewController {
                 guard let controller = self?.dataSource.controllerFor(sort: $0) else {
                     fatalError("Controller not found for sort \($0)")
                 }
+                var direction: UIPageViewControllerNavigationDirection = .forward
+                switch $0 {
+                case .all: direction = .forward
+                case .individualContacts: direction = .reverse
+                default: break
+                }
                 self?.pageViewController.setViewControllers(
                     [controller],
-                    direction: .forward,
+                    direction: direction,
                     animated: true,
                     completion: nil
                 )

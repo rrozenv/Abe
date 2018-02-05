@@ -31,7 +31,7 @@ class SignupRouter: SignupRoutingLogic {
         let vm = PromptListViewModel(router: router)
         promptsVc.setViewModelBinding(model: vm!)
         window.rootViewController = navVc
-        router.toPrompts()
+        //router.toPrompts()
     }
     
 }

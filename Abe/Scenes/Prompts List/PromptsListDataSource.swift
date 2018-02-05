@@ -11,28 +11,18 @@ final class PromptListDataSource: ValueCellDataSource {
         case publicOnly
     }
     
-    func loadContactsOnly(prompts: [Prompt]) {
-        //guard prompts.isNotEmpty else { return }
-        self.currentTabVisibility = .individualContacts
-        self.set(values: prompts,
-                 cellClass: PromptTableCell.self,
-                 inSection: 0)
-    }
-    
-    func loadPublic(prompts: [Prompt]) {
+    func load(prompts: [Prompt]) {
         self.currentTabVisibility = .all
         self.set(values: prompts,
                  cellClass: PromptTableCell.self,
                  inSection: 0)
     }
     
-    func addNewPublic(prompts: [Prompt]) {
+    func add(prompts: [Prompt]) {
         prompts.forEach {
-            //if $0.visibility == currentTabVisibility.rawValue {
-                self.prependRow(value: $0,
-                                cellClass: PromptTableCell.self,
-                                toSection: 0)
-            //}
+            self.prependRow(value: $0,
+                            cellClass: PromptTableCell.self,
+                            toSection: 0)
         }
     }
     

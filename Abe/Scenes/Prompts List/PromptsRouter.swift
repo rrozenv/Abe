@@ -8,7 +8,7 @@ import RealmSwift
 protocol PromptsRoutingLogic {
     func toCreatePrompt()
     func toPrompt(_ prompt: Prompt)
-    func toPrompts()
+    //func toPrompts()
 }
 
 class PromptsRouter: PromptsRoutingLogic {
@@ -19,13 +19,13 @@ class PromptsRouter: PromptsRoutingLogic {
         self.navigationController = navigationController
     }
 
-    func toPrompts() {
-        var vc = PromptsListViewController()
-        let viewModel = PromptListViewModel(router: self)
-        vc.setViewModelBinding(model: viewModel!)
-        viewModel?.inputs.viewDidLoadInput.onNext(())
-        navigationController?.pushViewController(vc, animated: true)
-    }
+//    func toPrompts() {
+//        var vc = PromptsListViewController()
+//        let viewModel = PromptListViewModel(router: self)
+//        vc.setViewModelBinding(model: viewModel!)
+//        viewModel?.inputs.viewDidLoadInput.onNext(())
+//        navigationController?.pushViewController(vc, animated: true)
+//    }
 
     func toCreatePrompt() {
         let navVc = UINavigationController()

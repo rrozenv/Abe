@@ -13,19 +13,15 @@ enum PromptListFilterOption {
 typealias PromptChangeSet = (AnyRealmCollection<Prompt>, RealmChangeset?)
 
 protocol PromptListViewModelInputs {
-    var viewDidLoadInput: AnyObserver<Void> { get }
-    var createTappedInput: AnyObserver<Void> { get }
+    var visWhenViewLoadsInput: AnyObserver<Visibility> { get }
     var promptSelectedInput: AnyObserver<Prompt> { get }
-    var tabVisSelectedInput: AnyObserver<Visibility> { get }
 }
 
 protocol PromptListViewModelOutputs {
-    var contactsOnlyPrompts: Driver<[Prompt]> { get }
-    var publicPrompts: Driver<[Prompt]> { get }
+    var promptsToDisplay: Driver<[Prompt]> { get }
     var activityIndicator: Driver<Bool> { get }
     var errorTracker: Driver<Error> { get }
     var promptsChangeSet: Observable<PromptChangeSet> { get }
-    var tabVisSelected: Driver<Visibility> { get }
 }
 
 protocol PromptListViewModelType {
@@ -34,15 +30,12 @@ protocol PromptListViewModelType {
 }
 
 final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInputs, PromptListViewModelOutputs {
-    
     let disposeBag = DisposeBag()
     
 //MARK: - Inputs
     var inputs: PromptListViewModelInputs { return self }
-    let viewDidLoadInput: AnyObserver<Void>
-    let createTappedInput: AnyObserver<Void>
+    let visWhenViewLoadsInput: AnyObserver<Visibility>
     let promptSelectedInput: AnyObserver<Prompt>
-    let tabVisSelectedInput: AnyObserver<Visibility>
     
 //MARK: - Delegate Inputs
     let filterOptionsInput: AnyObserver<[PromptListFilterOption]?>
@@ -50,11 +43,9 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
 //MARK: - Outputs
     var outputs: PromptListViewModelOutputs { return self }
     let activityIndicator: Driver<Bool>
-    let contactsOnlyPrompts: Driver<[Prompt]>
-    let publicPrompts: Driver<[Prompt]>
+    let promptsToDisplay: Driver<[Prompt]>
     let errorTracker: Driver<Error>
     let promptsChangeSet: Observable<PromptChangeSet>
-    let tabVisSelected: Driver<Visibility>
 
 //MARK: - Init
     init?(promptService: PromptService = PromptService(),
@@ -72,42 +63,22 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
         self.errorTracker = errorTracker.asDriver()
         
 //MARK: - Subjects
-        let _viewDidLoadInput = PublishSubject<Void>()
-        let _createTappedInput = PublishSubject<Void>()
+        let _visWhenViewLoadsInput = PublishSubject<Visibility>()
         let _promptSelectedInput = PublishSubject<Prompt>()
         let _filterOptionsInput = PublishSubject<[PromptListFilterOption]?>()
-        let _tabVisSelectedInput = PublishSubject<Visibility>()
         
 //MARK: - Observers
-        self.viewDidLoadInput = _viewDidLoadInput.asObserver()
-        self.createTappedInput = _createTappedInput.asObserver()
+        self.visWhenViewLoadsInput = _visWhenViewLoadsInput.asObserver()
         self.promptSelectedInput = _promptSelectedInput.asObserver()
         self.filterOptionsInput = _filterOptionsInput.asObserver()
-        self.tabVisSelectedInput = _tabVisSelectedInput.asObserver()
         
 //MARK: - First Level Observables
-        let viewDidLoadObservable = _viewDidLoadInput.asObservable()
-        let createTappedObservable = _createTappedInput.asObservable()
+        let visWhenViewLoadsObservable = _visWhenViewLoadsInput.asObservable()
         let selectedPromptObservable = _promptSelectedInput.asObservable()
-        let tabVisSelectedObservable = _tabVisSelectedInput.asObservable()
         //let filterOptionsObservable = _filterOptionsInput.asObservable().startWith(nil)
         
 //MARK: - Outputs
-        self.tabVisSelected = tabVisSelectedObservable.asDriver(onErrorJustReturn: .all)
-//        self.publicPrompts = Observable
-//            .of(viewDidLoadObservable.map { Visibility.all },
-//                tabVisSelectedObservable.filter { $0 == Visibility.all })
-//            .merge()
-//            .map { NSPredicate(format: "visibility = %@", $0.rawValue) }
-//            .flatMapLatest {
-//                promptService
-//                    .fetchPromptsWith(predicate: $0)
-//                    .trackActivity(activityIndicator)
-//                    .trackError(errorTracker)
-//            }
-//            .asDriver(onErrorJustReturn: [])
-        
-        self.publicPrompts = tabVisSelectedObservable
+        self.promptsToDisplay = visWhenViewLoadsObservable
             .map { $0.queryPredicateFor(currentUser: currentUser.value) }
             .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
             .flatMapLatest {
@@ -118,32 +89,14 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
             }
             .asDriver(onErrorJustReturn: [])
 
-        self.contactsOnlyPrompts =  tabVisSelectedObservable
-            .filter { $0 == Visibility.individualContacts }
-            .map { [NSPredicate(format: "visibility = %@", $0.rawValue), NSPredicate(format: "ANY visibleOnlyToContactNumbers = %@", StringObject(currentUser.value.phoneNumber))] }
-            .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
-            .flatMapLatest {
-                promptService
-                    .fetchPromptsWith(predicate: $0)
-                    .trackActivity(activityIndicator)
-                    .trackError(errorTracker)
-            }
-            .asDriver(onErrorJustReturn: [])
-        
-        self.promptsChangeSet = tabVisSelectedObservable
+        self.promptsChangeSet = visWhenViewLoadsObservable
             .map { $0.queryPredicateFor(currentUser: currentUser.value) }
             .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
             .flatMapLatest {
                 promptService.changeSetFor(predicate: $0)
                     .trackError(errorTracker)
             }
-        
 //MARK: - Routing
-        createTappedObservable
-            .do(onNext: router.toCreatePrompt)
-            .subscribe()
-            .disposed(by: disposeBag)
-        
         selectedPromptObservable
             .do(onNext: router.toPrompt)
             .subscribe()
