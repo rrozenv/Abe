@@ -4,26 +4,32 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class PromptPageViewController: UIViewController, BindableType {
+final class PromptPageViewController: UIViewController {
     
-    var viewModel: PromptPageViewModel!
+    private var viewModel: PromptPageViewModel!
     private var dataSource: PromptPagesDataSource!
     private let disposeBag = DisposeBag()
     private var pageViewController: UIPageViewController!
     private var tabOptionsView: TabOptionsView!
+    private var createPromptButton: UIBarButtonItem!
     
     override func loadView() {
         super.loadView()
         setupPageController()
         setupTabOptionsView()
+        setupCreatePromptButton()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let router = PromptPageRouter(navigationController: self.navigationController!)
+        viewModel = PromptPageViewModel(router: router)
+        bindViewModel()
     }
     
     func bindViewModel() {
         
+        //MARK: - Inputs
         let publicTapped = tabOptionsView.button(at: 0).rx.tap
             .map { _ in Visibility.all }
             .asDriverOnErrorJustComplete()
@@ -34,17 +40,22 @@ final class PromptPageViewController: UIViewController, BindableType {
         
         Observable.of(publicTapped, privateTapped)
             .merge()
-            .distinctUntilChanged()
+            //.distinctUntilChanged()
             .bind(to: viewModel.inputs.tabVisSelectedInput)
             .disposed(by: disposeBag)
         
-        self.viewModel.outputs.configurePagerDataSource
+        createPromptButton.rx.tap
+            .bind(to: viewModel.inputs.createPromptTappedInput)
+            .disposed(by: disposeBag)
+            
+        //MARK: - Outputs
+        viewModel.outputs.configurePagerDataSource
             .drive(onNext: { [weak self] in
                 self?.configurePagerDataSource($0)
             })
             .disposed(by: disposeBag)
         
-        self.viewModel.outputs.navigateToVisibility
+        viewModel.outputs.navigateToVisibility
             .drive(onNext: { [weak self] in
                 guard let controller = self?.dataSource.controllerFor(sort: $0) else {
                     fatalError("Controller not found for sort \($0)")
@@ -55,20 +66,14 @@ final class PromptPageViewController: UIViewController, BindableType {
                     animated: true,
                     completion: nil
                 )
-                switch $0 {
-                case .all: self?.tabOptionsView.currentTab = 0
-                case .individualContacts: self?.tabOptionsView.currentTab = 1
-                default: break
-                }
+                self?.tabOptionsView.currentVisibility = $0
             })
             .disposed(by: disposeBag)
     }
     
     private func configurePagerDataSource(_ visibilites: [Visibility]) {
-        self.dataSource = PromptPagesDataSource(visibilites: visibilites, navVc: self.navigationController ?? UINavigationController())
-        
+        self.dataSource = PromptPagesDataSource(visibilites: visibilites, navVc: self.navigationController!)
         self.pageViewController.dataSource = self.dataSource
-        
         DispatchQueue.main.async {
             self.pageViewController.setViewControllers(
                 [self.dataSource.controllerFor(index: 0)!],
@@ -88,14 +93,12 @@ final class PromptPageViewController: UIViewController, BindableType {
                                                   navigationOrientation: .horizontal,
                                                   options: nil)
         pageViewController.delegate = self
-
         pageViewController.setViewControllers(
             [.init()],
             direction: .forward,
             animated: false,
             completion: nil
         )
-        
         addChildViewController(pageViewController)
         view.addSubview(pageViewController.view)
         pageViewController!.view.frame = view.bounds
@@ -116,6 +119,11 @@ final class PromptPageViewController: UIViewController, BindableType {
         }
     }
     
+    private func setupCreatePromptButton() {
+        createPromptButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
+        self.navigationItem.rightBarButtonItem = createPromptButton
+    }
+    
 }
 
 extension PromptPageViewController: UIPageViewControllerDelegate {
@@ -123,17 +131,14 @@ extension PromptPageViewController: UIPageViewControllerDelegate {
                                      didFinishAnimating finished: Bool,
                                      previousViewControllers: [UIViewController],
                                      transitionCompleted completed: Bool) {
-    
+        viewModel.inputs.didTransitionToPageInput.onNext(completed)
     }
     
     func pageViewController(
         _ pageViewController: UIPageViewController,
         willTransitionTo pendingViewControllers: [UIViewController]) {
-        
-        guard let idx = pendingViewControllers.first.flatMap(self.dataSource.indexFor(controller:)) else {
-            return
-        }
-        
-        self.viewModel.inputs.willTransitionToPageInput.onNext(idx)
+        guard let idx = pendingViewControllers.first.flatMap(self.dataSource.indexFor(controller:))
+            else { return }
+        viewModel.inputs.willTransitionToPageInput.onNext(idx)
     }
 }

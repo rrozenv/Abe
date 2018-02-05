@@ -28,11 +28,11 @@ final class PromptListDataSource: ValueCellDataSource {
     
     func addNewPublic(prompts: [Prompt]) {
         prompts.forEach {
-            if $0.visibility == currentTabVisibility.rawValue {
+            //if $0.visibility == currentTabVisibility.rawValue {
                 self.prependRow(value: $0,
                                 cellClass: PromptTableCell.self,
                                 toSection: 0)
-            }
+            //}
         }
     }
     

@@ -4,7 +4,7 @@ import RealmSwift
 import RxSwift
 
 class StringObject: Object {
-    @objc dynamic var string = ""
+    @objc dynamic var string: String = ""
     
     convenience init(_ string: String) {
         self.init()

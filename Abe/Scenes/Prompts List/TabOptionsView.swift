@@ -6,9 +6,9 @@ final class TabOptionsView: UIView {
     
     private var stackView: UIStackView!
     private var buttons = [UIButton]()
-    var currentTab: Int = 0 {
+    var currentVisibility: Visibility = .all {
         didSet {
-            self.adjustButtonColors(selected: currentTab)
+            self.adjustButtonColors(selected: getButtonTagFor(visibility: currentVisibility))
         }
     }
     
@@ -44,6 +44,14 @@ extension TabOptionsView {
         }
     }
     
+    private func getButtonTagFor(visibility: Visibility) -> Int {
+        switch visibility {
+        case .all: return 0
+        case .individualContacts: return 1
+        default: return -1
+        }
+    }
+    
     private func setupStackView(numberOfItems: Int) {
         guard numberOfItems > 0 else { return }
         for i in 0...numberOfItems - 1 {
@@ -51,7 +59,7 @@ extension TabOptionsView {
             button.tag = i
             buttons.append(button)
         }
-        currentTab = 0
+        currentVisibility = .all
         stackView = UIStackView(arrangedSubviews: buttons)
         stackView.spacing = 0
         stackView.axis = .horizontal

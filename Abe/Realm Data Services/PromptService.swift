@@ -130,6 +130,14 @@ struct PromptService: PromptServiceType {
         return result ?? .empty()
     }
     
+    func changeSetFor(predicate: NSPredicate) -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> {
+        let result = withRealm("getting replies") { realm -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> in
+            let objects = realm.objects(Prompt.self).filter(predicate)
+            return Observable.changeset(from: objects)
+        }
+        return result ?? .empty()
+    }
+    
 }
 
 

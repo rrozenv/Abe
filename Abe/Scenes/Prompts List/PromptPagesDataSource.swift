@@ -7,7 +7,8 @@ final class PromptPagesDataSource: NSObject, UIPageViewControllerDataSource {
     private let viewControllers: [UIViewController]
     private let visibilites: [Visibility]
     
-    internal init(visibilites: [Visibility], navVc: UINavigationController) {
+    internal init(visibilites: [Visibility],
+                  navVc: UINavigationController) {
         self.visibilites = visibilites
         self.viewControllers = visibilites
             .map { PromptsListViewController.configuredWith(visibility: $0, navVc: navVc) }

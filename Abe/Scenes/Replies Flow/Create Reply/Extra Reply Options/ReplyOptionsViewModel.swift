@@ -17,7 +17,7 @@ enum Visibility: String {
         case .all:
             return [NSPredicate(format: "visibility = %@", self.rawValue)]
         case .individualContacts:
-            return [NSPredicate(format: "visibility = %@", self.rawValue), NSPredicate(format: "ANY visibleOnlyToContactNumbers = %@", StringObject(currentUser.phoneNumber))]
+            return [NSPredicate(format: "visibility = %@", self.rawValue), NSPredicate(format: "ANY visibleOnlyToContactNumbers.string = %@", currentUser.phoneNumber)]
         default: return []
         }
     }

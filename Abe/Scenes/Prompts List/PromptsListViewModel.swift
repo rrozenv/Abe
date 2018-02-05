@@ -130,9 +130,11 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
             }
             .asDriver(onErrorJustReturn: [])
         
-        self.promptsChangeSet = viewDidLoadObservable
+        self.promptsChangeSet = tabVisSelectedObservable
+            .map { $0.queryPredicateFor(currentUser: currentUser.value) }
+            .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
             .flatMapLatest {
-                promptService.changeSet()
+                promptService.changeSetFor(predicate: $0)
                     .trackError(errorTracker)
             }
         
