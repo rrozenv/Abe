@@ -27,9 +27,7 @@ class PromptsListViewController: UIViewController, BindableType {
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
-        //setupTabOptionsView()
         setupTableView()
-        setupCreatePromptButton()
         setupActivityIndicator()
     }
     
@@ -58,6 +56,9 @@ class PromptsListViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 self?.dataSource.load(prompts: $0)
                 self?.tableView.reloadData()
+                
+                guard $0.isNotEmpty else { return }
+                self?.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
             })
             .disposed(by: disposeBag)
         
@@ -109,32 +110,15 @@ extension PromptsListViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func setupCreatePromptButton() {
-        createPromptButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
-        self.navigationItem.rightBarButtonItem = createPromptButton
-    }
-    
-    private func setupTabOptionsView() {
-        tabOptionsView = TabOptionsView(numberOfItems: 2)
-        tabOptionsView.setTitleForButton(title: "Public", at: 0)
-        tabOptionsView.setTitleForButton(title: "Private", at: 1)
-        
-        view.addSubview(tabOptionsView)
-        tabOptionsView.snp.makeConstraints { (make) in
-            make.left.right.equalTo(view)
-            make.top.equalTo(view.snp.top).offset(64)
-            make.height.equalTo(50)
-        }
-    }
-    
     fileprivate func setupTableView() {
         //MARK: - tableView Properties
-        tableView = UITableView(frame: CGRect.zero, style: .grouped)
+        tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.register(PromptTableCell.self, forCellReuseIdentifier: PromptTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
-        tableView.refreshControl = UIRefreshControl()
+        tableView.contentInset = UIEdgeInsetsMake(137, 0, 0, 0)
+        //tableView.refreshControl = UIRefreshControl()
         tableView.dataSource = dataSource
         
         //MARK: - tableView Constraints

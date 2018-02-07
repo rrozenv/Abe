@@ -164,7 +164,7 @@ final class PromptHeaderView: UIView {
     
     private func setupOpaqueView() {
         opaqueView = UIView()
-        opaqueView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        opaqueView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         
         self.addSubview(opaqueView)
         opaqueView.snp.makeConstraints { (make) in

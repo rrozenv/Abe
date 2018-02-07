@@ -10,6 +10,7 @@ final class PromptView: UIView {
     var replyTextLabel: UILabel!
     var replyLabelsStackView: UIStackView!
     var headerView: PromptHeaderView!
+    var userImageNameReplyView: UserImageNameSublabelView!
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -20,9 +21,10 @@ final class PromptView: UIView {
         self.backgroundColor = UIColor.clear
         setupContainerView()
         setupBottomContainerView()
-        setupReplyCountLabelProperties()
-        setupReplyTextLabelProperties()
-        setupReplyLabelsStackView()
+        setupImageNameReplyView()
+//        setupReplyCountLabelProperties()
+//        setupReplyTextLabelProperties()
+//        setupReplyLabelsStackView()
         
         setupHeaderView()
     }
@@ -39,7 +41,7 @@ final class PromptView: UIView {
     
     private func setupBottomContainerView() {
         bottomContainerView = UIView()
-        bottomContainerView.backgroundColor = UIColor.blue
+        bottomContainerView.backgroundColor = UIColor.white
         
         containerView.addSubview(bottomContainerView)
         bottomContainerView.snp.makeConstraints { (make) in
@@ -75,6 +77,17 @@ final class PromptView: UIView {
         }
     }
     
+    private func setupImageNameReplyView() {
+        userImageNameReplyView = UserImageNameSublabelView()
+        
+        bottomContainerView.addSubview(userImageNameReplyView)
+        userImageNameReplyView.snp.makeConstraints { (make) in
+            make.centerY.equalTo(bottomContainerView)
+            make.left.equalTo(bottomContainerView).offset(20)
+            make.right.equalTo(bottomContainerView).offset(-40)
+        }
+    }
+    
     private func setupHeaderView() {
         headerView = PromptHeaderView()
         
@@ -89,8 +102,10 @@ final class PromptView: UIView {
     func reset() {
         headerView.imageView.image = nil
         headerView.titleLabel.text = nil
-        replyTextLabel.text = nil
-        replyCountLabel.text = nil
+        userImageNameReplyView.nameLabel.text = nil
+        userImageNameReplyView.nameSubLabel.text = nil
+//        replyTextLabel.text = nil
+//        replyCountLabel.text = nil
     }
     
 }

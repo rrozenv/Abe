@@ -96,6 +96,7 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
                 promptService.changeSetFor(predicate: $0)
                     .trackError(errorTracker)
             }
+        
 //MARK: - Routing
         selectedPromptObservable
             .do(onNext: router.toPrompt)

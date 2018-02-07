@@ -17,7 +17,6 @@ final class PromptDetailRouter: PromptDetailRoutingLogic {
     }
     
     func toPrompts() {
-        navigationController.navigationBar.isHidden = false
         navigationController.popViewController(animated: true)
     }
     

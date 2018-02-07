@@ -12,16 +12,19 @@ final class PromptPageViewController: UIViewController {
     private var pageViewController: UIPageViewController!
     private var tabOptionsView: TabOptionsView!
     private var createPromptButton: UIBarButtonItem!
+    private var customNavBar: CustomNavigationBar!
     
     override func loadView() {
         super.loadView()
         setupPageController()
+        setupCustomNavigationBar()
         setupTabOptionsView()
-        setupCreatePromptButton()
+        //setupCreatePromptButton()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.isHidden = true
         let router = PromptPageRouter(navigationController: self.navigationController!)
         viewModel = PromptPageViewModel(router: router)
         bindViewModel()
@@ -44,10 +47,10 @@ final class PromptPageViewController: UIViewController {
             .bind(to: viewModel.inputs.tabVisSelectedInput)
             .disposed(by: disposeBag)
         
-        createPromptButton.rx.tap
-            .bind(to: viewModel.inputs.createPromptTappedInput)
-            .disposed(by: disposeBag)
-            
+//        createPromptButton.rx.tap
+//            .bind(to: viewModel.inputs.createPromptTappedInput)
+//            .disposed(by: disposeBag)
+        
         //MARK: - Outputs
         viewModel.outputs.configurePagerDataSource
             .drive(onNext: { [weak self] in
@@ -60,15 +63,9 @@ final class PromptPageViewController: UIViewController {
                 guard let controller = self?.dataSource.controllerFor(sort: $0) else {
                     fatalError("Controller not found for sort \($0)")
                 }
-                var direction: UIPageViewControllerNavigationDirection = .forward
-                switch $0 {
-                case .all: direction = .forward
-                case .individualContacts: direction = .reverse
-                default: break
-                }
                 self?.pageViewController.setViewControllers(
                     [controller],
-                    direction: direction,
+                    direction: .forward,
                     animated: true,
                     completion: nil
                 )
@@ -114,13 +111,14 @@ final class PromptPageViewController: UIViewController {
     
     private func setupTabOptionsView() {
         tabOptionsView = TabOptionsView(numberOfItems: 2)
-        tabOptionsView.setTitleForButton(title: "Public", at: 0)
-        tabOptionsView.setTitleForButton(title: "Private", at: 1)
+        tabOptionsView.setTitleForButton(title: "PUBLIC", at: 0)
+        tabOptionsView.setTitleForButton(title: "PRIVATE", at: 1)
+        tabOptionsView.dropShadow()
         
         view.addSubview(tabOptionsView)
         tabOptionsView.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
-            make.top.equalTo(view.snp.top).offset(64)
+            make.top.equalTo(customNavBar.snp.bottom)
             make.height.equalTo(50)
         }
     }
@@ -128,6 +126,25 @@ final class PromptPageViewController: UIViewController {
     private func setupCreatePromptButton() {
         createPromptButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
         self.navigationItem.rightBarButtonItem = createPromptButton
+    }
+    
+    func setupCustomNavigationBar() {
+        customNavBar = CustomNavigationBar(leftImage: #imageLiteral(resourceName: "IC_Settings"), centerImage: #imageLiteral(resourceName: "IC_Outpost"), rightImage: #imageLiteral(resourceName: "IC_Profile"))
+        
+        view.addSubview(customNavBar)
+        customNavBar.snp.makeConstraints { (make) in
+            make.left.right.equalTo(view)
+            make.height.equalTo(77)
+            if #available(iOS 11.0, *) {
+                if UIDevice.iPhoneX {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(44)
+                } else {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+                }
+            } else {
+                make.top.equalTo(view.snp.top).offset(20)
+            }
+        }
     }
     
 }

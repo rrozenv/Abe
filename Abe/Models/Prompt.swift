@@ -45,6 +45,13 @@ final class Prompt: Object {
     func isViewableBy(currentUser: User) -> Bool {
         return visibleOnlyToContactNumbers.contains(StringObject(currentUser.id)) || self.user?.id == currentUser.id
     }
+    
+    func isAuthorInCurrentUserContacts(currentUser: User) -> Bool {
+        return self.user!.id != currentUser.id
+            && currentUser.allNumbersFromContacts()
+            .contains(self.user!.phoneNumber)
+    }
+    
 }
 
 

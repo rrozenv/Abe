@@ -40,7 +40,8 @@ extension TabOptionsView {
     private func adjustButtonColors(selected tag: Int) {
         buttons.forEach {
             $0.backgroundColor =
-                ($0.tag == tag) ? UIColor.black : Palette.lightGrey.color
+                ($0.tag == tag) ? UIColor.black : Palette.darkGrey.color
+            $0.setTitleColor(($0.tag == tag) ? UIColor.yellow : UIColor.white, for: .normal)
         }
     }
     
@@ -57,6 +58,7 @@ extension TabOptionsView {
         for i in 0...numberOfItems - 1 {
             let button = UIButton()
             button.tag = i
+            button.titleLabel?.font = FontBook.BariolBold.of(size: 14)
             buttons.append(button)
         }
         currentVisibility = .all
