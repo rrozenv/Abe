@@ -5,6 +5,12 @@ import RxSwift
 import RxCocoa
 import Kingfisher
 
+extension UINavigationController {
+    override open var childViewControllerForStatusBarStyle: UIViewController? {
+        return self.topViewController
+    }
+}
+
 class RepliesViewController: UIViewController, BindableType {
     
     var viewModel: RepliesViewModelType!
@@ -31,7 +37,6 @@ class RepliesViewController: UIViewController, BindableType {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //bindViewModel()
     }
     
     override func viewDidLayoutSubviews() {
@@ -43,6 +48,14 @@ class RepliesViewController: UIViewController, BindableType {
         super.viewWillAppear(animated)
         viewModel.inputs.viewWillAppear.onNext(())
         viewModel.inputs.filterOptionSelected.onNext(.locked)
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     
     func bindViewModel() {

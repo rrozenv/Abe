@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 
 final class PromptListDataSource: ValueCellDataSource {
-    
+
     private var currentTabVisibility = Visibility.all
     
     enum Section: Int {

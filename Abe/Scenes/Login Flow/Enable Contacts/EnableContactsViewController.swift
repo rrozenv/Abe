@@ -38,7 +38,6 @@ final class EnableContactsViewController: UIViewController {
                 self?.showError(error)
             })
             .disposed(by: disposeBag)
-        
     }
     
 }

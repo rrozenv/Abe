@@ -35,7 +35,7 @@ final class UserDetailsViewModel: ViewModelType {
             .withLatestFrom(_combinedInput)
             .do(onNext: { UserDefaultsManager.saveSignUpName(name: $0) })
             .mapToVoid()
-            .do(onNext: router.toPhoneEntry)
+            .do(onNext: router.toPhoneInput)
         
         return Output(inputIsValid: inputIsValid,
                       routeToNextVc: routeToNextVc)

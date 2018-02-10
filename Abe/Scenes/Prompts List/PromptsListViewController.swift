@@ -29,6 +29,7 @@ class PromptsListViewController: UIViewController, BindableType {
         view.backgroundColor = UIColor.white
         setupTableView()
         setupActivityIndicator()
+        setupStatusBarBackgroundView()
     }
     
     override func viewDidLoad() {
@@ -67,10 +68,20 @@ class PromptsListViewController: UIViewController, BindableType {
                 if let changes = changes {
                     //let initialOffset = self?.tableView.contentOffset.y
                     //let section = PromptListDataSource.Section.publicOnly.rawValue
-                    let prompts = changes.inserted.map { results[$0] }
-                    guard prompts.count > 0 else { return }
-                    self?.dataSource.add(prompts: prompts)
-                    self?.tableView.reloadData()
+                    let newPrompts = changes.inserted.map { results[$0] }
+                    if newPrompts.count > 0 {
+                        self?.dataSource.add(prompts: newPrompts)
+                        self?.tableView.reloadData()
+                    }
+                    
+                    let updatedPrompts = changes.updated.map { (prompt: results[$0], index: $0) }
+                    if updatedPrompts.count > 0 {
+                        updatedPrompts.forEach {
+                            self?.dataSource.updatePrompt($0.prompt, at: IndexPath(row: $0.index, section: 0))
+                        }
+                        self?.tableView.reloadData()
+                    }
+                    
                     //self?.tableView.scrollToRow(at: IndexPath(row: prompts.count, section: 1), at: .top, animated: false)
                     //self?.tableView.contentOffset.y += initialOffset ?? 0
                 }
@@ -135,6 +146,12 @@ extension PromptsListViewController {
         activityIndicator.snp.makeConstraints { (make) in
             make.center.equalTo(view.snp.center)
         }
+    }
+    
+    private func setupStatusBarBackgroundView() {
+        let statusBarView = UIView(frame: UIApplication.shared.statusBarFrame)
+        statusBarView.backgroundColor = UIColor.white
+        view.addSubview(statusBarView)
     }
     
 }

@@ -17,4 +17,5 @@ target 'Abe' do
   pod 'RxOptional'
   pod 'SwiftLinkPreview', '~> 2.2.0'
   pod 'Gifu'
+  pod 'AccountKit'
 end

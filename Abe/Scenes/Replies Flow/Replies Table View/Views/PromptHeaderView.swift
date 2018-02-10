@@ -1,6 +1,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 final class GuessedUserView: UIView {
     
@@ -136,7 +137,7 @@ final class PromptHeaderView: UIView {
     
     var topContainerView: UIView!
     var titleLabel: UILabel!
-    var imageView: UIImageView!
+    var imageView: AnimatedImageView!
     var opaqueView: UIView!
     
     required init?(coder aDecoder: NSCoder) {
@@ -152,7 +153,7 @@ final class PromptHeaderView: UIView {
     }
     
     private func setupImageView() {
-        imageView = UIImageView()
+        imageView = AnimatedImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.masksToBounds = true
         

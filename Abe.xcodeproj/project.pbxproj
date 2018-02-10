@@ -46,6 +46,10 @@
 		982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */; };
 		982CF8552013D58B00EEB278 /* RateReplyDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */; };
 		982CF8572013D69800EEB278 /* RateReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8562013D69800EEB278 /* RateReplyCell.swift */; };
+		983297B0202F69580043E3B0 /* CreateUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983297AF202F69580043E3B0 /* CreateUserRouter.swift */; };
+		983297B5202F6A590043E3B0 /* SignupLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983297B4202F6A590043E3B0 /* SignupLoginViewController.swift */; };
+		983297B7202F6A670043E3B0 /* SignupLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983297B6202F6A670043E3B0 /* SignupLoginViewModel.swift */; };
+		983297B9202F6A720043E3B0 /* SignupLoginRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983297B8202F6A720043E3B0 /* SignupLoginRouter.swift */; };
 		9836043F20070EC2008A975D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836043E20070EC2008A975D /* Extensions.swift */; };
 		9836044120071021008A975D /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9836044020071021008A975D /* EmptyStateView.swift */; };
 		98365FDA201AB2F9008E58F6 /* PageReferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */; };
@@ -113,6 +117,9 @@
 		98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */; };
 		98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */; };
 		98F672031FFF0EA8001DE88E /* PixabayAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F672021FFF0EA8001DE88E /* PixabayAPI.swift */; };
+		98FA2D7B202B935B00901E0E /* PhoneInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FA2D7A202B935B00901E0E /* PhoneInputViewController.swift */; };
+		98FA2D7D202BB18A00901E0E /* CreateUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FA2D7C202BB18A00901E0E /* CreateUserViewModel.swift */; };
+		98FA2D7F202BDFEC00901E0E /* CreateUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FA2D7E202BDFEC00901E0E /* CreateUserViewController.swift */; };
 		98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */; };
 		98FEE7841FE4BAD300CD80A8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98FEE7821FE4BAD300CD80A8 /* Main.storyboard */; };
 		98FEE7861FE4BAD300CD80A8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98FEE7851FE4BAD300CD80A8 /* Assets.xcassets */; };
@@ -197,6 +204,10 @@
 		982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyViewModel.swift; sourceTree = "<group>"; };
 		982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyDataSource.swift; sourceTree = "<group>"; };
 		982CF8562013D69800EEB278 /* RateReplyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyCell.swift; sourceTree = "<group>"; };
+		983297AF202F69580043E3B0 /* CreateUserRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserRouter.swift; sourceTree = "<group>"; };
+		983297B4202F6A590043E3B0 /* SignupLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupLoginViewController.swift; sourceTree = "<group>"; };
+		983297B6202F6A670043E3B0 /* SignupLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupLoginViewModel.swift; sourceTree = "<group>"; };
+		983297B8202F6A720043E3B0 /* SignupLoginRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupLoginRouter.swift; sourceTree = "<group>"; };
 		9836043E20070EC2008A975D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9836044020071021008A975D /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageReferenceView.swift; sourceTree = "<group>"; };
@@ -264,6 +275,9 @@
 		98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewModel.swift; sourceTree = "<group>"; };
 		98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryRouter.swift; sourceTree = "<group>"; };
 		98F672021FFF0EA8001DE88E /* PixabayAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixabayAPI.swift; sourceTree = "<group>"; };
+		98FA2D7A202B935B00901E0E /* PhoneInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneInputViewController.swift; sourceTree = "<group>"; };
+		98FA2D7C202BB18A00901E0E /* CreateUserViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserViewModel.swift; sourceTree = "<group>"; };
+		98FA2D7E202BDFEC00901E0E /* CreateUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserViewController.swift; sourceTree = "<group>"; };
 		98FEE77B1FE4BAD300CD80A8 /* Abe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Abe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		98FEE77E1FE4BAD300CD80A8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		98FEE7831FE4BAD300CD80A8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -553,6 +567,35 @@
 			path = "Rate Reply";
 			sourceTree = "<group>";
 		};
+		983297B1202F698F0043E3B0 /* Phone Input */ = {
+			isa = PBXGroup;
+			children = (
+				98FA2D7A202B935B00901E0E /* PhoneInputViewController.swift */,
+				98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */,
+			);
+			path = "Phone Input";
+			sourceTree = "<group>";
+		};
+		983297B2202F69A10043E3B0 /* Create User */ = {
+			isa = PBXGroup;
+			children = (
+				98FA2D7C202BB18A00901E0E /* CreateUserViewModel.swift */,
+				983297AF202F69580043E3B0 /* CreateUserRouter.swift */,
+				98FA2D7E202BDFEC00901E0E /* CreateUserViewController.swift */,
+			);
+			path = "Create User";
+			sourceTree = "<group>";
+		};
+		983297B3202F69F80043E3B0 /* Signup & Login */ = {
+			isa = PBXGroup;
+			children = (
+				983297B4202F6A590043E3B0 /* SignupLoginViewController.swift */,
+				983297B6202F6A670043E3B0 /* SignupLoginViewModel.swift */,
+				983297B8202F6A720043E3B0 /* SignupLoginRouter.swift */,
+			);
+			path = "Signup & Login";
+			sourceTree = "<group>";
+		};
 		98365FD8201AB29C008E58F6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -641,6 +684,7 @@
 		984F379620070CB300C62E6E /* Old Stuff */ = {
 			isa = PBXGroup;
 			children = (
+				98F671FB1FFEA1ED001DE88E /* Phone Entry */,
 				989317201FE6F3D200E2979F /* Prompt Detail */,
 			);
 			path = "Old Stuff";
@@ -661,7 +705,9 @@
 		984F379820070D5600C62E6E /* Login Flow */ = {
 			isa = PBXGroup;
 			children = (
-				98F671FB1FFEA1ED001DE88E /* Phone Entry */,
+				983297B3202F69F80043E3B0 /* Signup & Login */,
+				983297B1202F698F0043E3B0 /* Phone Input */,
+				983297B2202F69A10043E3B0 /* Create User */,
 				985C2A621FFDC19C0034E116 /* Enter Name */,
 				985C2A5B1FFDAC770034E116 /* Enable Contacts */,
 				980DE5AA1FE5B3730087C6C3 /* Sign Up */,
@@ -835,7 +881,6 @@
 			children = (
 				98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */,
 				98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */,
-				98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */,
 			);
 			path = "Phone Entry";
 			sourceTree = "<group>";
@@ -1050,9 +1095,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Abe/Pods-Abe-resources.sh",
+				"${PODS_ROOT}/AccountKit/AccountKitStrings.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1140,8 +1188,10 @@
 			files = (
 				980974BA2017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift in Sources */,
 				9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */,
+				98FA2D7F202BDFEC00901E0E /* CreateUserViewController.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				981545D520102EEF0001F675 /* GIFImageService.swift in Sources */,
+				98FA2D7D202BB18A00901E0E /* CreateUserViewModel.swift in Sources */,
 				985A7CCE201826490065BF38 /* GuessAndWagerValidationDataSource.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,
@@ -1154,6 +1204,7 @@
 				982CF8552013D58B00EEB278 /* RateReplyDataSource.swift in Sources */,
 				985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */,
 				9806B9102007DD77000CB497 /* ImageSearchCollectionViewLayout.swift in Sources */,
+				983297B7202F6A670043E3B0 /* SignupLoginViewModel.swift in Sources */,
 				98986A082029138800FBB869 /* PromptPageRouter.swift in Sources */,
 				984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */,
 				9854D252200053A700D7B7EB /* ValueCellDataSource.swift in Sources */,
@@ -1164,6 +1215,7 @@
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
 				9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */,
 				9806B9122007DDCB000CB497 /* ImageSearchCollectionCell.swift in Sources */,
+				983297B9202F6A720043E3B0 /* SignupLoginRouter.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
 				98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */,
 				981545D320102E9B0001F675 /* GiphyAPI.swift in Sources */,
@@ -1209,6 +1261,7 @@
 				98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */,
 				982CF8512013C98800EEB278 /* RateReplyViewController.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
+				98FA2D7B202B935B00901E0E /* PhoneInputViewController.swift in Sources */,
 				9806B9142007DE5C000CB497 /* ImageSearchViewModel.swift in Sources */,
 				98FEE7C31FE4C11C00CD80A8 /* CreatePromptViewModel.swift in Sources */,
 				9883ED6A1FE7062D002E538E /* ScoreCollectionCell.swift in Sources */,
@@ -1216,6 +1269,7 @@
 				989317261FE6F3E400E2979F /* PromptDetailViewModel.swift in Sources */,
 				9806B90B2007CEB2000CB497 /* PixaImageService.swift in Sources */,
 				982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */,
+				983297B5202F6A590043E3B0 /* SignupLoginViewController.swift in Sources */,
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
 				985B14C0202646BD0017306E /* PromptPageViewController.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
@@ -1240,6 +1294,7 @@
 				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,
 				98691C35202547E800FE2180 /* TabOptionsView.swift in Sources */,
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
+				983297B0202F69580043E3B0 /* CreateUserRouter.swift in Sources */,
 				980974BC2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,

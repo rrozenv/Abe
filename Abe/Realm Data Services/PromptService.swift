@@ -169,9 +169,12 @@ struct UserService {
         return result ?? .error(PromptServiceError.creationFailed)
     }
 
-    func fetchUserFor(key: String) -> Observable<User> {
-        let result = withRealm("getting tasks") { realm -> Observable<User> in
-            guard let user = realm.object(ofType: User.self, forPrimaryKey: key) else { return .empty() }
+    func fetchUserFor(key: String) -> Observable<User?> {
+        print("sync key: \(key)")
+        let result = withRealm("getting tasks") { realm -> Observable<User?> in
+            let user = realm.objects(User.self)
+                .filter(NSPredicate(format: "id = %@", key))
+                .first
             return .just(user)
         }
         return result ?? .empty()
@@ -181,7 +184,7 @@ struct UserService {
         print(key)
         let realm = try! Realm(configuration: RealmConfig.common.configuration)
         let user = realm.objects(User.self)
-            .filter(NSPredicate(format: "id = %@", key))
+            .filter("id == %@", key)
             .first
         return user
     }

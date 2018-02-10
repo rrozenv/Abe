@@ -9,7 +9,7 @@ protocol EnableContactsRoutingLogic {
 
 final class EnableContactsRouter: EnableContactsRoutingLogic {
     
-    private let navigationController: UINavigationController
+    private weak var navigationController: UINavigationController?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -21,15 +21,15 @@ final class EnableContactsRouter: EnableContactsRoutingLogic {
                                                 contactsStore: ContactsStore(),
                                                 router: self)
         vc.viewModel = viewModel
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func toNameInput() {
         let vc = UserDetailsViewController()
-        let router = UserDetailsRouter(navigationController: navigationController)
+        let router = UserDetailsRouter(navigationController: navigationController!)
         let viewModel = UserDetailsViewModel(router: router)
         vc.viewModel = viewModel
-        navigationController.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }

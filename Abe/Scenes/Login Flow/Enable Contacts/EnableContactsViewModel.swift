@@ -20,8 +20,8 @@ struct EnableContactsViewModel {
     private let contactsStore: ContactsStore
     private let router: EnableContactsRouter
     
-    init(contactService: ContactService,
-         contactsStore: ContactsStore,
+    init(contactService: ContactService = ContactService(),
+         contactsStore: ContactsStore = ContactsStore(),
          router: EnableContactsRouter) {
         self.contactService = contactService
         self.contactsStore = contactsStore

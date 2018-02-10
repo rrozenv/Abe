@@ -3,6 +3,47 @@ import UIKit
 import RealmSwift
 import RxSwift
 import RxRealm
+import AccountKit
+
+enum AccountKitError: Error {
+    case standardError
+    case noAccountId
+}
+
+final class AccountKitServie {
+    
+    private var accountKit = AKFAccountKit(responseType: .accessToken)
+    
+     func requestUserAccountInfo(completion: @escaping (_ accountId: String?, _ error: Error?) -> Void) {
+        accountKit.requestAccount { (account, error) in
+            if let error = error {
+                completion(nil, error)
+            } else if let id = account?.accountID {
+                completion(id, nil)
+            } else {
+                completion(nil, nil)
+            }
+        }
+     }
+    
+    func fetchUserAccountIdObservable() -> Observable<(id: String, number: String)> {
+        return Observable.create { [unowned self] observer in
+            self.accountKit.requestAccount { (account, error) in
+                if let _ = error {
+                    observer.onError(AccountKitError.standardError)
+                }
+                if let id = account?.accountID,
+                    let number = account?.phoneNumber?.phoneNumber {
+                    observer.onNext((id, number))
+                    observer.onCompleted()
+                } else {
+                    observer.onError(AccountKitError.noAccountId)
+                }
+            }
+            return Disposables.create()
+        }
+    }
+}
 
 final class AppController: UIViewController {
     
@@ -10,6 +51,7 @@ final class AppController: UIViewController {
     private let disposeBag = DisposeBag()
     static let shared = AppController(userService: UserService())
     var currentUser = Variable<User?>(nil)
+    //private var accountKit = AKFAccountKit(responseType: .accessToken)
     
     private let userService: UserService
     private var actingVC: UIViewController!
@@ -25,9 +67,11 @@ final class AppController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UIApplication.shared.isStatusBarHidden = true
         //setUpdateUsersFriendsSubscription()
         addNotificationObservers()
         loadInitialViewController()
+        //loadInitalVCTest()
     }
     
 }
@@ -64,16 +108,48 @@ extension AppController {
         if let currentUser = self.fetchCurrentUser() {
             self.currentUser.value = currentUser
             self.actingVC = createHomeViewController()
+
         } else {
+            //Add defaults check to see if onborading needs to be shown
             RealmAuth.resetDefaultRealm()
-            self.actingVC = createEnableContactsViewController()
+            self.actingVC = createSignupLoginViewController()
+            let user = self.fetchCurrentUser()
+            if let user = user {
+                print("Found user: \(user.name)!")
+            } else {
+                print("user is nil now!")
+            }
         }
         self.add(viewController: self.actingVC, animated: true)
     }
     
-    private func createEnableContactsViewController() -> UIViewController {
+//    private func loadInitalVCTest() {
+//        guard accountKit.currentAccessToken == nil &&
+//            RealmAuth.fetchCurrentSyncUser() == nil else {
+//            self.requestUserAccountInfo { [unowned self] (id, error) in
+//                if let id = id,
+//                   let user = self.fetchUserFor(uuid: id),
+//                   error == nil {
+//                    self.currentUser.value = user
+//                    self.actingVC = self.createHomeViewController()
+//                } else {
+//                    print(error?.localizedDescription ?? "No Error")
+//                    print("User does not exist")
+//                    RealmAuth.resetDefaultRealm()
+//                    self.actingVC = self.createSignupLoginViewController()
+//                }
+//                self.add(viewController: self.actingVC, animated: true)
+//            }
+//            return
+//        }
+//        RealmAuth.resetDefaultRealm()
+//        self.actingVC = self.createSignupLoginViewController()
+//        self.add(viewController: self.actingVC, animated: true)
+//    }
+    
+    private func createSignupLoginViewController() -> UIViewController {
         let navVc = UINavigationController()
-        let router = EnableContactsRouter(navigationController: navVc)
+        let router = SignupLoginRouter(navigationController: navVc)
         router.toRoot()
         return navVc
     }
@@ -96,6 +172,22 @@ extension AppController {
         return self.userService.fetchUser(key: currentSyncUser.identity!)
     }
     
+    private func fetchUserFor(uuid: String) -> User? {
+        return self.userService.fetchUser(key: uuid)
+    }
+    
+//    private func requestUserAccountInfo(completion: @escaping (_ accountId: String?, _ error: Error?) -> Void) {
+//        accountKit.requestAccount { (account, error) in
+//            if let error = error {
+//                completion(nil, error)
+//            } else if let id = account?.accountID {
+//                completion(id, nil)
+//            } else {
+//                completion(nil, nil)
+//            }
+//        }
+//    }
+//
 }
 
 // MARK: - Displaying VC's
