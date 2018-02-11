@@ -16,7 +16,7 @@ class CreatePromptViewController: UIViewController, BindableType {
     private var dismissButton: UIBarButtonItem!
     private var imageButton: UIButton!
     private var addWebLinkButton: UIButton!
-    private var optionsBarView: CreatePromptOptionsBarView!
+    private var optionsBarView: TabOptionsView!
     private var backButton: UIButton!
     private var webLinkView: WebThumbnailView!
     private var scrollView: UIScrollView!
@@ -30,7 +30,7 @@ class CreatePromptViewController: UIViewController, BindableType {
         setupContentStackView()
         setupAddImageButton()
         setupOptionsBarView()
-        setupDoneButton()
+        //setupDoneButton()
         setupCancelButton()
         setupBackButton()
     }
@@ -49,7 +49,7 @@ class CreatePromptViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.bodyTextInput)
             .disposed(by: disposeBag)
         
-        optionsBarView.nextButton.rx.tap
+        optionsBarView.button(at: 1).rx.tap
             .bind(to: viewModel.inputs.createTappedInput)
             .disposed(by: disposeBag)
         
@@ -61,15 +61,17 @@ class CreatePromptViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.addImageTappedInput)
             .disposed(by: disposeBag)
         
-        optionsBarView.addWebLinkButton.rx.tap
+        optionsBarView.button(at: 0).rx.tap
             .bind(to: viewModel.inputs.addWebLinkTappedInput)
             .disposed(by: disposeBag)
         
 //MARK: - Output
         viewModel.outputs.inputIsValid
             .drive(onNext: { [weak self] in
-                self?.doneButton.isEnabled = $0 ? true : false
-                self?.doneButton.tintColor = $0 ? UIColor.red : UIColor.gray
+                self?.optionsBarView.button(at: 1).isHidden = $0 ? false : true
+                self?.optionsBarView.button(at: 1).setTitleColor($0 ? UIColor.red : UIColor.gray, for: .normal)
+//                self?.doneButton.isEnabled = $0 ? true : false
+//                self?.doneButton.tintColor = $0 ? UIColor.red : UIColor.gray
             })
             .disposed(by: disposeBag)
         
@@ -86,6 +88,7 @@ class CreatePromptViewController: UIViewController, BindableType {
                 guard let thumbnail = $0 else { return }
                 self?.webLinkView.thumbnail = thumbnail
                 self?.webLinkView.isHidden = false
+                self?.optionsBarView.button(at: 0).isHidden = true
             })
             .disposed(by: disposeBag)
         
@@ -174,11 +177,15 @@ extension CreatePromptViewController {
     }
     
     func setupOptionsBarView() {
-        optionsBarView = CreatePromptOptionsBarView()
-        optionsBarView.addWebLinkButton.setTitle("Add Web Link", for: .normal)
-        optionsBarView.nextButton.setTitle("Next", for: .normal)
+        optionsBarView = TabOptionsView(numberOfItems: 2)
+        optionsBarView.setTitleForButton(title: "+ Link", at: 0)
+        optionsBarView.setTitleForButton(title: "Next", at: 1)
         optionsBarView.frame.size.height = 54
         optionsBarView.frame.size.width = view.frame.size.width
+        
+//        optionsBarView = CreatePromptOptionsBarView()
+//        optionsBarView.addWebLinkButton.setTitle("Add Web Link", for: .normal)
+//        optionsBarView.nextButton.setTitle("Next", for: .normal)
     }
     
     private func setupBackButton() {

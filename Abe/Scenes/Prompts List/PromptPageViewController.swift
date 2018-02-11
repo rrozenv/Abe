@@ -11,15 +11,16 @@ final class PromptPageViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private var pageViewController: UIPageViewController!
     private var tabOptionsView: TabOptionsView!
-    private var createPromptButton: UIBarButtonItem!
+    private var createPromptButton: UIButton!
     private var customNavBar: CustomNavigationBar!
+    private var lastContentOffset: CGFloat = 0
     
     override func loadView() {
         super.loadView()
         setupPageController()
         setupCustomNavigationBar()
         setupTabOptionsView()
-        //setupCreatePromptButton()
+        setupCreatePromptButton()
     }
 
     override func viewDidLoad() {
@@ -47,9 +48,9 @@ final class PromptPageViewController: UIViewController {
             .bind(to: viewModel.inputs.tabVisSelectedInput)
             .disposed(by: disposeBag)
         
-//        createPromptButton.rx.tap
-//            .bind(to: viewModel.inputs.createPromptTappedInput)
-//            .disposed(by: disposeBag)
+        createPromptButton.rx.tap
+            .bind(to: viewModel.inputs.createPromptTappedInput)
+            .disposed(by: disposeBag)
         
         //MARK: - Outputs
         viewModel.outputs.configurePagerDataSource
@@ -124,8 +125,20 @@ final class PromptPageViewController: UIViewController {
     }
     
     private func setupCreatePromptButton() {
-        createPromptButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
-        self.navigationItem.rightBarButtonItem = createPromptButton
+        createPromptButton = UIButton()
+        createPromptButton.setImage(#imageLiteral(resourceName: "IC_CirclePlus"), for: .normal)
+        createPromptButton.dropShadow()
+        
+        view.addSubview(createPromptButton)
+        createPromptButton.snp.makeConstraints { (make) in
+            make.height.width.equalTo(54)
+            make.right.equalTo(view.snp.right).offset(-20)
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-20)
+            } else {
+                make.bottom.equalTo(view.snp.bottom).offset(-20)
+            }
+        }
     }
     
     func setupCustomNavigationBar() {
@@ -165,3 +178,37 @@ extension PromptPageViewController: UIPageViewControllerDelegate {
         viewModel.inputs.willTransitionToPageInput.onNext(idx)
     }
 }
+
+//extension PromptPageViewController: UIScrollViewDelegate {
+//
+//    fileprivate func animateTabBar(isScrollingUp: Bool) {
+//        UIView.animate(withDuration: 0.3, delay: 0, options: [], animations: {
+//            if isScrollingUp {
+////                self.filterHeaderView.layer.opacity = 1
+////                self.filterHeaderView.backgroundView.layer.opacity = 1
+//            } else {
+////                self.filterHeaderView.layer.opacity = 0
+////                self.filterHeaderView.backgroundView.layer.opacity = 0
+//            }
+//        }, completion: nil)
+//    }
+//
+//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+//        self.lastContentOffset = scrollView.contentOffset.y
+//    }
+//
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        print(scrollView.contentOffset.y)
+////        guard self.lastContentOffset != 0 else {
+////            animateTabBar(isScrollingUp: true)
+////            return
+////        }
+////        if (self.lastContentOffset < scrollView.contentOffset.y) {
+////            animateTabBar(isScrollingUp: false)
+////        } else if (self.lastContentOffset > scrollView.contentOffset.y) {
+////            animateTabBar(isScrollingUp: true)
+////        }
+//    }
+//
+//}
+
