@@ -52,7 +52,6 @@ final class CreateUserViewModel: CreateUserViewModelType, CreateUserViewModelInp
         
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
-        
         let accountIdAndPhoneNumberObservable = viewWillAppearObservable
             .debug()
             .flatMapLatest {

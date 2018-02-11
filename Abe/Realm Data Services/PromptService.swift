@@ -183,9 +183,9 @@ struct UserService {
     func fetchUser(key: String) -> User? {
         print(key)
         let realm = try! Realm(configuration: RealmConfig.common.configuration)
-        let user = realm.objects(User.self)
-            .filter("id == %@", key)
-            .first
+        let user = realm.object(ofType: User.self, forPrimaryKey: key)
+//            .filter("id == %@", key)
+//            .first
         return user
     }
     

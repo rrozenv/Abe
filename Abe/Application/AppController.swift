@@ -46,7 +46,7 @@ final class AccountKitServie {
 }
 
 final class AppController: UIViewController {
-    
+  
     //MARK: - Properties
     private let disposeBag = DisposeBag()
     static let shared = AppController(userService: UserService())
@@ -105,6 +105,19 @@ extension AppController {
     }
     
     private func loadInitialViewController() {
+
+//        let user = self.fetchUserFor(uuid: "6f888549e555a5d7cada4217fd1b20e9")
+//        if let user = user {
+//            print("Found user: \(user.name)!")
+//        } else {
+//            print("user is nil now!")
+//        }
+//
+//        let users = self.userService.fetchAll()
+//            .do(onNext: { print("I found \($0.count) users") })
+//            .subscribe()
+//            .disposed(by: disposeBag)
+
         if let currentUser = self.fetchCurrentUser() {
             self.currentUser.value = currentUser
             self.actingVC = createHomeViewController()
@@ -113,12 +126,6 @@ extension AppController {
             //Add defaults check to see if onborading needs to be shown
             RealmAuth.resetDefaultRealm()
             self.actingVC = createSignupLoginViewController()
-            let user = self.fetchCurrentUser()
-            if let user = user {
-                print("Found user: \(user.name)!")
-            } else {
-                print("user is nil now!")
-            }
         }
         self.add(viewController: self.actingVC, animated: true)
     }

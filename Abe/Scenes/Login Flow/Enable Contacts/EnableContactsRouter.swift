@@ -16,11 +16,9 @@ final class EnableContactsRouter: EnableContactsRoutingLogic {
     }
     
     func toRoot() {
-        let vc = EnableContactsViewController()
-        let viewModel = EnableContactsViewModel(contactService: ContactService(),
-                                                contactsStore: ContactsStore(),
-                                                router: self)
-        vc.viewModel = viewModel
+        var vc = EnableContactsViewController()
+        let viewModel = AllowContactsViewModel(router: self)
+        vc.setViewModelBinding(model: viewModel)
         navigationController?.pushViewController(vc, animated: true)
     }
     

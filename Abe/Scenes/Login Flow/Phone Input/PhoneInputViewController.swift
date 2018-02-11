@@ -37,7 +37,7 @@ class PhoneInputViewController: UIViewController, ChildViewControllerManager {
     
     private var accountKit = AKFAccountKit(responseType: .accessToken)
     //private var dataEntryViewController: AKFViewController? = nil
-    
+
     let disposeBag = DisposeBag()
     var router: PhoneEntryRoutingLogic!
     private var isLogin: Bool
@@ -55,9 +55,7 @@ class PhoneInputViewController: UIViewController, ChildViewControllerManager {
         super.viewDidLoad()
         let viewController = accountKit.viewControllerForPhoneLogin()
         prepareDataEntryViewController(viewController)
-        if let viewController = viewController as? UIViewController {
-            self.addChildViewController(viewController, frame: view.frame, animated: false)
-        }
+        self.addChildViewController(viewController, frame: view.frame, animated: false)
         self.navigationController?.isNavigationBarHidden = true
     }
     
@@ -82,7 +80,6 @@ extension PhoneInputViewController: AKFViewControllerDelegate {
     func viewController(_ viewController: (UIViewController & AKFViewController)!, didCompleteLoginWith accessToken: AKFAccessToken!, state: String!) {
         print("LOGIN SUCCESS \(accessToken.tokenString)")
         router.toCreateUserWith(accessToken: accessToken.tokenString, isLogin: isLogin)
-        self.dismiss(animated: true, completion: nil)
     }
     
     func viewController(_ viewController: (UIViewController & AKFViewController)!, didFailWithError error: Error!) {

@@ -24,10 +24,10 @@ final class SignupLoginRouter: SignupLoginRoutingLogic {
     }
 
     func toSignupFlow() {
-        let vc = EnableContactsViewController()
+        var vc = EnableContactsViewController()
         let router = EnableContactsRouter(navigationController: navigationController!)
-        let viewModel = EnableContactsViewModel(router: router)
-        vc.viewModel = viewModel
+        let viewModel = AllowContactsViewModel(router: router)
+        vc.setViewModelBinding(model: viewModel)
         navigationController?.pushViewController(vc, animated: true)
     }
     

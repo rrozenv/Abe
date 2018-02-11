@@ -4,10 +4,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class EnableContactsViewController: UIViewController {
+final class EnableContactsViewController: UIViewController, BindableType {
     
     var disposeBag = DisposeBag()
-    var viewModel: EnableContactsViewModel!
+    var viewModel: AllowContactsViewModel!
     
     fileprivate var enableButton: UIButton!
     
@@ -15,25 +15,14 @@ final class EnableContactsViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         setupEnableButton()
-        bindViewModel()
     }
     
     func bindViewModel() {
-        let input = EnableContactsViewModel.Input(allowContactsTapped: enableButton.rx.tap.asDriver())
-        
-        let output = viewModel.transform(input: input)
-        
-        output.didSaveContacts
-            .drive()
-            .disposed(by: disposeBag)
-    
-        output.loading
-            .drive(onNext: { [weak self] in
-                self?.view.backgroundColor = $0 ? UIColor.green : UIColor.white
-            })
+        enableButton.rx.tap.asObservable()
+            .bind(to: viewModel.inputs.allowContactsTappedInput)
             .disposed(by: disposeBag)
         
-        output.errors
+        viewModel.outputs.errorTracker
             .drive(onNext: { [weak self] error in
                 self?.showError(error)
             })

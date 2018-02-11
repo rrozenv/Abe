@@ -3,6 +3,71 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+protocol AllowContactsViewModelInputs {
+    var allowContactsTappedInput: AnyObserver<Void> { get }
+}
+
+protocol AllowContactsViewModelOuputs {
+    var errorTracker: Driver<Error> { get }
+}
+
+protocol AllowContactsViewModelType {
+    var inputs: AllowContactsViewModelInputs { get }
+    var outputs: AllowContactsViewModelOuputs { get }
+}
+
+final class AllowContactsViewModel: AllowContactsViewModelInputs, AllowContactsViewModelOuputs, AllowContactsViewModelType {
+    
+    let disposeBag = DisposeBag()
+    
+    //MARK: - Inputs
+    var inputs: AllowContactsViewModelInputs { return self }
+    let allowContactsTappedInput: AnyObserver<Void>
+    
+    //MARK: - Outputs
+    var outputs: AllowContactsViewModelOuputs { return self }
+    let errorTracker: Driver<Error>
+    
+    //MARK: - Init
+    init(contactService: ContactService = ContactService(),
+         contactsStore: ContactsStore = ContactsStore(),
+         router: EnableContactsRouter) {
+        
+        let errorTracker = ErrorTracker()
+        self.errorTracker = errorTracker.asDriver()
+        
+        //MARK: - Subjects
+        let _allowContactsTappedInput = PublishSubject<Void>()
+        
+        //MARK: - Observers
+        self.allowContactsTappedInput = _allowContactsTappedInput.asObserver()
+      
+        //MARK: - Routing
+        let authStatusObservable = _allowContactsTappedInput.asObservable()
+            .flatMapLatest { _ in contactsStore.isAuthorized() }
+            .asDriver(onErrorJustReturn: false)
+        
+        let requestContactsAccessObservable = authStatusObservable
+            .filter { !$0 }
+            .flatMapLatest { _ in
+                return contactsStore.requestAccess()
+                    .trackError(errorTracker)
+                    .asDriver(onErrorJustReturn: false)
+            }
+            .asDriver(onErrorJustReturn: false)
+        
+        Driver.of(requestContactsAccessObservable, authStatusObservable)
+            .merge()
+            .filter { $0 }
+            .mapToVoid()
+            .do(onNext: router.toNameInput)
+            .drive()
+            .disposed(by: disposeBag)
+    }
+    
+}
+
+
 
 struct EnableContactsViewModel {
     
