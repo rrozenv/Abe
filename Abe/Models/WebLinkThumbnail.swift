@@ -18,15 +18,12 @@ final class WebLinkThumbnail: Object {
     
     convenience init?(dictionary: [SwiftLinkResponseKey: Any]) {
         self.init()
-//        print("url: \(String(describing: dictionary[.url] as? NSURL))")
-//        print("canonicalUrl: \(String(describing: dictionary[.canonicalUrl] as? NSURL))")
-//        print("title: \(String(describing: dictionary[.title] as? String))")
-//        print("imageUrl: \(String(describing: dictionary[.image] as? String))")
         guard let url = (dictionary[.url] as? NSURL)?.absoluteString,
             let title = dictionary[.title] as? String,
             let imageUrl = dictionary[.image] as? String else { return nil }
         self.url = url
         self.canonicalUrl = (dictionary[.canonicalUrl] as? NSURL)?.absoluteString ?? ""
+        print("Canoc url: \(self.canonicalUrl)")
         self.title = title
         self.mainImageUrl = imageUrl
     }

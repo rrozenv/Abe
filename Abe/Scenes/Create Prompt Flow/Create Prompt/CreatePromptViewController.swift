@@ -10,6 +10,8 @@ class CreatePromptViewController: UIViewController, BindableType {
     var viewModel: CreatePromptViewModel!
     
     private var selectedImageView: UIImageView!
+    private var paintingImageView: UIImageView!
+    private var opaueView: UIView!
     private var titleTextView: UITextView!
     private var bodyTextView: UITextView!
     private var doneButton: UIBarButtonItem!
@@ -25,10 +27,12 @@ class CreatePromptViewController: UIViewController, BindableType {
     private var titlePlaceholderLabel: UILabel!
     private var bodyPlaceholderLabel: UILabel!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func loadView() {
+        super.loadView()
         self.view.backgroundColor = UIColor.white
-        setupImageView()
+        setupSelectedImageView()
+        setupPaintingImageView()
+        setupOpaueView()
         setupTitleTextView()
         setupScrollView()
         setupContentStackView()
@@ -36,6 +40,11 @@ class CreatePromptViewController: UIViewController, BindableType {
         setupOptionsBarView()
         setupCancelButton()
         setupBackButton()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        titleTextView.becomeFirstResponder()
     }
 
     override var inputAccessoryView: UIView? { get { return optionsBarView } }
@@ -89,6 +98,8 @@ class CreatePromptViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 guard let image = $0 else { return }
                 guard let url = URL(string: image.webformatURL) else { return }
+                self?.paintingImageView.isHidden = true
+                self?.selectedImageView.kf.indicatorType = .activity
                 self?.selectedImageView.kf.setImage(with: url)
             })
             .disposed(by: disposeBag)
@@ -137,11 +148,11 @@ extension CreatePromptViewController {
         self.navigationItem.leftBarButtonItem = dismissButton
     }
     
-    fileprivate func setupImageView() {
+    fileprivate func setupSelectedImageView() {
         selectedImageView = UIImageView()
         selectedImageView.contentMode = .scaleAspectFill
         selectedImageView.clipsToBounds = true
-        selectedImageView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        selectedImageView.backgroundColor = Palette.maroon.color
         
         view.addSubview(selectedImageView)
         selectedImageView.snp.makeConstraints { (make) in
@@ -159,6 +170,31 @@ extension CreatePromptViewController {
         }
     }
     
+    fileprivate func setupPaintingImageView() {
+        paintingImageView = UIImageView(image: #imageLiteral(resourceName: "IC_PaintingIcon"))
+        paintingImageView.contentMode = .scaleAspectFit
+        paintingImageView.clipsToBounds = true
+        
+        selectedImageView.addSubview(paintingImageView)
+        paintingImageView.snp.makeConstraints { (make) in
+            make.bottom.equalTo(selectedImageView).offset(15)
+            make.right.equalTo(selectedImageView).offset(-54)
+            make.width.equalTo(view).multipliedBy(0.2026)
+            make.height.equalTo(view).multipliedBy(0.1409)
+        }
+    }
+    
+    fileprivate func setupOpaueView() {
+        opaueView = UIView()
+        opaueView.backgroundColor = UIColor.black
+        opaueView.alpha = 0.5
+        
+        view.addSubview(opaueView)
+        opaueView.snp.makeConstraints { (make) in
+            make.edges.equalTo(selectedImageView)
+        }
+    }
+    
     fileprivate func setupTitleTextView() {
         titleTextView = UITextView()
         titleTextView.font = FontBook.AvenirHeavy.of(size: 16)
@@ -167,10 +203,11 @@ extension CreatePromptViewController {
         titleTextView.isScrollEnabled = false
         titleTextView.textContainer.maximumNumberOfLines = 2
         titleTextView.textContainer.lineBreakMode = .byTruncatingTail
-        titleTextView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        titleTextView.backgroundColor = UIColor.clear
         
         titlePlaceholderLabel = UILabel()
-        titlePlaceholderLabel.text = "Enter description..."
+        titlePlaceholderLabel.text = "Enter Title..."
+        titlePlaceholderLabel.font = FontBook.AvenirHeavy.of(size: 16)
         titlePlaceholderLabel.textColor = UIColor.white
         
         titleTextView.addSubview(titlePlaceholderLabel)
@@ -179,11 +216,11 @@ extension CreatePromptViewController {
             make.centerY.equalTo(titleTextView)
         }
         
-        view.insertSubview(titleTextView, aboveSubview: selectedImageView)
+        view.insertSubview(titleTextView, aboveSubview: opaueView)
         titleTextView.snp.makeConstraints { (make) in
             make.left.equalTo(view).offset(20)
             make.right.equalTo(view).offset(-20)
-            make.bottom.equalTo(selectedImageView.snp.bottom).offset(-20)
+            make.bottom.equalTo(selectedImageView.snp.bottom).offset(-14)
         }
     }
     
@@ -261,6 +298,7 @@ extension CreatePromptViewController {
         
         bodyPlaceholderLabel = UILabel()
         bodyPlaceholderLabel.text = "Enter description..."
+        bodyPlaceholderLabel.font = FontBook.AvenirMedium.of(size: 14)
         bodyPlaceholderLabel.textColor = Palette.lightGrey.color
         
         bodyTextView.addSubview(bodyPlaceholderLabel)
@@ -274,7 +312,7 @@ extension CreatePromptViewController {
         contentStackView.axis = .vertical
         
         //let imageHeight = selectedImageView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        scrollView.insertSubview(contentStackView, belowSubview: selectedImageView)
+        scrollView.insertSubview(contentStackView, belowSubview: opaueView)
         contentStackView.snp.makeConstraints { (make) in
             make.edges.equalTo(scrollView)
             make.height.equalTo(view).multipliedBy(0.78)
@@ -283,7 +321,7 @@ extension CreatePromptViewController {
         
         removeWebLinkButton = UIButton()
         removeWebLinkButton.isHidden = true
-        removeWebLinkButton.setImage(#imageLiteral(resourceName: "IC_CirclePlus"), for: .normal)
+        removeWebLinkButton.setImage(#imageLiteral(resourceName: "IC_RedCancelCircle"), for: .normal)
         
         view.insertSubview(removeWebLinkButton, belowSubview: selectedImageView)
         removeWebLinkButton.snp.makeConstraints { (make) in

@@ -1,6 +1,7 @@
 
 import Foundation
 import UIKit
+import Kingfisher
 
 final class WebThumbnailView: UIView {
     
@@ -16,6 +17,7 @@ final class WebThumbnailView: UIView {
             self.titleLabel.text = thumbnail.title
             self.urlLabel.text = thumbnail.canonicalUrl == "" ? thumbnail.canonicalUrl : thumbnail.url
             if let url = URL(string: thumbnail.mainImageUrl) {
+                imageView.kf.indicatorType = .activity
                 self.imageView.kf.setImage(with: url)
             }
         }
