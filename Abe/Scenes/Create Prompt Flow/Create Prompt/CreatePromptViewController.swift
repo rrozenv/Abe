@@ -19,7 +19,11 @@ class CreatePromptViewController: UIViewController, BindableType {
     private var optionsBarView: TabOptionsView!
     private var backButton: UIButton!
     private var webLinkView: WebThumbnailView!
+    private var removeWebLinkButton: UIButton!
     private var scrollView: UIScrollView!
+    
+    private var titlePlaceholderLabel: UILabel!
+    private var bodyPlaceholderLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +34,6 @@ class CreatePromptViewController: UIViewController, BindableType {
         setupContentStackView()
         setupAddImageButton()
         setupOptionsBarView()
-        //setupDoneButton()
         setupCancelButton()
         setupBackButton()
     }
@@ -42,15 +45,13 @@ class CreatePromptViewController: UIViewController, BindableType {
     func bindViewModel() {
 //MARK: - Input
         titleTextView.rx.text.orEmpty
+            .do(onNext: { [unowned self] in self.titlePlaceholderLabel.isHidden = $0 == "" ? false : true })
             .bind(to: viewModel.inputs.titleTextInput)
             .disposed(by: disposeBag)
        
         bodyTextView.rx.text.orEmpty
+            .do(onNext: { [unowned self] in self.bodyPlaceholderLabel.isHidden = $0 == "" ? false : true })
             .bind(to: viewModel.inputs.bodyTextInput)
-            .disposed(by: disposeBag)
-        
-        optionsBarView.button(at: 1).rx.tap
-            .bind(to: viewModel.inputs.createTappedInput)
             .disposed(by: disposeBag)
         
         backButton.rx.tap
@@ -61,17 +62,26 @@ class CreatePromptViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.addImageTappedInput)
             .disposed(by: disposeBag)
         
+        //Add Web Link Button
         optionsBarView.button(at: 0).rx.tap
             .bind(to: viewModel.inputs.addWebLinkTappedInput)
+            .disposed(by: disposeBag)
+        
+        //Next Button
+        optionsBarView.button(at: 1).rx.tap
+            .bind(to: viewModel.inputs.createTappedInput)
+            .disposed(by: disposeBag)
+        
+        removeWebLinkButton.rx.tap.asObservable()
+            .subscribe(onNext: { [unowned self] in self.viewModel.inputs.weblinkDelegateInput.onNext(nil) })
             .disposed(by: disposeBag)
         
 //MARK: - Output
         viewModel.outputs.inputIsValid
             .drive(onNext: { [weak self] in
-                self?.optionsBarView.button(at: 1).isHidden = $0 ? false : true
-                self?.optionsBarView.button(at: 1).setTitleColor($0 ? UIColor.red : UIColor.gray, for: .normal)
-//                self?.doneButton.isEnabled = $0 ? true : false
-//                self?.doneButton.tintColor = $0 ? UIColor.red : UIColor.gray
+                self?.optionsBarView.button(at: 1).isEnabled = $0
+                self?.optionsBarView.button(at: 1).backgroundColor = $0 ? Palette.maroon.color : Palette.lightGrey.color
+                self?.optionsBarView.button(at: 1).setTitleColor($0 ? UIColor.white : UIColor.gray, for: .normal)
             })
             .disposed(by: disposeBag)
         
@@ -85,9 +95,15 @@ class CreatePromptViewController: UIViewController, BindableType {
         
         viewModel.outputs.weblinkDelegateOutput
             .drive(onNext: { [weak self] in
-                guard let thumbnail = $0 else { return }
+                guard let thumbnail = $0 else {
+                    self?.webLinkView.isHidden = true
+                    self?.removeWebLinkButton.isHidden = true
+                    self?.optionsBarView.button(at: 0).isHidden = false
+                    return
+                }
                 self?.webLinkView.thumbnail = thumbnail
                 self?.webLinkView.isHidden = false
+                self?.removeWebLinkButton.isHidden = false
                 self?.optionsBarView.button(at: 0).isHidden = true
             })
             .disposed(by: disposeBag)
@@ -149,10 +165,19 @@ extension CreatePromptViewController {
         titleTextView.textColor = UIColor.white
         titleTextView.isEditable = true
         titleTextView.isScrollEnabled = false
-        titleTextView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-        titleTextView.text = "Enter Title..."
-        titleTextView.textContainer.maximumNumberOfLines = 3
+        titleTextView.textContainer.maximumNumberOfLines = 2
         titleTextView.textContainer.lineBreakMode = .byTruncatingTail
+        titleTextView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        
+        titlePlaceholderLabel = UILabel()
+        titlePlaceholderLabel.text = "Enter description..."
+        titlePlaceholderLabel.textColor = UIColor.white
+        
+        titleTextView.addSubview(titlePlaceholderLabel)
+        titlePlaceholderLabel.snp.makeConstraints { (make) in
+            make.left.equalTo(titleTextView).offset(5)
+            make.centerY.equalTo(titleTextView)
+        }
         
         view.insertSubview(titleTextView, aboveSubview: selectedImageView)
         titleTextView.snp.makeConstraints { (make) in
@@ -178,14 +203,16 @@ extension CreatePromptViewController {
     
     func setupOptionsBarView() {
         optionsBarView = TabOptionsView(numberOfItems: 2)
-        optionsBarView.setTitleForButton(title: "+ Link", at: 0)
-        optionsBarView.setTitleForButton(title: "Next", at: 1)
+        optionsBarView.button(at: 0).setTitle("+ Link", for: .normal)
+        optionsBarView.button(at: 0).backgroundColor = UIColor.black
+        optionsBarView.button(at: 0).setTitleColor(UIColor.white, for: .normal)
+        
+        optionsBarView.button(at: 1).setTitle("Next", for: .normal)
+        optionsBarView.button(at: 1).backgroundColor = Palette.lightGrey.color
+        optionsBarView.button(at: 1).setTitleColor(UIColor.gray, for: .normal)
+        
         optionsBarView.frame.size.height = 54
         optionsBarView.frame.size.width = view.frame.size.width
-        
-//        optionsBarView = CreatePromptOptionsBarView()
-//        optionsBarView.addWebLinkButton.setTitle("Add Web Link", for: .normal)
-//        optionsBarView.nextButton.setTitle("Next", for: .normal)
     }
     
     private func setupBackButton() {
@@ -212,37 +239,57 @@ extension CreatePromptViewController {
     
     private func setupScrollView() {
         scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = false
+        
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { (make) in
-            make.left.right.bottom.equalTo(view)
-            make.top.equalTo(selectedImageView.snp.bottom)
+            make.bottom.right.equalTo(view).offset(-20)
+            make.left.equalTo(view).offset(20)
+            make.top.equalTo(selectedImageView.snp.bottom).offset(20)
         }
     }
     
     fileprivate func setupContentStackView() {
         webLinkView = WebThumbnailView()
         webLinkView.isHidden = true
-        
+       
         bodyTextView = UITextView()
         bodyTextView.font = FontBook.AvenirMedium.of(size: 14)
         bodyTextView.isEditable = true
         bodyTextView.isScrollEnabled = true
-        bodyTextView.backgroundColor = UIColor.yellow
-        bodyTextView.text = "Enter description..."
+        bodyTextView.backgroundColor = UIColor.white
+        
+        bodyPlaceholderLabel = UILabel()
+        bodyPlaceholderLabel.text = "Enter description..."
+        bodyPlaceholderLabel.textColor = Palette.lightGrey.color
+        
+        bodyTextView.addSubview(bodyPlaceholderLabel)
+        bodyPlaceholderLabel.snp.makeConstraints { (make) in
+            make.left.top.equalTo(bodyTextView).offset(7)
+        }
         
         let views: [UIView] = [webLinkView, bodyTextView]
         let contentStackView = UIStackView(arrangedSubviews: views)
-        contentStackView.spacing = 4.0
+        contentStackView.spacing = 10.0
         contentStackView.axis = .vertical
+        
         //let imageHeight = selectedImageView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        scrollView.addSubview(contentStackView)
+        scrollView.insertSubview(contentStackView, belowSubview: selectedImageView)
         contentStackView.snp.makeConstraints { (make) in
             make.edges.equalTo(scrollView)
             make.height.equalTo(view).multipliedBy(0.78)
-            make.width.equalTo(view.snp.width)
-//            make.left.equalTo(view).offset(20)
-//            make.right.equalTo(view).offset(-20)
-//            make.top.equalTo(selectedImageView.snp.bottom).offset(20)
+            make.width.equalTo(scrollView.snp.width)
+        }
+        
+        removeWebLinkButton = UIButton()
+        removeWebLinkButton.isHidden = true
+        removeWebLinkButton.setImage(#imageLiteral(resourceName: "IC_CirclePlus"), for: .normal)
+        
+        view.insertSubview(removeWebLinkButton, belowSubview: selectedImageView)
+        removeWebLinkButton.snp.makeConstraints { (make) in
+            make.height.width.equalTo(30)
+            make.right.equalTo(contentStackView).offset(10)
+            make.top.equalTo(contentStackView).offset(-10)
         }
     }
     

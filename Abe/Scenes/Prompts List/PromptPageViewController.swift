@@ -70,7 +70,12 @@ final class PromptPageViewController: UIViewController {
                     animated: true,
                     completion: nil
                 )
-                self?.tabOptionsView.currentVisibility = $0
+                let tag = self?.getButtonTagFor(visibility: $0)
+                self?.tabOptionsView.adjustButtonColors(selected: tag ?? 0,
+                                                        selectedBkgColor: UIColor.black,
+                                                        selectedTitleColor: UIColor.yellow,
+                                                        notSelectedBkgColor: Palette.darkGrey.color,
+                                                        notSelectedTitleColor: UIColor.white)
             })
             .disposed(by: disposeBag)
     }
@@ -90,6 +95,14 @@ final class PromptPageViewController: UIViewController {
     
     private func setPageViewControllerScrollEnabled(_ enabled: Bool) {
         self.pageViewController.dataSource = enabled == false ? nil : self.dataSource
+    }
+    
+    private func getButtonTagFor(visibility: Visibility) -> Int {
+        switch visibility {
+        case .all: return 0
+        case .individualContacts: return 1
+        default: return 0
+        }
     }
     
     private func setupPageController() {
@@ -115,6 +128,11 @@ final class PromptPageViewController: UIViewController {
         tabOptionsView.setTitleForButton(title: "PUBLIC", at: 0)
         tabOptionsView.setTitleForButton(title: "PRIVATE", at: 1)
         tabOptionsView.dropShadow()
+        tabOptionsView.adjustButtonColors(selected: self.getButtonTagFor(visibility: .all),
+                                                selectedBkgColor: UIColor.black,
+                                                selectedTitleColor: UIColor.yellow,
+                                                notSelectedBkgColor: Palette.darkGrey.color,
+                                                notSelectedTitleColor: UIColor.white)
         
         view.addSubview(tabOptionsView)
         tabOptionsView.snp.makeConstraints { (make) in

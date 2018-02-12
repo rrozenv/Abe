@@ -15,6 +15,7 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
     let cancelTappedInput: AnyObserver<Void>
     let addImageTappedInput: AnyObserver<Void>
     let addWebLinkTappedInput: AnyObserver<Void>
+    let removeWebLinkTappedInput: AnyObserver<Void>
     
 //MARK: - Delegate Inputs
     let imageDelegateInput: AnyObserver<ImageRepresentable?>
@@ -25,6 +26,7 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
     let inputIsValid: Driver<Bool>
     let imageDelegateOutput: Driver<ImageRepresentable?>
     let weblinkDelegateOutput: Driver<WebLinkThumbnail?>
+    //let removeWeblink: Driver<Void>
     
     init?(promptService: PromptService,
          router: CreatePromptRouter) {
@@ -43,6 +45,7 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
         let _cancelTappedInput = PublishSubject<Void>()
         let _addImageTappedInput = PublishSubject<Void>()
         let _addWebLinkTappedInput = PublishSubject<Void>()
+        let _removeWebLinkTappedInput = PublishSubject<Void>()
         
         let _imageDelegateInput = PublishSubject<ImageRepresentable?>()
         let _weblinkDelegateInput = PublishSubject<WebLinkThumbnail?>()
@@ -54,6 +57,7 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
         self.cancelTappedInput = _cancelTappedInput.asObserver()
         self.addWebLinkTappedInput = _addWebLinkTappedInput.asObserver()
         self.addImageTappedInput = _addImageTappedInput.asObserver()
+        self.removeWebLinkTappedInput = _removeWebLinkTappedInput.asObserver()
         
         self.imageDelegateInput = _imageDelegateInput.asObserver()
         self.weblinkDelegateInput = _weblinkDelegateInput.asObserver()
@@ -65,9 +69,10 @@ final class CreatePromptViewModel: CreatePromptViewModelInputs, CreatePromptView
         let cancelTappedObservable = _cancelTappedInput.asObservable()
         let addImageTappedObservable = _addImageTappedInput.asDriverOnErrorJustComplete()
         let addWebLinkTappedObservable = _addWebLinkTappedInput.asObservable()
+        let removeWebLinkTappedObservable = _removeWebLinkTappedInput.asObservable()
         
         let imageDelegateInputObservable = _imageDelegateInput.asObservable().startWith(nil)
-        let weblinkDelegateInputObservable = _weblinkDelegateInput.asObservable().startWith(nil)
+        let weblinkDelegateInputObservable = Observable.of(_weblinkDelegateInput.asObservable().startWith(nil), removeWebLinkTappedObservable.map { nil }).merge()
         
 //MARK: - Second Level Observables
         let promptInputsObservable = Observable
@@ -128,6 +133,7 @@ protocol CreatePromptViewModelInputs {
     var cancelTappedInput: AnyObserver<Void> { get }
     var addImageTappedInput: AnyObserver<Void> { get }
     var addWebLinkTappedInput: AnyObserver<Void> { get }
+    var removeWebLinkTappedInput: AnyObserver<Void> { get }
     
     //MARK: - Delegate Inputs
     var imageDelegateInput: AnyObserver<ImageRepresentable?> { get }

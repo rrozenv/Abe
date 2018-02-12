@@ -6,12 +6,7 @@ final class TabOptionsView: UIView {
     
     private var stackView: UIStackView!
     private var buttons = [UIButton]()
-    var currentVisibility: Visibility = .all {
-        didSet {
-            self.adjustButtonColors(selected: getButtonTagFor(visibility: currentVisibility))
-        }
-    }
-    
+  
     //MARK: Initalizer Setup
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -37,19 +32,15 @@ extension TabOptionsView {
         return buttons[index]
     }
     
-    private func adjustButtonColors(selected tag: Int) {
+    func adjustButtonColors(selected tag: Int,
+                            selectedBkgColor: UIColor,
+                            selectedTitleColor: UIColor,
+                            notSelectedBkgColor: UIColor,
+                            notSelectedTitleColor: UIColor) {
         buttons.forEach {
             $0.backgroundColor =
-                ($0.tag == tag) ? UIColor.black : Palette.darkGrey.color
-            $0.setTitleColor(($0.tag == tag) ? UIColor.yellow : UIColor.white, for: .normal)
-        }
-    }
-    
-    private func getButtonTagFor(visibility: Visibility) -> Int {
-        switch visibility {
-        case .all: return 0
-        case .individualContacts: return 1
-        default: return -1
+                ($0.tag == tag) ? selectedBkgColor : notSelectedBkgColor
+            $0.setTitleColor(($0.tag == tag) ? selectedTitleColor : notSelectedTitleColor, for: .normal)
         }
     }
     
@@ -61,7 +52,6 @@ extension TabOptionsView {
             button.titleLabel?.font = FontBook.BariolBold.of(size: 14)
             buttons.append(button)
         }
-        currentVisibility = .all
         stackView = UIStackView(arrangedSubviews: buttons)
         stackView.spacing = 0
         stackView.axis = .horizontal

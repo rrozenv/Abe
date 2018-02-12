@@ -14,7 +14,7 @@ final class WebThumbnailView: UIView {
         didSet {
             guard let thumbnail = thumbnail else { return }
             self.titleLabel.text = thumbnail.title
-            self.urlLabel.text = thumbnail.canonicalUrl
+            self.urlLabel.text = thumbnail.canonicalUrl == "" ? thumbnail.canonicalUrl : thumbnail.url
             if let url = URL(string: thumbnail.mainImageUrl) {
                 self.imageView.kf.setImage(with: url)
             }
@@ -34,7 +34,9 @@ final class WebThumbnailView: UIView {
     
     init() {
         super.init(frame: .zero)
-        self.backgroundColor = UIColor.gray
+        self.backgroundColor = Palette.faintGrey.color
+        self.layer.cornerRadius = 5.0
+        self.layer.masksToBounds = true
         setupImageView()
         setupLabelsStackView()
     }
@@ -47,7 +49,7 @@ final class WebThumbnailView: UIView {
         self.addSubview(imageView)
         imageView.snp.makeConstraints { (make) in
             make.left.top.bottom.equalTo(self)
-            make.width.height.equalTo(100)
+            make.width.height.equalTo(76)
         }
     }
     
