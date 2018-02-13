@@ -11,9 +11,13 @@ final class WebThumbnailView: UIView {
     var urlLabel: UILabel!
     var labelsStackView: UIStackView!
     
+    var placeholderBackgroundView: UIView!
+    var placeholderImageView: UIImageView!
+    var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    
     var thumbnail: WebLinkThumbnail? {
         didSet {
-            guard let thumbnail = thumbnail else { return }
+            guard let thumbnail = thumbnail else { clearData(); return }
             self.titleLabel.text = thumbnail.title
             self.urlLabel.text = thumbnail.canonicalUrl == "" ? thumbnail.canonicalUrl : thumbnail.url
             if let url = URL(string: thumbnail.mainImageUrl) {
@@ -21,6 +25,12 @@ final class WebThumbnailView: UIView {
                 self.imageView.kf.setImage(with: url)
             }
         }
+    }
+    
+    private func clearData() {
+        imageView.image = nil
+        titleLabel.text = nil
+        urlLabel.text = nil
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,10 +47,13 @@ final class WebThumbnailView: UIView {
     init() {
         super.init(frame: .zero)
         self.backgroundColor = Palette.faintGrey.color
-        self.layer.cornerRadius = 5.0
+        self.layer.cornerRadius = 2.0
         self.layer.masksToBounds = true
         setupImageView()
         setupLabelsStackView()
+        setupPlaceholderBackgroundView()
+        setupPlaceholderImageView()
+        setupLoadingIndicator()
     }
     
     private func setupImageView() {
@@ -76,6 +89,37 @@ final class WebThumbnailView: UIView {
             make.centerY.equalTo(self.snp.centerY)
             make.left.equalTo(imageView.snp.right).offset(10)
             make.right.equalTo(self.snp.right).offset(-10)
+        }
+    }
+    
+    private func setupPlaceholderBackgroundView() {
+        placeholderBackgroundView = UIView()
+        placeholderBackgroundView.backgroundColor = UIColor.white
+        
+        self.addSubview(placeholderBackgroundView)
+        placeholderBackgroundView.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
+    }
+    
+    private func setupPlaceholderImageView() {
+        placeholderImageView = UIImageView(image: #imageLiteral(resourceName: "IC_WebIcon"))
+        placeholderImageView.contentMode = .scaleAspectFit
+        
+        placeholderBackgroundView.addSubview(placeholderImageView)
+        placeholderImageView.snp.makeConstraints { (make) in
+            make.center.equalToSuperview()
+            make.width.equalTo(self).multipliedBy(0.1923)
+            make.height.equalTo(self).multipliedBy(0.64)
+        }
+    }
+    
+    private func setupLoadingIndicator() {
+        activityIndicator.hidesWhenStopped = true
+        
+        self.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { (make) in
+            make.center.equalTo(self)
         }
     }
     

@@ -62,13 +62,14 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
         vc.setViewModelBinding(model: viewModel)
         if createPromptViewModel != nil {
             viewModel.outputs.linkThumbnail
-                .bind(to: createPromptViewModel!.weblinkDelegateInput)
+                .drive(createPromptViewModel!.weblinkDelegateInput)
                 .disposed(by: viewModel.disposeBag)
         }
         navigationController?.pushViewController(vc, animated: true)
     }
 
     func toPrompts() {
+        navigationController?.resignFirstResponder()
         navigationController?.isNavigationBarHidden = false
         navigationController?.dismiss(animated: true)
     }

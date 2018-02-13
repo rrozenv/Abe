@@ -170,11 +170,11 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Login%20Flow/Create%20User/CreateUserViewModel.swift"
-                  timestampString = "540073548.1009409"
+                  timestampString = "540246910.641081"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "130"
-                  endingLineNumber = "130"
+                  startingLineNumber = "129"
+                  endingLineNumber = "129"
                   offsetFromSymbolStart = "7661">
                </Location>
                <Location
@@ -185,11 +185,11 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Login%20Flow/Create%20User/CreateUserViewModel.swift"
-                  timestampString = "540073548.103478"
+                  timestampString = "540246910.643545"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "130"
-                  endingLineNumber = "130"
+                  startingLineNumber = "129"
+                  endingLineNumber = "129"
                   offsetFromSymbolStart = "14">
                </Location>
             </Locations>
@@ -234,7 +234,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Realm%20Data%20Services/PromptService.swift"
-                  timestampString = "540073548.1144789"
+                  timestampString = "540246910.653955"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "180"
@@ -249,7 +249,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Realm%20Data%20Services/PromptService.swift"
-                  timestampString = "540073548.11707"
+                  timestampString = "540246910.656458"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "180"

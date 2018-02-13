@@ -89,8 +89,8 @@ class CreatePromptViewController: UIViewController, BindableType {
         viewModel.outputs.inputIsValid
             .drive(onNext: { [weak self] in
                 self?.optionsBarView.button(at: 1).isEnabled = $0
-                self?.optionsBarView.button(at: 1).backgroundColor = $0 ? Palette.maroon.color : Palette.lightGrey.color
-                self?.optionsBarView.button(at: 1).setTitleColor($0 ? UIColor.white : UIColor.gray, for: .normal)
+                self?.optionsBarView.button(at: 1).backgroundColor = $0 ? Palette.brightYellow.color : Palette.lightGrey.color
+                self?.optionsBarView.button(at: 1).setTitleColor($0 ? Palette.darkYellow.color : UIColor.gray, for: .normal)
             })
             .disposed(by: disposeBag)
         
@@ -288,6 +288,7 @@ extension CreatePromptViewController {
     
     fileprivate func setupContentStackView() {
         webLinkView = WebThumbnailView()
+        webLinkView.placeholderBackgroundView.isHidden = true
         webLinkView.isHidden = true
        
         bodyTextView = UITextView()
@@ -312,7 +313,7 @@ extension CreatePromptViewController {
         contentStackView.axis = .vertical
         
         //let imageHeight = selectedImageView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        scrollView.insertSubview(contentStackView, belowSubview: opaueView)
+        scrollView.insertSubview(contentStackView, belowSubview: selectedImageView)
         contentStackView.snp.makeConstraints { (make) in
             make.edges.equalTo(scrollView)
             make.height.equalTo(view).multipliedBy(0.78)
@@ -323,7 +324,7 @@ extension CreatePromptViewController {
         removeWebLinkButton.isHidden = true
         removeWebLinkButton.setImage(#imageLiteral(resourceName: "IC_RedCancelCircle"), for: .normal)
         
-        view.insertSubview(removeWebLinkButton, belowSubview: selectedImageView)
+        view.insertSubview(removeWebLinkButton, aboveSubview: contentStackView)
         removeWebLinkButton.snp.makeConstraints { (make) in
             make.height.width.equalTo(30)
             make.right.equalTo(contentStackView).offset(10)

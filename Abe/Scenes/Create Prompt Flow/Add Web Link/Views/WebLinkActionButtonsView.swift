@@ -36,9 +36,9 @@ final class WebLinkActionButtonsView: UIView {
     
     private func setupSearchButton() {
         searchButton = UIButton()
-        searchButton.backgroundColor = UIColor.green
+        searchButton.layer.cornerRadius = 2.0
         searchButton.setTitle("Search", for: .normal)
-        searchButton.isHidden = false
+        searchButton.titleLabel?.font = FontBook.AvenirMedium.of(size: 14)
         
         containerView.addSubview(searchButton)
         searchButton.snp.makeConstraints { (make) in
@@ -48,9 +48,9 @@ final class WebLinkActionButtonsView: UIView {
     
     private func setupDoneButton() {
         doneButton = UIButton()
-        doneButton.backgroundColor = UIColor.blue
+        doneButton.layer.cornerRadius = 2.0
         doneButton.setTitle("Done", for: .normal)
-        doneButton.isHidden = true
+        doneButton.titleLabel?.font = FontBook.AvenirMedium.of(size: 14)
         
         containerView.addSubview(doneButton)
         doneButton.snp.makeConstraints { (make) in
