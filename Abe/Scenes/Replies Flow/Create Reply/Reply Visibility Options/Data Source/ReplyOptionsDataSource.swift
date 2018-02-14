@@ -3,58 +3,108 @@ import Foundation
 import UIKit
 
 final class ReplyVisibilityDataSource: ValueCellDataSource {
-
-    func loadIndividualContacts(contacts: [IndividualContactViewModel]) {
-        self.set(values: contacts,
-                 cellClass: UserContactTableCell.self,
-                 inSection: 0)
+    
+    enum Section: Int {
+        case publicVisibility
+        case contacts
     }
 
-    func toggleContact(at indexPath: IndexPath) {
-        guard var viewModel = contactViewModelAt(indexPath: indexPath) else { return }
-        viewModel.isSelected = !viewModel.isSelected
-        self.set(value: viewModel,
+    private var storedUsers: [IndividualContactViewModel] = []
+    private var latestFilteredUsers: [IndividualContactViewModel] = []
+    private var isFiltering: Bool = false
+    
+    func loadUsers(viewModels: [IndividualContactViewModel]) {
+        self.storedUsers = viewModels
+        self.set(values: viewModels,
                  cellClass: UserContactTableCell.self,
-                 inSection: indexPath.section,
-                 row: indexPath.row)
+                 inSection: Section.contacts.rawValue)
     }
     
-    func toggleAll(shouldSelect: Bool) {
-        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return }
-        let updatedViewModels = viewModels
-            .map { inputs -> IndividualContactViewModel in
-                return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
-        }
+    func filterUsersFor(searchText: String) {
+        self.isFiltering = true
+        let updatedViewModels = storedUsers.filter { $0.user.name.contains(searchText) }
+        self.latestFilteredUsers = updatedViewModels
         self.set(values: updatedViewModels,
                  cellClass: UserContactTableCell.self,
-                 inSection: 0)
+                 inSection: Section.contacts.rawValue)
+    }
+    
+    func resetSearchFilter() {
+        self.isFiltering = false
+        self.latestFilteredUsers = []
+        self.set(values: storedUsers,
+                 cellClass: UserContactTableCell.self,
+                 inSection: Section.contacts.rawValue)
     }
     
     func selectedCount() -> Int {
-        guard let viewModels = self[section: 0] as? [IndividualContactViewModel] else { return 0 }
-        return viewModels.filter { $0.isSelected }.count
+        return storedUsers.filter { $0.isSelected }.count
     }
     
     func totalCount() -> Int {
         return self.numberOfItems()
     }
     
-    func contactViewModelAt(indexPath: IndexPath) -> IndividualContactViewModel? {
-        return self[indexPath] as? IndividualContactViewModel
+    func toggleUser(_ viewModel: IndividualContactViewModel) -> IndexPath? {
+        guard let allUsersIndex = storedUsers.index(of: viewModel)
+            else { return nil }
+        storedUsers[allUsersIndex].isSelected = !storedUsers[allUsersIndex].isSelected
+        if let filteredUsersIndex = latestFilteredUsers.index(of: viewModel), isFiltering {
+            latestFilteredUsers[filteredUsersIndex].isSelected = !latestFilteredUsers[filteredUsersIndex].isSelected
+            self.set(value: latestFilteredUsers[filteredUsersIndex],
+                     cellClass: UserContactTableCell.self,
+                     inSection: Section.contacts.rawValue,
+                     row: Int(filteredUsersIndex))
+            return IndexPath(row: Int(filteredUsersIndex), section: Section.contacts.rawValue)
+        } else if !isFiltering {
+            self.set(value: storedUsers[allUsersIndex],
+                     cellClass: UserContactTableCell.self,
+                     inSection: Section.contacts.rawValue,
+                     row: Int(allUsersIndex))
+            return IndexPath(row: Int(allUsersIndex), section: Section.contacts.rawValue)
+        } else { return nil }
     }
-
+    
+    func toggleAll(shouldSelect: Bool) {
+        let allUpdatedUsers = storedUsers
+            .map { inputs -> IndividualContactViewModel in
+                return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
+        }
+        self.storedUsers = allUpdatedUsers
+        if isFiltering {
+            let filteredUpdatedUsers = latestFilteredUsers
+                .map { inputs -> IndividualContactViewModel in
+                    return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
+            }
+            self.latestFilteredUsers = filteredUpdatedUsers
+            self.set(values: filteredUpdatedUsers,
+                     cellClass: UserContactTableCell.self,
+                     inSection: Section.contacts.rawValue)
+        } else {
+            self.set(values: allUpdatedUsers,
+                     cellClass: UserContactTableCell.self,
+                     inSection: Section.contacts.rawValue)
+        }
+    }
+    
+    func getUser(at indexPath: IndexPath) -> IndividualContactViewModel? {
+        if isFiltering {
+            guard latestFilteredUsers.count > indexPath.row else { return nil }
+            return latestFilteredUsers[indexPath.row]
+        } else {
+            return storedUsers[indexPath.row]
+        }
+    }
+    
     //MARK: - Configure Cell
     override func configureCell(tableCell cell: UITableViewCell, withValue value: Any) {
         switch (cell, value) {
-        case let (cell as GeneralVisibilityTableCell, value as VisibilityCellViewModel):
-            cell.configureWith(value: value)
         case let (cell as UserContactTableCell, value as IndividualContactViewModel):
             cell.configureWith(value: value)
         default:
             assertionFailure("Unrecognized combo: \(cell), \(value)")
         }
     }
-
 }
 
 //    enum Section: Int {

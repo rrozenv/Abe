@@ -64,7 +64,7 @@ final class GuessReplyAuthorDataSource: ValueCellDataSource {
         let allUpdatedUsers = storedUsers
             .map { inputs -> IndividualContactViewModel in
                 return IndividualContactViewModel(isSelected: shouldSelect ? true : false, user: inputs.user)
-        }
+            }
         self.storedUsers = allUpdatedUsers
         if isFiltering {
             let filteredUpdatedUsers = latestFilteredUsers

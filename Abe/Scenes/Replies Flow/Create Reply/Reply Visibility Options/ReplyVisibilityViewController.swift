@@ -8,26 +8,29 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
     
     let disposeBag = DisposeBag()
     var viewModel: ReplyVisibilityViewModel!
-    private let dataSource = GuessReplyAuthorDataSource()
+    private let dataSource = ReplyVisibilityDataSource()
     
     private var publicButton: UIButton!
     private var tableView: UITableView!
-    private var createReplyButton: UIBarButtonItem!
-    private var backButton: UIBarButtonItem!
+    private var createReplyButton: UIButton!
     private var selectAllContactsButton: UIButton!
     private var contactsTableHeaderView: ContactsTableHeaderView!
+    private var publicVisiblitySectionView: PublicVisibilitySectionHeaderView!
     private var searchBar: UISearchBar!
+    private var backButton: UIButton!
     private var isAllContactsSelected = Variable<Bool>(true)
 
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
-        setupPublicButton()
-        setupSearchBar()
+        setupBackButton()
+        //setupPublicButton()
+        //setupSearchBar()
         setupTableView()
         setupCreateButton()
-        setupCancelButton()
+        //setupCancelButton()
         setupContatsTableHeaderView()
+        setupPublicVisibilitySectionView()
     }
 
     override func viewDidLoad() {
@@ -39,6 +42,8 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         viewModel.inputs.viewWillAppearInput.onNext(())
     }
    
+    override var inputAccessoryView: UIView? { get { return createReplyButton } }
+    override var canBecomeFirstResponder: Bool { return true }
     deinit { print("reply options deinit") }
     
     func bindViewModel() {
@@ -48,10 +53,11 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         createReplyButton.rx.tap.asDriver()
+            .debug()
             .drive(viewModel.inputs.createButtonTappedInput)
             .disposed(by: disposeBag)
         
-        publicButton.rx.tap.asObservable()
+        publicVisiblitySectionView.actionButton.rx.tap.asObservable()
             .bind(to: viewModel.inputs.publicButtonTappedInput)
             .disposed(by: disposeBag)
         
@@ -92,7 +98,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 let _ = self?.dataSource.toggleUser($0.user)
                 self?.tableView.reloadRows(at: [$0.indexPath], with: .none)
-                self?.publicButton.backgroundColor = UIColor.white
+                self?.publicVisiblitySectionView.containerView.backgroundColor = UIColor.white
                 
                 self?.updateContactsHeaderView()
                 self?.setCreateButtonEnabledStatus(publicVisIsSelected: false)
@@ -101,7 +107,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         
         viewModel.outputs.publicButtonTapped
             .drive(onNext: { [weak self] in
-                self?.publicButton.backgroundColor = UIColor.green
+                self?.publicVisiblitySectionView.containerView.backgroundColor = UIColor.green
                 self?.dataSource.toggleAll(shouldSelect: false)
                 self?.tableView.reloadData()
                 
@@ -114,7 +120,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 self?.dataSource.toggleAll(shouldSelect: $0)
                 self?.tableView.reloadData()
-                self?.publicButton.backgroundColor = UIColor.white
+                self?.publicVisiblitySectionView.containerView.backgroundColor = UIColor.white
                 
                 self?.updateContactsHeaderView()
                 self?.setCreateButtonEnabledStatus(publicVisIsSelected: false)
@@ -140,7 +146,11 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
 extension ReplyVisibilityViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return contactsTableHeaderView
+        guard let section = ReplyVisibilityDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
+        switch section {
+        case .publicVisibility: return publicVisiblitySectionView
+        case .contacts: return contactsTableHeaderView
+        }
     }
     
 }
@@ -158,13 +168,12 @@ extension ReplyVisibilityViewController {
     
     private func setCreateButtonEnabledStatus(publicVisIsSelected: Bool) {
         guard !publicVisIsSelected else {
-            self.createReplyButton.isEnabled = true
-            self.createReplyButton.style = UIBarButtonItemStyle.done
+            self.createReplyButton.isHidden = false
             return
         }
         let selectedCount = self.dataSource.selectedCount()
-        self.createReplyButton.isEnabled = selectedCount > 0 ? true : false
-        self.createReplyButton.style = selectedCount > 0 ? UIBarButtonItemStyle.done : UIBarButtonItemStyle.plain
+        //self.createReplyButton.isEnabled = selectedCount > 0 ? true : false
+        self.createReplyButton.isHidden = selectedCount > 0 ? false : true
     }
     
     private func updateContactsHeaderView() {
@@ -191,13 +200,13 @@ extension ReplyVisibilityViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    private func setupCancelButton() {
-        backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-        self.navigationItem.leftBarButtonItem = backButton
-    }
+//    private func setupCancelButton() {
+//        backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+//        self.navigationItem.leftBarButtonItem = backButton
+//    }
     
     private func setupTableView() {
-        tableView = UITableView(frame: CGRect.zero, style: .grouped)
+        tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "vis")
         tableView.register(GeneralVisibilityTableCell.self, forCellReuseIdentifier: GeneralVisibilityTableCell.defaultReusableId)
         tableView.register(UserContactTableCell.self, forCellReuseIdentifier: UserContactTableCell.defaultReusableId)
@@ -208,57 +217,88 @@ extension ReplyVisibilityViewController {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
+            make.top.equalTo(backButton.snp.bottom).offset(6)
         }
     }
     
     private func setupCreateButton() {
-        createReplyButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
-        createReplyButton.isEnabled = false
-        createReplyButton.style = UIBarButtonItemStyle.plain
-        self.navigationItem.rightBarButtonItem = createReplyButton
+        createReplyButton = UIButton()
+        createReplyButton.isHidden = true
+        createReplyButton.setTitle("Create", for: .normal)
+        createReplyButton.backgroundColor = Palette.brightYellow.color
+        createReplyButton.setTitleColor(Palette.darkYellow.color, for: .normal)
+        createReplyButton.titleLabel?.font = FontBook.BariolBold.of(size: 14)
+        createReplyButton.frame.size.height = 50
+        createReplyButton.frame.size.width = view.frame.size.width
     }
     
-    private func setupPublicButton() {
-        publicButton = UIButton()
-        publicButton.backgroundColor = UIColor.blue
-        publicButton.alpha = 0.5
-        publicButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
-        publicButton.setTitle("Public", for: .normal)
-        publicButton.setTitleColor(UIColor.blue, for: .normal)
-        publicButton.titleLabel?.textColor = UIColor.blue
-        publicButton.backgroundColor = UIColor.white
-        
-        view.addSubview(publicButton)
-        publicButton.snp.makeConstraints { (make) in
-            make.left.right.equalTo(view)
-            make.top.equalTo(view).offset(100)
-            make.height.equalTo(60)
-        }
+    private func setupPublicVisibilitySectionView() {
+        publicVisiblitySectionView = PublicVisibilitySectionHeaderView()
+        publicVisiblitySectionView.titleLabel.text = "Who will be able to see & reply to your post?"
+        publicVisiblitySectionView.centerDividerLabel.text = "or"
+        publicVisiblitySectionView.imageNameSublabelView.nameLabel.text = "EVERYONE"
+        publicVisiblitySectionView.imageNameSublabelView.nameSubLabel.text = "Both friends & Strangers"
     }
+    
+//    private func setupPublicButton() {
+//        publicButton = UIButton()
+//        publicButton.backgroundColor = UIColor.blue
+//        publicButton.alpha = 0.5
+//        publicButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
+//        publicButton.setTitle("Public", for: .normal)
+//        publicButton.setTitleColor(UIColor.blue, for: .normal)
+//        publicButton.titleLabel?.textColor = UIColor.blue
+//        publicButton.backgroundColor = UIColor.white
+//
+//        view.addSubview(publicButton)
+//        publicButton.snp.makeConstraints { (make) in
+//            make.left.right.equalTo(view)
+//            make.top.equalTo(view).offset(100)
+//            make.height.equalTo(60)
+//        }
+//    }
     
     private func setupContatsTableHeaderView() {
         contactsTableHeaderView = ContactsTableHeaderView()
         contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
         contactsTableHeaderView.titleLabel.text = "Select From Contacts"
+        contactsTableHeaderView.searchBar.delegate = self
     }
     
-    private func setupSearchBar() {
-        searchBar = UISearchBar()
-        searchBar.searchBarStyle = .minimal
-        searchBar.placeholder = "Search Contacts"
-        searchBar.barTintColor = Palette.faintGrey.color
-        searchBar.backgroundColor = UIColor.white
-        searchBar.delegate = self
+    private func setupBackButton() {
+        backButton = UIButton.backButton(image: #imageLiteral(resourceName: "IC_BackArrow_Black"))
         
-        view.addSubview(searchBar)
-        searchBar.snp.makeConstraints { (make) in
-            make.top.equalTo(publicButton.snp.bottom).offset(10)
-            make.left.equalTo(view).offset(20)
-            make.right.equalTo(view).offset(-20)
-            make.height.equalTo(50)
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            if #available(iOS 11.0, *) {
+                if UIDevice.iPhoneX {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-44)
+                } else {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-20)
+                }
+            } else {
+                make.top.equalTo(view.snp.top)
+            }
         }
     }
+    
+//    private func setupSearchBar() {
+//        searchBar = UISearchBar()
+//        searchBar.searchBarStyle = .minimal
+//        searchBar.placeholder = "Search Contacts"
+//        searchBar.barTintColor = Palette.faintGrey.color
+//        searchBar.backgroundColor = UIColor.white
+//        searchBar.delegate = self
+//
+//        view.addSubview(searchBar)
+//        searchBar.snp.makeConstraints { (make) in
+//            make.top.equalTo(publicButton.snp.bottom).offset(10)
+//            make.left.equalTo(view).offset(20)
+//            make.right.equalTo(view).offset(-20)
+//            make.height.equalTo(50)
+//        }
+//    }
     
 }
 

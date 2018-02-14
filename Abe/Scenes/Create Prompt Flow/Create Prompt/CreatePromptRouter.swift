@@ -36,7 +36,7 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
                                                  savedReplyInput: savedInput,
                                                  isForReply: false)
         vc.setViewModelBinding(model: viewModel!)
-        navigationController?.isNavigationBarHidden = false
+        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -29,6 +29,8 @@ protocol ReplyVisibilityViewModelType {
     var outputs: ReplyVisibilityViewModelOutputs { get }
 }
 
+typealias TableSection = ReplyVisibilityDataSource.Section
+
 final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisibilityViewModelOutputs, ReplyVisibilityViewModelType {
     
     let disposeBag = DisposeBag()
@@ -111,13 +113,13 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         
         let shouldClearSelectedNumbersObservable = Observable.of(publicButtonTappedObservable, selectedAllContactsObservable.filter{ !$0 }.mapToVoid()).merge()
             .map { (user: IndividualContactViewModel(isSelected: false, user: User.defualtUser()),
-                    indexPath: IndexPath(row: -1, section: 0)) }
+                    indexPath: IndexPath(row: -1, section: TableSection.contacts.rawValue)) }
         
         let shouldSelectAllContactsObservable = selectedAllContactsObservable
             .filter { $0 }
             .map { _ in
                 (user: IndividualContactViewModel(isSelected: true, user: User.defualtUser()),
-                    indexPath: IndexPath(row: -1, section: 0))
+                    indexPath: IndexPath(row: -1, section: TableSection.contacts.rawValue))
             }
         
         let selectedContactNumbersObservable = Observable

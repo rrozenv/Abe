@@ -170,7 +170,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Login%20Flow/Create%20User/CreateUserViewModel.swift"
-                  timestampString = "540246910.641081"
+                  timestampString = "540270894.5342799"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "129"
@@ -185,7 +185,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Login%20Flow/Create%20User/CreateUserViewModel.swift"
-                  timestampString = "540246910.643545"
+                  timestampString = "540270894.537383"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "129"
@@ -234,7 +234,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Realm%20Data%20Services/PromptService.swift"
-                  timestampString = "540246910.653955"
+                  timestampString = "540270894.547357"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "180"
@@ -249,7 +249,7 @@
                   moduleName = "Abe"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Realm%20Data%20Services/PromptService.swift"
-                  timestampString = "540246910.656458"
+                  timestampString = "540270894.549626"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "180"
@@ -400,6 +400,246 @@
             startingLineNumber = "30"
             endingLineNumber = "30"
             landmarkName = "toNameInput()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "540270984.083778"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
+            landmarkName = "init(replyService:promptService:userService:router:prompt:savedReplyInput:isForReply:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "540270984.083892"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
+            landmarkName = "init(replyService:promptService:userService:router:prompt:savedReplyInput:isForReply:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.604037"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "6787">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #17 (Abe.Visibility) -&gt; Swift.Bool in Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.606408"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "159"
+                  endingLineNumber = "159"
+                  offsetFromSymbolStart = "14">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "540270984.083967"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
+            landmarkName = "init(replyService:promptService:userService:router:prompt:savedReplyInput:isForReply:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.612437"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "152"
+                  endingLineNumber = "152"
+                  offsetFromSymbolStart = "5901">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #14 (Abe.Visibility) -&gt; Swift.Bool in Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.615128"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "152"
+                  endingLineNumber = "152"
+                  offsetFromSymbolStart = "14">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "540270984.084038"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "init(replyService:promptService:userService:router:prompt:savedReplyInput:isForReply:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.62135"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "150"
+                  endingLineNumber = "150"
+                  offsetFromSymbolStart = "5657">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #13 () -&gt; Swift.Bool in Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.623952"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "150"
+                  endingLineNumber = "150"
+                  offsetFromSymbolStart = "15">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "540270984.0841039"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "init(replyService:promptService:userService:router:prompt:savedReplyInput:isForReply:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "540270984.084167"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "157"
+            endingLineNumber = "157"
+            landmarkName = "init(replyService:promptService:userService:router:prompt:savedReplyInput:isForReply:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.633679"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "6543">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #16 () -&gt; Swift.Bool in Abe.ReplyVisibilityViewModel.init(replyService: Abe.ReplyService, promptService: Abe.PromptService, userService: Abe.UserService, router: Abe.ReplyOptionsRoutingLogic, prompt: Abe.Prompt, savedReplyInput: Abe.SavedReplyInput, isForReply: Swift.Bool) -&gt; Swift.Optional&lt;Abe.ReplyVisibilityViewModel&gt;"
+                  moduleName = "Abe"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/rrozenv/Desktop/Abe/Abe/Abe/Scenes/Replies%20Flow/Create%20Reply/Reply%20Visibility%20Options/ReplyVisibilityViewModel.swift"
+                  timestampString = "540270894.636317"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "15">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Abe/Scenes/Replies Flow/Create Reply/Reply Visibility Options/ReplyVisibilityViewModel.swift"
+            timestampString = "540270984.084234"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "158"
+            endingLineNumber = "158"
+            landmarkName = "init(replyService:promptService:userService:router:prompt:savedReplyInput:isForReply:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
