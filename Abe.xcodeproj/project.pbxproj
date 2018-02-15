@@ -113,6 +113,8 @@
 		98D26EE9201550F200B0A72E /* GuessReplyAuthorRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */; };
 		98D26EEB2015510400B0A72E /* GuessReplyAuthorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */; };
 		98E58F93202A8936003554A1 /* CustomNavigatonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */; };
+		98F22D492036340B00C886F1 /* TestFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F22D482036340B00C886F1 /* TestFile.swift */; };
+		98F22D4B2036398D00C886F1 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F22D4A2036398D00C886F1 /* UserService.swift */; };
 		98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */; };
 		98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */; };
 		98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */; };
@@ -271,6 +273,8 @@
 		98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorRouter.swift; sourceTree = "<group>"; };
 		98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorDataSource.swift; sourceTree = "<group>"; };
 		98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigatonBar.swift; sourceTree = "<group>"; };
+		98F22D482036340B00C886F1 /* TestFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFile.swift; sourceTree = "<group>"; };
+		98F22D4A2036398D00C886F1 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewController.swift; sourceTree = "<group>"; };
 		98F671FE1FFEA223001DE88E /* PhoneEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewModel.swift; sourceTree = "<group>"; };
 		98F672001FFEA236001DE88E /* PhoneEntryRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryRouter.swift; sourceTree = "<group>"; };
@@ -580,6 +584,7 @@
 			isa = PBXGroup;
 			children = (
 				98FA2D7C202BB18A00901E0E /* CreateUserViewModel.swift */,
+				98F22D482036340B00C886F1 /* TestFile.swift */,
 				983297AF202F69580043E3B0 /* CreateUserRouter.swift */,
 				98FA2D7E202BDFEC00901E0E /* CreateUserViewController.swift */,
 			);
@@ -697,6 +702,7 @@
 				9806B90A2007CEB2000CB497 /* PixaImageService.swift */,
 				981545D420102EEF0001F675 /* GIFImageService.swift */,
 				9823322A1FF7E09800C3CB49 /* PromptService.swift */,
+				98F22D4A2036398D00C886F1 /* UserService.swift */,
 				9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */,
 			);
 			path = "Realm Data Services";
@@ -1195,6 +1201,7 @@
 				985A7CCE201826490065BF38 /* GuessAndWagerValidationDataSource.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,
+				98F22D492036340B00C886F1 /* TestFile.swift in Sources */,
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,
 				98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */,
 				98FEE7B71FE4BBFB00CD80A8 /* Prompt.swift in Sources */,
@@ -1289,6 +1296,7 @@
 				9842FAB6201929A90069F71F /* RatingPercentageGraphCell.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
 				98D04DD9201B86760099EF29 /* FontBook.swift in Sources */,
+				98F22D4B2036398D00C886F1 /* UserService.swift in Sources */,
 				9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */,
 				980F50372004571F006C2B83 /* AppController.swift in Sources */,
 				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,

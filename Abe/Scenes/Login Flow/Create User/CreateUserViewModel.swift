@@ -75,7 +75,6 @@ final class CreateUserViewModel: CreateUserViewModelType, CreateUserViewModelInp
         
 //MARK: - Third Level Observables
         let currentUser = realmSyncUserObservable.elements()
-            .debug()
             .filter { _ in isLogin }
             .flatMapLatest { _ in
                 return userService.fetchUserFor(key: SyncUser.current!.identity!)
@@ -87,6 +86,20 @@ final class CreateUserViewModel: CreateUserViewModelType, CreateUserViewModelInp
                 else { print("user is nil!") }
             })
             .unwrap()
+        
+        let currentUserTest = realmSyncUserObservable.elements()
+            .filter { _ in isLogin }
+            .flatMapLatest { _ in
+                return userService.fetchAll()
+                    .trackError(errorTracker)
+                    .trackActivity(activityIndicator)
+            }
+            .do(onNext: {
+                print("Found \($0.count) users")
+                let user = $0.filter { $0.id == "f3256ae7afe6eb8c90683ccd6a68121f" }.first
+                print("I found user \(String(describing: user?.name))")
+            })
+            .map { $0.filter { $0.id == "f3256ae7afe6eb8c90683ccd6a68121f" }.first }
         
         let newUser = realmSyncUserObservable.elements()
             .filter { _ in !isLogin }
@@ -113,7 +126,7 @@ final class CreateUserViewModel: CreateUserViewModelType, CreateUserViewModelInp
         }
        
 //MARK: - Routing
-        currentUser
+        currentUserTest
             .do(onNext: { AppController.shared.currentUser.value = $0 })
             .mapToVoid()
             .do(onNext: router.toHome)

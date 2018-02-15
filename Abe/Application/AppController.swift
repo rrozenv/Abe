@@ -106,15 +106,19 @@ extension AppController {
     
     private func loadInitialViewController() {
 
-//        let user = self.fetchUserFor(uuid: "6f888549e555a5d7cada4217fd1b20e9")
+//        let user = self.fetchUserFor(uuid: "f3256ae7afe6eb8c90683ccd6a68121f")
 //        if let user = user {
 //            print("Found user: \(user.name)!")
 //        } else {
 //            print("user is nil now!")
 //        }
 //
-//        let users = self.userService.fetchAll()
-//            .do(onNext: { print("I found \($0.count) users") })
+//        self.userService.fetchAll()
+//            .do(onNext: {
+//                print("I found \($0.count) users")
+//                let user = $0.filter { $0.id == "f3256ae7afe6eb8c90683ccd6a68121f" }.first
+//                print("I found user \(String(describing: user?.name))")
+//            })
 //            .subscribe()
 //            .disposed(by: disposeBag)
 

@@ -124,7 +124,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 self?.dataSource.toggleAll(shouldSelect: $0)
                 self?.tableView.reloadData()
-                self?.publicVisiblitySectionView.containerView.backgroundColor = UIColor.white
+                self?.publicVisiblitySectionView.iconImageView.isHidden = true
                 
                 self?.updateContactsHeaderView()
                 self?.setCreateButtonEnabledStatus(publicVisIsSelected: false)
