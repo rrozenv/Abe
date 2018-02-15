@@ -42,7 +42,7 @@ final class ReplyVisibilityDataSource: ValueCellDataSource {
     }
     
     func totalCount() -> Int {
-        return self.numberOfItems()
+        return isFiltering ? self.numberOfItems() : storedUsers.count
     }
     
     func toggleUser(_ viewModel: IndividualContactViewModel) -> IndexPath? {

@@ -12,6 +12,7 @@ import Contacts
 
 protocol ReplyOptionsRoutingLogic {
     func toDismissNavVc()
+    func toPreviousVc()
 }
 
 final class ReplyOptionsRouter: ReplyOptionsRoutingLogic {
@@ -20,6 +21,10 @@ final class ReplyOptionsRouter: ReplyOptionsRoutingLogic {
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+    }
+    
+    func toPreviousVc() {
+        navigationController?.popViewController(animated: true)
     }
 
     func toDismissNavVc() {

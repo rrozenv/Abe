@@ -14,7 +14,7 @@ enum FontBook: String {
 }
  
 enum Palette {
-    case maroon, lightGrey, faintGrey, mustard, darkGrey, brightYellow, darkYellow
+    case maroon, lightGrey, faintGrey, mustard, darkGrey, brightYellow, darkYellow, red
     
     var color: UIColor {
         switch self {
@@ -25,6 +25,7 @@ enum Palette {
         case .darkGrey: return UIColor(hex: 0x343434)
         case .brightYellow: return UIColor(hex: 0xFCDF1D)
         case .darkYellow: return UIColor(hex: 0x94712D)
+        case .red: return UIColor(hex: 0xE15A67)
         }
     }
 }

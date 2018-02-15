@@ -7,12 +7,15 @@ final class UserContactTableCell: UITableViewCell, ValueCell {
     // MARK: - Properties
     typealias Value = IndividualContactViewModel
     static var defaultReusableId: String = "UserContactTableCell"
-    fileprivate var containerView: UIView!
-    fileprivate var mainLabel: UILabel!
+    private var containerView: UIView!
+    private var mainLabel: UILabel!
+    private var imageNameSublabelView: UserImageNameSublabelView!
+    private var circleBorderView: UIView!
+    private var iconImageView: UIImageView!
     
     var isSelect: Bool = false {
         didSet {
-            self.containerView.backgroundColor = isSelect ? UIColor.green : UIColor.white
+            iconImageView.isHidden = !isSelect
         }
     }
     
@@ -31,12 +34,15 @@ final class UserContactTableCell: UITableViewCell, ValueCell {
         self.contentView.backgroundColor = UIColor.white
         self.selectionStyle = .none
         setupContainerView()
-        setupTitleLabel()
+        setupCirleBorderView()
+        setupIconImageView()
+        setupUserImageNameSublabelView()
     }
     
     // MARK: - Configuration
     func configureWith(value: IndividualContactViewModel) {
-        mainLabel.text = value.user.name
+        imageNameSublabelView.nameLabel.text = value.user.name
+        imageNameSublabelView.nameSubLabel.text = value.user.phoneNumber
         isSelect = value.isSelected
     }
     
@@ -52,20 +58,47 @@ extension UserContactTableCell {
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
             make.edges.equalTo(contentView)
-            make.height.equalTo(50)
+            make.height.equalTo(70)
         }
     }
     
-    private func setupTitleLabel() {
-        mainLabel = UILabel()
+    private func setupCirleBorderView() {
+        circleBorderView = UIView()
+        circleBorderView.layer.borderWidth = 2.0
+        circleBorderView.layer.borderColor = Palette.lightGrey.color.cgColor
+        circleBorderView.layer.cornerRadius = 20/2
+        circleBorderView.layer.masksToBounds = true
+        circleBorderView.backgroundColor = UIColor.white
         
-        containerView.addSubview(mainLabel)
-        mainLabel.translatesAutoresizingMaskIntoConstraints = false
-        mainLabel.snp.makeConstraints { (make) in
-            //make.bottom.equalTo(collectionView.snp.top).offset(-5)
-            make.center.equalTo(containerView.snp.center)
-            //make.left.equalTo(containerView.snp.left).offset(10)
+        containerView.addSubview(circleBorderView)
+        circleBorderView.snp.makeConstraints { (make) in
+            make.right.equalTo(containerView).offset(-26)
+            make.centerY.equalTo(containerView)
+            make.height.width.equalTo(20)
+        }
+    }
+    
+    private func setupIconImageView() {
+        iconImageView = UIImageView()
+        //iconImageView.isHidden = true
+        iconImageView.image = #imageLiteral(resourceName: "IC_CheckMark")
+        
+        containerView.insertSubview(iconImageView, aboveSubview: circleBorderView)
+        iconImageView.snp.makeConstraints { (make) in
+            make.edges.equalTo(circleBorderView)
+        }
+    }
+    
+    private func setupUserImageNameSublabelView() {
+        imageNameSublabelView = UserImageNameSublabelView()
+        
+        containerView.addSubview(imageNameSublabelView)
+        imageNameSublabelView.snp.makeConstraints { (make) in
+            make.centerY.equalTo(containerView)
+            make.left.equalTo(containerView).offset(26)
+            make.right.equalTo(circleBorderView).offset(-26)
         }
     }
     
 }
+

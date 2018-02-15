@@ -18,19 +18,18 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
     private var publicVisiblitySectionView: PublicVisibilitySectionHeaderView!
     private var searchBar: UISearchBar!
     private var backButton: UIButton!
+    private var titleLabel: UILabel!
     private var isAllContactsSelected = Variable<Bool>(true)
 
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
         setupBackButton()
-        //setupPublicButton()
-        //setupSearchBar()
         setupTableView()
         setupCreateButton()
-        //setupCancelButton()
         setupContatsTableHeaderView()
         setupPublicVisibilitySectionView()
+        setupTitleLabel()
     }
 
     override func viewDidLoad() {
@@ -73,6 +72,10 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.selectedAllContactsTappedInput)
             .disposed(by: disposeBag)
         
+        backButton.rx.tap.asObservable()
+            .bind(to: viewModel.inputs.backButtonTappedInput)
+            .disposed(by: disposeBag)
+        
         //MARK: - Output
         viewModel.outputs.currentIndividualNumbers
             .drive(onNext: {
@@ -85,6 +88,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .subscribe(onNext: { [weak self] in
                 if $0.isEmpty {
                     self?.dataSource.resetSearchFilter()
+                    self?.updateContactsHeaderView()
                     self?.contactsTableHeaderView.actionButton.isHidden = false
                 } else {
                     self?.dataSource.filterUsersFor(searchText: $0)
@@ -98,7 +102,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .drive(onNext: { [weak self] in
                 let _ = self?.dataSource.toggleUser($0.user)
                 self?.tableView.reloadRows(at: [$0.indexPath], with: .none)
-                self?.publicVisiblitySectionView.containerView.backgroundColor = UIColor.white
+                self?.publicVisiblitySectionView.iconImageView.isHidden = true
                 
                 self?.updateContactsHeaderView()
                 self?.setCreateButtonEnabledStatus(publicVisIsSelected: false)
@@ -107,7 +111,7 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         
         viewModel.outputs.publicButtonTapped
             .drive(onNext: { [weak self] in
-                self?.publicVisiblitySectionView.containerView.backgroundColor = UIColor.green
+                self?.publicVisiblitySectionView.iconImageView.isHidden = false
                 self?.dataSource.toggleAll(shouldSelect: false)
                 self?.tableView.reloadData()
                 
@@ -162,6 +166,10 @@ extension ReplyVisibilityViewController: UISearchBarDelegate {
         viewModel.inputs.searchTextInput.onNext(searchText)
     }
     
+//    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+//        if searchText == "" { self.updateContactsHeaderView() }
+//    }
+
 }
 
 extension ReplyVisibilityViewController {
@@ -180,16 +188,16 @@ extension ReplyVisibilityViewController {
         let selectedCount = self.dataSource.selectedCount()
         let totalCount = self.dataSource.totalCount()
         if selectedCount > 0 && totalCount == selectedCount {
-            self.contactsTableHeaderView.actionButton.setTitle("Deselect All", for: .normal)
-            self.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
+            self.contactsTableHeaderView.actionButton.setTitle("DESELECT ALL", for: .normal)
+            self.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) SELECTED"
             self.isAllContactsSelected.value = false
         } else if selectedCount > 0 {
-            self.contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
-            self.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) Selected"
+            self.contactsTableHeaderView.actionButton.setTitle("SELECT ALL", for: .normal)
+            self.contactsTableHeaderView.titleLabel.text = "\(String(describing: selectedCount)) SELECTED"
             self.isAllContactsSelected.value = true
         } else {
-            self.contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
-            self.contactsTableHeaderView.titleLabel.text = "Select From Contacts"
+            self.contactsTableHeaderView.actionButton.setTitle("SELECT ALL", for: .normal)
+            self.contactsTableHeaderView.titleLabel.text = "SELECT FRIENDS"
             self.isAllContactsSelected.value = true
         }
     }
@@ -200,11 +208,6 @@ extension ReplyVisibilityViewController {
         present(alert, animated: true, completion: nil)
     }
     
-//    private func setupCancelButton() {
-//        backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-//        self.navigationItem.leftBarButtonItem = backButton
-//    }
-    
     private func setupTableView() {
         tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "vis")
@@ -213,6 +216,7 @@ extension ReplyVisibilityViewController {
         tableView.estimatedRowHeight = 200
         tableView.dataSource = dataSource
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.separatorStyle = .none
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
@@ -234,34 +238,16 @@ extension ReplyVisibilityViewController {
     
     private func setupPublicVisibilitySectionView() {
         publicVisiblitySectionView = PublicVisibilitySectionHeaderView()
-        publicVisiblitySectionView.titleLabel.text = "Who will be able to see & reply to your post?"
+        publicVisiblitySectionView.iconImageView.image = #imageLiteral(resourceName: "IC_CheckMark")
         publicVisiblitySectionView.centerDividerLabel.text = "or"
         publicVisiblitySectionView.imageNameSublabelView.nameLabel.text = "EVERYONE"
-        publicVisiblitySectionView.imageNameSublabelView.nameSubLabel.text = "Both friends & Strangers"
+        publicVisiblitySectionView.imageNameSublabelView.nameSubLabel.text = "Anyone can view and reply"
     }
-    
-//    private func setupPublicButton() {
-//        publicButton = UIButton()
-//        publicButton.backgroundColor = UIColor.blue
-//        publicButton.alpha = 0.5
-//        publicButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
-//        publicButton.setTitle("Public", for: .normal)
-//        publicButton.setTitleColor(UIColor.blue, for: .normal)
-//        publicButton.titleLabel?.textColor = UIColor.blue
-//        publicButton.backgroundColor = UIColor.white
-//
-//        view.addSubview(publicButton)
-//        publicButton.snp.makeConstraints { (make) in
-//            make.left.right.equalTo(view)
-//            make.top.equalTo(view).offset(100)
-//            make.height.equalTo(60)
-//        }
-//    }
     
     private func setupContatsTableHeaderView() {
         contactsTableHeaderView = ContactsTableHeaderView()
-        contactsTableHeaderView.actionButton.setTitle("Select All", for: .normal)
-        contactsTableHeaderView.titleLabel.text = "Select From Contacts"
+        contactsTableHeaderView.actionButton.setTitle("SELECT ALL", for: .normal)
+        contactsTableHeaderView.titleLabel.text = "SELECT FRIENDS"
         contactsTableHeaderView.searchBar.delegate = self
     }
     
@@ -280,6 +266,19 @@ extension ReplyVisibilityViewController {
             } else {
                 make.top.equalTo(view.snp.top)
             }
+        }
+    }
+    
+    private func setupTitleLabel() {
+        titleLabel = UILabel()
+        titleLabel.text = "Select Post Visibility"
+        titleLabel.font = FontBook.AvenirHeavy.of(size: 14)
+        titleLabel.textColor = UIColor.black
+        
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.centerY.equalTo(backButton).offset(12)
+            make.centerX.equalTo(view)
         }
     }
     

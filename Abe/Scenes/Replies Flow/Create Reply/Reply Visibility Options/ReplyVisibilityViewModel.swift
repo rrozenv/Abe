@@ -12,6 +12,7 @@ protocol ReplyVisibilityViewModelInputs {
     var selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)> { get }
     var createButtonTappedInput: AnyObserver<Void> { get }
     var searchTextInput: AnyObserver<String> { get }
+    var backButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol ReplyVisibilityViewModelOutputs {
@@ -43,6 +44,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
     let selectedUserAndIndexPathInput: AnyObserver<(user: IndividualContactViewModel, indexPath: IndexPath)>
     let createButtonTappedInput: AnyObserver<Void>
     let searchTextInput: AnyObserver<String>
+    let backButtonTappedInput: AnyObserver<Void>
 
 //MARK: - Outputs
     var outputs: ReplyVisibilityViewModelOutputs { return self }
@@ -80,6 +82,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let _selectedUserAndIndexPathInput = PublishSubject<(user: IndividualContactViewModel, indexPath: IndexPath)>()
         let _createButtonTappedInput = PublishSubject<Void>()
         let _searchTextInput = PublishSubject<String>()
+        let _backButtonTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
@@ -88,6 +91,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         self.selectedUserAndIndexPathInput = _selectedUserAndIndexPathInput.asObserver()
         self.createButtonTappedInput = _createButtonTappedInput.asObserver()
         self.searchTextInput = _searchTextInput.asObserver()
+        self.backButtonTappedInput = _backButtonTappedInput.asObserver()
         
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
@@ -95,6 +99,7 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
         let selectedAllContactsObservable = _selectedAllContactsTappedInput.asObservable()
         let selectedUserAndIndexPathObservable = _selectedUserAndIndexPathInput.asObservable()
         let createButtonTappedObservable = _createButtonTappedInput.asObservable()
+        let backButtonTappedObservable = _backButtonTappedInput.asObservable()
 
 //MARK: - Second Level Observables
         let publicVisibilityObservable = publicButtonTappedObservable
@@ -221,6 +226,11 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
             })
             .mapToVoid()
             .do(onNext: router.toDismissNavVc)
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+        backButtonTappedObservable
+            .do(onNext: router.toPreviousVc)
             .subscribe()
             .disposed(by: disposeBag)
     }

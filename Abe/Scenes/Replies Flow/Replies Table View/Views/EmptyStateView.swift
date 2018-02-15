@@ -61,6 +61,7 @@ final class ContactsTableHeaderView: UIView {
     var actionButton: UIButton!
     var titleLabel: UILabel!
     var searchBar: UISearchBar!
+    var dividerView: UIView!
     
     //MARK: Initalizer Setup
     required init?(coder aDecoder: NSCoder) {
@@ -73,6 +74,7 @@ final class ContactsTableHeaderView: UIView {
         setupSearchBar()
         setupActionButton()
         setupTitleLabel()
+        setupDividerView()
     }
     
     private func setupContainerView() {
@@ -95,32 +97,51 @@ final class ContactsTableHeaderView: UIView {
         containerView.addSubview(searchBar)
         searchBar.snp.makeConstraints { (make) in
             make.top.equalTo(containerView).offset(10)
-            make.left.equalTo(containerView).offset(26)
-            make.right.equalTo(containerView).offset(-26)
+            make.left.equalTo(containerView).offset(18)
+            make.right.equalTo(containerView).offset(-18)
             make.height.equalTo(50)
         }
     }
     
     private func setupActionButton() {
         actionButton = UIButton()
-        actionButton.backgroundColor = UIColor.red
+        actionButton.backgroundColor = UIColor.clear
+        actionButton.titleLabel?.font = FontBook.BariolBold.of(size: 14)
+        actionButton.setTitleColor(Palette.red.color, for: .normal)
+        actionButton.contentHorizontalAlignment = .right
         
         containerView.addSubview(actionButton)
         actionButton.snp.makeConstraints { (make) in
-            make.top.equalTo(searchBar.snp.bottom).offset(10)
-            make.right.bottom.equalTo(containerView)
-            make.width.equalTo(100)
-            make.height.equalTo(50)
+            make.top.equalTo(searchBar.snp.bottom)
+            make.right.equalTo(containerView).offset(-26)
+            make.bottom.equalTo(containerView)
+            make.width.equalTo(120)
+            make.height.equalTo(40)
         }
     }
     
     private func setupTitleLabel() {
         titleLabel = UILabel()
+        titleLabel.font = FontBook.BariolBold.of(size: 14)
+        titleLabel.textColor = UIColor.black
         
         containerView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
             make.left.equalTo(containerView).offset(26)
             make.centerY.equalTo(actionButton.snp.centerY)
+        }
+    }
+    
+    private func setupDividerView() {
+        dividerView = UIView()
+        dividerView.backgroundColor = Palette.faintGrey.color
+        
+        containerView.addSubview(dividerView)
+        dividerView.snp.makeConstraints { (make) in
+            make.height.equalTo(3)
+            make.left.equalTo(containerView).offset(26)
+            make.right.equalTo(containerView).offset(-26)
+            make.bottom.equalTo(containerView)
         }
     }
     
@@ -136,6 +157,7 @@ final class PublicVisibilitySectionHeaderView: UIView {
     var leftDividerView: UIView!
     var rightDividerView: UIView!
     var centerDividerLabel: UILabel!
+    var iconImageView: UIImageView!
     
     //MARK: Initalizer Setup
     required init?(coder aDecoder: NSCoder) {
@@ -145,10 +167,11 @@ final class PublicVisibilitySectionHeaderView: UIView {
     init() {
         super.init(frame: .zero)
         setupContainerView()
-        setupTitleLabel()
+        //setupTitleLabel()
         setupUserImageNameSublabelView()
         setupActionButton()
         setupCirleBorderView()
+        setupIconImageView()
         setupLeftDividerView()
         setupRightDividerView()
         setupCenterDividerLabel()
@@ -183,7 +206,7 @@ final class PublicVisibilitySectionHeaderView: UIView {
         
         containerView.addSubview(imageNameSublabelView)
         imageNameSublabelView.snp.makeConstraints { (make) in
-            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.top.equalTo(containerView)
             make.left.equalTo(containerView).offset(26)
             make.right.equalTo(containerView).offset(-26)
         }
@@ -201,22 +224,32 @@ final class PublicVisibilitySectionHeaderView: UIView {
     
     private func setupCirleBorderView() {
         cirleBorderView = UIView()
-        cirleBorderView.layer.borderWidth = 3.0
+        cirleBorderView.layer.borderWidth = 2.0
         cirleBorderView.layer.borderColor = Palette.lightGrey.color.cgColor
-        cirleBorderView.layer.cornerRadius = 18/2
+        cirleBorderView.layer.cornerRadius = 20/2
         cirleBorderView.layer.masksToBounds = true
         cirleBorderView.backgroundColor = UIColor.white
         
         imageNameSublabelView.addSubview(cirleBorderView)
         cirleBorderView.snp.makeConstraints { (make) in
             make.right.centerY.equalTo(imageNameSublabelView)
-            make.height.width.equalTo(18)
+            make.height.width.equalTo(20)
+        }
+    }
+    
+    private func setupIconImageView() {
+        iconImageView = UIImageView()
+        iconImageView.isHidden = true
+        
+        containerView.insertSubview(iconImageView, aboveSubview: cirleBorderView)
+        iconImageView.snp.makeConstraints { (make) in
+            make.edges.equalTo(cirleBorderView)
         }
     }
     
     private func setupLeftDividerView() {
         leftDividerView = UIView()
-        leftDividerView.backgroundColor = Palette.lightGrey.color
+        leftDividerView.backgroundColor = Palette.faintGrey.color
         
         containerView.addSubview(leftDividerView)
         leftDividerView.snp.makeConstraints { (make) in
@@ -230,7 +263,7 @@ final class PublicVisibilitySectionHeaderView: UIView {
     
     private func setupRightDividerView() {
         rightDividerView = UIView()
-        rightDividerView.backgroundColor = Palette.lightGrey.color
+        rightDividerView.backgroundColor = Palette.faintGrey.color
         
         containerView.addSubview(rightDividerView)
         rightDividerView.snp.makeConstraints { (make) in
@@ -243,7 +276,7 @@ final class PublicVisibilitySectionHeaderView: UIView {
     
     private func setupCenterDividerLabel() {
         centerDividerLabel = UILabel()
-        centerDividerLabel.font = FontBook.BariolBold.of(size: 14)
+        centerDividerLabel.font = FontBook.BariolBold.of(size: 18)
         centerDividerLabel.textColor = Palette.lightGrey.color
         
         containerView.addSubview(centerDividerLabel)
