@@ -31,6 +31,7 @@ final class CreateReplyRouter: CreateReplyRoutingLogic {
                                                  isForReply: true)
         
         vc.setViewModelBinding(model: viewModel!)
+        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(vc, animated: true)
     }
     

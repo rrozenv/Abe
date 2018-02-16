@@ -5,6 +5,7 @@ import Kingfisher
 
 final class GuessedUserView: UIView {
     
+    var containerView: UIView!
     var userImageView: UIImageView!
     var nameLabel: UILabel!
     var nameSubLabel: UILabel!
@@ -13,20 +14,31 @@ final class GuessedUserView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init() {
+    init(height: CGFloat) {
         super.init(frame: .zero)
+        setupContainerView(height: height)
         setupUserImageView()
         setupNameLabelsStackView()
+    }
+    
+    private func setupContainerView(height: CGFloat) {
+        containerView = UIView()
+        
+        self.addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+            make.height.equalTo(height)
+        }
     }
     
     private func setupUserImageView() {
         userImageView = UIImageView()
         userImageView.backgroundColor = UIColor.purple
         
-        self.addSubview(userImageView)
+        containerView.addSubview(userImageView)
         userImageView.snp.makeConstraints { (make) in
-            make.left.equalTo(self.snp.left).offset(20)
-            make.centerY.equalTo(self.snp.centerY)
+            make.left.equalTo(containerView.snp.left).offset(20)
+            make.centerY.equalTo(containerView.snp.centerY)
             make.height.width.equalTo(35)
         }
     }
@@ -47,7 +59,7 @@ final class GuessedUserView: UIView {
         labelsStackView.spacing = 2.0
         labelsStackView.axis = .vertical
         
-        self.addSubview(labelsStackView)
+        containerView.addSubview(labelsStackView)
         labelsStackView.snp.makeConstraints { (make) in
             make.centerY.equalTo(userImageView.snp.centerY)
             make.left.equalTo(userImageView.snp.right).offset(10)

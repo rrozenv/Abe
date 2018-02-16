@@ -9,6 +9,7 @@ class RateReplyViewController: UIViewController, BindableType {
     var viewModel: RateReplyViewModel!
    
     private var titleContainerView: UIView!
+    private var cancelButton: UIButton!
     private var backAndPagerView: BackButtonPageIndicatorView!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
@@ -18,6 +19,7 @@ class RateReplyViewController: UIViewController, BindableType {
         super.loadView()
         view.backgroundColor = UIColor.white
         setupBackAndPagerView(numberOfPages: 3)
+        setupCancelButton()
         setupTitleLabel()
         setupTableView()
         setupNextButton()
@@ -25,6 +27,7 @@ class RateReplyViewController: UIViewController, BindableType {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setInitialViewState()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -35,6 +38,16 @@ class RateReplyViewController: UIViewController, BindableType {
     override var inputAccessoryView: UIView? { get { return nextButton } }
     override var canBecomeFirstResponder: Bool { return true }
     deinit { print("rate reply deinit") }
+    
+    private func setInitialViewState() {
+        nextButton.isHidden = true
+        
+        let attributedString = NSMutableAttributedString(string: "On a scale of 1-5, how much do you agree with this reply?")
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 9
+        attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
+        titleLabel.attributedText = attributedString
+    }
     
     func bindViewModel() {
         //MARK: - Input
@@ -51,7 +64,13 @@ class RateReplyViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.nextButtonTappedInput)
             .disposed(by: disposeBag)
         
-        backAndPagerView.backButton.rx.tap
+        let backButtonTappedObservable = Observable.of(
+            backAndPagerView.backButton.rx.tap.asObservable(),
+            cancelButton.rx.tap.asObservable()
+        )
+        .merge()
+        
+       backButtonTappedObservable
             .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
         
@@ -87,8 +106,7 @@ class RateReplyViewController: UIViewController, BindableType {
         
         viewModel.outputs.nextButtonIsEnabled
             .drive(onNext: { [weak self] in
-                self?.nextButton.isEnabled = $0
-                self?.nextButton.alpha = 1.0
+                self?.nextButton.isHidden = $0 ? false : true
             })
             .disposed(by: disposeBag)
         
@@ -98,7 +116,8 @@ class RateReplyViewController: UIViewController, BindableType {
         
         viewModel.outputs.currentPageIndicator
             .drive(onNext: { [weak self] in
-                guard $0 != -1 else { self?.backAndPagerView.isHidden = true ; return }
+                self?.cancelButton.isHidden = ($0 != -1) ? true : false
+                self?.backAndPagerView.isHidden = ($0 != -1) ? false : true
                 self?.backAndPagerView.pageIndicatorView.currentPage = $0
             })
             .disposed(by: disposeBag)
@@ -143,6 +162,7 @@ extension RateReplyViewController {
         tableView.estimatedSectionHeaderHeight = 0
         tableView.estimatedSectionFooterHeight = 0
         tableView.separatorStyle = .none
+        tableView.backgroundColor = UIColor.white
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in
@@ -153,8 +173,8 @@ extension RateReplyViewController {
     
     private func setupNextButton() {
         nextButton = UIButton()
-        nextButton.backgroundColor = Palette.mustard.color
-        nextButton.alpha = 0.5
+        nextButton.backgroundColor = Palette.brightYellow.color
+        nextButton.setTitleColor(Palette.darkYellow.color, for: .normal)
         nextButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
         nextButton.frame.size.height = 60
     }
@@ -169,11 +189,6 @@ extension RateReplyViewController {
         titleLabel = UILabel()
         titleLabel.numberOfLines = 0
         titleLabel.font = FontBook.BariolBold.of(size: 18)
-        let attributedString = NSMutableAttributedString(string: "On a scale of 1-5, how much do you agree with this reply?")
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 9
-        attributedString.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range:NSMakeRange(0, attributedString.length))
-        titleLabel.attributedText = attributedString
         
         titleContainerView.addSubview(dividerView)
         dividerView.snp.makeConstraints { (make) in
@@ -184,7 +199,7 @@ extension RateReplyViewController {
         titleContainerView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
             make.top.equalTo(titleContainerView)
-            make.left.equalTo(titleContainerView).offset(30)
+            make.left.equalTo(titleContainerView).offset(26)
             make.right.equalTo(titleContainerView).offset(-40)
             make.bottom.equalTo(dividerView.snp.top).offset(-15)
         }
@@ -198,10 +213,29 @@ extension RateReplyViewController {
     
     private func setupBackAndPagerView(numberOfPages: Int) {
         backAndPagerView = BackButtonPageIndicatorView(numberOfPages: numberOfPages)
+        
         view.addSubview(backAndPagerView)
         backAndPagerView.snp.makeConstraints { (make) in
             make.left.equalTo(view.snp.left)
             make.top.equalTo(view.snp.top)
+        }
+    }
+    
+    private func setupCancelButton() {
+        cancelButton = UIButton.cancelButton(image: #imageLiteral(resourceName: "IC_BlackX"))
+        
+        view.addSubview(cancelButton)
+        cancelButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            if #available(iOS 11.0, *) {
+                if UIDevice.iPhoneX {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-44)
+                } else {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-20)
+                }
+            } else {
+                make.top.equalTo(view.snp.top)
+            }
         }
     }
     

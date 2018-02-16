@@ -127,6 +127,7 @@ class RepliesViewController: UIViewController, BindableType {
         
         viewModel.outputs.lockedReplies.drive(onNext: { [weak self] inputs in
             self?.tabOptionsView.isHidden = inputs.userDidReply ? false : true
+            self?.createReplyButton.isHidden = inputs.userDidReply ? true : false
             guard inputs.userDidReply else {
                 self?.dataSource.loadBeforeUserRepliedState(replyCount: inputs.replies.count)
                 return
@@ -280,7 +281,7 @@ extension RepliesViewController: UIScrollViewDelegate {
             // Header needs to animate
             if newHeight != self.headerHeightConstraint.constant {
                 self.headerHeightConstraint.constant = newHeight
-                //self.updateHeader()
+                self.updateHeader()
                 self.setScrollPosition(self.previousScrollOffset)
             }
             
@@ -321,7 +322,7 @@ extension RepliesViewController: UIScrollViewDelegate {
         self.view.layoutIfNeeded()
         UIView.animate(withDuration: 0.2, animations: {
             self.headerHeightConstraint.constant = self.minHeaderHeight
-            //self.updateHeader()
+            self.updateHeader()
             self.view.layoutIfNeeded()
         })
     }
@@ -330,7 +331,7 @@ extension RepliesViewController: UIScrollViewDelegate {
         self.view.layoutIfNeeded()
         UIView.animate(withDuration: 0.2, animations: {
             self.headerHeightConstraint.constant = self.maxHeaderHeight
-            //self.updateHeader()
+            self.updateHeader()
             self.view.layoutIfNeeded()
         })
     }
@@ -339,14 +340,12 @@ extension RepliesViewController: UIScrollViewDelegate {
         self.tableView.contentOffset = CGPoint(x: self.tableView.contentOffset.x, y: position)
     }
     
-//    func updateHeader() {
-//        let range = self.maxHeaderHeight - self.minHeaderHeight
-//        let openAmount = self.headerHeightConstraint.constant - self.minHeaderHeight
-//        let percentage = openAmount / range
-//
-//        self.titleTopConstraint.constant = -openAmount + 10
-//        self.logoImageView.alpha = percentage
-//    }
+    func updateHeader() {
+        let range = self.maxHeaderHeight - self.minHeaderHeight
+        let openAmount = self.headerHeightConstraint.constant - self.minHeaderHeight
+        let percentage = openAmount / range
+        self.headerView.titleLabel.alpha = percentage
+    }
     
 }
 

@@ -154,7 +154,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     }
     
     func configureWith(value: ReplyViewModel) {
-        replyHeaderView.nameLabel.text = "Identity Locked"
+        replyHeaderView.nameLabel.text = value.isUnlocked ? value.reply.user?.name : "Identity Locked"
         replyHeaderView.nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
         replyHeaderView.replyBodyLabel.text = value.reply.body
         rateReplyButton.isHidden = value.ratingScore == nil ? false : true

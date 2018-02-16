@@ -15,7 +15,7 @@ final class RatingScoreDataSource: ValueCellDataSource {
                  inSection: Section.reply.rawValue)
     }
     
-    func loadRatings(ratings: [RatingScore]) {
+    func loadRatings(ratings: [RatingScoreViewModel]) {
         self.set(values: ratings,
                  cellClass: RatingScoreTableCell.self,
                  inSection: Section.ratings.rawValue)
@@ -30,14 +30,14 @@ final class RatingScoreDataSource: ValueCellDataSource {
                  row: indexPath.row)
     }
     
-    func rating(_ indexPath: IndexPath) -> RatingScore? {
-        return self[indexPath] as? RatingScore
+    func rating(_ indexPath: IndexPath) -> RatingScoreViewModel? {
+        return self[indexPath] as? RatingScoreViewModel
     }
     
     //MARK: - Configure Cell
     override func configureCell(tableCell cell: UITableViewCell, withValue value: Any) {
         switch (cell, value) {
-        case let (cell as RatingScoreTableCell, value as RatingScore):
+        case let (cell as RatingScoreTableCell, value as RatingScoreViewModel):
             cell.configureWith(value: value)
         case let (cell as RateReplyTableCell, value as ReplyViewModel):
             cell.configureWith(value: value)

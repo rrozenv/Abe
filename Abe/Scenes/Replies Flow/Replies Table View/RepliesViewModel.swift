@@ -182,6 +182,7 @@ struct ReplyViewModel {
     let reply: PromptReply
     let ratingScore: ReplyScore?
     let isCurrentUsersFriend: Bool
+    let isUnlocked: Bool
 }
 
 //MARK: - Helper Methods
@@ -199,7 +200,7 @@ private func sortReplies(_ replies: [PromptReply],
         //If reply is viewable only by certain contacts
         guard reply.visibility != Visibility.individualContacts.rawValue else {
             if reply.isViewableBy(currentUser: currentUser) {
-                userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true))
+                userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true, isUnlocked: forLockedFeed ? false : true))
             }
             continue
         }
@@ -207,16 +208,16 @@ private func sortReplies(_ replies: [PromptReply],
         //If reply is viewable only by all of user contacts
         guard reply.visibility != Visibility.contacts.rawValue else {
             if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
-                userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true))
+                userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true, isUnlocked: forLockedFeed ? false : true))
             }
             continue
         }
         
         //If reply is viewable by everyone
         if reply.isAuthorInCurrentUserContacts(currentUser: currentUser) {
-            userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true))
+            userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true, isUnlocked: forLockedFeed ? false : true))
         } else {
-            notFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: false))
+            notFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: false, isUnlocked: forLockedFeed ? false : true))
         }
     }
     return (userFriendsReplies, notFriendsReplies)
