@@ -5,6 +5,7 @@ import UIKit
 struct RepliesEmptyStateViewModel {
     let filterOption: FilterOption
     let userDidReply: Bool
+    let replyCount: Int?
 }
 
 final class RepliesEmptyCell: UITableViewCell, ValueCell {
@@ -12,8 +13,11 @@ final class RepliesEmptyCell: UITableViewCell, ValueCell {
     // MARK: - Properties
     typealias Value = RepliesEmptyStateViewModel
     static var defaultReusableId: String = "RepliesEmptyCell"
-    fileprivate var containerView: UIView!
-    fileprivate var mainLabel: UILabel!
+    private var containerView: UIView!
+    private var headerLabel: UILabel!
+    private var bodyLabel: UILabel!
+    private var iconImageView: UIImageView!
+    private var stackView: UIStackView!
     
     // MARK: - Initialization
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -29,24 +33,37 @@ final class RepliesEmptyCell: UITableViewCell, ValueCell {
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
         setupContainerView()
-        setupTitleLabel()
+        setupIconImageView()
+        setupHeaderLabel()
+        setupBodyLabel()
+        setupStackView()
     }
     
     // MARK: - Configuration
     func configureWith(value: RepliesEmptyStateViewModel) {
-        guard value.userDidReply else { configureUserDidNotReplyState() ; return }
+        guard value.userDidReply else { configureUserDidNotReplyState(replyCount: value.replyCount ?? 0) ; return }
+        iconImageView.isHidden = true
         switch value.filterOption {
         case .locked:
-            mainLabel.text = "You have no LOCKED unread replies."
+            headerLabel.text = "No Locked Replies."
+            bodyLabel.text = "You have unlocked all replies for this topic. Congrats champ!"
         case .unlocked:
-            mainLabel.text = "You have no UNLOCKED replies."
+            headerLabel.text = "No Unlocked Replies."
+            bodyLabel.text = "Go unlock some replies you silly goose!"
         case .myReply:
-            mainLabel.text = "No one has voted on your reply yet."
+            headerLabel.text = "No Ratings."
+            bodyLabel.text = "No one has rated your reply yet. Tell your friends to get on it!"
         }
     }
     
-    private func configureUserDidNotReplyState() {
-        mainLabel.text = "You must make your reply FIRST"
+    private func configureUserDidNotReplyState(replyCount: Int) {
+        headerLabel.text = (replyCount != 0) ? "\(replyCount) Replies Locked" : "Replies Locked."
+        bodyLabel.text = "Replies will unlock after you submit yours. You will only have one chance to reply so make it count!"
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        iconImageView.isHidden = false
     }
     
 }
@@ -60,20 +77,42 @@ extension RepliesEmptyCell {
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.edges.equalTo(contentView)
-            make.height.equalTo(200)
+            make.top.equalTo(contentView).offset(20)
+            make.bottom.equalTo(contentView)
+            make.centerX.equalTo(contentView)
+            make.width.equalTo(contentView).multipliedBy(0.7)
         }
     }
     
-    private func setupTitleLabel() {
-        mainLabel = UILabel()
+    private func setupIconImageView() {
+        iconImageView = UIImageView(image: #imageLiteral(resourceName: "IC_LockedReplies"))
+        iconImageView.contentMode = .scaleAspectFit
+    }
+    
+    private func setupHeaderLabel() {
+        headerLabel = UILabel()
+        headerLabel.font = FontBook.AvenirHeavy.of(size: 15)
+        headerLabel.textColor = UIColor.black
+        headerLabel.textAlignment = .center
+    }
+    
+    private func setupBodyLabel() {
+        bodyLabel = UILabel()
+        bodyLabel.font = FontBook.AvenirMedium.of(size: 14)
+        bodyLabel.textColor = Palette.lightGrey.color
+        bodyLabel.numberOfLines = 0
+        bodyLabel.textAlignment = .center
+    }
+    
+    private func setupStackView() {
+        let fields: [UIView] = [iconImageView, headerLabel, bodyLabel]
+        let stackView = UIStackView(arrangedSubviews: fields)
+        stackView.axis = .vertical
+        stackView.spacing = 14
         
-        containerView.addSubview(mainLabel)
-        mainLabel.translatesAutoresizingMaskIntoConstraints = false
-        mainLabel.snp.makeConstraints { (make) in
-            //make.bottom.equalTo(collectionView.snp.top).offset(-5)
-            make.center.equalTo(containerView.snp.center)
-            //make.left.equalTo(containerView.snp.left).offset(10)
+        containerView.addSubview(stackView)
+        stackView.snp.makeConstraints { (make) in
+            make.edges.equalTo(containerView)
         }
     }
     

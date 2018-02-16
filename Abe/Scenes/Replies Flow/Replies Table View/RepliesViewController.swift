@@ -116,7 +116,7 @@ class RepliesViewController: UIViewController, BindableType {
         viewModel.outputs.lockedReplies.drive(onNext: { [weak self] inputs in
             self?.tabBarView.isHidden = inputs.userDidReply ? false : true
             guard inputs.userDidReply else {
-                self?.dataSource.loadBeforeUserRepliedState()
+                self?.dataSource.loadBeforeUserRepliedState(replyCount: inputs.replies.count)
                 return
             }
             
@@ -292,6 +292,7 @@ extension RepliesViewController {
         tableView.dataSource = self.dataSource
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.separatorStyle = .none
         registerTableViewCells()
 
         view.addSubview(tableView)

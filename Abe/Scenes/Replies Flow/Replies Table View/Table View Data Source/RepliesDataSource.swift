@@ -11,10 +11,11 @@ final class RepliesDataSource: ValueCellDataSource {
     }
     
     //MARK: - Before User Replied
-    func loadBeforeUserRepliedState() {
+    func loadBeforeUserRepliedState(replyCount: Int) {
         self.clearValues(section: Section.replies.rawValue)
         let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
-                                                             userDidReply: false)
+                                                             userDidReply: false,
+                                                             replyCount: replyCount)
         self.set(values: [emptyStateViewModel],
                  cellClass: RepliesEmptyCell.self,
                  inSection: Section.replies.rawValue)
@@ -24,7 +25,8 @@ final class RepliesDataSource: ValueCellDataSource {
     func loadLocked(replies: [ReplyViewModel], didReply: Bool) {
         self.clearValues(section: Section.replies.rawValue)
         let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
-                                                            userDidReply: didReply)
+                                                             userDidReply: didReply,
+                                                             replyCount: nil)
         if replies.isEmpty {
             self.set(values: [emptyStateViewModel],
                      cellClass: RepliesEmptyCell.self,
@@ -40,7 +42,8 @@ final class RepliesDataSource: ValueCellDataSource {
     func loadUnlocked(replies: [ReplyViewModel]) {
         self.clearValues(section: Section.replies.rawValue)
         let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
-                                                             userDidReply: true)
+                                                             userDidReply: true,
+                                                             replyCount: nil)
         if replies.isEmpty {
             self.set(values: [emptyStateViewModel],
                      cellClass: RepliesEmptyCell.self,
