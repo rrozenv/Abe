@@ -124,7 +124,7 @@ final class PromptPageViewController: UIViewController {
     }
     
     private func setupTabOptionsView() {
-        tabOptionsView = TabOptionsView(numberOfItems: 2)
+        tabOptionsView = TabOptionsView(numberOfItems: 2, height: 50.0)
         tabOptionsView.setTitleForButton(title: "PUBLIC", at: 0)
         tabOptionsView.setTitleForButton(title: "PRIVATE", at: 1)
         tabOptionsView.dropShadow()
@@ -138,7 +138,7 @@ final class PromptPageViewController: UIViewController {
         tabOptionsView.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
             make.top.equalTo(customNavBar.snp.bottom)
-            make.height.equalTo(50)
+            //make.height.equalTo(50)
         }
     }
     

@@ -18,12 +18,13 @@ final class RepliesDataSource: ValueCellDataSource {
                                                              replyCount: replyCount)
         self.set(values: [emptyStateViewModel],
                  cellClass: RepliesEmptyCell.self,
-                 inSection: Section.replies.rawValue)
+                 inSection: Section.summary.rawValue)
     }
     
     //MARK: - Locked Replies Tab
     func loadLocked(replies: [ReplyViewModel], didReply: Bool) {
         self.clearValues(section: Section.replies.rawValue)
+        self.clearValues(section: Section.summary.rawValue)
         let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
                                                              userDidReply: didReply,
                                                              replyCount: nil)
@@ -41,7 +42,8 @@ final class RepliesDataSource: ValueCellDataSource {
     //MARK: - Unlocked Replies Tab
     func loadUnlocked(replies: [ReplyViewModel]) {
         self.clearValues(section: Section.replies.rawValue)
-        let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .locked,
+        self.clearValues(section: Section.summary.rawValue)
+        let emptyStateViewModel = RepliesEmptyStateViewModel(filterOption: .unlocked,
                                                              userDidReply: true,
                                                              replyCount: nil)
         if replies.isEmpty {
@@ -98,6 +100,10 @@ final class RepliesDataSource: ValueCellDataSource {
             assertionFailure("Unrecognized combo: \(cell), \(value)")
         }
     }
+    
+//    override func numberOfSections(in tableView: UITableView) -> Int {
+//        <#code#>
+//    }
     
 }
 

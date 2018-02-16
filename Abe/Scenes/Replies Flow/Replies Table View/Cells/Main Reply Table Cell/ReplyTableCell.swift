@@ -179,7 +179,6 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         containerView = UIView()
         containerView.backgroundColor = UIColor.white
         containerView.layer.cornerRadius = 5.0
-        containerView.layer.masksToBounds = true
         containerView.dropShadow()
         
         contentView.addSubview(containerView)
@@ -208,7 +207,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         rateReplyButton = UIButton()
         rateReplyButton.titleLabel?.font = FontBook.AvenirMedium.of(size: 13)
         rateReplyButton.layer.masksToBounds = true
-        rateReplyButton.backgroundColor = Palette.maroon.color
+        rateReplyButton.backgroundColor = Palette.red.color
         rateReplyButton.setTitle("Rate Reply", for: .normal)
         rateReplyButton.snp.makeConstraints { (make) in
             make.height.equalTo(50)

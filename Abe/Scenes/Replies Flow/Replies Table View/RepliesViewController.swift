@@ -17,8 +17,13 @@ class RepliesViewController: UIViewController, BindableType {
     private let disposeBag = DisposeBag()
     private let dataSource = RepliesDataSource()
     
+    private var minHeaderHeight: CGFloat = 60
+    private var maxHeaderHeight: CGFloat = 0  // set in setupHeaderView()
+    private var previousScrollOffset: CGFloat = 0
+    
     private var headerView: PromptHeaderView!
     private var tableView: UITableView!
+    private var tabOptionsView: TabOptionsView!
     private var tabBarView: TabBarView!
     private var summaryView: PromptSummaryView!
     private var headerHeightConstraint:NSLayoutConstraint!
@@ -27,7 +32,8 @@ class RepliesViewController: UIViewController, BindableType {
     
     override func loadView() {
         super.loadView()
-        setupTabBarView()
+        //setupTabBarView()
+        setupTabOptionsView()
         setupHeaderView()
         setupTableView()
         setupSummaryView()
@@ -61,15 +67,15 @@ class RepliesViewController: UIViewController, BindableType {
     func bindViewModel() {
         
         //MARK: - Inputs
-        let lockedTapped = tabBarView.leftButton.rx.tap
+        let lockedTapped = tabOptionsView.button(at: 0).rx.tap
             .map { _ in FilterOption.locked }
             .asDriverOnErrorJustComplete()
         
-        let unlockedTapped = tabBarView.centerButton.rx.tap
+        let unlockedTapped = tabOptionsView.button(at: 1).rx.tap
             .map { _ in FilterOption.unlocked }
             .asDriverOnErrorJustComplete()
         
-        let myReplyTapped = tabBarView.rightButton.rx.tap
+        let myReplyTapped = tabOptionsView.button(at: 2).rx.tap
             .map { _ in FilterOption.myReply }
             .asDriverOnErrorJustComplete()
         
@@ -108,13 +114,19 @@ class RepliesViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         viewModel.outputs.didSelectFilterOption
-            .drive(onNext: { [weak self] (filterOption) in
-                self?.tabBarView.selectedFilter = filterOption
+            .drive(onNext: { [weak self] in
+                let tag = self?.getButtonTagFor(filter: $0)
+                self?.tabOptionsView.adjustButtonColors(selected: tag ?? 0,
+                                                        selectedBkgColor: UIColor.black,
+                                                        selectedTitleColor: UIColor.yellow,
+                                                        notSelectedBkgColor: Palette.darkGrey.color,
+                                                        notSelectedTitleColor: UIColor.white)
+                //self?.tabBarView.selectedFilter = filterOption
             })
             .disposed(by: disposeBag)
         
         viewModel.outputs.lockedReplies.drive(onNext: { [weak self] inputs in
-            self?.tabBarView.isHidden = inputs.userDidReply ? false : true
+            self?.tabOptionsView.isHidden = inputs.userDidReply ? false : true
             guard inputs.userDidReply else {
                 self?.dataSource.loadBeforeUserRepliedState(replyCount: inputs.replies.count)
                 return
@@ -222,65 +234,175 @@ extension RepliesViewController: UITableViewDelegate {
         guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
         switch section {
         case .summary: return summaryView
-        case .replies: return tabBarView
+        case .replies: return tabOptionsView
         }
     }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
+        switch section {
+        case .summary: return 0.0
+        case .replies: return createReplyButton.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        }
+    }
+    
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        guard let section = RepliesDataSource.Section(rawValue: section) else { fatalError("Unexpected Section") }
+//        switch section {
+//        case .summary: return summaryView.frame.size.height
+//        case .replies: return 50.0
+//        }
+//    }
     
 }
 
 extension RepliesViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        //Going down
-        if scrollView.contentOffset.y < 0 {
-            self.headerView.incrementOpaqueViewAlpha(offset: self.headerHeightConstraint.constant)
-            self.headerView.incrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
-            UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
-                self.headerHeightConstraint.constant = 200
-                //self.view.layoutIfNeeded()
-            }, completion: nil)
-        //Going up
-        } else if scrollView.contentOffset.y > 0 && self.headerHeightConstraint.constant >= 65 {
-            self.headerHeightConstraint.constant -= scrollView.contentOffset.y/20
-            self.headerView.decrementOpaqueViewAlpha(offset: scrollView.contentOffset.y)
-            self.headerView.decrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
-            if self.headerHeightConstraint.constant < 65 {
-                UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
-                    self.headerHeightConstraint.constant = 65
-                    //self.view.layoutIfNeeded()
-                }, completion: nil)
+        let scrollDiff = scrollView.contentOffset.y - self.previousScrollOffset
+        
+        let absoluteTop: CGFloat = 0;
+        let absoluteBottom: CGFloat = scrollView.contentSize.height - scrollView.frame.size.height;
+        
+        let isScrollingDown = scrollDiff > 0 && scrollView.contentOffset.y > absoluteTop
+        let isScrollingUp = scrollDiff < 0 && scrollView.contentOffset.y < absoluteBottom
+        
+        if canAnimateHeader(scrollView) {
+            
+            // Calculate new header height
+            var newHeight = self.headerHeightConstraint.constant
+            if isScrollingDown {
+                newHeight = max(self.minHeaderHeight, self.headerHeightConstraint.constant - abs(scrollDiff))
+            } else if isScrollingUp {
+                newHeight = min(self.maxHeaderHeight, self.headerHeightConstraint.constant + abs(scrollDiff))
             }
+            
+            // Header needs to animate
+            if newHeight != self.headerHeightConstraint.constant {
+                self.headerHeightConstraint.constant = newHeight
+                //self.updateHeader()
+                self.setScrollPosition(self.previousScrollOffset)
+            }
+            
+            self.previousScrollOffset = scrollView.contentOffset.y
         }
     }
     
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if self.headerHeightConstraint.constant > 199 { animateHeader() }
-    }
-    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if self.headerHeightConstraint.constant > 199 { animateHeader() }
+        self.scrollViewDidStopScrolling()
     }
     
-    private func animateHeader() {
-        self.headerHeightConstraint.constant = 200
-        UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            self.scrollViewDidStopScrolling()
+        }
+    }
+    
+    func scrollViewDidStopScrolling() {
+        let range = self.maxHeaderHeight - self.minHeaderHeight
+        let midPoint = self.minHeaderHeight + (range / 2)
+        
+        if self.headerHeightConstraint.constant > midPoint {
+            self.expandHeader()
+        } else {
+            self.collapseHeader()
+        }
+    }
+    
+    func canAnimateHeader(_ scrollView: UIScrollView) -> Bool {
+        // Calculate the size of the scrollView when header is collapsed
+        let scrollViewMaxHeight = scrollView.frame.height + self.headerHeightConstraint.constant - minHeaderHeight
+        
+        // Make sure that when header is collapsed, there is still room to scroll
+        return scrollView.contentSize.height > scrollViewMaxHeight
+    }
+    
+    func collapseHeader() {
+        self.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.2, animations: {
+            self.headerHeightConstraint.constant = self.minHeaderHeight
+            //self.updateHeader()
             self.view.layoutIfNeeded()
-        }, completion: nil)
+        })
     }
     
-    //Called in viewDidLayoutSubviews()
-    private func sizeTableHeaderToFit() {
-        guard let headerView = tableView.tableHeaderView else { return }
-        headerView.setNeedsLayout()
-        headerView.layoutIfNeeded()
-        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
-        var frame = headerView.frame
-        frame.size.height = height
-        headerView.frame = frame
-        tableView.tableHeaderView = headerView
+    func expandHeader() {
+        self.view.layoutIfNeeded()
+        UIView.animate(withDuration: 0.2, animations: {
+            self.headerHeightConstraint.constant = self.maxHeaderHeight
+            //self.updateHeader()
+            self.view.layoutIfNeeded()
+        })
     }
+    
+    func setScrollPosition(_ position: CGFloat) {
+        self.tableView.contentOffset = CGPoint(x: self.tableView.contentOffset.x, y: position)
+    }
+    
+//    func updateHeader() {
+//        let range = self.maxHeaderHeight - self.minHeaderHeight
+//        let openAmount = self.headerHeightConstraint.constant - self.minHeaderHeight
+//        let percentage = openAmount / range
+//
+//        self.titleTopConstraint.constant = -openAmount + 10
+//        self.logoImageView.alpha = percentage
+//    }
     
 }
+
+//extension RepliesViewController: UIScrollViewDelegate {
+//
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        //Going down
+//        if scrollView.contentOffset.y < 0 {
+//            self.headerView.incrementOpaqueViewAlpha(offset: self.headerHeightConstraint.constant)
+//            self.headerView.incrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
+//            UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+//                self.headerHeightConstraint.constant = 200
+//                //self.view.layoutIfNeeded()
+//            }, completion: nil)
+//        //Going up
+//        } else if scrollView.contentOffset.y > 0 && self.headerHeightConstraint.constant >= 65 {
+//            self.headerHeightConstraint.constant -= scrollView.contentOffset.y/20
+//            self.headerView.decrementOpaqueViewAlpha(offset: scrollView.contentOffset.y)
+//            self.headerView.decrementTitleLabelAlpha(offset: self.headerHeightConstraint.constant)
+//            if self.headerHeightConstraint.constant < 65 {
+//                UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+//                    self.headerHeightConstraint.constant = 65
+//                    //self.view.layoutIfNeeded()
+//                }, completion: nil)
+//            }
+//        }
+//    }
+//
+//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        if self.headerHeightConstraint.constant > 199 { animateHeader() }
+//    }
+//
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        if self.headerHeightConstraint.constant > 199 { animateHeader() }
+//    }
+//
+//    private func animateHeader() {
+//        self.headerHeightConstraint.constant = 200
+//        UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: [.curveEaseOut], animations: {
+//            self.view.layoutIfNeeded()
+//        }, completion: nil)
+//    }
+//
+//    //Called in viewDidLayoutSubviews()
+//    private func sizeTableHeaderToFit() {
+//        guard let headerView = tableView.tableHeaderView else { return }
+//        headerView.setNeedsLayout()
+//        headerView.layoutIfNeeded()
+//        let height = headerView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+//        var frame = headerView.frame
+//        frame.size.height = height
+//        headerView.frame = frame
+//        tableView.tableHeaderView = headerView
+//    }
+//
+//}
 
 //MARK: - Setup Views
 extension RepliesViewController {
@@ -307,16 +429,43 @@ extension RepliesViewController {
         tabBarView.selectedFilter = .locked
     }
     
+    private func setupTabOptionsView() {
+        tabOptionsView = TabOptionsView(numberOfItems: 3, height: 50.0)
+        tabOptionsView.setTitleForButton(title: "LOCKED", at: 0)
+        tabOptionsView.setTitleForButton(title: "UNLOCKED", at: 1)
+        tabOptionsView.setTitleForButton(title: "MY REPLY", at: 2)
+        tabOptionsView.dropShadow()
+        tabOptionsView.adjustButtonColors(selected: self.getButtonTagFor(filter: .locked),
+                                          selectedBkgColor: UIColor.black,
+                                          selectedTitleColor: UIColor.yellow,
+                                          notSelectedBkgColor: Palette.darkGrey.color,
+                                          notSelectedTitleColor: UIColor.white)
+        //tabOptionsView.frame.size.height = 100
+//        tabOptionsView.snp.makeConstraints { (make) in
+//            make.height.equalTo(50)
+//        }
+    }
+    
+    private func getButtonTagFor(filter: FilterOption) -> Int {
+        switch filter {
+        case .locked: return 0
+        case .unlocked: return 1
+        case .myReply: return 2
+        }
+    }
+    
     private func setupSummaryView() {
         summaryView = PromptSummaryView()
-        //tableView.tableHeaderView = summaryView
+        summaryView.dropShadow()
     }
     
     private func setupHeaderView() {
         headerView = PromptHeaderView()
-        headerView.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(headerView)
+        headerView.translatesAutoresizingMaskIntoConstraints = false
         headerHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: 200)
+        maxHeaderHeight = headerHeightConstraint.constant
         headerHeightConstraint.isActive = true
         let constraints:[NSLayoutConstraint] = [
             headerView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -328,9 +477,10 @@ extension RepliesViewController {
     
     private func setupCreatePromptReplyButton() {
         createReplyButton = UIButton()
-        createReplyButton.backgroundColor = UIColor.black
+        createReplyButton.backgroundColor = Palette.red.color
         createReplyButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
         createReplyButton.setTitle("Reply", for: .normal)
+        createReplyButton.dropShadow()
         
         view.addSubview(createReplyButton)
         createReplyButton.snp.makeConstraints { (make) in

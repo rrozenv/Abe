@@ -77,7 +77,7 @@ extension RepliesEmptyCell {
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.top.equalTo(contentView).offset(20)
+            make.top.equalTo(contentView).offset(50)
             make.bottom.equalTo(contentView)
             make.centerX.equalTo(contentView)
             make.width.equalTo(contentView).multipliedBy(0.7)

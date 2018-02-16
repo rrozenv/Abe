@@ -239,7 +239,7 @@ extension CreatePromptViewController {
     }
     
     func setupOptionsBarView() {
-        optionsBarView = TabOptionsView(numberOfItems: 2)
+        optionsBarView = TabOptionsView(numberOfItems: 2, height: 54)
         optionsBarView.button(at: 0).setTitle("+ Link", for: .normal)
         optionsBarView.button(at: 0).backgroundColor = UIColor.black
         optionsBarView.button(at: 0).setTitleColor(UIColor.white, for: .normal)

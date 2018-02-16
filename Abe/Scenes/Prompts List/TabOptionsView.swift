@@ -12,10 +12,10 @@ final class TabOptionsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(numberOfItems: Int) {
+    init(numberOfItems: Int, height: CGFloat) {
         super.init(frame: .zero)
         self.backgroundColor = UIColor.clear
-        setupStackView(numberOfItems: numberOfItems)
+        setupStackView(numberOfItems: numberOfItems, height: height)
     }
     
 }
@@ -44,7 +44,7 @@ extension TabOptionsView {
         }
     }
     
-    private func setupStackView(numberOfItems: Int) {
+    private func setupStackView(numberOfItems: Int, height: CGFloat) {
         guard numberOfItems > 0 else { return }
         for i in 0...numberOfItems - 1 {
             let button = UIButton()
@@ -60,6 +60,7 @@ extension TabOptionsView {
         self.addSubview(stackView)
         stackView.snp.makeConstraints { (make) in
             make.edges.equalTo(self)
+            make.height.equalTo(height)
         }
     }
     
