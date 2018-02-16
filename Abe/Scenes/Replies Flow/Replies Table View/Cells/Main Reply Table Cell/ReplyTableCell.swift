@@ -186,8 +186,8 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         containerView.snp.makeConstraints { (make) in
             make.left.equalTo(contentView).offset(26)
             make.right.equalTo(contentView).offset(-26)
-            make.top.equalTo(contentView).offset(13)
-            make.bottom.equalTo(contentView).offset(-13)
+            make.top.equalTo(contentView).offset(16)
+            make.bottom.equalTo(contentView)
         }
     }
     

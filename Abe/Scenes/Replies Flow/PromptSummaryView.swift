@@ -24,7 +24,7 @@ final class PromptSummaryView: UIView {
     
     fileprivate func setupContainerView() {
         containerView = UIView()
-        containerView.backgroundColor = UIColor.yellow
+        containerView.backgroundColor = UIColor.white
         
         self.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
@@ -36,22 +36,26 @@ final class PromptSummaryView: UIView {
         bodyTextLabel = UILabel()
         bodyTextLabel.textColor = UIColor.black
         bodyTextLabel.numberOfLines = 0
-        bodyTextLabel.font = FontBook.AvenirMedium.of(size: 12)
+        bodyTextLabel.font = FontBook.AvenirMedium.of(size: 14)
     }
     
     fileprivate func setupWebLinkViewProperties() {
         webLinkView = WebThumbnailView()
+        webLinkView.placeholderBackgroundView.isHidden = true
     }
     
     fileprivate func setupContentStackView() {
         let views: [UIView] = [bodyTextLabel, webLinkView]
         contentStackView = UIStackView(arrangedSubviews: views)
-        contentStackView.spacing = 4.0
+        contentStackView.spacing = 14.0
         contentStackView.axis = .vertical
         
         containerView.addSubview(contentStackView)
         contentStackView.snp.makeConstraints { (make) in
-            make.edges.equalTo(containerView).inset(20)
+            make.top.equalTo(containerView).offset(18)
+            make.bottom.equalTo(containerView).offset(-18)
+            make.left.equalTo(containerView).offset(26)
+            make.right.equalTo(containerView).offset(-26)
         }
     }
     
