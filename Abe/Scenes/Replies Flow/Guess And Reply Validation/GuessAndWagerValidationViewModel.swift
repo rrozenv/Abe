@@ -5,7 +5,9 @@ import RxCocoa
 import RxOptional
 
 struct PercentageGraphViewModel {
+    let userScore: ReplyScore
     let orderedPercetages: [Double]
+    let totalVotes: Int
 }
 
 protocol GuessAndWagerValidationViewModelInputs {
@@ -92,10 +94,17 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
         
         self.percentageGraphInfo = didSaveScoreObservable
             .map { inputs in
-                [1, 2, 3, 4, 5].enumerated()
-                    .map { inputs.reply.percentageOfVotesCastesFor(scoreValue: $0.offset) }
+                (
+                [1, 2, 3, 4, 5].map { inputs.reply.percentageOfVotesCastesFor(scoreValue: $0) },
+                inputs.score,
+                reply.scores.count
+                )
             }
-            .map { PercentageGraphViewModel(orderedPercetages: $0) }
+            .map { percentages, score, totalVotes in
+                PercentageGraphViewModel(userScore: score,
+                                         orderedPercetages: percentages,
+                                         totalVotes: totalVotes)
+            }
             .asDriverOnErrorJustComplete()
         
         self.replyScores = didSaveScoreObservable

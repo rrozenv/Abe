@@ -125,7 +125,7 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         
         dividerView = UIView()
         dividerView.backgroundColor = Palette.faintGrey.color
-        dividerView.frame.size.height = 2.0
+        dividerView.snp.makeConstraints { (make) in make.height.equalTo(2) }
         
         let views: [UIView] = [guessedUserView, dividerView]
         headerStackView = UIStackView(arrangedSubviews: views)
