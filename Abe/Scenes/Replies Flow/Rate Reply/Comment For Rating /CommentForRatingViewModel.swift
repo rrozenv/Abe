@@ -8,13 +8,15 @@ protocol CommentForRatingViewModelInputs {
     var bodyTextInput: AnyObserver<String> { get }
     var nextButtonTappedInput: AnyObserver<Void> { get }
     var backButtonTappedInput: AnyObserver<Void> { get }
+    var revealReplyTappedInput: AnyObserver<Void> { get }
 }
 
 protocol CommentForRatingModelOutputs {
     var nextButtonTitle: Driver<String> { get }
     var nextButtonIsEnabled: Driver<Bool> { get }
     var pageIndicator: Driver<(current: Int, total: Int)> { get }
-    var reply: Driver<PromptReply> { get }
+    var replyViewModel: Driver<ReplyViewModel> { get }
+    var toggleReplyView: Driver<Void> { get }
 }
 
 protocol CommentForRatingViewModelType {
@@ -32,13 +34,15 @@ final class CommentForRatingViewModel: CommentForRatingViewModelInputs, CommentF
     let bodyTextInput: AnyObserver<String>
     let nextButtonTappedInput: AnyObserver<Void>
     let backButtonTappedInput: AnyObserver<Void>
+    let revealReplyTappedInput: AnyObserver<Void>
     
     //MARK: - Outputs
     var outputs: CommentForRatingModelOutputs { return self }
     let nextButtonTitle: Driver<String>
     let nextButtonIsEnabled: Driver<Bool>
     let pageIndicator: Driver<(current: Int, total: Int)>
-    let reply: Driver<PromptReply>
+    let replyViewModel: Driver<ReplyViewModel>
+    let toggleReplyView: Driver<Void>
     
     //MARK: - Init
     init?(reply: PromptReply,
@@ -57,12 +61,14 @@ final class CommentForRatingViewModel: CommentForRatingViewModelInputs, CommentF
         let _bodyTextInput = PublishSubject<String>()
         let _nextButtonTappedInput = PublishSubject<Void>()
         let _backButtonTappedInput = PublishSubject<Void>()
+        let _revealReplyTappedInput = PublishSubject<Void>()
         
         //MARK: - Observers
         self.viewWillAppearInput = _viewWillAppearInput.asObserver()
         self.bodyTextInput = _bodyTextInput.asObserver()
         self.nextButtonTappedInput = _nextButtonTappedInput.asObserver()
         self.backButtonTappedInput = _backButtonTappedInput.asObserver()
+        self.revealReplyTappedInput = _revealReplyTappedInput.asObserver()
         
         //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
@@ -71,6 +77,7 @@ final class CommentForRatingViewModel: CommentForRatingViewModelInputs, CommentF
             .map { _ in isCurrentUsersFriend }.share()
         let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
         let backButtonTappedObservable = _backButtonTappedInput.asObservable()
+        let reavelReplyTappedObservable = _revealReplyTappedInput.asDriver(onErrorJustReturn: ())
         
         //MARK: - Second Level Observables
         let shouldRouteToGuessAuthorVc = nextButtonTappedObservable
@@ -81,7 +88,13 @@ final class CommentForRatingViewModel: CommentForRatingViewModelInputs, CommentF
             .filter { !$0 }
         
         //MARK: - Outputs
-        self.reply = Driver.of(reply)
+        self.replyViewModel = Driver.of(reply)
+            .map {
+                ReplyViewModel(reply: $0,
+                               ratingScore: nil,
+                               isCurrentUsersFriend: isCurrentUsersFriend,
+                               isUnlocked: false)
+            }
         
         self.nextButtonTitle = isCurrentUsersFriendObservable
             .map { $0 ? "Next" : "Done" }
@@ -94,6 +107,8 @@ final class CommentForRatingViewModel: CommentForRatingViewModelInputs, CommentF
         self.nextButtonIsEnabled = bodyTextObservable
             .map { $0.count > 10 }
             .asDriverOnErrorJustComplete()
+        
+        self.toggleReplyView = reavelReplyTappedObservable
         
         //MARK: - Routing
         backButtonTappedObservable

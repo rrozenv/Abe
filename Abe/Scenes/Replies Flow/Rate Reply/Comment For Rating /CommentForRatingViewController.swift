@@ -16,6 +16,7 @@ class CommentForRatingViewController: UIViewController, BindableType {
     private var bodyTextView: UITextView!
     private var optionsBarView: TabOptionsView!
     private var replyView: ReplyHeaderView!
+    private var toggleReplyButton: UIButton!
     private var scrollView: UIScrollView!
     private var bodyPlaceholderLabel: UILabel!
     
@@ -26,6 +27,7 @@ class CommentForRatingViewController: UIViewController, BindableType {
         setupTitleLabel()
         setupScrollView()
         setupContentStackView()
+        setupToggleReplyButton()
         setupNextButton()
     }
     
@@ -69,6 +71,10 @@ class CommentForRatingViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.nextButtonTappedInput)
             .disposed(by: disposeBag)
         
+        toggleReplyButton.rx.tap
+            .bind(to: viewModel.inputs.revealReplyTappedInput)
+            .disposed(by: disposeBag)
+        
         //MARK: - Output
         viewModel.outputs.nextButtonIsEnabled
             .drive(onNext: { [weak self] in
@@ -87,15 +93,24 @@ class CommentForRatingViewController: UIViewController, BindableType {
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.reply
+        viewModel.outputs.replyViewModel
             .drive(onNext: { [weak self] in
-                self?.replyView.populateInfoWith(reply: $0)
+                self?.replyView.populateInfoWith(viewModel: $0)
             })
             .disposed(by: disposeBag)
         
         viewModel.outputs.nextButtonTitle
             .drive(onNext: { [weak self] in
                 self?.nextButton.setTitle($0, for: .normal)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.toggleReplyView
+            .drive(onNext: { [weak self] in
+                guard let replyView = self?.replyView else { return }
+                self?.bodyTextView.resignFirstResponder()
+                replyView.isHidden = !replyView.isHidden
+                self?.toggleReplyButton.setTitle(replyView.isHidden ? "Show Reply" : "Hide Reply", for: .normal)
             })
             .disposed(by: disposeBag)
         
@@ -182,14 +197,17 @@ extension CommentForRatingViewController {
         
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { (make) in
-            make.bottom.right.equalTo(view).offset(-20)
-            make.left.equalTo(view).offset(20)
-            make.top.equalTo(titleContainerView.snp.bottom).offset(20)
+            make.bottom.right.equalTo(view)
+            make.left.equalTo(view)
+            make.top.equalTo(titleContainerView.snp.bottom)
         }
     }
     
     fileprivate func setupContentStackView() {
         replyView = ReplyHeaderView()
+        replyView.backgroundColor = UIColor.white
+        replyView.dropShadow()
+        replyView.isHidden = true
         
         bodyTextView = UITextView()
         bodyTextView.font = FontBook.AvenirMedium.of(size: 14)
@@ -207,17 +225,43 @@ extension CommentForRatingViewController {
             make.left.top.equalTo(bodyTextView).offset(7)
         }
         
-        let views: [UIView] = [bodyTextView, replyView]
+        let views: [UIView] = [replyView, bodyTextView]
         let contentStackView = UIStackView(arrangedSubviews: views)
         contentStackView.spacing = 10.0
         contentStackView.axis = .vertical
-        
+
         //let imageHeight = selectedImageView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         scrollView.addSubview(contentStackView)
         contentStackView.snp.makeConstraints { (make) in
-            make.edges.equalTo(scrollView)
+            make.top.left.equalTo(scrollView).offset(20)
+            make.right.equalTo(scrollView).offset(-20)
             make.height.equalTo(view).multipliedBy(0.78)
-            make.width.equalTo(scrollView.snp.width)
+            make.width.equalTo(scrollView.snp.width).offset(-40)
+        }
+    }
+    
+    private func setupReplyView() {
+        replyView = ReplyHeaderView()
+        replyView.isHidden = true
+        
+        view.addSubview(replyView)
+        replyView.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalTo(view)
+        }
+    }
+    
+    private func setupToggleReplyButton() {
+        toggleReplyButton = UIButton()
+        toggleReplyButton.setTitle("Show Reply", for: .normal)
+        toggleReplyButton.titleLabel?.font = FontBook.BariolBold.of(size: 16)
+        toggleReplyButton.setTitleColor(Palette.red.color, for: .normal)
+        
+        view.addSubview(toggleReplyButton)
+        toggleReplyButton.snp.makeConstraints { (make) in
+            make.right.equalTo(view.snp.right).offset(-26)
+            make.centerY.equalTo(backButton.snp.centerY).offset(10)
+            make.height.equalTo(20)
+            make.width.equalTo(80)
         }
     }
     

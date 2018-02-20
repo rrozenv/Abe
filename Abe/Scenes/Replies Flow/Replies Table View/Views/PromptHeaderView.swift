@@ -70,6 +70,7 @@ final class GuessedUserView: UIView {
 
 final class ReplyHeaderView: UIView {
     
+    var containerView: UIView!
     var userImageView: UIImageView!
     var nameLabel: UILabel!
     var nameSubLabel: UILabel!
@@ -81,15 +82,25 @@ final class ReplyHeaderView: UIView {
     
     init() {
         super.init(frame: .zero)
+        setupContainerView()
         setupReplyLabel()
         setupUserImageView()
         setupNameLabelsStackView()
     }
     
-    func populateInfoWith(reply: PromptReply) {
-        nameLabel.text = reply.user?.name
-        nameSubLabel.text = "From Contacts"
-        replyBodyLabel.text = reply.body
+    private func setupContainerView() {
+        containerView = UIView()
+        
+        self.addSubview(containerView)
+        containerView.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
+    }
+    
+    func populateInfoWith(viewModel: ReplyViewModel) {
+        nameLabel.text = viewModel.isUnlocked ? viewModel.reply.user?.name : "Identity Locked"
+        nameSubLabel.text = viewModel.isCurrentUsersFriend ? "From Contacts" : ""
+        replyBodyLabel.text = viewModel.reply.body
     }
     
     private func setupReplyLabel() {
@@ -97,7 +108,7 @@ final class ReplyHeaderView: UIView {
         replyBodyLabel.numberOfLines = 0
         replyBodyLabel.font = FontBook.AvenirMedium.of(size: 14)
         
-        self.addSubview(replyBodyLabel)
+        containerView.addSubview(replyBodyLabel)
         replyBodyLabel.snp.makeConstraints { (make) in
             make.left.equalTo(self.snp.left).offset(20)
             make.right.equalTo(self.snp.right).offset(-20)
@@ -111,7 +122,7 @@ final class ReplyHeaderView: UIView {
         userImageView.layer.masksToBounds = true
         userImageView.backgroundColor = Palette.faintGrey.color
         
-        self.addSubview(userImageView)
+        containerView.addSubview(userImageView)
         userImageView.snp.makeConstraints { (make) in
             make.left.equalTo(self.snp.left).offset(20)
             make.top.equalTo(self.snp.top).offset(17)
@@ -136,7 +147,7 @@ final class ReplyHeaderView: UIView {
         labelsStackView.spacing = 2.0
         labelsStackView.axis = .vertical
         
-        self.addSubview(labelsStackView)
+        containerView.addSubview(labelsStackView)
         labelsStackView.snp.makeConstraints { (make) in
             make.centerY.equalTo(userImageView.snp.centerY)
             make.left.equalTo(userImageView.snp.right).offset(10)
