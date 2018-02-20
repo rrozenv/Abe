@@ -87,6 +87,7 @@ class ReplyScore: Object {
     @objc dynamic var id: String = UUID().uuidString
     @objc dynamic var replyId: String = ""
     @objc dynamic var userId: String = ""
+    @objc dynamic var comment: String = ""
     @objc dynamic var score: Int = 0
     @objc dynamic var user: User?
     
@@ -101,11 +102,16 @@ class ReplyScore: Object {
         self.score = score
     }
     
-    convenience init(user: User, replyId: String, score: Int) {
+    convenience init(user: User,
+                     replyId: String,
+                     score: Int,
+                     comment: String) {
         self.init()
         self.user = user
+        self.userId = user.id
         self.replyId = replyId
         self.score = score
+        self.comment = comment
     }
     
     static func valueDict(user: User, replyId: String, score: String) -> [String: Any] {

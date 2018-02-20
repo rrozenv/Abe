@@ -21,7 +21,7 @@ final class InputWagerViewController: UIViewController, BindableType {
     override func loadView() {
         super.loadView()
         self.view.backgroundColor = UIColor.white
-        setupBackAndPagerView(numberOfPages: 3)
+        setupBackAndPagerView()
         setupSelectedUserView()
         setupDividerView()
         setupTitleLabel()
@@ -129,8 +129,9 @@ final class InputWagerViewController: UIViewController, BindableType {
         doneButton.frame.size.height = 60
     }
     
-    private func setupBackAndPagerView(numberOfPages: Int) {
-        backAndPagerView = BackButtonPageIndicatorView(numberOfPages: numberOfPages)
+    private func setupBackAndPagerView() {
+        backAndPagerView = BackButtonPageIndicatorView()
+        backAndPagerView.setupPageIndicatorView(numberOfPages: 3)
         
         view.addSubview(backAndPagerView)
         backAndPagerView.snp.makeConstraints { (make) in

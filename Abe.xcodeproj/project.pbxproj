@@ -85,6 +85,9 @@
 		98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98676858201292E600D0421C /* WebLinkThumbnail.swift */; };
 		9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867685A201294B700D0421C /* PromptHeaderView.swift */; };
 		98691C35202547E800FE2180 /* TabOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98691C34202547E800FE2180 /* TabOptionsView.swift */; };
+		9883A8BC203BB98C00D2E423 /* CommentForRatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883A8BB203BB98C00D2E423 /* CommentForRatingViewController.swift */; };
+		9883A8BE203BB99D00D2E423 /* CommentForRatingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883A8BD203BB99D00D2E423 /* CommentForRatingViewModel.swift */; };
+		9883A8C0203BB9AA00D2E423 /* CommentForRatingRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883A8BF203BB9AA00D2E423 /* CommentForRatingRouter.swift */; };
 		9883ED611FE6F810002E538E /* PromptReply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED601FE6F810002E538E /* PromptReply.swift */; };
 		9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */; };
 		9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883ED641FE70458002E538E /* CreateReplyRouter.swift */; };
@@ -244,6 +247,9 @@
 		98676858201292E600D0421C /* WebLinkThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkThumbnail.swift; sourceTree = "<group>"; };
 		9867685A201294B700D0421C /* PromptHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptHeaderView.swift; sourceTree = "<group>"; };
 		98691C34202547E800FE2180 /* TabOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabOptionsView.swift; sourceTree = "<group>"; };
+		9883A8BB203BB98C00D2E423 /* CommentForRatingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentForRatingViewController.swift; sourceTree = "<group>"; };
+		9883A8BD203BB99D00D2E423 /* CommentForRatingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentForRatingViewModel.swift; sourceTree = "<group>"; };
+		9883A8BF203BB9AA00D2E423 /* CommentForRatingRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentForRatingRouter.swift; sourceTree = "<group>"; };
 		9883ED601FE6F810002E538E /* PromptReply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptReply.swift; sourceTree = "<group>"; };
 		9883ED621FE6FB3D002E538E /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		9883ED641FE70458002E538E /* CreateReplyRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReplyRouter.swift; sourceTree = "<group>"; };
@@ -560,6 +566,7 @@
 		982CF84F2013C96D00EEB278 /* Rate Reply */ = {
 			isa = PBXGroup;
 			children = (
+				9883A8C1203BB9B200D2E423 /* Comment For Rating  */,
 				982CF8502013C98800EEB278 /* RateReplyViewController.swift */,
 				982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */,
 				982B27CD20151BB700824E82 /* RateReplyRouter.swift */,
@@ -781,6 +788,16 @@
 				986768552012922C00D0421C /* WebLinkActionButtonsView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		9883A8C1203BB9B200D2E423 /* Comment For Rating  */ = {
+			isa = PBXGroup;
+			children = (
+				9883A8BB203BB98C00D2E423 /* CommentForRatingViewController.swift */,
+				9883A8BD203BB99D00D2E423 /* CommentForRatingViewModel.swift */,
+				9883A8BF203BB9AA00D2E423 /* CommentForRatingRouter.swift */,
+			);
+			path = "Comment For Rating ";
 			sourceTree = "<group>";
 		};
 		9883ED661FE7061B002E538E /* Cells */ = {
@@ -1198,6 +1215,7 @@
 				985A7CCE201826490065BF38 /* GuessAndWagerValidationDataSource.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,
+				9883A8BE203BB99D00D2E423 /* CommentForRatingViewModel.swift in Sources */,
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,
 				98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */,
 				98FEE7B71FE4BBFB00CD80A8 /* Prompt.swift in Sources */,
@@ -1215,6 +1233,7 @@
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
 				9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */,
+				9883A8BC203BB98C00D2E423 /* CommentForRatingViewController.swift in Sources */,
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
 				9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */,
 				9806B9122007DDCB000CB497 /* ImageSearchCollectionCell.swift in Sources */,
@@ -1241,6 +1260,7 @@
 				982B27CE20151BB700824E82 /* RateReplyRouter.swift in Sources */,
 				985B14C2202647B20017306E /* PromptPageViewModel.swift in Sources */,
 				983DB1EA200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift in Sources */,
+				9883A8C0203BB9AA00D2E423 /* CommentForRatingRouter.swift in Sources */,
 				988658F81FE8073C00FEB703 /* ContactStore.swift in Sources */,
 				980DE5A41FE589310087C6C3 /* Observable+Ext.swift in Sources */,
 				9862867A20006AF000502294 /* RepliesViewModel.swift in Sources */,

@@ -49,7 +49,7 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
     
 //MARK: - Init
     init?(reply: PromptReply,
-          ratingScoreValue: Int,
+          replyScore: ReplyScore,
           guessedUser: User?,
           wager: Int?,
           router: GuessAndWagerValidationRoutingLogic,
@@ -81,11 +81,8 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             .share()
         
         let didSaveScoreObservable = viewDidLoadObservable.mapToVoid()
-            .flatMap { replyService.updateAuthorCoinsFor(reply: reply, coins: ratingScoreValue) }
-            .map { ReplyScore(userId: currentUser.value.id,
-                              replyId: $0.id,
-                              score: ratingScoreValue) }
-            .flatMap { replyService.saveScore(reply: reply, score: $0) }
+            .flatMap { replyService.updateAuthorCoinsFor(reply: reply, coins: replyScore.score) }
+            .flatMap { _ in replyService.saveScore(reply: reply, score: replyScore) }
             .share()
         
 //MARK: - Outputs
@@ -112,10 +109,8 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             .asDriver(onErrorJustReturn: [])
             
         self.unlockedReplyViewModel = Observable.of(reply)
-            .map { ($0, ReplyScore(userId: currentUser.value.id,
-                              replyId: reply.id,
-                              score: ratingScoreValue)) }
-            .map { ReplyViewModel(reply: $0, ratingScore: $1, isCurrentUsersFriend: true, isUnlocked: true) }
+            .map { (reply: $0, score: replyScore) }
+            .map { ReplyViewModel(reply: $0.reply, ratingScore: $0.score, isCurrentUsersFriend: true, isUnlocked: true) }
             .asDriverOnErrorJustComplete()
         
         self.userCoinsAndWagerResult = isUserCorrectObservable

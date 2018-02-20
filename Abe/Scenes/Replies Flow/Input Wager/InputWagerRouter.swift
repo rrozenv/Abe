@@ -4,7 +4,7 @@ import UIKit
 import RxSwift
 
 protocol InputWagerRoutingLogic {
-    func toGuessAndWagerValidation(reply: PromptReply, ratingScoreValue: Int, guessedUser: User, wager: Int)
+    func toGuessAndWagerValidation(reply: PromptReply, replyScore: ReplyScore, guessedUser: User, wager: Int)
     func toPreviousNavViewController()
 }
 
@@ -17,13 +17,13 @@ final class InputWagerRouter: InputWagerRoutingLogic {
     }
     
     func toGuessAndWagerValidation(reply: PromptReply,
-                                   ratingScoreValue: Int,
+                                   replyScore: ReplyScore,
                                    guessedUser: User,
                                    wager: Int) {
         var vc = GuessAndWagerValidationViewController()
         let router = GuessAndWagerValidationRouter(navigationController: navigationController!)
         let viewModel = GuessAndWagerValidationViewModel(reply: reply,
-                                                         ratingScoreValue: ratingScoreValue,
+                                                         replyScore: replyScore,
                                                          guessedUser: guessedUser,
                                                          wager: wager,
                                                          router: router)

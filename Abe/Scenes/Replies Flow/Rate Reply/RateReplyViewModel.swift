@@ -22,7 +22,7 @@ protocol RateReplyViewModelOutputs {
     var previousAndCurrentScore: Observable<(previous: RatingScoreViewModel, current: RatingScoreViewModel)> { get }
     var nextButtonTitle: Driver<String> { get }
     var nextButtonIsEnabled: Driver<Bool> { get }
-    var currentPageIndicator: Driver<Int> { get }
+    var pageIndicator: Driver<(current: Int, total: Int)> { get }
     var reply: Driver<ReplyViewModel> { get }
 }
 
@@ -48,7 +48,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
     let previousAndCurrentScore: Observable<(previous: RatingScoreViewModel, current: RatingScoreViewModel)>
     let nextButtonTitle: Driver<String>
     let nextButtonIsEnabled: Driver<Bool>
-    let currentPageIndicator: Driver<Int>
+    let pageIndicator: Driver<(current: Int, total: Int)>
     let reply: Driver<ReplyViewModel>
     
 //MARK: - Init
@@ -85,12 +85,12 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
         let backButtonTappedObservable = _backButtonTappedInput.asObservable()
         
 //MARK: - Second Level Observables
-        let shouldRouteToGuessAuthorVc = nextButtonTappedObservable
-            .withLatestFrom(isCurrentUsersFriendObservable)
-            .filter { $0 } 
-        let shouldRouteToSummaryVc = nextButtonTappedObservable
-            .withLatestFrom(isCurrentUsersFriendObservable)
-            .filter { !$0 }
+//        let shouldRouteToGuessAuthorVc = nextButtonTappedObservable
+//            .withLatestFrom(isCurrentUsersFriendObservable)
+//            .filter { $0 }
+//        let shouldRouteToSummaryVc = nextButtonTappedObservable
+//            .withLatestFrom(isCurrentUsersFriendObservable)
+//            .filter { !$0 }
         
 //MARK: - Third Level Observables
 //        let didSaveReplyScoreObservable = shouldDismissNavVCObservable.mapToVoid()
@@ -118,12 +118,12 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
                 (previous: $0, current: $1)
         }
         
-        self.nextButtonTitle = isCurrentUsersFriendObservable
-            .map { $0 ? "Next" : "Done" }
+        self.nextButtonTitle = viewWillAppearObservable
+            .map { "Next" }
             .asDriverOnErrorJustComplete()
         
-        self.currentPageIndicator = isCurrentUsersFriendObservable
-            .map { $0 ? 0 : -1 }
+        self.pageIndicator = isCurrentUsersFriendObservable
+            .map { (current: 1, total: $0 ? 4 : 2) }
             .asDriver(onErrorDriveWith: Driver.never())
         
         self.nextButtonIsEnabled = selectedScoreObservable
@@ -137,17 +137,19 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
             .subscribe()
             .disposed(by: disposeBag)
         
-        shouldRouteToSummaryVc
+        nextButtonTappedObservable
             .withLatestFrom(selectedScoreObservable)
-            .do(onNext: { router.toSummary(reply: reply, ratingScoreValue: $0.value) })
+            .do(onNext: { router.toCommentRating(reply: reply,
+                                                 ratingScoreValue: $0.value,
+                                                 isCurrentUsersFriend: isCurrentUsersFriend) })
             .subscribe()
             .disposed(by: disposeBag)
         
-        shouldRouteToGuessAuthorVc.mapToVoid()
-            .withLatestFrom(selectedScoreObservable)
-            .do(onNext: { router.toGuessReplyAuthorFor(reply: reply, ratingScoreValue: $0.value) })
-            .subscribe()
-            .disposed(by: disposeBag)
+//        shouldRouteToGuessAuthorVc.mapToVoid()
+//            .withLatestFrom(selectedScoreObservable)
+//            .do(onNext: { router.toGuessReplyAuthorFor(reply: reply, ratingScoreValue: $0.value) })
+//            .subscribe()
+//            .disposed(by: disposeBag)
     }
     
 }

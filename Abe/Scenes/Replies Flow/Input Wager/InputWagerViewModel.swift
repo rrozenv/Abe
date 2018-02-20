@@ -49,7 +49,7 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
 //MARK: - Init
     init?(reply: PromptReply,
           guessedUser: User,
-          ratingScoreValue: Int,
+          replyScore: ReplyScore,
           router: InputWagerRoutingLogic) {
         
         guard let user = AppController.shared.currentUser.value else {
@@ -117,7 +117,7 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
 //MARK: - Routing
         isInputValidObservable.filter { $0.isValid }
             .do(onNext: { router.toGuessAndWagerValidation(reply: reply,
-                                                           ratingScoreValue:     ratingScoreValue,
+                                                           replyScore: replyScore,
                                                            guessedUser: guessedUser,
                                                            wager: $0.int) })
             .subscribe()
@@ -125,7 +125,7 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
         
         skipTappedObservable
             .do(onNext: { router.toGuessAndWagerValidation(reply: reply,
-                                                           ratingScoreValue:     ratingScoreValue,
+                                                           replyScore: replyScore,
                                                            guessedUser: guessedUser,
                                                            wager: 0) })
             .subscribe()

@@ -4,7 +4,7 @@ import UIKit
 
 protocol GuessReplyAuthorRoutingLogic {
     func toPreviousNavViewController()
-    func toInputWagerWith(selectedUser: User, ratingScoreValue: Int, reply: PromptReply)
+    func toInputWagerWith(selectedUser: User, replyScore: ReplyScore, reply: PromptReply)
 }
 
 final class GuessReplyAuthorRouter: GuessReplyAuthorRoutingLogic {
@@ -15,12 +15,12 @@ final class GuessReplyAuthorRouter: GuessReplyAuthorRoutingLogic {
         self.navigationController = navigationController
     }
     
-    func toInputWagerWith(selectedUser: User, ratingScoreValue: Int, reply: PromptReply) {
+    func toInputWagerWith(selectedUser: User, replyScore: ReplyScore, reply: PromptReply) {
         var vc = InputWagerViewController()
         let router = InputWagerRouter(navigationController: navigationController!)
         let viewModel = InputWagerViewModel(reply: reply,
                                             guessedUser: selectedUser,
-                                            ratingScoreValue: ratingScoreValue,
+                                            replyScore: replyScore,
                                             router: router)
         vc.setViewModelBinding(model: viewModel!)
         navigationController?.pushViewController(vc, animated: true)
