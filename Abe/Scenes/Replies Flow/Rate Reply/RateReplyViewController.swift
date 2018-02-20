@@ -1,6 +1,7 @@
 
 import Foundation
 import RxSwift
+import SnapKit
 
 class RateReplyViewController: UIViewController, BindableType {
     
@@ -9,8 +10,8 @@ class RateReplyViewController: UIViewController, BindableType {
     var viewModel: RateReplyViewModel!
    
     private var titleContainerView: UIView!
-    private var cancelButton: UIButton!
-    private var backAndPagerView: BackButtonPageIndicatorView!
+    private var backButton: UIButton!
+    private var pageIndicatorView: PageIndicatorView!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
     private var tableView: UITableView!
@@ -18,8 +19,7 @@ class RateReplyViewController: UIViewController, BindableType {
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
-        setupBackAndPagerView(numberOfPages: 3)
-        setupCancelButton()
+        setupBackButton()
         setupTitleLabel()
         setupTableView()
         setupNextButton()
@@ -64,13 +64,13 @@ class RateReplyViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.nextButtonTappedInput)
             .disposed(by: disposeBag)
         
-        let backButtonTappedObservable = Observable.of(
-            backAndPagerView.backButton.rx.tap.asObservable(),
-            cancelButton.rx.tap.asObservable()
-        )
-        .merge()
+//        let backButtonTappedObservable = Observable.of(
+//            backAndPagerView.backButton.rx.tap.asObservable(),
+//            cancelButton.rx.tap.asObservable()
+//        )
+//        .merge()
         
-       backButtonTappedObservable
+        backButton.rx.tap.asObservable()
             .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
         
@@ -116,11 +116,10 @@ class RateReplyViewController: UIViewController, BindableType {
         
         viewModel.outputs.pageIndicator
             .drive(onNext: { [weak self] in
-                self?.backAndPagerView.setupPageIndicatorView(numberOfPages: $0.total)
-                self?.backAndPagerView.pageIndicatorView.currentPage = $0.current
-//                self?.cancelButton.isHidden = ($0 != -1) ? true : false
-//                self?.backAndPagerView.isHidden = ($0 != -1) ? false : true
-//                self?.backAndPagerView.pageIndicatorView.currentPage = $0
+                guard let backButton = self?.backButton else { return }
+                self?.setupPageIndicator(constrainedTo: backButton,
+                                         total: $0.total,
+                                         currentPage: $0.current)
             })
             .disposed(by: disposeBag)
     }
@@ -209,25 +208,15 @@ extension RateReplyViewController {
         view.addSubview(titleContainerView)
         titleContainerView.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
-            make.top.equalTo(backAndPagerView.snp.bottom)
+            make.top.equalTo(backButton.snp.bottom)
         }
     }
     
-    private func setupBackAndPagerView(numberOfPages: Int) {
-        backAndPagerView = BackButtonPageIndicatorView()
+    private func setupBackButton() {
+        backButton = UIButton.backButton(image: #imageLiteral(resourceName: "IC_BackArrow_Black"))
         
-        view.addSubview(backAndPagerView)
-        backAndPagerView.snp.makeConstraints { (make) in
-            make.left.equalTo(view.snp.left)
-            make.top.equalTo(view.snp.top)
-        }
-    }
-    
-    private func setupCancelButton() {
-        cancelButton = UIButton.cancelButton(image: #imageLiteral(resourceName: "IC_BlackX"))
-        
-        view.addSubview(cancelButton)
-        cancelButton.snp.makeConstraints { (make) in
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
             make.left.equalTo(view.snp.left)
             if #available(iOS 11.0, *) {
                 if UIDevice.iPhoneX {
@@ -243,53 +232,100 @@ extension RateReplyViewController {
     
 }
 
+//final class BackButtonPageIndicatorView: UIView {
+//
+//    private let itemWidthHeight: CGFloat = 6
+//    var stackWidthConstraint: Constraint!
+//    var backButton: UIButton!
+//    var pageIndicatorView: PageIndicatorView!
+//    var updatePageTotal: Int = 0 {
+//        didSet {
+////            pageIndicatorView.updatePageTotal = updatePageTotal
+////            updateStackWidth(numberOfPages: updatePageTotal)
+////            layoutIfNeeded()
+//        }
+//    }
+//
+//    private func updateStackWidth(numberOfPages: Int) {
+//        pageIndicatorView.snp.remakeConstraints { (make) in
+//            make.left.equalTo(backButton.snp.right).offset(10)
+//            make.right.equalTo(self)
+//            make.centerY.equalTo(backButton.snp.centerY).offset(10)
+//            make.height.equalTo(itemWidthHeight)
+//            make.width.equalTo(widthForStackView(numberOfPages: numberOfPages, spacing: 10))
+//        }
+//    }
+//
+//    //MARK: Initalizer Setup
+//    required init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//
+//    init() {
+//        super.init(frame: .zero)
+//        self.backgroundColor = UIColor.clear
+//        setupBackButton()
+//        //setupPageIndicatorView(numberOfPages: 2)
+//    }
+//
+//    private func setupPageIndicatorView(numberOfPages: Int) {
+//        pageIndicatorView = PageIndicatorView(numberOfItems: numberOfPages,
+//                                              widthHeight: itemWidthHeight)
+//
+//        self.addSubview(pageIndicatorView)
+//        pageIndicatorView.snp.makeConstraints { (make) in
+//            make.left.equalTo(backButton.snp.right).offset(10)
+//            make.right.equalTo(self)
+//            make.centerY.equalTo(backButton.snp.centerY).offset(10)
+//            make.height.equalTo(itemWidthHeight)
+//            make.width.equalTo(widthForStackView(numberOfPages: numberOfPages, spacing: 10))
+//        }
+//    }
+//
+//    private func widthForStackView(numberOfPages: Int, spacing: CGFloat) -> CGFloat {
+//        let spacing: CGFloat = 10.0
+//        let spacingMultiplier = CGFloat(numberOfPages - 1)
+//        let widthMultiplier = CGFloat(numberOfPages)
+//        return (spacing * spacingMultiplier) + (itemWidthHeight * widthMultiplier)
+//    }
+//
+//    private func setupBackButton() {
+//        let image = #imageLiteral(resourceName: "IC_BackArrow_Black")
+//        image.size.equalTo(CGSize(width: 9, height: 17))
+//        backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 9, height: 17))
+//        backButton.setImage(image, for: .normal)
+//        backButton.contentEdgeInsets = UIEdgeInsets(top: 38, left: 26, bottom: 15, right: 15)
+//
+//        self.addSubview(backButton)
+//        backButton.snp.makeConstraints { (make) in
+//            make.edges.equalTo(self)
+//        }
+//    }
+//
+//}
 
-final class BackButtonPageIndicatorView: UIView {
+
+extension UIViewController {
     
-    var backButton: UIButton!
-    var pageIndicatorView: PageIndicatorView!
-    private let itemWidthHeight: CGFloat = 6
-  
-    //MARK: Initalizer Setup
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    init() {
-        super.init(frame: .zero)
-        self.backgroundColor = UIColor.clear
-        setupBackButton()
-    }
-    
-    //MARK: - Public Method
-    func setupPageIndicatorView(numberOfPages: Int) {
-        let spacing: CGFloat = 10.0
-        let spacingMultiplier = CGFloat(numberOfPages - 1)
-        let widthMultiplier = CGFloat(numberOfPages)
-        let stackWidth = (spacing * spacingMultiplier) + (itemWidthHeight * widthMultiplier)
-        pageIndicatorView = PageIndicatorView(numberOfItems: numberOfPages, widthHeight: itemWidthHeight)
+    func setupPageIndicator(constrainedTo: UIView, total: Int, currentPage: Int) {
+        let widthHeight: CGFloat = 6.0
         
-        self.addSubview(pageIndicatorView)
-        pageIndicatorView.snp.makeConstraints { (make) in
-            make.left.equalTo(backButton.snp.right).offset(10)
-            make.right.equalTo(self)
-            make.centerY.equalTo(backButton.snp.centerY).offset(10)
-            make.height.equalTo(itemWidthHeight)
-            make.width.equalTo(stackWidth)
+        func widthForStackView(numberOfPages: Int) -> CGFloat {
+            let spacing: CGFloat = 10.0
+            let spacingMultiplier = CGFloat(numberOfPages - 1)
+            let widthMultiplier = CGFloat(numberOfPages)
+            return (spacing * spacingMultiplier) + (widthHeight * widthMultiplier)
         }
-    }
-    
-    
-    private func setupBackButton() {
-        let image = #imageLiteral(resourceName: "IC_BackArrow_Black")
-        image.size.equalTo(CGSize(width: 9, height: 17))
-        backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 9, height: 17))
-        backButton.setImage(image, for: .normal)
-        backButton.contentEdgeInsets = UIEdgeInsets(top: 38, left: 26, bottom: 15, right: 15)
         
-        self.addSubview(backButton)
-        backButton.snp.makeConstraints { (make) in
-            make.edges.equalTo(self)
+        let pageIndicatorView = PageIndicatorView(numberOfItems: total, widthHeight: 6.0)
+        pageIndicatorView.currentPage = currentPage
+        
+        view.addSubview(pageIndicatorView)
+        pageIndicatorView.snp.makeConstraints { (make) in
+            make.left.equalTo(constrainedTo.snp.right).offset(10)
+            make.centerY.equalTo(constrainedTo.snp.centerY).offset(10)
+            make.height.equalTo(6.0)
+            make.width.equalTo(widthForStackView(numberOfPages: total))
         }
     }
     

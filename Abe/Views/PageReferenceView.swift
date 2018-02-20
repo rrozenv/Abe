@@ -6,11 +6,9 @@ final class PageIndicatorView: UIView {
     
     private var stackView: UIStackView!
     private var views = [UIView]()
-    
+    private var widthHeight: CGFloat
     var currentPage: Int = 0 {
-        didSet {
-            self.adjustButtonColors(selected: currentPage)
-        }
+        didSet { self.adjustButtonColors(selected: currentPage) }
     }
     
     //MARK: Initalizer Setup
@@ -19,6 +17,7 @@ final class PageIndicatorView: UIView {
     }
     
     init(numberOfItems: Int, widthHeight: CGFloat) {
+        self.widthHeight = widthHeight
         super.init(frame: .zero)
         self.backgroundColor = UIColor.clear
         setupStackView(numberOfItems: numberOfItems, widthHeight: widthHeight)

@@ -11,10 +11,10 @@ class CommentForRatingViewController: UIViewController, BindableType {
     private var titleContainerView: UIView!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
-    private var backAndPagerView: BackButtonPageIndicatorView!
+    private var backButton: UIButton!
+    private var pageIndicatorView: PageIndicatorView!
     private var bodyTextView: UITextView!
     private var optionsBarView: TabOptionsView!
-    private var backButton: UIButton!
     private var replyView: ReplyHeaderView!
     private var scrollView: UIScrollView!
     private var bodyPlaceholderLabel: UILabel!
@@ -22,7 +22,7 @@ class CommentForRatingViewController: UIViewController, BindableType {
     override func loadView() {
         super.loadView()
         self.view.backgroundColor = UIColor.white
-        setupBackAndPagerView()
+        setupBackButton()
         setupTitleLabel()
         setupScrollView()
         setupContentStackView()
@@ -61,7 +61,7 @@ class CommentForRatingViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.bodyTextInput)
             .disposed(by: disposeBag)
         
-        backAndPagerView.backButton.rx.tap
+        backButton.rx.tap
             .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
         
@@ -80,8 +80,10 @@ class CommentForRatingViewController: UIViewController, BindableType {
         
         viewModel.outputs.pageIndicator
             .drive(onNext: { [weak self] in
-                self?.backAndPagerView.setupPageIndicatorView(numberOfPages: $0.total)
-                self?.backAndPagerView.pageIndicatorView.currentPage = $0.current
+                guard let backButton = self?.backButton else { return }
+                self?.setupPageIndicator(constrainedTo: backButton,
+                                         total: $0.total,
+                                         currentPage: $0.current)
             })
             .disposed(by: disposeBag)
         
@@ -124,13 +126,21 @@ extension CommentForRatingViewController {
         nextButton.frame.size.height = 60
     }
     
-    private func setupBackAndPagerView() {
-        backAndPagerView = BackButtonPageIndicatorView()
+    private func setupBackButton() {
+        backButton = UIButton.backButton(image: #imageLiteral(resourceName: "IC_BackArrow_Black"))
         
-        view.addSubview(backAndPagerView)
-        backAndPagerView.snp.makeConstraints { (make) in
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
             make.left.equalTo(view.snp.left)
-            make.top.equalTo(view.snp.top)
+            if #available(iOS 11.0, *) {
+                if UIDevice.iPhoneX {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-44)
+                } else {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-20)
+                }
+            } else {
+                make.top.equalTo(view.snp.top)
+            }
         }
     }
     
@@ -162,7 +172,7 @@ extension CommentForRatingViewController {
         view.addSubview(titleContainerView)
         titleContainerView.snp.makeConstraints { (make) in
             make.left.right.equalTo(view)
-            make.top.equalTo(backAndPagerView.snp.bottom)
+            make.top.equalTo(backButton.snp.bottom)
         }
     }
     

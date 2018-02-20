@@ -9,7 +9,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     var viewModel: GuessReplyAuthorViewModel!
     private let dataSource = GuessReplyAuthorDataSource()
     
-    private var backAndPagerView: BackButtonPageIndicatorView!
+    private var backButton: UIButton!
     private var titleLabel: UILabel!
     private var nextButton: UIButton!
     private var searchBar: UISearchBar!
@@ -18,7 +18,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     override func loadView() {
         super.loadView()
         self.view.backgroundColor = UIColor.white
-        setupBackAndPagerView()
+        setupBackButton()
         setupTitleLabel()
         setupSearchBar()
         setupTableView()
@@ -46,7 +46,7 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
     func bindViewModel() {
         
 //MARK: - Input
-        backAndPagerView.backButton.rx.tap
+        backButton.rx.tap
             .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
 
@@ -103,9 +103,19 @@ class GuessReplyAuthorViewController: UIViewController, BindableType {
         
         viewModel.outputs.currentPageIndicator
             .drive(onNext: { [weak self] in
-                self?.backAndPagerView.pageIndicatorView.currentPage = $0
+                guard let backButton = self?.backButton else { return }
+                self?.setupPageIndicator(constrainedTo: backButton,
+                                         total: 4,
+                                         currentPage: $0)
             })
             .disposed(by: disposeBag)
+        
+//        viewModel.outputs.currentPageIndicator
+//            .drive(onNext: { //[weak self] in
+////                self?.backAndPagerView.pageIndicatorView.updatePageTotal = 4
+////                self?.backAndPagerView.pageIndicatorView.currentPage = $0
+//            })
+//            .disposed(by: disposeBag)
     }
     
 }
@@ -151,17 +161,6 @@ extension GuessReplyAuthorViewController {
         nextButton.frame.size.height = 60
     }
     
-    private func setupBackAndPagerView() {
-        backAndPagerView = BackButtonPageIndicatorView()
-        backAndPagerView.setupPageIndicatorView(numberOfPages: 3)
-        
-        view.addSubview(backAndPagerView)
-        backAndPagerView.snp.makeConstraints { (make) in
-            make.left.equalTo(view.snp.left)
-            make.top.equalTo(view.snp.top)
-        }
-    }
-    
     private func setupTitleLabel() {
         titleLabel = UILabel()
         titleLabel.numberOfLines = 0
@@ -174,7 +173,7 @@ extension GuessReplyAuthorViewController {
 
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(backAndPagerView.snp.bottom)
+            make.top.equalTo(backButton.snp.bottom)
             make.left.equalTo(view).offset(30)
             make.right.equalTo(view).offset(-40)
         }
@@ -194,6 +193,24 @@ extension GuessReplyAuthorViewController {
             make.left.equalTo(view).offset(20)
             make.right.equalTo(view).offset(-20)
             make.height.equalTo(50)
+        }
+    }
+    
+    private func setupBackButton() {
+        backButton = UIButton.backButton(image: #imageLiteral(resourceName: "IC_BackArrow_Black"))
+        
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            if #available(iOS 11.0, *) {
+                if UIDevice.iPhoneX {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-44)
+                } else {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-20)
+                }
+            } else {
+                make.top.equalTo(view.snp.top)
+            }
         }
     }
 

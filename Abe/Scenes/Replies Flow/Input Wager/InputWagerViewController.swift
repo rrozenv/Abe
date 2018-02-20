@@ -8,7 +8,7 @@ final class InputWagerViewController: UIViewController, BindableType {
     let disposeBag = DisposeBag()
     var viewModel: InputWagerViewModel!
     
-    private var backAndPagerView: BackButtonPageIndicatorView!
+    private var backButton: UIButton!
     private var selectedUserView: UserImageNameSublabelView!
     private var wagerTextField: UITextField!
     private var doneButton: UIButton!
@@ -21,7 +21,7 @@ final class InputWagerViewController: UIViewController, BindableType {
     override func loadView() {
         super.loadView()
         self.view.backgroundColor = UIColor.white
-        setupBackAndPagerView()
+        setupBackButton()
         setupSelectedUserView()
         setupDividerView()
         setupTitleLabel()
@@ -49,7 +49,7 @@ final class InputWagerViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.doneTappedInput)
             .disposed(by: disposeBag)
         
-        backAndPagerView.backButton.rx.tap
+        backButton.rx.tap
             .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
         
@@ -74,7 +74,10 @@ final class InputWagerViewController: UIViewController, BindableType {
         
         viewModel.outputs.currentPageIndicator
             .drive(onNext: { [weak self] in
-                self?.backAndPagerView.pageIndicatorView.currentPage = $0
+                guard let backButton = self?.backButton else { return }
+                self?.setupPageIndicator(constrainedTo: backButton,
+                                         total: 4,
+                                         currentPage: $0)
             })
             .disposed(by: disposeBag)
     }
@@ -129,14 +132,21 @@ final class InputWagerViewController: UIViewController, BindableType {
         doneButton.frame.size.height = 60
     }
     
-    private func setupBackAndPagerView() {
-        backAndPagerView = BackButtonPageIndicatorView()
-        backAndPagerView.setupPageIndicatorView(numberOfPages: 3)
+    private func setupBackButton() {
+        backButton = UIButton.backButton(image: #imageLiteral(resourceName: "IC_BackArrow_Black"))
         
-        view.addSubview(backAndPagerView)
-        backAndPagerView.snp.makeConstraints { (make) in
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
             make.left.equalTo(view.snp.left)
-            make.top.equalTo(view.snp.top)
+            if #available(iOS 11.0, *) {
+                if UIDevice.iPhoneX {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-44)
+                } else {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-20)
+                }
+            } else {
+                make.top.equalTo(view.snp.top)
+            }
         }
     }
     
@@ -150,7 +160,7 @@ final class InputWagerViewController: UIViewController, BindableType {
         view.addSubview(skipButton)
         skipButton.snp.makeConstraints { (make) in
             make.right.equalTo(view.snp.right).offset(-30)
-            make.centerY.equalTo(backAndPagerView.snp.centerY).offset(10)
+            make.centerY.equalTo(backButton.snp.centerY).offset(10)
             make.height.equalTo(20)
             make.width.equalTo(40)
         }
@@ -162,7 +172,7 @@ final class InputWagerViewController: UIViewController, BindableType {
         view.addSubview(selectedUserView)
         selectedUserView.snp.makeConstraints { (make) in
             make.left.equalTo(view).offset(26)
-            make.top.equalTo(backAndPagerView.snp.bottom)
+            make.top.equalTo(backButton.snp.bottom)
         }
     }
     

@@ -79,27 +79,10 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
         let viewWillAppearObservable = _viewWillAppearInput.asObservable()
         let selectedScoreObservable = _selectedScoreInput.asObservable()
             .startWith(RatingScoreViewModel(value: 0, image: nil, title: nil, isSelected: false))
-        let isCurrentUsersFriendObservable = viewWillAppearObservable
+       let isCurrentUsersFriendObservable = viewWillAppearObservable
             .map { _ in isCurrentUsersFriend }.share()
         let nextButtonTappedObservable = _nextButtonTappedInput.asObservable()
         let backButtonTappedObservable = _backButtonTappedInput.asObservable()
-        
-//MARK: - Second Level Observables
-//        let shouldRouteToGuessAuthorVc = nextButtonTappedObservable
-//            .withLatestFrom(isCurrentUsersFriendObservable)
-//            .filter { $0 }
-//        let shouldRouteToSummaryVc = nextButtonTappedObservable
-//            .withLatestFrom(isCurrentUsersFriendObservable)
-//            .filter { !$0 }
-        
-//MARK: - Third Level Observables
-//        let didSaveReplyScoreObservable = shouldDismissNavVCObservable.mapToVoid()
-//            .withLatestFrom(selectedScoreObservable)
-//            .map { ReplyScore(userId: currentUser.value.id,
-//                              replyId: reply.id,
-//                              score: $0.value) }
-//            .flatMap { replyService.saveScore(reply: reply, score: $0) }
-//            .flatMap { replyService.updateAuthorCoinsFor(reply: $0.0, coins: $0.1.score) }
         
 //MARK: - Outputs
         self.reply = Driver.of(reply)
@@ -123,7 +106,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
             .asDriverOnErrorJustComplete()
         
         self.pageIndicator = isCurrentUsersFriendObservable
-            .map { (current: 1, total: $0 ? 4 : 2) }
+            .map { (current: 0, total: $0 ? 4 : 2) }
             .asDriver(onErrorDriveWith: Driver.never())
         
         self.nextButtonIsEnabled = selectedScoreObservable
@@ -144,12 +127,6 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
                                                  isCurrentUsersFriend: isCurrentUsersFriend) })
             .subscribe()
             .disposed(by: disposeBag)
-        
-//        shouldRouteToGuessAuthorVc.mapToVoid()
-//            .withLatestFrom(selectedScoreObservable)
-//            .do(onNext: { router.toGuessReplyAuthorFor(reply: reply, ratingScoreValue: $0.value) })
-//            .subscribe()
-//            .disposed(by: disposeBag)
     }
     
 }
