@@ -131,7 +131,7 @@ final class RateReplyViewModel: RateReplyViewModelInputs, RateReplyViewModelOutp
     
 }
 
-private func imageForRating(value: Int) -> UIImage {
+func imageForRating(value: Int) -> UIImage {
     switch value {
     case 1: return #imageLiteral(resourceName: "IC_AngryEmoji")
     case 2: return #imageLiteral(resourceName: "IC_ToungeEmoji")

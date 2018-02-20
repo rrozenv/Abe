@@ -99,7 +99,7 @@ final class GuessReplyAuthorViewModel: GuessReplyAuthorViewModelInputs, GuessRep
             .map { _ in true }
             .asDriverOnErrorJustComplete()
         
-        self.currentPageIndicator = Driver.of(1)
+        self.currentPageIndicator = Driver.of(2)
         
 //MARK: - Routing
         nextButtonTappedObservable

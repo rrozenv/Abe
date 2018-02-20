@@ -112,7 +112,7 @@ final class InputWagerViewModel: InputWagerViewModelInputs, InputWagerViewModelO
                                         greaterThanMaxErrorObservable).merge()
         
         self.guessedUser = Driver.of(guessedUser)
-        self.currentPageIndicator = Driver.of(2)
+        self.currentPageIndicator = Driver.of(3)
         
 //MARK: - Routing
         isInputValidObservable.filter { $0.isValid }
