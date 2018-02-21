@@ -39,12 +39,16 @@ extension RatingPercentageGraphCell {
     private func setupBarGraphView() {
         let images = [#imageLiteral(resourceName: "IC_AngryEmoji"), #imageLiteral(resourceName: "IC_ToungeEmoji"), #imageLiteral(resourceName: "IC_SmirkEmoji"), #imageLiteral(resourceName: "IC_HappyEmoji"), #imageLiteral(resourceName: "IC_LoveEmoji")]
         barGraphView = BarGraphView(numberOfColumns: images.count, xAxisImages: images)
+        barGraphView.layer.cornerRadius = 5.0
+        barGraphView.layer.masksToBounds = true
         barGraphView.dropShadow()
         
         contentView.addSubview(barGraphView)
         barGraphView.snp.makeConstraints { (make) in
-            make.edges.equalTo(contentView).inset(20)
-            //make.height.equalTo(200)
+            make.left.equalTo(contentView).offset(26)
+            make.right.equalTo(contentView).offset(-26)
+            make.top.equalTo(contentView).offset(16)
+            make.bottom.equalTo(contentView)
         }
     }
 
@@ -104,6 +108,7 @@ final class BarGraphView: UIView {
         imageStackView.axis = .horizontal
         imageStackView.distribution = .fillEqually
         imageStackView.alignment = .center
+        imageStackView.backgroundColor = Palette.red.color
         
         containerView.addSubview(imageStackView)
         imageStackView.snp.makeConstraints { (make) in
@@ -129,7 +134,7 @@ final class BarGraphView: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(6)
             make.left.right.equalTo(containerView)
             make.bottom.equalTo(imageStackView.snp.top)
-            make.height.equalTo(150)
+            make.height.equalTo(110)
         }
     }
     
@@ -160,8 +165,10 @@ final class BarGraphView: UIView {
     }
     
     private func heightPixelsDependOfPercentage(percentage: Double) -> CGFloat {
-        let maxHeight: CGFloat = 140.0
-        return (CGFloat(percentage) * maxHeight) / 100
+        let maxHeight: CGFloat = 100.0
+        let absoluteHeight = (CGFloat(percentage) / 100.0) * maxHeight
+        print("height: \(absoluteHeight)")
+        return percentage <= 50 ? absoluteHeight * 1.3 : absoluteHeight
     }
     
 }
@@ -183,6 +190,7 @@ final class ImageWithBackgroundView: UIView {
     
     private func setupContainerView() {
         containerView = UIView()
+        containerView.backgroundColor = Palette.red.color
         
         self.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
@@ -233,10 +241,14 @@ final class BarViewWithLabel: UIView {
     
     private func setupBarView() {
         barView = UIView()
+        barView.layer.cornerRadius = 2.0
+        barView.layer.masksToBounds = true
         
         self.addSubview(barView)
         barView.snp.makeConstraints { (make) in
-            make.left.right.bottom.equalTo(self)
+            make.left.equalTo(self).offset(8)
+            make.right.equalTo(self).offset(-8)
+            make.bottom.equalTo(self).offset(2)
             make.top.equalTo(label.snp.bottom).offset(5)
         }
     }

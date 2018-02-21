@@ -135,7 +135,7 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         view.addSubview(headerStackView)
         headerStackView.snp.makeConstraints { (make) in
             make.left.right.equalTo(view).inset(20)
-            make.top.equalTo(doneButton.snp.bottom).offset(20)
+            make.top.equalTo(doneButton.snp.bottom).offset(10)
         }
     }
 
@@ -144,7 +144,11 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         tableView.register(RatingScoreTableCell.self, forCellReuseIdentifier: RatingScoreTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.dataSource = dataSource
-        //tableView.delegate = self
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.estimatedSectionFooterHeight = 0
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = UIColor.white
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.register(RateReplyTableCell.self, forCellReuseIdentifier: RateReplyTableCell.defaultReusableId)
         tableView.register(RatingPercentageGraphCell.self, forCellReuseIdentifier: RatingPercentageGraphCell.defaultReusableId)
