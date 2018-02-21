@@ -33,7 +33,6 @@
 		981545D7201051340001F675 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981545D6201051340001F675 /* Cache.swift */; };
 		9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9823322A1FF7E09800C3CB49 /* PromptService.swift */; };
 		982531001FF41568000E6E20 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982530FF1FF41568000E6E20 /* TabBarView.swift */; };
-		9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9827AF8C20071D8200357EBF /* ScoreCollectioncellViewModel.swift */; };
 		9827AF922007208D00357EBF /* ScoresCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9827AF912007208D00357EBF /* ScoresCollectionViewFlowLayout.swift */; };
 		9828ABC3200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */; };
 		9828ABC6200E712800A3A9D1 /* AddWebLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */; };
@@ -57,13 +56,14 @@
 		983DB1EA200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */; };
 		983DB1EC200C3B5A004FC2D0 /* UserContactTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */; };
 		983DB1EE200C3C33004FC2D0 /* ReplyVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */; };
+		98429E35203E25C5000B7A26 /* Visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98429E34203E25C5000B7A26 /* Visibility.swift */; };
+		98429E37203E28BC000B7A26 /* PromptSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98429E36203E28BC000B7A26 /* PromptSummaryView.swift */; };
 		9842FAB6201929A90069F71F /* RatingPercentageGraphCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */; };
-		98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */; };
+		98443D15200BFDC200F13562 /* ReplyVisibilityDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98443D14200BFDC100F13562 /* ReplyVisibilityDataSource.swift */; };
 		9848144C203DE1E6009215DA /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9848144B203DE1E6009215DA /* ProfileViewController.swift */; };
 		9848144E203DE1F7009215DA /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9848144D203DE1F7009215DA /* ProfileViewModel.swift */; };
 		98481450203DE207009215DA /* ProfileRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9848144F203DE207009215DA /* ProfileRouter.swift */; };
 		98481452203E04D2009215DA /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98481451203E04D2009215DA /* ProfileHeaderView.swift */; };
-		984BE287200FF3CA00338C00 /* PromptSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984BE286200FF3C900338C00 /* PromptSummaryView.swift */; };
 		984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F3785200704E700C62E6E /* ReplyCellViewModel.swift */; };
 		984F378C2007080E00C62E6E /* SavedReplyScoreTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */; };
 		984F378E200708DB00C62E6E /* ReplyEmptyTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F378D200708DB00C62E6E /* ReplyEmptyTableCell.swift */; };
@@ -199,7 +199,6 @@
 		981545D6201051340001F675 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		9823322A1FF7E09800C3CB49 /* PromptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptService.swift; sourceTree = "<group>"; };
 		982530FF1FF41568000E6E20 /* TabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
-		9827AF8C20071D8200357EBF /* ScoreCollectioncellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreCollectioncellViewModel.swift; sourceTree = "<group>"; };
 		9827AF912007208D00357EBF /* ScoresCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoresCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		9828ABC2200E6BEB00A3A9D1 /* WebLinkThumbnailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkThumbnailService.swift; sourceTree = "<group>"; };
 		9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWebLinkViewModel.swift; sourceTree = "<group>"; };
@@ -223,13 +222,14 @@
 		983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralVisibilityTableCell.swift; sourceTree = "<group>"; };
 		983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserContactTableCell.swift; sourceTree = "<group>"; };
 		983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityViewController.swift; sourceTree = "<group>"; };
+		98429E34203E25C5000B7A26 /* Visibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visibility.swift; sourceTree = "<group>"; };
+		98429E36203E28BC000B7A26 /* PromptSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptSummaryView.swift; sourceTree = "<group>"; };
 		9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPercentageGraphCell.swift; sourceTree = "<group>"; };
-		98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsDataSource.swift; sourceTree = "<group>"; };
+		98443D14200BFDC100F13562 /* ReplyVisibilityDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityDataSource.swift; sourceTree = "<group>"; };
 		9848144B203DE1E6009215DA /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		9848144D203DE1F7009215DA /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		9848144F203DE207009215DA /* ProfileRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRouter.swift; sourceTree = "<group>"; };
 		98481451203E04D2009215DA /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
-		984BE286200FF3C900338C00 /* PromptSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PromptSummaryView.swift; path = "Abe/Scenes/Replies Flow/PromptSummaryView.swift"; sourceTree = SOURCE_ROOT; };
 		984F3785200704E700C62E6E /* ReplyCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyCellViewModel.swift; sourceTree = "<group>"; };
 		984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedReplyScoreTableCell.swift; sourceTree = "<group>"; };
 		984F378D200708DB00C62E6E /* ReplyEmptyTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyEmptyTableCell.swift; sourceTree = "<group>"; };
@@ -360,36 +360,17 @@
 		9806B90C2007DB46000CB497 /* Image Search */ = {
 			isa = PBXGroup;
 			children = (
-				9806B9182007EB02000CB497 /* Cells */,
-				9806B9172007EAEB000CB497 /* Data Source */,
 				9806B90D2007DCB1000CB497 /* ImageSearchViewController.swift */,
 				9806B9132007DE5C000CB497 /* ImageSearchViewModel.swift */,
+				9806B9152007E385000CB497 /* ImageSearchDataSource.swift */,
 				9806B9192007EB83000CB497 /* ImageSearchRouter.swift */,
 			);
 			path = "Image Search";
 			sourceTree = "<group>";
 		};
-		9806B9172007EAEB000CB497 /* Data Source */ = {
-			isa = PBXGroup;
-			children = (
-				9806B9152007E385000CB497 /* ImageSearchDataSource.swift */,
-			);
-			path = "Data Source";
-			sourceTree = "<group>";
-		};
-		9806B9182007EB02000CB497 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				9806B9112007DDCB000CB497 /* ImageSearchCollectionCell.swift */,
-				9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
 		980974B42017D44300FBCE9B /* Input Wager */ = {
 			isa = PBXGroup;
 			children = (
-				988594B6201E98CC0034825E /* UserImageNameSublabelView.swift */,
 				980974AC2017C52900FBCE9B /* InputWagerViewController.swift */,
 				980974B02017C58F00FBCE9B /* InputWagerViewModel.swift */,
 				980974B22017C59B00FBCE9B /* InputWagerRouter.swift */,
@@ -402,9 +383,8 @@
 			children = (
 				980974B72017D51100FBCE9B /* GuessAndWagerValidationViewController.swift */,
 				980974B92017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift */,
-				980974BB2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift */,
 				985A7CCD201826490065BF38 /* GuessAndWagerValidationDataSource.swift */,
-				9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */,
+				980974BB2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift */,
 			);
 			path = "Guess And Reply Validation";
 			sourceTree = "<group>";
@@ -439,6 +419,7 @@
 				9883ED601FE6F810002E538E /* PromptReply.swift */,
 				981545D0201026EB0001F675 /* Gif.swift */,
 				98676858201292E600D0421C /* WebLinkThumbnail.swift */,
+				98429E34203E25C5000B7A26 /* Visibility.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -460,10 +441,9 @@
 		980DE5B41FE5B56B0087C6C3 /* Create Prompt */ = {
 			isa = PBXGroup;
 			children = (
-				98FEE7C61FE4C12800CD80A8 /* CreatePromptRouter.swift */,
 				98FEE7C41FE4C12300CD80A8 /* CreatePromptViewController.swift */,
 				98FEE7C21FE4C11C00CD80A8 /* CreatePromptViewModel.swift */,
-				980240652023CF2000674F07 /* CreatePromptOptionsBarView.swift */,
+				98FEE7C61FE4C12800CD80A8 /* CreatePromptRouter.swift */,
 			);
 			path = "Create Prompt";
 			sourceTree = "<group>";
@@ -471,18 +451,10 @@
 		980DE5B51FE5B5A80087C6C3 /* Prompts List */ = {
 			isa = PBXGroup;
 			children = (
-				9893171F1FE6F05200E2979F /* Views */,
-				9893171E1FE6F04C00E2979F /* Cells */,
-				985B14BF202646BD0017306E /* PromptPageViewController.swift */,
-				98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */,
-				985B14BD202633AA0017306E /* PromptPagesDataSource.swift */,
-				985B14C1202647B20017306E /* PromptPageViewModel.swift */,
-				98986A072029138800FBB869 /* PromptPageRouter.swift */,
-				98FEE7B81FE4BC4C00CD80A8 /* PromptsRouter.swift */,
 				98FEE7BA1FE4BC5400CD80A8 /* PromptsListViewController.swift */,
 				98FEE7BC1FE4BC5B00CD80A8 /* PromptsListViewModel.swift */,
 				985F34742022666D008D2759 /* PromptsListDataSource.swift */,
-				98691C34202547E800FE2180 /* TabOptionsView.swift */,
+				98FEE7B81FE4BC4C00CD80A8 /* PromptsRouter.swift */,
 			);
 			path = "Prompts List";
 			sourceTree = "<group>";
@@ -507,21 +479,13 @@
 			isa = PBXGroup;
 			children = (
 				984F379820070D5600C62E6E /* Login Flow */,
+				98481453203E1943009215DA /* Home Page Controller */,
 				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
-				984F379920070D9400C62E6E /* Create Prompt Flow */,
-				984F379A20070DB600C62E6E /* Replies Flow */,
+				9848144A203DE1D3009215DA /* Profile */,
+				984F379920070D9400C62E6E /* Create Prompt & Reply Flow */,
+				984F379A20070DB600C62E6E /* View Replies Flow */,
 			);
 			path = Scenes;
-			sourceTree = "<group>";
-		};
-		9827AF8E2007202900357EBF /* Create Reply */ = {
-			isa = PBXGroup;
-			children = (
-				989317271FE6F40700E2979F /* Main Create Input */,
-				983DB1E6200C295C004FC2D0 /* Reply Visibility Options */,
-				98921BBB1FE735C9006CCCF6 /* Extra Reply Options */,
-			);
-			path = "Create Reply";
 			sourceTree = "<group>";
 		};
 		9827AF93200721C200357EBF /* Moya API Providers */ = {
@@ -536,28 +500,11 @@
 		9828ABC4200E710900A3A9D1 /* Add Web Link */ = {
 			isa = PBXGroup;
 			children = (
-				9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */,
 				9828ABC7200E745A00A3A9D1 /* AddWebLinkViewController.swift */,
+				9828ABC5200E712800A3A9D1 /* AddWebLinkViewModel.swift */,
 				9828ABC9200E772100A3A9D1 /* AddWebLinkRouter.swift */,
-				986768572012927600D0421C /* Views */,
 			);
 			path = "Add Web Link";
-			sourceTree = "<group>";
-		};
-		982B27CF201523E200824E82 /* Data Source */ = {
-			isa = PBXGroup;
-			children = (
-				982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */,
-			);
-			path = "Data Source";
-			sourceTree = "<group>";
-		};
-		982B27D0201523ED00824E82 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				982CF8562013D69800EEB278 /* RateReplyCell.swift */,
-			);
-			path = Cells;
 			sourceTree = "<group>";
 		};
 		982B27D12015246C00824E82 /* Guess Reply Author */ = {
@@ -565,8 +512,8 @@
 			children = (
 				98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */,
 				982B27D2201524A000824E82 /* GuessReplyAuthorViewModel.swift */,
+				98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */,
 				98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */,
-				98D26EEC20156E8600B0A72E /* Data Source */,
 			);
 			path = "Guess Reply Author";
 			sourceTree = "<group>";
@@ -576,9 +523,8 @@
 			children = (
 				982CF8502013C98800EEB278 /* RateReplyViewController.swift */,
 				982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */,
+				982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */,
 				982B27CD20151BB700824E82 /* RateReplyRouter.swift */,
-				982B27CF201523E200824E82 /* Data Source */,
-				982B27D0201523ED00824E82 /* Cells */,
 			);
 			path = "Rate Reply";
 			sourceTree = "<group>";
@@ -612,105 +558,61 @@
 			path = "Signup & Login";
 			sourceTree = "<group>";
 		};
-		98365FD8201AB29C008E58F6 /* Views */ = {
+		983DB1E6200C295C004FC2D0 /* Visibility Options */ = {
 			isa = PBXGroup;
 			children = (
-				98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		983DB1E6200C295C004FC2D0 /* Reply Visibility Options */ = {
-			isa = PBXGroup;
-			children = (
-				98A738D0200D4ED40001BC0C /* Cells */,
-				98A738D1200D4EE80001BC0C /* Data Source */,
-				983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */,
 				983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */,
+				983DB1E7200C297E004FC2D0 /* ReplyVisibilityViewModel.swift */,
+				98443D14200BFDC100F13562 /* ReplyVisibilityDataSource.swift */,
 				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
 			);
-			path = "Reply Visibility Options";
+			path = "Visibility Options";
+			sourceTree = "<group>";
+		};
+		98429E33203E1BD2000B7A26 /* Collection Layouts */ = {
+			isa = PBXGroup;
+			children = (
+				9806B90F2007DD77000CB497 /* ImageSearchCollectionViewLayout.swift */,
+			);
+			path = "Collection Layouts";
 			sourceTree = "<group>";
 		};
 		9848144A203DE1D3009215DA /* Profile */ = {
 			isa = PBXGroup;
 			children = (
 				9848144B203DE1E6009215DA /* ProfileViewController.swift */,
-				98481451203E04D2009215DA /* ProfileHeaderView.swift */,
 				9848144D203DE1F7009215DA /* ProfileViewModel.swift */,
 				9848144F203DE207009215DA /* ProfileRouter.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
 		};
-		984F378F20070A3E00C62E6E /* Cells */ = {
+		98481453203E1943009215DA /* Home Page Controller */ = {
 			isa = PBXGroup;
 			children = (
-				984F379020070A7900C62E6E /* Main Reply Table Cell */,
-				984F379120070B3200C62E6E /* Reply Score Collection Cell */,
-				984F379220070B5D00C62E6E /* Empty State Cell */,
-				984F379320070B7200C62E6E /* My Reply Scores Table Cell */,
+				985B14BF202646BD0017306E /* PromptPageViewController.swift */,
+				985B14C1202647B20017306E /* PromptPageViewModel.swift */,
+				985B14BD202633AA0017306E /* PromptPagesDataSource.swift */,
+				98986A072029138800FBB869 /* PromptPageRouter.swift */,
 			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		984F379020070A7900C62E6E /* Main Reply Table Cell */ = {
-			isa = PBXGroup;
-			children = (
-				984F3785200704E700C62E6E /* ReplyCellViewModel.swift */,
-				9862867220005E0900502294 /* ReplyTableCell.swift */,
-			);
-			path = "Main Reply Table Cell";
+			path = "Home Page Controller";
 			sourceTree = "<group>";
 		};
 		984F379120070B3200C62E6E /* Reply Score Collection Cell */ = {
 			isa = PBXGroup;
 			children = (
 				9883ED691FE7062D002E538E /* ScoreCollectionCell.swift */,
-				9827AF8C20071D8200357EBF /* ScoreCollectioncellViewModel.swift */,
 				9827AF912007208D00357EBF /* ScoresCollectionViewFlowLayout.swift */,
 			);
 			path = "Reply Score Collection Cell";
 			sourceTree = "<group>";
 		};
-		984F379220070B5D00C62E6E /* Empty State Cell */ = {
-			isa = PBXGroup;
-			children = (
-				984F378D200708DB00C62E6E /* ReplyEmptyTableCell.swift */,
-			);
-			path = "Empty State Cell";
-			sourceTree = "<group>";
-		};
-		984F379320070B7200C62E6E /* My Reply Scores Table Cell */ = {
-			isa = PBXGroup;
-			children = (
-				984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */,
-			);
-			path = "My Reply Scores Table Cell";
-			sourceTree = "<group>";
-		};
-		984F379420070BD700C62E6E /* Table View Data Source */ = {
-			isa = PBXGroup;
-			children = (
-				9854D2532000546B00D7B7EB /* RepliesDataSource.swift */,
-			);
-			path = "Table View Data Source";
-			sourceTree = "<group>";
-		};
-		984F379520070C6700C62E6E /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				9867685A201294B700D0421C /* PromptHeaderView.swift */,
-				982530FF1FF41568000E6E20 /* TabBarView.swift */,
-				9836044020071021008A975D /* EmptyStateView.swift */,
-				984BE286200FF3C900338C00 /* PromptSummaryView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		984F379620070CB300C62E6E /* Old Stuff */ = {
 			isa = PBXGroup;
 			children = (
+				98921BBB1FE735C9006CCCF6 /* Extra Reply Options */,
+				984F379120070B3200C62E6E /* Reply Score Collection Cell */,
+				984F3785200704E700C62E6E /* ReplyCellViewModel.swift */,
 				98F671FB1FFEA1ED001DE88E /* Phone Entry */,
 				989317201FE6F3D200E2979F /* Prompt Detail */,
 			);
@@ -743,29 +645,29 @@
 			path = "Login Flow";
 			sourceTree = "<group>";
 		};
-		984F379920070D9400C62E6E /* Create Prompt Flow */ = {
+		984F379920070D9400C62E6E /* Create Prompt & Reply Flow */ = {
 			isa = PBXGroup;
 			children = (
+				983DB1E6200C295C004FC2D0 /* Visibility Options */,
+				989317271FE6F40700E2979F /* Create Reply */,
 				980DE5B41FE5B56B0087C6C3 /* Create Prompt */,
 				9828ABC4200E710900A3A9D1 /* Add Web Link */,
 				9806B90C2007DB46000CB497 /* Image Search */,
 			);
-			path = "Create Prompt Flow";
+			path = "Create Prompt & Reply Flow";
 			sourceTree = "<group>";
 		};
-		984F379A20070DB600C62E6E /* Replies Flow */ = {
+		984F379A20070DB600C62E6E /* View Replies Flow */ = {
 			isa = PBXGroup;
 			children = (
-				9848144A203DE1D3009215DA /* Profile */,
+				9862867420006A4B00502294 /* Replies Table View */,
 				980974B62017D4D800FBCE9B /* Guess And Reply Validation */,
 				980974B42017D44300FBCE9B /* Input Wager */,
 				982B27D12015246C00824E82 /* Guess Reply Author */,
 				9883A8C1203BB9B200D2E423 /* Comment For Rating  */,
 				982CF84F2013C96D00EEB278 /* Rate Reply */,
-				9862867420006A4B00502294 /* Replies Table View */,
-				9827AF8E2007202900357EBF /* Create Reply */,
 			);
-			path = "Replies Flow";
+			path = "View Replies Flow";
 			sourceTree = "<group>";
 		};
 		985C2A5B1FFDAC770034E116 /* Enable Contacts */ = {
@@ -793,21 +695,10 @@
 			children = (
 				9862867720006AE300502294 /* RepliesViewController.swift */,
 				9862867920006AF000502294 /* RepliesViewModel.swift */,
+				9854D2532000546B00D7B7EB /* RepliesDataSource.swift */,
 				989317211FE6F3E300E2979F /* PromptDetailRouter.swift */,
-				984F379420070BD700C62E6E /* Table View Data Source */,
-				984F378F20070A3E00C62E6E /* Cells */,
-				984F379520070C6700C62E6E /* Views */,
 			);
 			path = "Replies Table View";
-			sourceTree = "<group>";
-		};
-		986768572012927600D0421C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */,
-				986768552012922C00D0421C /* WebLinkActionButtonsView.swift */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		9883A8C1203BB9B200D2E423 /* Comment For Rating  */ = {
@@ -841,7 +732,15 @@
 		9893171E1FE6F04C00E2979F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */,
+				984F378D200708DB00C62E6E /* ReplyEmptyTableCell.swift */,
+				9806B9112007DDCB000CB497 /* ImageSearchCollectionCell.swift */,
 				98FEE7BE1FE4BC6200CD80A8 /* PromptTableCell.swift */,
+				9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */,
+				982CF8562013D69800EEB278 /* RateReplyCell.swift */,
+				9862867220005E0900502294 /* ReplyTableCell.swift */,
+				983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */,
+				983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -850,6 +749,18 @@
 			isa = PBXGroup;
 			children = (
 				98FEE7C81FE4CB5000CD80A8 /* PromptView.swift */,
+				98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */,
+				9867685A201294B700D0421C /* PromptHeaderView.swift */,
+				982530FF1FF41568000E6E20 /* TabBarView.swift */,
+				9836044020071021008A975D /* EmptyStateView.swift */,
+				98429E36203E28BC000B7A26 /* PromptSummaryView.swift */,
+				980240652023CF2000674F07 /* CreatePromptOptionsBarView.swift */,
+				98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */,
+				98481451203E04D2009215DA /* ProfileHeaderView.swift */,
+				98691C34202547E800FE2180 /* TabOptionsView.swift */,
+				988594B6201E98CC0034825E /* UserImageNameSublabelView.swift */,
+				986768552012922C00D0421C /* WebLinkActionButtonsView.swift */,
+				9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -864,31 +775,14 @@
 			path = "Prompt Detail";
 			sourceTree = "<group>";
 		};
-		989317271FE6F40700E2979F /* Main Create Input */ = {
+		989317271FE6F40700E2979F /* Create Reply */ = {
 			isa = PBXGroup;
 			children = (
-				9883ED641FE70458002E538E /* CreateReplyRouter.swift */,
 				989317291FE6F41A00E2979F /* CreateReplyViewController.swift */,
 				989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */,
+				9883ED641FE70458002E538E /* CreateReplyRouter.swift */,
 			);
-			path = "Main Create Input";
-			sourceTree = "<group>";
-		};
-		98A738D0200D4ED40001BC0C /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */,
-				983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
-		98A738D1200D4EE80001BC0C /* Data Source */ = {
-			isa = PBXGroup;
-			children = (
-				98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */,
-			);
-			path = "Data Source";
+			path = "Create Reply";
 			sourceTree = "<group>";
 		};
 		98D04DD0201B848D0099EF29 /* Fonts */ = {
@@ -906,14 +800,6 @@
 				98D04DD2201B84A90099EF29 /* Bariol_Regular.otf */,
 			);
 			path = Bariol_Font;
-			sourceTree = "<group>";
-		};
-		98D26EEC20156E8600B0A72E /* Data Source */ = {
-			isa = PBXGroup;
-			children = (
-				98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */,
-			);
-			path = "Data Source";
 			sourceTree = "<group>";
 		};
 		98F671FB1FFEA1ED001DE88E /* Phone Entry */ = {
@@ -955,8 +841,10 @@
 				9827AF93200721C200357EBF /* Moya API Providers */,
 				980DE5B11FE5B4EA0087C6C3 /* Realm */,
 				984F379720070CF200C62E6E /* Realm Data Services */,
+				9893171F1FE6F05200E2979F /* Views */,
+				9893171E1FE6F04C00E2979F /* Cells */,
+				98429E33203E1BD2000B7A26 /* Collection Layouts */,
 				980DE5B71FE5B5CD0087C6C3 /* Scenes */,
-				98365FD8201AB29C008E58F6 /* Views */,
 				980DE5B61FE5B5BE0087C6C3 /* Utility */,
 				984F379620070CB300C62E6E /* Old Stuff */,
 				98FEE7821FE4BAD300CD80A8 /* Main.storyboard */,
@@ -1228,7 +1116,6 @@
 			files = (
 				98481450203DE207009215DA /* ProfileRouter.swift in Sources */,
 				980974BA2017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift in Sources */,
-				9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */,
 				98FA2D7F202BDFEC00901E0E /* CreateUserViewController.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				981545D520102EEF0001F675 /* GIFImageService.swift in Sources */,
@@ -1241,6 +1128,7 @@
 				98FEE7B51FE4BBDB00CD80A8 /* RealmConfiguration.swift in Sources */,
 				98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */,
 				98FEE7B71FE4BBFB00CD80A8 /* Prompt.swift in Sources */,
+				98429E37203E28BC000B7A26 /* PromptSummaryView.swift in Sources */,
 				98FEE7C71FE4C12800CD80A8 /* CreatePromptRouter.swift in Sources */,
 				988658F61FE8049900FEB703 /* RealmError.swift in Sources */,
 				9883ED651FE70458002E538E /* CreateReplyRouter.swift in Sources */,
@@ -1305,7 +1193,7 @@
 				981545D1201026EB0001F675 /* Gif.swift in Sources */,
 				983DB1E8200C297E004FC2D0 /* ReplyVisibilityViewModel.swift in Sources */,
 				98365FDA201AB2F9008E58F6 /* PageReferenceView.swift in Sources */,
-				98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */,
+				98443D15200BFDC200F13562 /* ReplyVisibilityDataSource.swift in Sources */,
 				982CF8512013C98800EEB278 /* RateReplyViewController.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
 				98FA2D7B202B935B00901E0E /* PhoneInputViewController.swift in Sources */,
@@ -1331,7 +1219,6 @@
 				98F672031FFF0EA8001DE88E /* PixabayAPI.swift in Sources */,
 				9806B91A2007EB83000CB497 /* ImageSearchRouter.swift in Sources */,
 				9828ABCC200E9B3500A3A9D1 /* WebLinkView.swift in Sources */,
-				984BE287200FF3CA00338C00 /* PromptSummaryView.swift in Sources */,
 				98FEE7D71FE4D1D600CD80A8 /* SignupViewModel.swift in Sources */,
 				9842FAB6201929A90069F71F /* RatingPercentageGraphCell.swift in Sources */,
 				98FEE7D91FE4D1DF00CD80A8 /* SignupViewController.swift in Sources */,
@@ -1342,6 +1229,7 @@
 				9806B9162007E385000CB497 /* ImageSearchDataSource.swift in Sources */,
 				98691C35202547E800FE2180 /* TabOptionsView.swift in Sources */,
 				985C2A661FFDC1E40034E116 /* UserDetailsViewModel.swift in Sources */,
+				98429E35203E25C5000B7A26 /* Visibility.swift in Sources */,
 				983297B0202F69580043E3B0 /* CreateUserRouter.swift in Sources */,
 				980974BC2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
