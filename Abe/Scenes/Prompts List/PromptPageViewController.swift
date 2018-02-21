@@ -27,7 +27,7 @@ final class PromptPageViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         let router = PromptPageRouter(navigationController: self.navigationController!)
-        viewModel = PromptPageViewModel(router: router)
+        viewModel = PromptPageViewModel(vcType: .homeVc, router: router)
         bindViewModel()
     }
     
@@ -50,6 +50,10 @@ final class PromptPageViewController: UIViewController {
         
         createPromptButton.rx.tap
             .bind(to: viewModel.inputs.createPromptTappedInput)
+            .disposed(by: disposeBag)
+        
+        customNavBar.rightButton.rx.tap
+            .bind(to: viewModel.inputs.profileTappedInput)
             .disposed(by: disposeBag)
         
         //MARK: - Outputs

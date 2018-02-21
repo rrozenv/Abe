@@ -13,7 +13,7 @@ protocol PromptsRoutingLogic {
 
 class PromptsRouter: PromptsRoutingLogic {
 
-    private var navigationController: UINavigationController?
+    private weak var navigationController: UINavigationController?
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController

@@ -11,6 +11,8 @@ enum Visibility: String {
     case individualContacts
     case contacts
     case userReply
+    case currentUserReplied
+    case currentUserCreated
     
     func queryPredicateFor(currentUser: User) -> [NSPredicate] {
         switch self {
@@ -18,6 +20,10 @@ enum Visibility: String {
             return [NSPredicate(format: "visibility = %@", self.rawValue)]
         case .individualContacts:
             return [NSPredicate(format: "visibility = %@", self.rawValue), NSPredicate(format: "ANY visibleOnlyToContactNumbers.string = %@", currentUser.phoneNumber)]
+        case .currentUserReplied:
+            return [NSPredicate(format: "ANY replies.user.id = %@", currentUser.id)]
+        case .currentUserCreated:
+            return [NSPredicate(format: "user.id = %@", currentUser.id)]
         default: return []
         }
     }

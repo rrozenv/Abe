@@ -59,6 +59,10 @@
 		983DB1EE200C3C33004FC2D0 /* ReplyVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */; };
 		9842FAB6201929A90069F71F /* RatingPercentageGraphCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */; };
 		98443D15200BFDC200F13562 /* ReplyOptionsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */; };
+		9848144C203DE1E6009215DA /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9848144B203DE1E6009215DA /* ProfileViewController.swift */; };
+		9848144E203DE1F7009215DA /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9848144D203DE1F7009215DA /* ProfileViewModel.swift */; };
+		98481450203DE207009215DA /* ProfileRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9848144F203DE207009215DA /* ProfileRouter.swift */; };
+		98481452203E04D2009215DA /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98481451203E04D2009215DA /* ProfileHeaderView.swift */; };
 		984BE287200FF3CA00338C00 /* PromptSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984BE286200FF3C900338C00 /* PromptSummaryView.swift */; };
 		984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F3785200704E700C62E6E /* ReplyCellViewModel.swift */; };
 		984F378C2007080E00C62E6E /* SavedReplyScoreTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */; };
@@ -221,6 +225,10 @@
 		983DB1ED200C3C33004FC2D0 /* ReplyVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyVisibilityViewController.swift; sourceTree = "<group>"; };
 		9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPercentageGraphCell.swift; sourceTree = "<group>"; };
 		98443D14200BFDC100F13562 /* ReplyOptionsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsDataSource.swift; sourceTree = "<group>"; };
+		9848144B203DE1E6009215DA /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		9848144D203DE1F7009215DA /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		9848144F203DE207009215DA /* ProfileRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRouter.swift; sourceTree = "<group>"; };
+		98481451203E04D2009215DA /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 		984BE286200FF3C900338C00 /* PromptSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PromptSummaryView.swift; path = "Abe/Scenes/Replies Flow/PromptSummaryView.swift"; sourceTree = SOURCE_ROOT; };
 		984F3785200704E700C62E6E /* ReplyCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyCellViewModel.swift; sourceTree = "<group>"; };
 		984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedReplyScoreTableCell.swift; sourceTree = "<group>"; };
@@ -566,7 +574,6 @@
 		982CF84F2013C96D00EEB278 /* Rate Reply */ = {
 			isa = PBXGroup;
 			children = (
-				9883A8C1203BB9B200D2E423 /* Comment For Rating  */,
 				982CF8502013C98800EEB278 /* RateReplyViewController.swift */,
 				982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */,
 				982B27CD20151BB700824E82 /* RateReplyRouter.swift */,
@@ -623,6 +630,17 @@
 				98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */,
 			);
 			path = "Reply Visibility Options";
+			sourceTree = "<group>";
+		};
+		9848144A203DE1D3009215DA /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				9848144B203DE1E6009215DA /* ProfileViewController.swift */,
+				98481451203E04D2009215DA /* ProfileHeaderView.swift */,
+				9848144D203DE1F7009215DA /* ProfileViewModel.swift */,
+				9848144F203DE207009215DA /* ProfileRouter.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		984F378F20070A3E00C62E6E /* Cells */ = {
@@ -738,9 +756,11 @@
 		984F379A20070DB600C62E6E /* Replies Flow */ = {
 			isa = PBXGroup;
 			children = (
+				9848144A203DE1D3009215DA /* Profile */,
 				980974B62017D4D800FBCE9B /* Guess And Reply Validation */,
 				980974B42017D44300FBCE9B /* Input Wager */,
 				982B27D12015246C00824E82 /* Guess Reply Author */,
+				9883A8C1203BB9B200D2E423 /* Comment For Rating  */,
 				982CF84F2013C96D00EEB278 /* Rate Reply */,
 				9862867420006A4B00502294 /* Replies Table View */,
 				9827AF8E2007202900357EBF /* Create Reply */,
@@ -1206,12 +1226,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98481450203DE207009215DA /* ProfileRouter.swift in Sources */,
 				980974BA2017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift in Sources */,
 				9827AF8D20071D8200357EBF /* ScoreCollectioncellViewModel.swift in Sources */,
 				98FA2D7F202BDFEC00901E0E /* CreateUserViewController.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				981545D520102EEF0001F675 /* GIFImageService.swift in Sources */,
 				98FA2D7D202BB18A00901E0E /* CreateUserViewModel.swift in Sources */,
+				9848144C203DE1E6009215DA /* ProfileViewController.swift in Sources */,
 				985A7CCE201826490065BF38 /* GuessAndWagerValidationDataSource.swift in Sources */,
 				98FEE7BD1FE4BC5C00CD80A8 /* PromptsListViewModel.swift in Sources */,
 				9862867820006AE300502294 /* RepliesViewController.swift in Sources */,
@@ -1225,6 +1247,8 @@
 				982CF8552013D58B00EEB278 /* RateReplyDataSource.swift in Sources */,
 				985C2A681FFDC1F40034E116 /* UserDetailsRouter.swift in Sources */,
 				9806B9102007DD77000CB497 /* ImageSearchCollectionViewLayout.swift in Sources */,
+				9848144E203DE1F7009215DA /* ProfileViewModel.swift in Sources */,
+				98481452203E04D2009215DA /* ProfileHeaderView.swift in Sources */,
 				983297B7202F6A670043E3B0 /* SignupLoginViewModel.swift in Sources */,
 				98986A082029138800FBB869 /* PromptPageRouter.swift in Sources */,
 				984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */,

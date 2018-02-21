@@ -5,6 +5,7 @@ import UIKit
 protocol PromptPageRoutingLogic {
     //func toRoot()
     func toCreatePrompt()
+    func toProfile()
 }
 
 class PromptPageRouter: PromptPageRoutingLogic {
@@ -31,6 +32,11 @@ class PromptPageRouter: PromptPageRoutingLogic {
         let navVc = UINavigationController()
         let router = CreatePromptRouter(navigationController: navVc)
         router.toMainInput()
+        navigationController?.present(navVc, animated: true, completion: nil)
+    }
+    
+    func toProfile() {
+        let navVc = UINavigationController(rootViewController: ProfileViewController())
         navigationController?.present(navVc, animated: true, completion: nil)
     }
     
