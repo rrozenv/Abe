@@ -28,7 +28,7 @@ final class RatingPercentageGraphCell: UITableViewCell, ValueCell {
     // MARK: - Configuration
     func configureWith(value: PercentageGraphViewModel) {
         barGraphView.titleLabel.text = "\(value.totalVotes) votes"
-        barGraphView.constructWithDataAs(percentages: value.orderedPercetages, userScore: value.userScore.score)
+        barGraphView.constructWithDataAs(percentages: value.orderedPercetages, userScore: value.userScore?.score)
     }
     
 }
@@ -45,10 +45,11 @@ extension RatingPercentageGraphCell {
         
         contentView.addSubview(barGraphView)
         barGraphView.snp.makeConstraints { (make) in
-            make.left.equalTo(contentView).offset(26)
-            make.right.equalTo(contentView).offset(-26)
-            make.top.equalTo(contentView).offset(16)
-            make.bottom.equalTo(contentView)
+            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(8, 26, 8, 26))
+//            make.left.equalTo(contentView).offset(26)
+//            make.right.equalTo(contentView).offset(-26)
+//            make.top.equalTo(contentView).offset(16)
+//            make.bottom.equalTo(contentView)
         }
     }
 
@@ -138,10 +139,15 @@ final class BarGraphView: UIView {
         }
     }
     
-    func constructWithDataAs(percentages: [Double], userScore: Int) {
+    func constructWithDataAs(percentages: [Double], userScore: Int?) {
         self.removeAllGraphElements()
         for i in percentages.enumerated() {
-            let color = i.offset == userScore - 1 ? Palette.red.color : Palette.darkYellow.color
+            var color: UIColor
+            if let score = userScore {
+                color = i.offset == score - 1 ? Palette.red.color : Palette.darkYellow.color
+            } else {
+                color = Palette.darkYellow.color
+            }
             self.newBarElementWith(percentage: i.element, backgroundColor: color)
         }
     }

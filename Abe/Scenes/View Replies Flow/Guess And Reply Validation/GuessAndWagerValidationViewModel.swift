@@ -5,7 +5,7 @@ import RxCocoa
 import RxOptional
 
 struct PercentageGraphViewModel {
-    let userScore: ReplyScore
+    let userScore: ReplyScore?
     let orderedPercetages: [Double]
     let totalVotes: Int
 }

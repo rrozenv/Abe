@@ -58,13 +58,16 @@ final class RepliesDataSource: ValueCellDataSource {
     }
     
     //MARK: - My Reply Tab
-    func load(myReply: PromptReply, scores: [ReplyScore]) {
+    func load(replyVm: ReplyViewModel, graphVm: PercentageGraphViewModel) {
         self.clearValues(section: Section.replies.rawValue)
-        self.set(values: scores,
+        self.set(values: replyVm.reply.scores.toArray(),
                  cellClass: SavedReplyScoreTableCell.self,
                  inSection: Section.replies.rawValue)
-        self.prependRow(value: myReply,
-                        cellClass: ReplyTableCell.self,
+        self.prependRow(value: graphVm,
+                        cellClass: RatingPercentageGraphCell.self,
+                        toSection: Section.replies.rawValue)
+        self.prependRow(value: replyVm,
+                        cellClass: RateReplyTableCell.self,
                         toSection: Section.replies.rawValue)
     }
     
@@ -95,6 +98,8 @@ final class RepliesDataSource: ValueCellDataSource {
         case let (cell as SavedReplyScoreTableCell, value as ReplyScore):
             cell.configureWith(value: value)
         case let (cell as RepliesEmptyCell, value as RepliesEmptyStateViewModel):
+            cell.configureWith(value: value)
+        case let (cell as RatingPercentageGraphCell, value as PercentageGraphViewModel):
             cell.configureWith(value: value)
         default:
             assertionFailure("Unrecognized combo: \(cell), \(value)")

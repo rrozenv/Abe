@@ -156,8 +156,8 @@ class RepliesViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         viewModel.outputs.currentUserReplyAndScores
-            .drive(onNext: { [weak self] (inputs) in
-                self?.dataSource.load(myReply: inputs.0, scores: inputs.1)
+            .drive(onNext: { [weak self] in
+                self?.dataSource.load(replyVm: $0.0, graphVm: $0.1)
                 self?.tableView.reloadSections(
                     [RepliesDataSource.Section.replies.rawValue],
                     animationStyle: .automatic)
@@ -524,6 +524,7 @@ extension RepliesViewController {
         tableView.register(TabBarSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: TabBarSectionHeaderView.reuseIdentifier)
         tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
         tableView.register(RepliesEmptyCell.self, forCellReuseIdentifier: RepliesEmptyCell.defaultReusableId)
+        tableView.register(RatingPercentageGraphCell.self, forCellReuseIdentifier: RatingPercentageGraphCell.defaultReusableId)
     }
     
 }

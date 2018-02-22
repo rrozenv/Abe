@@ -164,6 +164,7 @@ extension RateReplyViewController {
         tableView.estimatedSectionFooterHeight = 0
         tableView.separatorStyle = .none
         tableView.backgroundColor = UIColor.white
+        tableView.contentInset = UIEdgeInsetsMake(12, 0, 0, 0)
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { (make) in

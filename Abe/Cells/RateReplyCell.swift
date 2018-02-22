@@ -58,10 +58,11 @@ extension RatingScoreTableCell {
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.top.equalTo(contentView).offset(12)
-            make.left.equalTo(contentView).offset(26)
-            make.right.equalTo(contentView).offset(-26)
-            make.bottom.equalTo(contentView)
+            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(8, 26, 8, 26))
+//            make.top.equalTo(contentView).offset(12)
+//            make.left.equalTo(contentView).offset(26)
+//            make.right.equalTo(contentView).offset(-26)
+//            make.bottom.equalTo(contentView)
             make.height.equalTo(60)
         }
     }

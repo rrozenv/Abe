@@ -60,7 +60,7 @@ final class SavedReplyScoreView: UIView {
             make.top.equalTo(userImageView.snp.bottom).offset(10)
             make.left.equalTo(self.snp.left).offset(20)
             make.right.equalTo(self.snp.right).offset(-20)
-            make.bottom.equalTo(self.snp.bottom).offset(-20)
+            make.bottom.equalTo(self.snp.bottom).offset(-12)
         }
         
 //        containerView.addSubview(replyBodyLabel)
@@ -170,10 +170,11 @@ extension SavedReplyScoreTableCell {
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.left.equalTo(contentView).offset(26)
-            make.right.equalTo(contentView).offset(-26)
-            make.top.equalTo(contentView).offset(16)
-            make.bottom.equalTo(contentView)
+            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(8, 26, 8, 26))
+//            make.left.equalTo(contentView).offset(26)
+//            make.right.equalTo(contentView).offset(-26)
+//            make.top.equalTo(contentView).offset(16)
+//            make.bottom.equalTo(contentView)
         }
     }
     

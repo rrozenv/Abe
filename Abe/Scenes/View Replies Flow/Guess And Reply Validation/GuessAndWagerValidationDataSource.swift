@@ -39,6 +39,7 @@ final class GuessAndReplyValidationDataSource: ValueCellDataSource {
             cell.configureWith(value: value)
         case let (cell as RateReplyTableCell, value as ReplyViewModel):
             cell.configureWith(value: value)
+            cell.hideRateButton()
         case let (cell as RatingPercentageGraphCell, value as PercentageGraphViewModel):
             cell.configureWith(value: value)
         default:

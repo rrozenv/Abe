@@ -22,7 +22,7 @@ protocol RepliesViewModelOutputs {
     var lockedReplies: Driver<(replies: [ReplyViewModel], userDidReply: Bool)> { get }
     var unlockedReplies: Driver<[ReplyViewModel]> { get }
     var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
-    var currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])> { get }
+    var currentUserReplyAndScores: Driver<(ReplyViewModel, PercentageGraphViewModel)> { get }
     var stillUnreadFromFriendsCount: Driver<String> { get }
     var prompt: Driver<Prompt> { get }
 }
@@ -60,7 +60,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let lockedReplies: Driver<(replies: [ReplyViewModel], userDidReply: Bool)>
     let unlockedReplies: Driver<[ReplyViewModel]>
     let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
-    let currentUserReplyAndScores: Driver<(PromptReply, [ReplyScore])>
+    let currentUserReplyAndScores: Driver<(ReplyViewModel, PercentageGraphViewModel)>
     let stillUnreadFromFriendsCount: Driver<String>
     let prompt: Driver<Prompt>
 
@@ -144,7 +144,25 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .filter { $0 == .myReply }
             .map { _ in currentUser.value.reply(to: prompt) }
             .unwrap()
-            .map { ($0, $0.scores.toArray()) }
+            .map { ReplyViewModel(reply: $0,
+                                  ratingScore: nil,
+                                  isCurrentUsersFriend: false,
+                                  isUnlocked: true) }
+            .map { replyVm in
+                (
+                    replyVm,
+                    [1, 2, 3, 4, 5].map { replyVm.reply.percentageOfVotesCastesFor(scoreValue: $0) }
+                )
+            }
+            .map { replyVm, percentages in
+                (
+                    replyVm: replyVm,
+                    graphVm: PercentageGraphViewModel(userScore: nil,
+                                             orderedPercetages: percentages,
+                                             totalVotes: replyVm.reply.scores.count)
+                )
+                
+            }
             .asDriverOnErrorJustComplete()
         
         self.updateReplyWithSavedScore = didSelectScoreObservable

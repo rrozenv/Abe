@@ -732,14 +732,14 @@
 		9893171E1FE6F04C00E2979F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */,
-				984F378D200708DB00C62E6E /* ReplyEmptyTableCell.swift */,
+				983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */,
 				9806B9112007DDCB000CB497 /* ImageSearchCollectionCell.swift */,
 				98FEE7BE1FE4BC6200CD80A8 /* PromptTableCell.swift */,
-				9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */,
 				982CF8562013D69800EEB278 /* RateReplyCell.swift */,
+				9842FAB5201929A90069F71F /* RatingPercentageGraphCell.swift */,
+				984F378D200708DB00C62E6E /* ReplyEmptyTableCell.swift */,
 				9862867220005E0900502294 /* ReplyTableCell.swift */,
-				983DB1E9200C3ACB004FC2D0 /* GeneralVisibilityTableCell.swift */,
+				984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */,
 				983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */,
 			);
 			path = Cells;
@@ -748,15 +748,15 @@
 		9893171F1FE6F05200E2979F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				98FEE7C81FE4CB5000CD80A8 /* PromptView.swift */,
-				98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */,
-				9867685A201294B700D0421C /* PromptHeaderView.swift */,
-				982530FF1FF41568000E6E20 /* TabBarView.swift */,
-				9836044020071021008A975D /* EmptyStateView.swift */,
-				98429E36203E28BC000B7A26 /* PromptSummaryView.swift */,
 				980240652023CF2000674F07 /* CreatePromptOptionsBarView.swift */,
 				98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */,
+				9836044020071021008A975D /* EmptyStateView.swift */,
+				98365FD9201AB2F9008E58F6 /* PageReferenceView.swift */,
 				98481451203E04D2009215DA /* ProfileHeaderView.swift */,
+				9867685A201294B700D0421C /* PromptHeaderView.swift */,
+				98429E36203E28BC000B7A26 /* PromptSummaryView.swift */,
+				98FEE7C81FE4CB5000CD80A8 /* PromptView.swift */,
+				982530FF1FF41568000E6E20 /* TabBarView.swift */,
 				98691C34202547E800FE2180 /* TabOptionsView.swift */,
 				988594B6201E98CC0034825E /* UserImageNameSublabelView.swift */,
 				986768552012922C00D0421C /* WebLinkActionButtonsView.swift */,

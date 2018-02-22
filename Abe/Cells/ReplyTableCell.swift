@@ -178,25 +178,28 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         disposeBag = DisposeBag()
+        rateReplyButton.isHidden = false
+        ratingsSummaryButton.isHidden = false
     }
     
     func hideRateButton() {
         rateReplyButton.isHidden = true
-        
+        ratingsSummaryButton.isHidden = true
     }
     
     private func setupContainerView() {
         containerView = UIView()
         containerView.backgroundColor = UIColor.white
-        containerView.layer.cornerRadius = 5.0
+        containerView.layer.cornerRadius = 2.0
         containerView.dropShadow()
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.left.equalTo(contentView).offset(26)
-            make.right.equalTo(contentView).offset(-26)
-            make.top.equalTo(contentView).offset(16)
-            make.bottom.equalTo(contentView)
+            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(8, 26, 8, 26))
+//            make.left.equalTo(contentView).offset(26)
+//            make.right.equalTo(contentView).offset(-26)
+//            make.top.equalTo(contentView).offset(16)
+//            make.bottom.equalTo(contentView)
         }
     }
     
