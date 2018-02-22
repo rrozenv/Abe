@@ -106,6 +106,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
 //MARK: - Second Level Observables
         let didUserReplyObservable = viewWillAppearObservable
             .map { _ in currentUser.value.didReply(to: prompt) }
+        
         let lockedRepliesTupleObservable = tabSelectedObservable
             .filter { $0 == .locked }
             .map { _ in currentUser.value.didReply(to: prompt) }

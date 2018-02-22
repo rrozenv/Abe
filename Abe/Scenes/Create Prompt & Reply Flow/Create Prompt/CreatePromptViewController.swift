@@ -46,6 +46,12 @@ class CreatePromptViewController: UIViewController, BindableType {
         super.viewDidLoad()
         titleTextView.becomeFirstResponder()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        titleTextView.resignFirstResponder()
+        bodyTextView.resignFirstResponder()
+    }
 
     override var inputAccessoryView: UIView? { get { return optionsBarView } }
     override var canBecomeFirstResponder: Bool { return true }

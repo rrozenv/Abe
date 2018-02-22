@@ -35,8 +35,6 @@ class RateReplyViewController: UIViewController, BindableType {
         viewModel.inputs.viewWillAppearInput.onNext(())
     }
     
-    override var inputAccessoryView: UIView? { get { return nextButton } }
-    override var canBecomeFirstResponder: Bool { return true }
     deinit { print("rate reply deinit") }
     
     private func setInitialViewState() {
@@ -178,7 +176,12 @@ extension RateReplyViewController {
         nextButton.backgroundColor = Palette.brightYellow.color
         nextButton.setTitleColor(Palette.darkYellow.color, for: .normal)
         nextButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 13)
-        nextButton.frame.size.height = 60
+        
+        view.addSubview(nextButton)
+        nextButton.snp.makeConstraints { (make) in
+            make.left.right.bottom.equalTo(view)
+            make.height.equalTo(60)
+        }
     }
     
     private func setupTitleLabel() {

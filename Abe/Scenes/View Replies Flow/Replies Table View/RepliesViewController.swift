@@ -169,8 +169,8 @@ class RepliesViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         viewModel.outputs.stillUnreadFromFriendsCount
-            .drive(onNext: {
-                print($0)
+            .drive(onNext: { [weak self] in
+                self?.summaryView.topLabel.text = $0
             })
             .disposed(by: disposeBag)
         

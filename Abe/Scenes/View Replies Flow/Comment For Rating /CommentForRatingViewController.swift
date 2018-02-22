@@ -42,6 +42,11 @@ class CommentForRatingViewController: UIViewController, BindableType {
         viewModel.viewWillAppearInput.onNext(())
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        bodyTextView.resignFirstResponder()
+    }
+    
     override var inputAccessoryView: UIView? { get { return nextButton } }
     override var canBecomeFirstResponder: Bool { return true }
     deinit { print("Create prompt VC deint") }

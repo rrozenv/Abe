@@ -5,6 +5,8 @@ import UIKit
 final class PromptSummaryView: UIView {
     
     var containerView: UIView!
+    var topView: UIView!
+    var topLabel: UILabel!
     var bodyTextLabel: UILabel!
     var contentStackView: UIStackView!
     var webLinkView: WebThumbnailView!
@@ -19,6 +21,7 @@ final class PromptSummaryView: UIView {
         setupContainerView()
         setupBodyTextProperties()
         setupWebLinkViewProperties()
+        setupTopView()
         setupContentStackView()
     }
     
@@ -44,6 +47,27 @@ final class PromptSummaryView: UIView {
         webLinkView.placeholderBackgroundView.isHidden = true
     }
     
+    private func setupTopView() {
+        topView = UIView()
+        topView.backgroundColor = Palette.brightYellow.color
+        
+        containerView.addSubview(topView)
+        topView.snp.makeConstraints { (make) in
+            make.height.equalTo(40)
+            make.left.right.top.equalTo(containerView)
+        }
+        
+        topLabel = UILabel()
+        topLabel.font = FontBook.AvenirHeavy.of(size: 14)
+        topLabel.textColor = Palette.darkYellow.color
+        topLabel.text = "dfdasfdasfdsafasdfasdf"
+        
+        topView.addSubview(topLabel)
+        topLabel.snp.makeConstraints { (make) in
+            make.center.equalTo(topView)
+        }
+    }
+    
     fileprivate func setupContentStackView() {
         let views: [UIView] = [bodyTextLabel, webLinkView]
         contentStackView = UIStackView(arrangedSubviews: views)
@@ -52,7 +76,7 @@ final class PromptSummaryView: UIView {
         
         containerView.addSubview(contentStackView)
         contentStackView.snp.makeConstraints { (make) in
-            make.top.equalTo(containerView).offset(18)
+            make.top.equalTo(topView.snp.bottom).offset(18)
             make.bottom.equalTo(containerView).offset(-18)
             make.left.equalTo(containerView).offset(26)
             make.right.equalTo(containerView).offset(-26)

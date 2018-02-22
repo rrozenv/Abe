@@ -40,20 +40,13 @@ final class PromptTableCell: UITableViewCell, ValueCell {
     }
     
     func configureWith(value: Prompt) {
-        guard let user = AppController.shared.currentUser.value else { fatalError() }
         promptView.headerView.titleLabel.text = value.title
         promptView.userImageNameReplyView.nameLabel.text = value.user?.name
         promptView.userImageNameReplyView.nameSubLabel.text = "\(value.replies.count) replies"
-//        promptView.replyTextLabel.text = "replies"
-//        promptView.replyCountLabel.text = "\(value.replies.count)"
         if let url = URL(string: value.imageURL) {
             print(url)
             promptView.headerView.imageView.kf.setImage(with: url)
         }
-        
-        let friendReplyCount = value.replies
-            .filter(NSPredicate(format: "ANY user.registeredContacts.phoneNumber = %@", user.phoneNumber)).count
-        print("Friend reply count: \(friendReplyCount)")
     }
     
     override func prepareForReuse() {
