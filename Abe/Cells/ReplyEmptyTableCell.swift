@@ -14,9 +14,8 @@ final class RepliesEmptyCell: UITableViewCell, ValueCell {
     typealias Value = RepliesEmptyStateViewModel
     static var defaultReusableId: String = "RepliesEmptyCell"
     private var containerView: UIView!
-    private var headerLabel: UILabel!
+    private var titleLabelWithIconImageView: LeftIconImageViewWithLabel!
     private var bodyLabel: UILabel!
-    private var iconImageView: UIImageView!
     private var stackView: UIStackView!
     
     // MARK: - Initialization
@@ -33,8 +32,7 @@ final class RepliesEmptyCell: UITableViewCell, ValueCell {
     private func commonInit() {
         self.contentView.backgroundColor = UIColor.white
         setupContainerView()
-        setupIconImageView()
-        setupHeaderLabel()
+        setupTitleLabelWithIconImageView()
         setupBodyLabel()
         setupStackView()
     }
@@ -42,28 +40,28 @@ final class RepliesEmptyCell: UITableViewCell, ValueCell {
     // MARK: - Configuration
     func configureWith(value: RepliesEmptyStateViewModel) {
         guard value.userDidReply else { configureUserDidNotReplyState(replyCount: value.replyCount ?? 0) ; return }
-        iconImageView.isHidden = true
+        titleLabelWithIconImageView.imageView.isHidden = true
         switch value.filterOption {
         case .locked:
-            headerLabel.text = "No Locked Replies."
+            titleLabelWithIconImageView.label.text = "No Locked Replies."
             bodyLabel.text = "You have unlocked all replies for this topic. Congrats champ!"
         case .unlocked:
-            headerLabel.text = "No Unlocked Replies."
+            titleLabelWithIconImageView.label.text = "No Unlocked Replies."
             bodyLabel.text = "Go unlock some replies you silly goose!"
         case .myReply:
-            headerLabel.text = "No Ratings."
+            titleLabelWithIconImageView.label.text = "No Ratings."
             bodyLabel.text = "No one has rated your reply yet. Tell your friends to get on it!"
         }
     }
     
     private func configureUserDidNotReplyState(replyCount: Int) {
-        headerLabel.text = (replyCount != 0) ? "\(replyCount) Replies Locked" : "Replies Locked."
+        titleLabelWithIconImageView.label.text = (replyCount != 0) ? "\(replyCount) Replies Locked" : "Replies Locked."
         bodyLabel.text = "Replies will unlock after you submit yours. You will only have one chance to reply so make it count!"
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        iconImageView.isHidden = false
+        titleLabelWithIconImageView.imageView.isHidden = false
     }
     
 }
@@ -84,16 +82,14 @@ extension RepliesEmptyCell {
         }
     }
     
-    private func setupIconImageView() {
-        iconImageView = UIImageView(image: #imageLiteral(resourceName: "IC_LockedReplies"))
-        iconImageView.contentMode = .scaleAspectFit
-    }
-    
-    private func setupHeaderLabel() {
-        headerLabel = UILabel()
-        headerLabel.font = FontBook.AvenirHeavy.of(size: 15)
-        headerLabel.textColor = UIColor.black
-        headerLabel.textAlignment = .center
+    private func setupTitleLabelWithIconImageView() {
+        titleLabelWithIconImageView = LeftIconImageViewWithLabel()
+        titleLabelWithIconImageView.label.font = FontBook.BariolBold.of(size: 17)
+        titleLabelWithIconImageView.label.textColor = UIColor.black
+        //titleLabelWithIconImageView.label.textAlignment = .center
+        
+        titleLabelWithIconImageView.imageView.image = #imageLiteral(resourceName: "IC_YellowLock")
+        titleLabelWithIconImageView.imageView.contentMode = .scaleAspectFit
     }
     
     private func setupBodyLabel() {
@@ -105,13 +101,15 @@ extension RepliesEmptyCell {
     }
     
     private func setupStackView() {
-        let fields: [UIView] = [iconImageView, headerLabel, bodyLabel]
-        let stackView = UIStackView(arrangedSubviews: fields)
-        stackView.axis = .vertical
-        stackView.spacing = 14
+        let iconLabel: [UIView] = [titleLabelWithIconImageView, bodyLabel]
+        let iconLabelStackView = UIStackView(arrangedSubviews: iconLabel)
+        iconLabelStackView.axis = .vertical
+        iconLabelStackView.spacing = 8
+        iconLabelStackView.distribution = .equalCentering
+        iconLabelStackView.alignment = .center
         
-        containerView.addSubview(stackView)
-        stackView.snp.makeConstraints { (make) in
+        containerView.addSubview(iconLabelStackView)
+        iconLabelStackView.snp.makeConstraints { (make) in
             make.edges.equalTo(containerView)
         }
     }

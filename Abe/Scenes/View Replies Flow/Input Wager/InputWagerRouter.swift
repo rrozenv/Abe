@@ -22,7 +22,7 @@ final class InputWagerRouter: InputWagerRoutingLogic {
                                    wager: Int) {
         var vc = GuessAndWagerValidationViewController()
         let router = GuessAndWagerValidationRouter(navigationController: navigationController!)
-        let viewModel = GuessAndWagerValidationViewModel(reply: reply,
+        let viewModel = GuessAndWagerValidationViewModel(reply: reply, isForSummaryOnly: false,
                                                          replyScore: replyScore,
                                                          guessedUser: guessedUser,
                                                          wager: wager,

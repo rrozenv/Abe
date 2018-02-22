@@ -254,3 +254,46 @@ final class BarViewWithLabel: UIView {
     }
     
 }
+
+final class LeftIconImageViewWithLabel: UIView {
+    
+    var label: UILabel!
+    var imageView: UIImageView!
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init() {
+        super.init(frame: .zero)
+        setupIconImageView()
+        setupHeaderLabel()
+        setupStackView()
+    }
+    
+    private func setupIconImageView() {
+        imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+    }
+    
+    private func setupHeaderLabel() {
+        label = UILabel()
+        label.font = FontBook.AvenirHeavy.of(size: 15)
+        label.textColor = UIColor.black
+    }
+    
+    private func setupStackView() {
+        let iconLabel: [UIView] = [imageView, label]
+        let iconLabelStackView = UIStackView(arrangedSubviews: iconLabel)
+        iconLabelStackView.axis = .horizontal
+        iconLabelStackView.spacing = 10
+        iconLabelStackView.distribution = .equalCentering
+        iconLabelStackView.alignment = .center
+        
+        self.addSubview(iconLabelStackView)
+        iconLabelStackView.snp.makeConstraints { (make) in
+            make.edges.equalTo(self)
+        }
+    }
+    
+}

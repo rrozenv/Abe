@@ -8,6 +8,7 @@ class PromptsListViewController: UIViewController, BindableType {
     let disposeBag = DisposeBag()
     let dataSource = PromptListDataSource()
     var viewModel: PromptListViewModel!
+    var topTableContentOffset: CGFloat = 0
     
     private var tabOptionsView: TabOptionsView!
     private var createPromptButton: UIBarButtonItem!
@@ -15,19 +16,34 @@ class PromptsListViewController: UIViewController, BindableType {
     private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     static func configuredWith(visibility: Visibility,
-                               navVc: UINavigationController) -> PromptsListViewController {
-        var vc = PromptsListViewController()
+                               navVc: UINavigationController,
+                               contentOffset: CGFloat) -> PromptsListViewController {
+        var vc = PromptsListViewController(topContentOffset: contentOffset)
         let router = PromptsRouter(navigationController: navVc)
         let viewModel = PromptListViewModel(router: router)
         vc.setViewModelBinding(model: viewModel!)
         vc.viewModel.inputs.visWhenViewLoadsInput.onNext(visibility)
+        vc.topTableContentOffset = contentOffset
         return vc
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)!
+    }
+    
+    override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: Bundle!) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    init(topContentOffset: CGFloat) {
+        self.topTableContentOffset = topContentOffset
+        super.init(nibName: nil, bundle: nil)
     }
     
     override func loadView() {
         super.loadView()
         view.backgroundColor = UIColor.white
-        setupTableView()
+        setupTableView(topOffset: self.topTableContentOffset)
         setupActivityIndicator()
         setupStatusBarBackgroundView()
     }
@@ -121,14 +137,14 @@ extension PromptsListViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func setupTableView() {
+    fileprivate func setupTableView(topOffset: CGFloat) {
         //MARK: - tableView Properties
         tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.register(PromptTableCell.self, forCellReuseIdentifier: PromptTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
-        tableView.contentInset = UIEdgeInsetsMake(137, 0, 0, 0)
+        tableView.contentInset = UIEdgeInsetsMake(self.topTableContentOffset, 0, 0, 0)
         //tableView.refreshControl = UIRefreshControl()
         tableView.dataSource = dataSource
         

@@ -118,6 +118,7 @@ final class ReplyTableCell: UITableViewCell, ValueCell {
 
 protocol RateReplyTableCellDelegate: class {
     func didSelectRateReply(_ reply: PromptReply, isCurrentUsersFriend: Bool)
+    func didSelectViewRatings(_ reply: PromptReply)
 }
 
 final class RateReplyTableCell: UITableViewCell, ValueCell {
@@ -132,6 +133,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     private var containerView: UIView!
     private var replyHeaderView: ReplyHeaderView!
     private var rateReplyButton: UIButton!
+    private var ratingsSummaryButton: UIButton!
     
     // MARK: - Initialization
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -151,17 +153,24 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         setupReplyHeaderView()
         setupRateReplyButton()
         setupStackView()
+        setupViewRatingsButton()
     }
     
     func configureWith(value: ReplyViewModel) {
         replyHeaderView.nameLabel.text = value.isUnlocked ? value.reply.user?.name : "Identity Locked"
         replyHeaderView.nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
         replyHeaderView.replyBodyLabel.text = value.reply.body
-        rateReplyButton.isHidden = value.ratingScore == nil ? false : true
+        //rateReplyButton.isHidden = value.ratingScore == nil ? false : true
+        ratingsSummaryButton.isHidden = value.isUnlocked ? false : true
         rateReplyButton.rx.tap
             .subscribe(onNext: { [weak self] in
                 self?.delegate?.didSelectRateReply(value.reply,
                                                    isCurrentUsersFriend: value.isCurrentUsersFriend)
+            })
+            .disposed(by: disposeBag)
+        ratingsSummaryButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.delegate?.didSelectViewRatings(value.reply)
             })
             .disposed(by: disposeBag)
     }
@@ -173,6 +182,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     func hideRateButton() {
         rateReplyButton.isHidden = true
+        
     }
     
     private func setupContainerView() {
@@ -211,6 +221,20 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         rateReplyButton.setTitle("Rate Reply", for: .normal)
         rateReplyButton.snp.makeConstraints { (make) in
             make.height.equalTo(50)
+        }
+    }
+    
+    private func setupViewRatingsButton() {
+        ratingsSummaryButton = UIButton()
+        ratingsSummaryButton.titleLabel?.font = FontBook.AvenirMedium.of(size: 13)
+        ratingsSummaryButton.layer.masksToBounds = true
+        ratingsSummaryButton.backgroundColor = Palette.red.color
+        ratingsSummaryButton.setTitle("View Ratings", for: .normal)
+        
+        containerView.addSubview(ratingsSummaryButton)
+        ratingsSummaryButton.snp.makeConstraints { (make) in
+            make.height.equalTo(50)
+            make.edges.equalTo(rateReplyButton)
         }
     }
     

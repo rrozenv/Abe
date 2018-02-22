@@ -228,7 +228,7 @@ extension UIButton {
         image.size.equalTo(CGSize(width: 17, height: 17))
         let backButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
         backButton.setImage(image, for: .normal)
-        backButton.contentEdgeInsets = UIEdgeInsets(top: 36, left: 26, bottom: 15, right: 15)
+        backButton.contentEdgeInsets = UIEdgeInsets(top: 36, left: 26, bottom: 15, right: 26)
         return backButton
     }
     

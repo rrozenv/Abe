@@ -12,6 +12,7 @@ protocol RepliesViewModelInputs {
     var scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)> { get }
     var backButtonTappedInput: AnyObserver<Void> { get }
     var rateReplyButtonTappedInput: AnyObserver<(PromptReply, Bool)> { get }
+    var viewRatingsForReplyTappedInput: AnyObserver<PromptReply> { get }
 }
 
 protocol RepliesViewModelOutputs {
@@ -49,6 +50,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let scoreSelected: AnyObserver<(ScoreCellViewModel, IndexPath)>
     let backButtonTappedInput: AnyObserver<Void>
     let rateReplyButtonTappedInput: AnyObserver<(PromptReply, Bool)>
+    let viewRatingsForReplyTappedInput: AnyObserver<PromptReply>
 
 //MARK: - Outputs
     var outputs: RepliesViewModelOutputs { return self }
@@ -79,6 +81,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let _didSelectScore = PublishSubject<(ScoreCellViewModel, IndexPath)>()
         let _backButtonTappedInput = PublishSubject<Void>()
         let _rateReplyButtonTappedInput = PublishSubject<(PromptReply, Bool)>()
+        let _viewRatingsForReplyTappedInput = PublishSubject<PromptReply>()
         
 //MARK: - Observers
         self.viewWillAppear = _viewWillAppear.asObserver()
@@ -87,6 +90,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         self.scoreSelected = _didSelectScore.asObserver()
         self.backButtonTappedInput = _backButtonTappedInput.asObserver()
         self.rateReplyButtonTappedInput = _rateReplyButtonTappedInput.asObserver()
+        self.viewRatingsForReplyTappedInput = _viewRatingsForReplyTappedInput.asObserver()
 
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppear.asObservable()
@@ -97,6 +101,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let promptObservable = Observable.of(prompt)
         let backButtonTappedObservable = _backButtonTappedInput.asObservable()
         let rateReplyButtonTappedObservable = _rateReplyButtonTappedInput.asObservable()
+        let viewRatingsForReplyTappedObservable = _viewRatingsForReplyTappedInput.asObservable()
 
 //MARK: - Second Level Observables
         let didUserReplyObservable = viewWillAppearObservable
@@ -174,6 +179,11 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .do(onNext: { router.toRateReply(reply: $0.0, isCurrentUsersFriend: $0.1) })
             .subscribe()
             .disposed(by: disposeBag)
+        
+        viewRatingsForReplyTappedObservable
+            .do(onNext: { router.toRatingsSummary(reply: $0, userReplyScore: $0.ratingCastedBy(user: user)) })
+            .subscribe()
+            .disposed(by: disposeBag)
     }
     
 }
@@ -192,7 +202,7 @@ private func sortReplies(_ replies: [PromptReply],
     var userFriendsReplies = [ReplyViewModel]()
     var notFriendsReplies = [ReplyViewModel]()
     for reply in replies {
-        let userRating = reply.fetchCastedScoreIfExists(for: currentUser.id)
+        let userRating = reply.fetchCastedScoreIfExists(for: currentUser)
         let userDidVote = userRating.score != nil ? true : false
         if forLockedFeed && userDidVote { continue }
         if !forLockedFeed && !userDidVote { continue }

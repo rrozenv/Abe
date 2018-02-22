@@ -59,10 +59,15 @@ class PromptReply: Object {
         return visibleOnlyToPhoneNumbers.contains(currentUser.phoneNumber)
     }
     
-    func fetchCastedScoreIfExists(for userId: String) -> (score: ReplyScore?, reply: PromptReply) {
+    func fetchCastedScoreIfExists(for user: User) -> (score: ReplyScore?, reply: PromptReply) {
         let score = self.scores
-            .filter(NSPredicate(format: "userId = %@", userId)).first
+            .filter(NSPredicate(format: "user.id = %@", user.id)).first
         return (score, self)
+    }
+    
+    func ratingCastedBy(user: User) -> ReplyScore? {
+        return self.scores
+            .filter(NSPredicate(format: "user.id = %@", user.id)).first
     }
     
     func doesScoreExistFor(userId: String) -> Bool {

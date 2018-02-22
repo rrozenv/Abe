@@ -26,6 +26,7 @@ final class ProfileHeaderView: UIView {
     
     private func setupContainerView() {
         containerView = UIView()
+        containerView.backgroundColor = UIColor.white
         
         self.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
@@ -35,31 +36,31 @@ final class ProfileHeaderView: UIView {
     
     private func setupStackView() {
         userImageView = UIImageView()
-        userImageView.layer.cornerRadius = 36/2
+        userImageView.layer.cornerRadius = 72/2
         userImageView.layer.masksToBounds = true
         userImageView.backgroundColor = Palette.faintGrey.color
-        userImageView.snp.makeConstraints { (make) in make.height.width.equalTo(36) }
+        userImageView.snp.makeConstraints { (make) in make.height.width.equalTo(72) }
         
         nameLabel = UILabel()
         nameLabel.textColor = UIColor.black
         nameLabel.numberOfLines = 1
-        nameLabel.font = FontBook.AvenirHeavy.of(size: 13)
+        nameLabel.font = FontBook.BariolBold.of(size: 19)
         
         nameSubLabel = UILabel()
-        nameSubLabel.textColor = UIColor.gray
+        nameSubLabel.textColor = Palette.red.color
         nameSubLabel.numberOfLines = 1
-        nameSubLabel.font = FontBook.AvenirMedium.of(size: 12)
+        nameSubLabel.font = FontBook.BariolBold.of(size: 16)
         
         let views: [UIView] = [userImageView, nameLabel, nameSubLabel]
         let labelsStackView = UIStackView(arrangedSubviews: views)
-        labelsStackView.spacing = 10.0
+        labelsStackView.spacing = 14.0
         labelsStackView.axis = .vertical
         labelsStackView.alignment = .center
         
         containerView.addSubview(labelsStackView)
         labelsStackView.snp.makeConstraints { (make) in
-            make.top.equalTo(containerView).offset(10)
-            make.bottom.equalTo(containerView).offset(-10)
+            make.top.equalTo(containerView).offset(16)
+            make.bottom.equalTo(containerView).offset(-16)
             make.centerX.equalTo(containerView)
         }
     }

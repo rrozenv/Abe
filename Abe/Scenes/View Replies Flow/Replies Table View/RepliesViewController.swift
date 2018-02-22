@@ -30,6 +30,8 @@ class RepliesViewController: UIViewController, BindableType {
     private var createReplyButton: UIButton!
     private var backButton: UIButton!
     
+    private var userDidReply: Bool = false
+    
     override func loadView() {
         super.loadView()
         //setupTabBarView()
@@ -52,6 +54,7 @@ class RepliesViewController: UIViewController, BindableType {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        guard !userDidReply else { return }
         viewModel.inputs.viewWillAppear.onNext(())
         viewModel.inputs.filterOptionSelected.onNext(.locked)
     }
@@ -106,10 +109,8 @@ class RepliesViewController: UIViewController, BindableType {
             .disposed(by: disposeBag)
         
         viewModel.outputs.didUserReply
-            .drive(onNext: { didReply in
-//                self?.tabBarView.isHidden = didReply ? false : true
-//                guard !didReply else { return }
-//                self?.dataSource.loadBeforeUserRepliedState()
+            .drive(onNext: { [weak self] didReply in
+                self?.userDidReply = didReply
             })
             .disposed(by: disposeBag)
         
@@ -210,6 +211,10 @@ extension RepliesViewController: ReplyTableCellDelegate {
 
 //MARK: - Reply Table Cell Delegate
 extension RepliesViewController: RateReplyTableCellDelegate {
+    
+    func didSelectViewRatings(_ reply: PromptReply) {
+        viewModel.inputs.viewRatingsForReplyTappedInput.onNext(reply)
+    }
     
     func didSelectRateReply(_ reply: PromptReply, isCurrentUsersFriend: Bool) {
         viewModel.inputs.rateReplyButtonTappedInput.onNext((reply, isCurrentUsersFriend))

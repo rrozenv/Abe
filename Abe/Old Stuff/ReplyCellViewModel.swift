@@ -41,7 +41,7 @@ struct ReplyCellViewModel {
             .asDriver(onErrorJustReturn: "")
         
         self.name = _replyObservable
-            .map { $0.fetchCastedScoreIfExists(for: user.id) }
+            .map { $0.fetchCastedScoreIfExists(for: user) }
             .map {  ($0.score != nil) ? $0.reply.user!.name : "Name Locked..." }
             .asDriver(onErrorJustReturn: "")
         
@@ -49,7 +49,7 @@ struct ReplyCellViewModel {
             .map { reply in
                 return [#imageLiteral(resourceName: "IC_Score_One_Unselected"), #imageLiteral(resourceName: "IC_Score_Two_Unselected"), #imageLiteral(resourceName: "IC_Score_Three_Unselected"), #imageLiteral(resourceName: "IC_Score_Four_Unselected"), #imageLiteral(resourceName: "IC_Score_Five_Unselected")].enumerated().map {
                     let scoreValue = $0.offset + 1
-                    let replyScoreIfExists = reply.fetchCastedScoreIfExists(for: user.id)
+                    let replyScoreIfExists = reply.fetchCastedScoreIfExists(for: user)
                     let userDidReply = replyScoreIfExists.score != nil ? true : false
                     let percentage = "\(reply.percentageOfVotesCastesFor(scoreValue: scoreValue))"
                     return ScoreCellViewModel(value: scoreValue,

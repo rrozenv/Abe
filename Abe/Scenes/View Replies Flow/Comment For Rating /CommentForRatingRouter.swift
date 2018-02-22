@@ -33,7 +33,7 @@ final class CommentForRatingRouter: CommentForRatingRoutingLogic {
     func toSummary(reply: PromptReply, replyScore: ReplyScore) {
         var vc = GuessAndWagerValidationViewController()
         let router = GuessAndWagerValidationRouter(navigationController: navigationController!)
-        let viewModel = GuessAndWagerValidationViewModel(reply: reply,
+        let viewModel = GuessAndWagerValidationViewModel(reply: reply, isForSummaryOnly: false,
                                                          replyScore: replyScore,
                                                          guessedUser: nil,
                                                          wager: nil,

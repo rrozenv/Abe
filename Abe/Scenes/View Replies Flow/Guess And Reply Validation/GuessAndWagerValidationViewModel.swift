@@ -49,6 +49,7 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
     
 //MARK: - Init
     init?(reply: PromptReply,
+          isForSummaryOnly: Bool,
           replyScore: ReplyScore,
           guessedUser: User?,
           wager: Int?,
@@ -81,15 +82,22 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             .share()
         
         let didSaveScoreObservable = viewDidLoadObservable.mapToVoid()
+            .filter { !isForSummaryOnly }
             .flatMap { replyService.updateAuthorCoinsFor(reply: reply, coins: replyScore.score) }
             .flatMap { _ in replyService.saveScore(reply: reply, score: replyScore) }
             .share()
+        
+        let scoresForSummaryOnly = viewDidLoadObservable.mapToVoid()
+            .filter { isForSummaryOnly }
+            .map { (reply: reply, score: replyScore) }
         
 //MARK: - Outputs
         self.isUserCorrect = isUserCorrectObservable.asDriverOnErrorJustComplete()
         self.isGuessedUserHidden = Driver.of(guessedUser == nil)
         
-        self.percentageGraphInfo = didSaveScoreObservable
+        self.percentageGraphInfo = Observable
+            .of(scoresForSummaryOnly, didSaveScoreObservable)
+            .merge()
             .map { inputs in
                 (
                 [1, 2, 3, 4, 5].map { inputs.reply.percentageOfVotesCastesFor(scoreValue: $0) },
@@ -104,7 +112,9 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             }
             .asDriverOnErrorJustComplete()
         
-        self.replyScores = didSaveScoreObservable
+        self.replyScores = Observable
+            .of(scoresForSummaryOnly, didSaveScoreObservable)
+            .merge()
             .map { $0.reply.scores.toArray() }
             .asDriver(onErrorJustReturn: [])
             

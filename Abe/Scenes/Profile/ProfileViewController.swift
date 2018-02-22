@@ -90,7 +90,10 @@ final class ProfileViewController: UIViewController {
     }
 
     private func configurePagerDataSource(_ visibilites: [Visibility]) {
-        self.dataSource = PromptPagesDataSource(visibilites: visibilites, navVc: self.navigationController!)
+        let headerHeight = profileHeaderView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+        self.dataSource = PromptPagesDataSource(visibilites: visibilites,
+                                                navVc: self.navigationController!,
+                                                contentOffset: headerHeight + 60.0)
         self.pageViewController.dataSource = self.dataSource
         DispatchQueue.main.async {
             self.pageViewController.setViewControllers(
@@ -164,7 +167,7 @@ final class ProfileViewController: UIViewController {
                     make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
                 }
             } else {
-                make.top.equalTo(view.snp.top).offset(20)
+                make.top.equalTo(view.snp.top).offset(36)
             }
         }
     }

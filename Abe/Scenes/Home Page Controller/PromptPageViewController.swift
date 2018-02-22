@@ -85,7 +85,7 @@ final class PromptPageViewController: UIViewController {
     }
     
     private func configurePagerDataSource(_ visibilites: [Visibility]) {
-        self.dataSource = PromptPagesDataSource(visibilites: visibilites, navVc: self.navigationController!)
+        self.dataSource = PromptPagesDataSource(visibilites: visibilites, navVc: self.navigationController!, contentOffset: 137)
         self.pageViewController.dataSource = self.dataSource
         DispatchQueue.main.async {
             self.pageViewController.setViewControllers(
