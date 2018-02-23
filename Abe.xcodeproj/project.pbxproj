@@ -119,6 +119,7 @@
 		98D26EE7201550E100B0A72E /* GuessReplyAuthorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */; };
 		98D26EE9201550F200B0A72E /* GuessReplyAuthorRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */; };
 		98D26EEB2015510400B0A72E /* GuessReplyAuthorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */; };
+		98D38E2320408BE4008AFA94 /* FilterOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D38E2220408BE4008AFA94 /* FilterOption.swift */; };
 		98E58F93202A8936003554A1 /* CustomNavigatonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */; };
 		98F22D4B2036398D00C886F1 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F22D4A2036398D00C886F1 /* UserService.swift */; };
 		98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */; };
@@ -285,6 +286,7 @@
 		98D26EE6201550E100B0A72E /* GuessReplyAuthorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorViewController.swift; sourceTree = "<group>"; };
 		98D26EE8201550F200B0A72E /* GuessReplyAuthorRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorRouter.swift; sourceTree = "<group>"; };
 		98D26EEA2015510400B0A72E /* GuessReplyAuthorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessReplyAuthorDataSource.swift; sourceTree = "<group>"; };
+		98D38E2220408BE4008AFA94 /* FilterOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterOption.swift; sourceTree = "<group>"; };
 		98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigatonBar.swift; sourceTree = "<group>"; };
 		98F22D4A2036398D00C886F1 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewController.swift; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 				981545D0201026EB0001F675 /* Gif.swift */,
 				98676858201292E600D0421C /* WebLinkThumbnail.swift */,
 				98429E34203E25C5000B7A26 /* Visibility.swift */,
+				98D38E2220408BE4008AFA94 /* FilterOption.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1214,6 +1217,7 @@
 				9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */,
 				9828ABC8200E745A00A3A9D1 /* AddWebLinkViewController.swift in Sources */,
 				98F671FF1FFEA223001DE88E /* PhoneEntryViewModel.swift in Sources */,
+				98D38E2320408BE4008AFA94 /* FilterOption.swift in Sources */,
 				982CF8572013D69800EEB278 /* RateReplyCell.swift in Sources */,
 				98FEE7C51FE4C12300CD80A8 /* CreatePromptViewController.swift in Sources */,
 				98F672031FFF0EA8001DE88E /* PixabayAPI.swift in Sources */,

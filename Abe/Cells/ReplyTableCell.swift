@@ -195,7 +195,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
         
         contentView.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
-            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(8, 26, 8, 26))
+            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(6, 0, 0, 0))
 //            make.left.equalTo(contentView).offset(26)
 //            make.right.equalTo(contentView).offset(-26)
 //            make.top.equalTo(contentView).offset(16)
@@ -218,10 +218,10 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     private func setupRateReplyButton() {
         rateReplyButton = UIButton()
-        rateReplyButton.titleLabel?.font = FontBook.AvenirMedium.of(size: 13)
-        rateReplyButton.layer.masksToBounds = true
+        rateReplyButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 12)
         rateReplyButton.backgroundColor = Palette.red.color
         rateReplyButton.setTitle("Rate Reply", for: .normal)
+        rateReplyButton.contentHorizontalAlignment = .center
         rateReplyButton.snp.makeConstraints { (make) in
             make.height.equalTo(50)
         }
@@ -229,7 +229,7 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     
     private func setupViewRatingsButton() {
         ratingsSummaryButton = UIButton()
-        ratingsSummaryButton.titleLabel?.font = FontBook.AvenirMedium.of(size: 13)
+        ratingsSummaryButton.titleLabel?.font = FontBook.AvenirHeavy.of(size: 12)
         ratingsSummaryButton.layer.masksToBounds = true
         ratingsSummaryButton.backgroundColor = Palette.red.color
         ratingsSummaryButton.setTitle("View Ratings", for: .normal)

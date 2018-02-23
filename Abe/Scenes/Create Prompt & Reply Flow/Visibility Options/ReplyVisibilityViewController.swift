@@ -232,7 +232,7 @@ extension ReplyVisibilityViewController {
         createReplyButton.backgroundColor = Palette.brightYellow.color
         createReplyButton.setTitleColor(Palette.darkYellow.color, for: .normal)
         createReplyButton.titleLabel?.font = FontBook.BariolBold.of(size: 14)
-        createReplyButton.frame.size.height = 50
+        createReplyButton.frame.size.height = 60
         createReplyButton.frame.size.width = view.frame.size.width
     }
     

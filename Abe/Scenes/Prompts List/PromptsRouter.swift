@@ -39,6 +39,8 @@ class PromptsRouter: PromptsRoutingLogic {
         var viewCont = RepliesViewController()
         let vm = RepliesViewModel(router: router, prompt: prompt)
         viewCont.setViewModelBinding(model: vm!)
+//        vm?.inputs.viewWillAppear.onNext(())
+//        vm?.inputs.filterOptionSelected.onNext(.locked)
         navigationController?.navigationBar.isHidden = true
         navigationController?.pushViewController(viewCont, animated: true)
     }

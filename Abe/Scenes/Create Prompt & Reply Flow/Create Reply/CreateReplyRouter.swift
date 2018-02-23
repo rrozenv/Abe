@@ -17,8 +17,9 @@ final class CreateReplyRouter: CreateReplyRoutingLogic {
     }
     
     func toMainInput(for prompt: Prompt) {
-        let vc = CreatePromptReplyViewController()
-        vc.viewModel = CreateReplyViewModel(prompt: prompt, router: self)
+        var vc = CreatePromptReplyViewController()
+        vc.setViewModelBinding(model: CreateReplyViewModel(prompt: prompt, router: self))
+        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -119,6 +119,7 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
             .asDriver(onErrorJustReturn: [])
             
         self.unlockedReplyViewModel = Observable.of(reply)
+            .filter { _ in !isForSummaryOnly }
             .map { (reply: $0, score: replyScore) }
             .map { ReplyViewModel(reply: $0.reply, ratingScore: $0.score, isCurrentUsersFriend: true, isUnlocked: true) }
             .asDriverOnErrorJustComplete()
@@ -135,6 +136,10 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
         
 //MARK: - Routing
         doneButtonTappedObservable
+            .do(onNext: { _ in
+                guard !isForSummaryOnly else { return }
+                NotificationCenter.default.post(.init(name: .reloadCurrentRepliesTab, object: nil))
+            })
             .do(onNext: router.toPromptDetail)
             .subscribe()
             .disposed(by: disposeBag)

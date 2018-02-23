@@ -50,18 +50,19 @@ final class PromptSummaryView: UIView {
     private func setupTopView() {
         topView = UIView()
         topView.backgroundColor = Palette.brightYellow.color
+        topView.layer.cornerRadius = 2.0
         
-        containerView.addSubview(topView)
+        //containerView.addSubview(topView)
         topView.snp.makeConstraints { (make) in
             make.height.equalTo(40)
-            make.left.right.top.equalTo(containerView)
+            //make.left.right.top.equalTo(containerView)
         }
         
         topLabel = UILabel()
         topLabel.font = FontBook.AvenirHeavy.of(size: 14)
         topLabel.textColor = Palette.darkYellow.color
-        topLabel.text = "dfdasfdasfdsafasdfasdf"
         
+
         topView.addSubview(topLabel)
         topLabel.snp.makeConstraints { (make) in
             make.center.equalTo(topView)
@@ -69,14 +70,14 @@ final class PromptSummaryView: UIView {
     }
     
     fileprivate func setupContentStackView() {
-        let views: [UIView] = [bodyTextLabel, webLinkView]
+        let views: [UIView] = [topView, bodyTextLabel, webLinkView]
         contentStackView = UIStackView(arrangedSubviews: views)
         contentStackView.spacing = 14.0
         contentStackView.axis = .vertical
         
         containerView.addSubview(contentStackView)
         contentStackView.snp.makeConstraints { (make) in
-            make.top.equalTo(topView.snp.bottom).offset(18)
+            make.top.equalTo(containerView).offset(18)
             make.bottom.equalTo(containerView).offset(-18)
             make.left.equalTo(containerView).offset(26)
             make.right.equalTo(containerView).offset(-26)

@@ -39,13 +39,13 @@ extension RatingPercentageGraphCell {
     private func setupBarGraphView() {
         let images = [#imageLiteral(resourceName: "IC_AngryEmoji"), #imageLiteral(resourceName: "IC_ToungeEmoji"), #imageLiteral(resourceName: "IC_SmirkEmoji"), #imageLiteral(resourceName: "IC_HappyEmoji"), #imageLiteral(resourceName: "IC_LoveEmoji")]
         barGraphView = BarGraphView(numberOfColumns: images.count, xAxisImages: images)
-        barGraphView.layer.cornerRadius = 5.0
+        barGraphView.layer.cornerRadius = 0.0
         barGraphView.layer.masksToBounds = true
         barGraphView.dropShadow()
         
         contentView.addSubview(barGraphView)
         barGraphView.snp.makeConstraints { (make) in
-            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(8, 26, 8, 26))
+            make.edges.equalTo(contentView).inset(UIEdgeInsetsMake(6, 0, 0, 0))
 //            make.left.equalTo(contentView).offset(26)
 //            make.right.equalTo(contentView).offset(-26)
 //            make.top.equalTo(contentView).offset(16)
@@ -59,7 +59,9 @@ final class BarGraphView: UIView {
     
     var containerView: UIView!
     var stackView: UIStackView!
+    var barGraphBackgroundView: UIView!
     var imageStackView: UIStackView!
+    var imageStackBackgroundView: UIView!
     var titleLabel: UILabel!
     
     required init?(coder aDecoder: NSCoder) {
@@ -71,12 +73,14 @@ final class BarGraphView: UIView {
         setupContainerView()
         setupTitleLabel()
         setupImageStackView(images: xAxisImages)
+        setupImageStackBackgroundView()
         setupBarGraphStackView(numberOfColumns: numberOfColumns)
+        setupBarGraphBackgroundView()
     }
     
     private func setupContainerView() {
         containerView = UIView()
-        containerView.backgroundColor = Palette.brightYellow.color
+        containerView.backgroundColor = UIColor.clear
 
         self.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
@@ -118,6 +122,26 @@ final class BarGraphView: UIView {
         }
     }
     
+    private func setupImageStackBackgroundView() {
+        imageStackBackgroundView = UIView()
+        imageStackBackgroundView.backgroundColor = Palette.faintGrey.color
+        
+        containerView.insertSubview(imageStackBackgroundView, belowSubview: imageStackView)
+        imageStackBackgroundView.snp.makeConstraints { (make) in
+            make.edges.equalTo(imageStackView)
+        }
+    }
+    
+    private func setupBarGraphBackgroundView() {
+        barGraphBackgroundView = UIView()
+        barGraphBackgroundView.backgroundColor = Palette.brightYellow.color
+        
+        containerView.insertSubview(barGraphBackgroundView, belowSubview: titleLabel)
+        barGraphBackgroundView.snp.makeConstraints { (make) in
+            make.edges.equalTo(containerView)
+        }
+    }
+    
     private func setupBarGraphStackView(numberOfColumns: Int) {
         var views = [BarViewWithLabel]()
         for _ in 0...numberOfColumns - 1 {
@@ -129,6 +153,7 @@ final class BarGraphView: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         stackView.alignment = .bottom
+        stackView.backgroundColor = Palette.brightYellow.color
         
         containerView.addSubview(stackView)
         stackView.snp.makeConstraints { (make) in
@@ -247,14 +272,14 @@ final class BarViewWithLabel: UIView {
     
     private func setupBarView() {
         barView = UIView()
-        barView.layer.cornerRadius = 2.0
+        barView.layer.cornerRadius = 0.0
         barView.layer.masksToBounds = true
         
         self.addSubview(barView)
         barView.snp.makeConstraints { (make) in
             make.left.equalTo(self).offset(8)
             make.right.equalTo(self).offset(-8)
-            make.bottom.equalTo(self).offset(2)
+            make.bottom.equalTo(self)
             make.top.equalTo(label.snp.bottom).offset(5)
         }
     }

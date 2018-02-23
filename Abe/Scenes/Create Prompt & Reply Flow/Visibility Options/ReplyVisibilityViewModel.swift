@@ -208,7 +208,8 @@ final class ReplyVisibilityViewModel: ReplyVisibilityViewModelInputs, ReplyVisib
                     .trackError(errorTracker)
             }
             .do(onNext: { _ in
-                NotificationCenter.default.post(.init(name: .userUpdated, object: nil))
+                NotificationCenter.default.post(.init(name: .reloadCurrentRepliesTab, object: nil))
+                //NotificationCenter.default.post(.init(name: .userUpdated, object: nil))
             })
             .mapToVoid()
             .do(onNext: router.toDismissNavVc)
@@ -246,6 +247,8 @@ private func createContactViewModelsFor(registeredUsers: [User]) -> [IndividualC
 
 private func updateReply(_ reply: PromptReply?, contactNumbers: [String]) -> PromptReply {
     guard let replyCopy = reply else { return PromptReply() }
+    let stringObjects = contactNumbers.map { StringObject($0) }
+    replyCopy.visibleOnlyToContactNumbers.append(objectsIn: stringObjects)
     replyCopy.visibleOnlyToPhoneNumbers.append(objectsIn: contactNumbers)
     replyCopy.visibility = Visibility.individualContacts.rawValue
     return replyCopy

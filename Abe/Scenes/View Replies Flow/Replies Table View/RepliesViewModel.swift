@@ -23,19 +23,13 @@ protocol RepliesViewModelOutputs {
     var unlockedReplies: Driver<[ReplyViewModel]> { get }
     var updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)> { get }
     var currentUserReplyAndScores: Driver<(ReplyViewModel, PercentageGraphViewModel)> { get }
-    var stillUnreadFromFriendsCount: Driver<String> { get }
+    var stillUnreadFromFriendsCount: Driver<Int> { get }
     var prompt: Driver<Prompt> { get }
 }
 
 protocol RepliesViewModelType {
     var inputs: RepliesViewModelInputs { get }
     var outputs: RepliesViewModelOutputs { get }
-}
-
-enum FilterOption: Int {
-    case locked = 1
-    case unlocked = 2
-    case myReply = 3
 }
 
 final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, RepliesViewModelOutputs {
@@ -61,7 +55,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let unlockedReplies: Driver<[ReplyViewModel]>
     let updateReplyWithSavedScore: Driver<(PromptReply, IndexPath)>
     let currentUserReplyAndScores: Driver<(ReplyViewModel, PercentageGraphViewModel)>
-    let stillUnreadFromFriendsCount: Driver<String>
+    let stillUnreadFromFriendsCount: Driver<Int>
     let prompt: Driver<Prompt>
 
 //MARK: - Init
@@ -107,9 +101,19 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let didUserReplyObservable = viewWillAppearObservable
             .map { _ in currentUser.value.didReply(to: prompt) }
         
+//        tabSelectedObservable
+//            .filter { $0 == .locked && currentUser.value.didReply(to: prompt) }
+//            .map { $0.publicRepliesByCurrentUsersFriendsPredicate(currentUser: user) }
+//            .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
+//            .map { prompt.replies.filter($0) }
+//            .do(onNext: { (results) in
+//                print("I found \(results.count) results")
+//            })
+//            .subscribe()
+//            .disposed(by: disposeBag)
+        
         let lockedRepliesTupleObservable = tabSelectedObservable
             .filter { $0 == .locked }
-            .map { _ in currentUser.value.didReply(to: prompt) }
             .map { _ in prompt.replies.toArray() }
             .map { sortReplies($0,
                                forLockedFeed: true,
@@ -185,8 +189,8 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
             .asDriverOnErrorJustComplete()
         
         self.stillUnreadFromFriendsCount = lockedRepliesTupleObservable
-            .map { "\($0.friends.count) replies from friends still locked!" }
-            .asDriver(onErrorJustReturn: "")
+            .map { $0.friends.count }
+            .asDriver(onErrorJustReturn: 0)
 
 //MARK: - Routing
         backButtonTappedObservable
@@ -229,7 +233,12 @@ private func sortReplies(_ replies: [PromptReply],
         //If reply is viewable only by certain contacts
         guard reply.visibility != Visibility.individualContacts.rawValue else {
             if reply.isViewableBy(currentUser: currentUser) {
-                userFriendsReplies.append(ReplyViewModel(reply: reply, ratingScore: userRating.score, isCurrentUsersFriend: true, isUnlocked: forLockedFeed ? false : true))
+                userFriendsReplies.append(
+                    ReplyViewModel(reply: reply,
+                                   ratingScore: userRating.score,
+                                   isCurrentUsersFriend: true,
+                                   isUnlocked: forLockedFeed ? false : true)
+                )
             }
             continue
         }
@@ -263,6 +272,26 @@ private func mergeAndRandomize(friends: [PromptReply], others:[PromptReply], per
     let remainingReplies = others[othersNeeded.count..<others.count]
     return topRepliesRandomized + remainingReplies
 }
+
+
+//        let lockedPublicFriendsReplies = tabSelectedObservable
+//            .filter { $0 == .locked && currentUser.value.didReply(to: prompt) }
+//            .map { $0.publicRepliesByCurrentUsersFriendsPredicate(currentUser: user) }
+//            .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
+//            .map { prompt.replies.filter($0) }
+//
+//        let lockedPrivateFriendsReplies = tabSelectedObservable
+//            .filter { $0 == .locked && currentUser.value.didReply(to: prompt) }
+//            .map { $0.privateRepliesByCurrentUsersFriends(currentUser: user) }
+//            .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
+//            .map { prompt.replies.filter($0) }
+//
+//        let lockedPublicNotFriendsReplies = tabSelectedObservable
+//            .filter { $0 == .locked && currentUser.value.didReply(to: prompt) }
+//            .map { $0.publicRepliesByNotCurrentUsersFriends(currentUser: user) }
+//            .map { NSCompoundPredicate(andPredicateWithSubpredicates: $0) }
+//            .map { prompt.replies.filter($0) }
+
 
 //private func didUserCastScoreFor(reply: PromptReply,
 //                                 userId: String) -> Bool {

@@ -22,6 +22,7 @@ struct CreateReplyViewModel {
         let inputIsValid: Driver<Bool>
         let currentPrompt: Driver<Prompt>
         let promptDidUpdate: Observable<Void>
+        let dismissVc: Driver<Void>
         let loading: Driver<Bool>
         let errors: Driver<Error>
     }
@@ -60,9 +61,14 @@ struct CreateReplyViewModel {
             .do(onNext: { input in self.router.toReplyOptions(with: input) })
             .mapToVoid()
         
+        let dismissVc = input.cancelTrigger
+            .do(onNext: router.toPromptDetail )
+            .mapToVoid()
+        
         return Output(inputIsValid: inputIsValid,
                       currentPrompt: currentPrompt,
                       promptDidUpdate: promptDidUpdate,
+                      dismissVc: dismissVc,
                       loading: loading,
                       errors: errors)
     }

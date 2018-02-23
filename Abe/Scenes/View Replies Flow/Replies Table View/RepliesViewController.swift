@@ -31,6 +31,7 @@ class RepliesViewController: UIViewController, BindableType {
     private var backButton: UIButton!
     
     private var userDidReply: Bool = false
+    private var currentTab: FilterOption = .locked
     
     override func loadView() {
         super.loadView()
@@ -56,7 +57,7 @@ class RepliesViewController: UIViewController, BindableType {
         super.viewWillAppear(animated)
         guard !userDidReply else { return }
         viewModel.inputs.viewWillAppear.onNext(())
-        viewModel.inputs.filterOptionSelected.onNext(.locked)
+        viewModel.inputs.filterOptionSelected.onNext(self.currentTab)
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -72,14 +73,17 @@ class RepliesViewController: UIViewController, BindableType {
         //MARK: - Inputs
         let lockedTapped = tabOptionsView.button(at: 0).rx.tap
             .map { _ in FilterOption.locked }
+            .do(onNext: { [weak self] in self?.currentTab = $0 })
             .asDriverOnErrorJustComplete()
         
         let unlockedTapped = tabOptionsView.button(at: 1).rx.tap
             .map { _ in FilterOption.unlocked }
+            .do(onNext: { [weak self] in self?.currentTab = $0 })
             .asDriverOnErrorJustComplete()
         
         let myReplyTapped = tabOptionsView.button(at: 2).rx.tap
             .map { _ in FilterOption.myReply }
+            .do(onNext: { [weak self] in self?.currentTab = $0 })
             .asDriverOnErrorJustComplete()
         
         let filterOptionTapped = Observable
@@ -87,6 +91,14 @@ class RepliesViewController: UIViewController, BindableType {
             .merge()
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: .locked)
+        
+        _ = NotificationCenter.default.rx
+            .notification(NSNotification.Name.reloadCurrentRepliesTab)
+            .subscribe(onNext: { [weak self] _ in
+                guard let sSelf = self else { return }
+                sSelf.viewModel.inputs.filterOptionSelected.onNext(sSelf.currentTab)
+            })
+            .disposed(by: disposeBag)
         
         createReplyButton.rx.tap.asDriver()
             .drive(viewModel.inputs.createReplyTapped)
@@ -128,7 +140,7 @@ class RepliesViewController: UIViewController, BindableType {
         
         viewModel.outputs.lockedReplies.drive(onNext: { [weak self] inputs in
             self?.tabOptionsView.isHidden = inputs.userDidReply ? false : true
-            self?.createReplyButton.isHidden = inputs.userDidReply ? true : false
+            //self?.createReplyButton.isHidden = inputs.userDidReply ? true : false
             guard inputs.userDidReply else {
                 self?.dataSource.loadBeforeUserRepliedState(replyCount: inputs.replies.count)
                 return
@@ -170,7 +182,11 @@ class RepliesViewController: UIViewController, BindableType {
         
         viewModel.outputs.stillUnreadFromFriendsCount
             .drive(onNext: { [weak self] in
-                self?.summaryView.topLabel.text = $0
+                guard $0 > 0 else {
+                    self?.summaryView.topView.isHidden = true
+                    return
+                }
+                self?.summaryView.topLabel.text = "\($0) replies from friends still unread!"
             })
             .disposed(by: disposeBag)
         

@@ -135,7 +135,7 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         view.addSubview(headerStackView)
         headerStackView.snp.makeConstraints { (make) in
             make.left.right.equalTo(view).inset(20)
-            make.top.equalTo(doneButton.snp.bottom).offset(10)
+            make.top.equalTo(doneButton.snp.bottom).offset(6)
         }
     }
 

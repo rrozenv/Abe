@@ -255,5 +255,6 @@ extension Notification.Name {
     static let closeLoginVC = Notification.Name("close-login-view-controller")
     static let logout = Notification.Name("logout")
     static let locationChanged = Notification.Name("locationChanged")
+    static let reloadCurrentRepliesTab = Notification.Name("reloadCurrentRepliesTab")
 }
 

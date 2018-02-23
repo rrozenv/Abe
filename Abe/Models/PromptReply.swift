@@ -11,6 +11,7 @@ class PromptReply: Object {
     @objc dynamic var createdAt = Date()
     let scores = List<ReplyScore>()
     let visibleOnlyToPhoneNumbers = List<String>()
+    let visibleOnlyToContactNumbers = List<StringObject>()
     
     override static func primaryKey() -> String? {
         return "id"
