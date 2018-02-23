@@ -157,6 +157,8 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     }
     
     func configureWith(value: ReplyViewModel) {
+//        guard let user = AppController.shared.currentUser.value else { fatalError() }
+//        if value.reply.user?.id == user.id { hideRateButton() }
         replyHeaderView.nameLabel.text = value.isUnlocked ? value.reply.user?.name : "Identity Locked"
         replyHeaderView.nameSubLabel.text = value.isCurrentUsersFriend ? "From Contacts" : ""
         replyHeaderView.replyBodyLabel.text = value.reply.body
@@ -183,8 +185,8 @@ final class RateReplyTableCell: UITableViewCell, ValueCell {
     }
     
     func hideRateButton() {
-        rateReplyButton.isHidden = true
         ratingsSummaryButton.isHidden = true
+        rateReplyButton.isHidden = true
     }
     
     private func setupContainerView() {

@@ -7,6 +7,7 @@ protocol PromptDetailRoutingLogic {
     func toCreateReply(for prompt: Prompt)
     func toRateReply(reply: PromptReply, isCurrentUsersFriend: Bool)
     func toRatingsSummary(reply: PromptReply, userReplyScore: ReplyScore?)
+    func toWebView(urlString: String)
 }
 
 final class PromptDetailRouter: PromptDetailRoutingLogic {
@@ -56,6 +57,14 @@ final class PromptDetailRouter: PromptDetailRoutingLogic {
         vc.setViewModelBinding(model: viewModel!)
         viewModel?.inputs.viewDidLoadInput.onNext(())
         navigationController.present(navVc, animated: true, completion: nil)
+    }
+    
+    func toWebView(urlString: String) {
+        var vc = WebLinkViewController()
+        let vm = WebLinkViewModel(urlString: urlString)
+        vc.setViewModelBinding(model: vm)
+        vm.inputs.viewDidLoadInput.onNext(())
+        navigationController.present(vc, animated: true, completion: nil)
     }
     
 }

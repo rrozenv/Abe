@@ -108,6 +108,11 @@ class RepliesViewController: UIViewController, BindableType {
             .drive(viewModel.inputs.filterOptionSelected)
             .disposed(by: disposeBag)
         
+        summaryView.webLinkView.actionButton.rx.tap.mapToVoid()
+            .map { [weak self] in self?.summaryView.webLinkView.thumbnail?.url }.unwrap()
+            .bind(to: viewModel.inputs.webLinkTappedInput)
+            .disposed(by: disposeBag)
+        
         backButton.rx.tap.asDriver()
             .drive(viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)

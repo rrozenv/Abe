@@ -124,7 +124,7 @@ final class BarGraphView: UIView {
     
     private func setupImageStackBackgroundView() {
         imageStackBackgroundView = UIView()
-        imageStackBackgroundView.backgroundColor = Palette.faintGrey.color
+        imageStackBackgroundView.backgroundColor = Palette.darkYellow.color
         
         containerView.insertSubview(imageStackBackgroundView, belowSubview: imageStackView)
         imageStackBackgroundView.snp.makeConstraints { (make) in

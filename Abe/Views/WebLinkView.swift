@@ -10,6 +10,7 @@ final class WebThumbnailView: UIView {
     var titleLabel: UILabel!
     var urlLabel: UILabel!
     var labelsStackView: UIStackView!
+    var actionButton: UIButton!
     
     var placeholderBackgroundView: UIView!
     var placeholderImageView: UIImageView!
@@ -51,6 +52,7 @@ final class WebThumbnailView: UIView {
         self.layer.masksToBounds = true
         setupImageView()
         setupLabelsStackView()
+        setupActionButton()
         setupPlaceholderBackgroundView()
         setupPlaceholderImageView()
         setupLoadingIndicator()
@@ -89,6 +91,16 @@ final class WebThumbnailView: UIView {
             make.centerY.equalTo(self.snp.centerY)
             make.left.equalTo(imageView.snp.right).offset(10)
             make.right.equalTo(self.snp.right).offset(-10)
+        }
+    }
+    
+    private func setupActionButton() {
+        actionButton = UIButton()
+        actionButton.backgroundColor = UIColor.clear
+        
+        self.insertSubview(actionButton, aboveSubview: labelsStackView)
+        actionButton.snp.makeConstraints { (make) in
+            make.edges.equalTo(labelsStackView)
         }
     }
     

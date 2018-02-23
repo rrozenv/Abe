@@ -40,6 +40,11 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
         super.viewWillAppear(animated)
         viewModel.inputs.viewWillAppearInput.onNext(())
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        //searchBar.resignFirstResponder()
+    }
    
     override var inputAccessoryView: UIView? { get { return createReplyButton } }
     override var canBecomeFirstResponder: Bool { return true }

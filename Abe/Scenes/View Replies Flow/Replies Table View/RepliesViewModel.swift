@@ -13,6 +13,7 @@ protocol RepliesViewModelInputs {
     var backButtonTappedInput: AnyObserver<Void> { get }
     var rateReplyButtonTappedInput: AnyObserver<(PromptReply, Bool)> { get }
     var viewRatingsForReplyTappedInput: AnyObserver<PromptReply> { get }
+    var webLinkTappedInput: AnyObserver<String> { get }
 }
 
 protocol RepliesViewModelOutputs {
@@ -45,6 +46,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
     let backButtonTappedInput: AnyObserver<Void>
     let rateReplyButtonTappedInput: AnyObserver<(PromptReply, Bool)>
     let viewRatingsForReplyTappedInput: AnyObserver<PromptReply>
+    let webLinkTappedInput: AnyObserver<String>
 
 //MARK: - Outputs
     var outputs: RepliesViewModelOutputs { return self }
@@ -76,6 +78,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let _backButtonTappedInput = PublishSubject<Void>()
         let _rateReplyButtonTappedInput = PublishSubject<(PromptReply, Bool)>()
         let _viewRatingsForReplyTappedInput = PublishSubject<PromptReply>()
+        let _webLinkTappedInput = PublishSubject<String>()
         
 //MARK: - Observers
         self.viewWillAppear = _viewWillAppear.asObserver()
@@ -85,6 +88,7 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         self.backButtonTappedInput = _backButtonTappedInput.asObserver()
         self.rateReplyButtonTappedInput = _rateReplyButtonTappedInput.asObserver()
         self.viewRatingsForReplyTappedInput = _viewRatingsForReplyTappedInput.asObserver()
+        self.webLinkTappedInput = _webLinkTappedInput.asObserver()
 
 //MARK: - First Level Observables
         let viewWillAppearObservable = _viewWillAppear.asObservable()
@@ -96,10 +100,13 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let backButtonTappedObservable = _backButtonTappedInput.asObservable()
         let rateReplyButtonTappedObservable = _rateReplyButtonTappedInput.asObservable()
         let viewRatingsForReplyTappedObservable = _viewRatingsForReplyTappedInput.asObservable()
+        let webLinkTappedObservable = _webLinkTappedInput.asObservable()
 
 //MARK: - Second Level Observables
         let didUserReplyObservable = viewWillAppearObservable
             .map { _ in currentUser.value.didReply(to: prompt) }
+        
+
         
 //        tabSelectedObservable
 //            .filter { $0 == .locked && currentUser.value.didReply(to: prompt) }
@@ -205,6 +212,11 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         
         viewRatingsForReplyTappedObservable
             .do(onNext: { router.toRatingsSummary(reply: $0, userReplyScore: $0.ratingCastedBy(user: user)) })
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+        webLinkTappedObservable
+            .do(onNext: router.toWebView)
             .subscribe()
             .disposed(by: disposeBag)
     }

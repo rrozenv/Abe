@@ -18,7 +18,7 @@ protocol GuessAndWagerValidationViewModelInputs {
 protocol GuessAndWagerValidationViewModelOutputs {
     var unlockedReplyViewModel: Driver<ReplyViewModel> { get }
     var userCoinsAndWagerResult: Driver<(user: User, wager: Int, isCorrect: Bool)> { get }
-    var isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User)> { get }
+    var isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User, wager: Int?)> { get }
     var replyScores: Driver<[ReplyScore]> { get }
     var percentageGraphInfo: Driver<PercentageGraphViewModel> { get }
     var isGuessedUserHidden: Driver<Bool> { get }
@@ -43,7 +43,7 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
     let unlockedReplyViewModel: Driver<ReplyViewModel>
     let userCoinsAndWagerResult: Driver<(user: User, wager: Int, isCorrect: Bool)>
     let replyScores: Driver<[ReplyScore]>
-    let isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User)>
+    let isUserCorrect: Driver<(isCorrect: Bool, guessedUser: User, wager: Int?)>
     let percentageGraphInfo: Driver<PercentageGraphViewModel>
     let isGuessedUserHidden: Driver<Bool>
     
@@ -78,7 +78,9 @@ final class GuessAndWagerValidationViewModel: GuessAndWagerValidationViewModelIn
 //MARK: - Second Level Observables
         let isUserCorrectObservable = viewDidLoadObservable
             .filter { guessedUser != nil }
-            .map { (isCorrect: reply.user!.id == guessedUser!.id, guessedUser: guessedUser!) }
+            .map { (isCorrect: reply.user!.id == guessedUser!.id,
+                    guessedUser: guessedUser!,
+                    wager: wager) }
             .share()
         
         let didSaveScoreObservable = viewDidLoadObservable.mapToVoid()

@@ -9,6 +9,8 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
     var viewModel: GuessAndWagerValidationViewModel!
     
     private var doneButton: UIButton!
+    private var titleLabel: UILabel!
+    private var rightLabel: UILabel!
     private var guessedUserView: GuessedUserView!
     private var dividerView: UIView!
     private var headerStackView: UIStackView!
@@ -49,14 +51,22 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         //MARK: - Outputs
         viewModel.outputs.isUserCorrect
             .drive(onNext: { [weak self] in
-                self?.guessedUserView.nameLabel.text = $0.guessedUser.name
-                self?.guessedUserView.nameSubLabel.text = "YOUR GUESS"
-                self?.guessedUserView.backgroundColor = $0.isCorrect ? UIColor.green : UIColor.red
+                self?.titleLabel.text = $0.isCorrect ? "CORRECT" : "INCORRECT"
+                self?.titleLabel.textColor = Palette.red.color
+                
+                guard let wager = $0.wager, wager > 0 else { return }
+                self?.rightLabel.text = $0.isCorrect ? "+ \(wager)" : "- \(wager)"
+//                self?.guessedUserView.nameLabel.text = $0.guessedUser.name
+//                self?.guessedUserView.nameSubLabel.text = "YOUR GUESS"
+//                self?.guessedUserView.backgroundColor = $0.isCorrect ? UIColor.green : UIColor.red
             })
             .disposed(by: disposeBag)
         
         viewModel.outputs.isGuessedUserHidden
-            .drive(guessedUserView.rx.isHidden)
+            .drive(onNext: { [weak self] in
+                self?.titleLabel.isHidden = $0
+                self?.rightLabel.isHidden = $0
+            })
             .disposed(by: disposeBag)
         
         viewModel.outputs.unlockedReplyViewModel
@@ -121,22 +131,48 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
     }
     
     private func setupHeaderStackView() {
-        guessedUserView = GuessedUserView(height: 80)
-        
+        //guessedUserView = GuessedUserView(height: 80)
+     
         dividerView = UIView()
         dividerView.backgroundColor = Palette.faintGrey.color
-        dividerView.snp.makeConstraints { (make) in make.height.equalTo(2) }
         
-        let views: [UIView] = [guessedUserView, dividerView]
-        headerStackView = UIStackView(arrangedSubviews: views)
-        headerStackView.axis = .vertical
-        headerStackView.spacing = 10.0
-        
-        view.addSubview(headerStackView)
-        headerStackView.snp.makeConstraints { (make) in
-            make.left.right.equalTo(view).inset(20)
-            make.top.equalTo(doneButton.snp.bottom).offset(6)
+        view.addSubview(dividerView)
+        dividerView.snp.makeConstraints { (make) in
+            make.height.equalTo(2)
+            make.left.right.equalTo(view)
+            make.top.equalTo(doneButton.snp.bottom).offset(4)
         }
+        
+        titleLabel = UILabel()
+        titleLabel.numberOfLines = 1
+        titleLabel.font = FontBook.BariolBold.of(size: 16)
+        
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { (make) in
+            make.centerX.equalTo(view)
+            make.centerY.equalTo(doneButton).offset(12)
+        }
+        
+        rightLabel = UILabel()
+        rightLabel.numberOfLines = 1
+        rightLabel.font = FontBook.BariolBold.of(size: 16)
+        
+        view.addSubview(rightLabel)
+        rightLabel.snp.makeConstraints { (make) in
+            make.right.equalTo(view).offset(-20)
+            make.centerY.equalTo(doneButton).offset(12)
+        }
+        
+//        let views: [UIView] = [guessedUserView, dividerView]
+//        headerStackView = UIStackView(arrangedSubviews: views)
+//        headerStackView.axis = .vertical
+//        headerStackView.spacing = 10.0
+//
+//        view.addSubview(headerStackView)
+//        headerStackView.snp.makeConstraints { (make) in
+//            make.left.right.equalTo(view).inset(20)
+//            make.top.equalTo(doneButton.snp.bottom).offset(6)
+//        }
     }
 
     private func setupTableView() {
@@ -154,10 +190,10 @@ final class GuessAndWagerValidationViewController: UIViewController, BindableTyp
         tableView.register(RatingPercentageGraphCell.self, forCellReuseIdentifier: RatingPercentageGraphCell.defaultReusableId)
         tableView.register(SavedReplyScoreTableCell.self, forCellReuseIdentifier: SavedReplyScoreTableCell.defaultReusableId)
         
-        view.addSubview(tableView)
+        view.insertSubview(tableView, belowSubview: dividerView)
         tableView.snp.makeConstraints { (make) in
             make.left.right.bottom.equalTo(view)
-            make.top.equalTo(headerStackView.snp.bottom)
+            make.top.equalTo(dividerView.snp.bottom)
         }
     }
     
