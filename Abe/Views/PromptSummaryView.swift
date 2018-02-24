@@ -79,8 +79,8 @@ final class PromptSummaryView: UIView {
         contentStackView.snp.makeConstraints { (make) in
             make.top.equalTo(containerView).offset(18)
             make.bottom.equalTo(containerView).offset(-18)
-            make.left.equalTo(containerView).offset(26)
-            make.right.equalTo(containerView).offset(-26)
+            make.left.equalTo(containerView).offset(20)
+            make.right.equalTo(containerView).offset(-20)
         }
     }
     

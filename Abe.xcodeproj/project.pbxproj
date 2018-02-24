@@ -89,6 +89,10 @@
 		98676859201292E600D0421C /* WebLinkThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98676858201292E600D0421C /* WebLinkThumbnail.swift */; };
 		9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9867685A201294B700D0421C /* PromptHeaderView.swift */; };
 		98691C35202547E800FE2180 /* TabOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98691C34202547E800FE2180 /* TabOptionsView.swift */; };
+		986975B02041DB4D0097FCBC /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986975AF2041DB4D0097FCBC /* SettingsViewController.swift */; };
+		986975B22041DB5B0097FCBC /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986975B12041DB5B0097FCBC /* SettingsViewModel.swift */; };
+		986975B42041DC5E0097FCBC /* SettingsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986975B32041DC5E0097FCBC /* SettingsDataSource.swift */; };
+		986975B62041DEAE0097FCBC /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986975B52041DEAE0097FCBC /* SettingCell.swift */; };
 		9883A8BC203BB98C00D2E423 /* CommentForRatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883A8BB203BB98C00D2E423 /* CommentForRatingViewController.swift */; };
 		9883A8BE203BB99D00D2E423 /* CommentForRatingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883A8BD203BB99D00D2E423 /* CommentForRatingViewModel.swift */; };
 		9883A8C0203BB9AA00D2E423 /* CommentForRatingRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9883A8BF203BB9AA00D2E423 /* CommentForRatingRouter.swift */; };
@@ -258,6 +262,10 @@
 		98676858201292E600D0421C /* WebLinkThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkThumbnail.swift; sourceTree = "<group>"; };
 		9867685A201294B700D0421C /* PromptHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptHeaderView.swift; sourceTree = "<group>"; };
 		98691C34202547E800FE2180 /* TabOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabOptionsView.swift; sourceTree = "<group>"; };
+		986975AF2041DB4D0097FCBC /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		986975B12041DB5B0097FCBC /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		986975B32041DC5E0097FCBC /* SettingsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDataSource.swift; sourceTree = "<group>"; };
+		986975B52041DEAE0097FCBC /* SettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		9883A8BB203BB98C00D2E423 /* CommentForRatingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentForRatingViewController.swift; sourceTree = "<group>"; };
 		9883A8BD203BB99D00D2E423 /* CommentForRatingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentForRatingViewModel.swift; sourceTree = "<group>"; };
 		9883A8BF203BB9AA00D2E423 /* CommentForRatingRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentForRatingRouter.swift; sourceTree = "<group>"; };
@@ -486,6 +494,7 @@
 			isa = PBXGroup;
 			children = (
 				984F379820070D5600C62E6E /* Login Flow */,
+				986975AE2041DB360097FCBC /* Settings */,
 				98481453203E1943009215DA /* Home Page Controller */,
 				980DE5B51FE5B5A80087C6C3 /* Prompts List */,
 				9848144A203DE1D3009215DA /* Profile */,
@@ -667,8 +676,7 @@
 		984F379A20070DB600C62E6E /* View Replies Flow */ = {
 			isa = PBXGroup;
 			children = (
-				98D38E242040D337008AFA94 /* WebLinkViewController.swift */,
-				98D38E262040D391008AFA94 /* WebLinkViewModel.swift */,
+				98D38E282040DC87008AFA94 /* Web View */,
 				9862867420006A4B00502294 /* Replies Table View */,
 				980974B62017D4D800FBCE9B /* Guess And Reply Validation */,
 				980974B42017D44300FBCE9B /* Input Wager */,
@@ -708,6 +716,16 @@
 				989317211FE6F3E300E2979F /* PromptDetailRouter.swift */,
 			);
 			path = "Replies Table View";
+			sourceTree = "<group>";
+		};
+		986975AE2041DB360097FCBC /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				986975AF2041DB4D0097FCBC /* SettingsViewController.swift */,
+				986975B12041DB5B0097FCBC /* SettingsViewModel.swift */,
+				986975B32041DC5E0097FCBC /* SettingsDataSource.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		9883A8C1203BB9B200D2E423 /* Comment For Rating  */ = {
@@ -750,6 +768,7 @@
 				9862867220005E0900502294 /* ReplyTableCell.swift */,
 				984F378B2007080E00C62E6E /* SavedReplyScoreTableCell.swift */,
 				983DB1EB200C3B5A004FC2D0 /* UserContactTableCell.swift */,
+				986975B52041DEAE0097FCBC /* SettingCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -809,6 +828,15 @@
 				98D04DD2201B84A90099EF29 /* Bariol_Regular.otf */,
 			);
 			path = Bariol_Font;
+			sourceTree = "<group>";
+		};
+		98D38E282040DC87008AFA94 /* Web View */ = {
+			isa = PBXGroup;
+			children = (
+				98D38E242040D337008AFA94 /* WebLinkViewController.swift */,
+				98D38E262040D391008AFA94 /* WebLinkViewModel.swift */,
+			);
+			path = "Web View";
 			sourceTree = "<group>";
 		};
 		98F671FB1FFEA1ED001DE88E /* Phone Entry */ = {
@@ -1125,6 +1153,7 @@
 			files = (
 				98481450203DE207009215DA /* ProfileRouter.swift in Sources */,
 				980974BA2017D52600FBCE9B /* GuessAndWagerValidationViewModel.swift in Sources */,
+				986975B62041DEAE0097FCBC /* SettingCell.swift in Sources */,
 				98FA2D7F202BDFEC00901E0E /* CreateUserViewController.swift in Sources */,
 				989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */,
 				981545D520102EEF0001F675 /* GIFImageService.swift in Sources */,
@@ -1148,6 +1177,7 @@
 				98481452203E04D2009215DA /* ProfileHeaderView.swift in Sources */,
 				983297B7202F6A670043E3B0 /* SignupLoginViewModel.swift in Sources */,
 				98986A082029138800FBB869 /* PromptPageRouter.swift in Sources */,
+				986975B42041DC5E0097FCBC /* SettingsDataSource.swift in Sources */,
 				984F3786200704E700C62E6E /* ReplyCellViewModel.swift in Sources */,
 				9854D252200053A700D7B7EB /* ValueCellDataSource.swift in Sources */,
 				980974AD2017C52900FBCE9B /* InputWagerViewController.swift in Sources */,
@@ -1178,6 +1208,7 @@
 				98FEE7C91FE4CB5000CD80A8 /* PromptView.swift in Sources */,
 				9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */,
 				985C2A5A1FFDAC670034E116 /* EnableContactsViewController.swift in Sources */,
+				986975B22041DB5B0097FCBC /* SettingsViewModel.swift in Sources */,
 				98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */,
 				982B27CE20151BB700824E82 /* RateReplyRouter.swift in Sources */,
 				985B14C2202647B20017306E /* PromptPageViewModel.swift in Sources */,
@@ -1256,6 +1287,7 @@
 				982531001FF41568000E6E20 /* TabBarView.swift in Sources */,
 				9862867320005E0900502294 /* ReplyTableCell.swift in Sources */,
 				98FEE7BF1FE4BC6200CD80A8 /* PromptTableCell.swift in Sources */,
+				986975B02041DB4D0097FCBC /* SettingsViewController.swift in Sources */,
 				989317251FE6F3E400E2979F /* PromptDetailViewController.swift in Sources */,
 				9823322B1FF7E09800C3CB49 /* PromptService.swift in Sources */,
 				980DE5B31FE5B51B0087C6C3 /* RealmConstants.swift in Sources */,

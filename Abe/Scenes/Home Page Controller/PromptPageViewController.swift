@@ -4,7 +4,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class PromptPageViewController: UIViewController {
+final class PromptPageViewController: UIViewController , ChildViewControllerManager {
     
     private var viewModel: PromptPageViewModel!
     private var dataSource: PromptPagesDataSource!
@@ -14,6 +14,8 @@ final class PromptPageViewController: UIViewController {
     private var createPromptButton: UIButton!
     private var customNavBar: CustomNavigationBar!
     private var lastContentOffset: CGFloat = 0
+    private var settingsViewController: SettingsViewController!
+    private var settingsDisplayed = false
     
     override func loadView() {
         super.loadView()
@@ -29,6 +31,7 @@ final class PromptPageViewController: UIViewController {
         let router = PromptPageRouter(navigationController: self.navigationController!)
         viewModel = PromptPageViewModel(vcType: .homeVc, router: router)
         bindViewModel()
+        setupSettingsViewController()
     }
     
     func bindViewModel() {
@@ -54,6 +57,11 @@ final class PromptPageViewController: UIViewController {
         
         customNavBar.rightButton.rx.tap
             .bind(to: viewModel.inputs.profileTappedInput)
+            .disposed(by: disposeBag)
+        
+        customNavBar.leftButton.rx.tap
+            .do(onNext: { [weak self] in self?.toggleChildSettingsVc() })
+            .subscribe()
             .disposed(by: disposeBag)
         
         //MARK: - Outputs
@@ -199,6 +207,36 @@ extension PromptPageViewController: UIPageViewControllerDelegate {
             else { return }
         viewModel.inputs.willTransitionToPageInput.onNext(idx)
     }
+}
+
+extension PromptPageViewController: SettingsDelegate {
+    
+    func setupSettingsViewController() {
+        settingsViewController = SettingsViewController()
+        settingsViewController.delegate = self
+        let vm = SettingsViewModel()
+        settingsViewController.setViewModelBinding(model: vm!)
+        vm?.inputs.viewDidLoadInput.onNext(())
+    }
+    
+    func closeSettings() {
+        self.toggleChildSettingsVc()
+    }
+    
+    func toggleChildSettingsVc() {
+        if settingsDisplayed {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.removeChildViewController(self.settingsViewController, completion: nil)
+            })
+            self.settingsDisplayed = false
+        } else {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.addChildViewController(self.settingsViewController, frame: self.view.frame, animated: false)
+            })
+            self.settingsDisplayed = true
+        }
+    }
+    
 }
 
 //extension PromptPageViewController: UIScrollViewDelegate {
