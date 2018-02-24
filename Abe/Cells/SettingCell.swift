@@ -26,14 +26,15 @@ final class SettingCell: UITableViewCell, ValueCell {
         self.contentView.backgroundColor = UIColor.white
         self.selectionStyle = .none
         setupContainerView()
-        setupTitleLabel()
         setupIconImageView()
+        setupTitleLabel()
     }
     
     // MARK: - Configuration
     func configureWith(value: Setting) {
+        //updateImageViewContraintsFor(settingType: value.type)
         mainLabel.text = value.type.rawValue
-        iconImageView.image = value.iconImage
+        //iconImageView.image = value.iconImage
     }
     
 }
@@ -60,18 +61,39 @@ extension SettingCell {
         containerView.addSubview(mainLabel)
         mainLabel.translatesAutoresizingMaskIntoConstraints = false
         mainLabel.snp.makeConstraints { (make) in
-            make.center.equalTo(containerView.snp.center)
+            make.centerY.equalTo(containerView)
+            make.left.equalTo(iconImageView.snp.right).offset(12)
         }
     }
     
     private func setupIconImageView() {
         iconImageView = UIImageView()
-        iconImageView.contentMode = .scaleAspectFit
+        iconImageView.contentMode = .scaleAspectFill
         
         containerView.addSubview(iconImageView)
         iconImageView.snp.makeConstraints { (make) in
             make.left.equalTo(containerView).offset(20)
+            make.width.height.equalTo(20)
             make.centerY.equalTo(containerView)
+        }
+    }
+    
+    private func updateImageViewContraintsFor(settingType: SettingType) {
+        switch settingType {
+        case .feedback:
+            iconImageView.snp.updateConstraints { (make) in
+                make.width.equalTo(11)
+                make.height.equalTo(11)
+            }
+        case .share:
+            iconImageView.snp.updateConstraints { (make) in
+                make.width.equalTo(15)
+                make.height.equalTo(12)
+            }
+        case .logout:
+            iconImageView.snp.updateConstraints { (make) in
+                make.width.height.equalTo(15)
+            }
         }
     }
     

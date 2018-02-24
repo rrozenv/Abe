@@ -110,9 +110,12 @@ class PromptsListViewController: UIViewController, BindableType {
             })
             .disposed(by: disposeBag)
         
-        viewModel.outputs.activityIndicator
-            .drive(activityIndicator.rx.isAnimating)
-            .disposed(by: disposeBag)
+//        viewModel.outputs.activityIndicator
+//            .drive(onNext: { [weak self] in
+//                if $0 { self?.activityIndicator.startAnimating() }
+//                else { self?.activityIndicator.stopAnimating() }
+//            })
+//            .disposed(by: disposeBag)
     }
     
 }

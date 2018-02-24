@@ -14,15 +14,18 @@ class SettingsViewController: UIViewController, BindableType {
     let disposeBag = DisposeBag()
     let dataSource = SettingsDataSource()
     var viewModel: SettingsViewModel!
+    private var opaqueButton: UIButton!
+    private var tableBackgroundView: UIView!
     private var tableView: UITableView!
     private var tableViewHeightConstraint: Constraint!
     weak var delegate: SettingsDelegate?
     
     override func loadView() {
         super.loadView()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.6)
-        setupBackgroundViewGesture()
+        view.backgroundColor = UIColor.clear
         setupTableView()
+        setupTableBackgroundView()
+        setupOpaqueButton()
     }
     
     override func viewDidLoad() {
@@ -58,7 +61,6 @@ class SettingsViewController: UIViewController, BindableType {
     }
     
     @objc func didTapBackgroundView() {
-        print("dismiss")
         delegate?.closeSettings()
     }
     
@@ -78,21 +80,21 @@ extension SettingsViewController: UITableViewDelegate {
 
 extension SettingsViewController {
     
-    fileprivate func showError(_ error: Error) {
+    private func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
     
     private func setupBackgroundViewGesture() {
-//        let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackgroundView))
-//        gesture.numberOfTapsRequired = 1
-//        gesture.numberOfTouchesRequired = 1
-//        gesture.cancelsTouchesInView = false
-//        view.addGestureRecognizer(gesture)
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(didTapBackgroundView))
+        gesture.numberOfTapsRequired = 1
+        gesture.numberOfTouchesRequired = 1
+        gesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(gesture)
     }
     
-    fileprivate func setupTableView() {
+    private func setupTableView() {
         tableView = UITableView(frame: CGRect.zero, style: .grouped)
         tableView.register(SettingCell.self, forCellReuseIdentifier: SettingCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
@@ -110,6 +112,29 @@ extension SettingsViewController {
             make.centerY.equalTo(view)
             make.width.equalTo(view).multipliedBy(0.7)
             make.height.equalTo(100)
+        }
+    }
+    
+    private func setupTableBackgroundView() {
+        tableBackgroundView = UIView()
+        tableBackgroundView.backgroundColor = UIColor.white
+        
+        view.insertSubview(tableBackgroundView, belowSubview: tableView)
+        tableBackgroundView.snp.makeConstraints { (make) in
+            make.left.top.bottom.equalTo(view)
+            make.width.equalTo(tableView.snp.width)
+        }
+    }
+    
+    private func setupOpaqueButton() {
+        opaqueButton = UIButton()
+        opaqueButton.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        opaqueButton.addTarget(self, action: #selector(didTapBackgroundView), for: .touchUpInside)
+        
+        view.addSubview(opaqueButton)
+        opaqueButton.snp.makeConstraints { (make) in
+            make.right.top.bottom.equalTo(view)
+            make.left.equalTo(tableView.snp.right)
         }
     }
     

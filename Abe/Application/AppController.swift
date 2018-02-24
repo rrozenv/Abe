@@ -225,7 +225,9 @@ extension AppController {
             let homeVc = self.createHomeViewController()
             switchToViewController(homeVc)
         case Notification.Name.closeOnboardingVC: break
-        case Notification.Name.logout: break
+        case Notification.Name.logout:
+            let signupVc = createSignupLoginViewController()
+            switchToViewController(signupVc)
         default:
             fatalError("\(#function) - Unable to match notficiation name.")
         }

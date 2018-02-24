@@ -70,16 +70,18 @@ private func createSettingOptions() -> [Setting] {
     return settingTypes.map { (type) -> Setting in
         switch type {
         case .feedback:
-            return Setting(type: type, iconImage: nil, action: {
+            return Setting(type: type, iconImage: #imageLiteral(resourceName: "IC_Feedback"), action: {
                 print("Feedback action")
             })
         case .share:
-            return Setting(type: type, iconImage: nil, action: {
+            return Setting(type: type, iconImage: #imageLiteral(resourceName: "IC_Share"), action: {
                 print("Share action")
             })
         case .logout:
-            return Setting(type: type, iconImage: nil, action: {
+            return Setting(type: type, iconImage: #imageLiteral(resourceName: "IC_Logout"), action: {
                 print("logout action")
+                RealmAuth.resetDefaultRealm()
+                NotificationCenter.default.post(name: .logout, object: nil)
             })
         }
     }

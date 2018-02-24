@@ -4,7 +4,7 @@ import UIKit
 
 final class PromptPagesDataSource: NSObject, UIPageViewControllerDataSource {
     
-    private let viewControllers: [UIViewController]
+    private var viewControllers: [UIViewController]
     private let visibilites: [Visibility]
     
     internal init(visibilites: [Visibility],
