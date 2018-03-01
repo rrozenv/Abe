@@ -20,6 +20,8 @@ final class SignupLoginRouter: SignupLoginRoutingLogic {
         var vc = SignupLoginViewController()
         let viewModel = SignupLoginViewModel(router: self)
         vc.setViewModelBinding(model: viewModel)
+        viewModel.inputs.viewDidLoadInput.onNext(())
+        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -28,6 +30,7 @@ final class SignupLoginRouter: SignupLoginRoutingLogic {
         let router = EnableContactsRouter(navigationController: navigationController!)
         let viewModel = AllowContactsViewModel(router: router)
         vc.setViewModelBinding(model: viewModel)
+        viewModel.inputs.viewDidLoadInput.onNext(())
         navigationController?.pushViewController(vc, animated: true)
     }
     

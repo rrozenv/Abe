@@ -116,6 +116,7 @@
 		9893172B1FE6F41A00E2979F /* CreateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */; };
 		9893172C1FE6F41A00E2979F /* CreateReplyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317291FE6F41A00E2979F /* CreateReplyViewController.swift */; };
 		98986A082029138800FBB869 /* PromptPageRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98986A072029138800FBB869 /* PromptPageRouter.swift */; };
+		989FB6D92048B82300A16DF5 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989FB6D82048B82300A16DF5 /* OnboardingView.swift */; };
 		98CB44931FFAC82A0085CBFD /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98CB44921FFAC82A0085CBFD /* Notifications.swift */; };
 		98D04DD4201B84A90099EF29 /* Bariol_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 98D04DD2201B84A90099EF29 /* Bariol_Regular.otf */; };
 		98D04DD7201B85260099EF29 /* Bariol_Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 98D04DD6201B85260099EF29 /* Bariol_Bold.otf */; };
@@ -289,6 +290,7 @@
 		989317281FE6F41A00E2979F /* CreateReplyViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewModel.swift; sourceTree = "<group>"; };
 		989317291FE6F41A00E2979F /* CreateReplyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateReplyViewController.swift; sourceTree = "<group>"; };
 		98986A072029138800FBB869 /* PromptPageRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptPageRouter.swift; sourceTree = "<group>"; };
+		989FB6D82048B82300A16DF5 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		98CB44921FFAC82A0085CBFD /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		98D04DD2201B84A90099EF29 /* Bariol_Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bariol_Regular.otf; sourceTree = "<group>"; };
 		98D04DD6201B85260099EF29 /* Bariol_Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bariol_Bold.otf; sourceTree = "<group>"; };
@@ -690,9 +692,9 @@
 		985C2A5B1FFDAC770034E116 /* Enable Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */,
 				985C2A591FFDAC670034E116 /* EnableContactsViewController.swift */,
 				985C2A5C1FFDAC8D0034E116 /* EnableContactsViewModel.swift */,
+				985C2A5E1FFDAC9A0034E116 /* EnableContactsRouter.swift */,
 			);
 			path = "Enable Contacts";
 			sourceTree = "<group>";
@@ -789,6 +791,7 @@
 				988594B6201E98CC0034825E /* UserImageNameSublabelView.swift */,
 				986768552012922C00D0421C /* WebLinkActionButtonsView.swift */,
 				9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */,
+				989FB6D82048B82300A16DF5 /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1227,6 +1230,7 @@
 				985C2A611FFDAE040034E116 /* ContactService.swift in Sources */,
 				980974B82017D51100FBCE9B /* GuessAndWagerValidationViewController.swift in Sources */,
 				98FEE7DF1FE4D5B000CD80A8 /* RealmAuth.swift in Sources */,
+				989FB6D92048B82300A16DF5 /* OnboardingView.swift in Sources */,
 				9836043F20070EC2008A975D /* Extensions.swift in Sources */,
 				9828ABCA200E772100A3A9D1 /* AddWebLinkRouter.swift in Sources */,
 				980974B12017C58F00FBCE9B /* InputWagerViewModel.swift in Sources */,

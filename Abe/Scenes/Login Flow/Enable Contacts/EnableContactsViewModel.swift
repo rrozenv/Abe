@@ -4,11 +4,14 @@ import RxSwift
 import RxCocoa
 
 protocol AllowContactsViewModelInputs {
+    var viewDidLoadInput: AnyObserver<Void> { get }
     var allowContactsTappedInput: AnyObserver<Void> { get }
+    var backButtonTappedInput: AnyObserver<Void> { get }
 }
 
 protocol AllowContactsViewModelOuputs {
     var errorTracker: Driver<Error> { get }
+    var mainText: Driver<(header: String, body: String)> { get }
 }
 
 protocol AllowContactsViewModelType {
@@ -22,11 +25,14 @@ final class AllowContactsViewModel: AllowContactsViewModelInputs, AllowContactsV
     
     //MARK: - Inputs
     var inputs: AllowContactsViewModelInputs { return self }
+    let viewDidLoadInput: AnyObserver<Void>
     let allowContactsTappedInput: AnyObserver<Void>
+    let backButtonTappedInput: AnyObserver<Void>
     
     //MARK: - Outputs
     var outputs: AllowContactsViewModelOuputs { return self }
     let errorTracker: Driver<Error>
+    let mainText: Driver<(header: String, body: String)>
     
     //MARK: - Init
     init(contactService: ContactService = ContactService(),
@@ -37,10 +43,24 @@ final class AllowContactsViewModel: AllowContactsViewModelInputs, AllowContactsV
         self.errorTracker = errorTracker.asDriver()
         
         //MARK: - Subjects
+        let _viewDidLoadInput = PublishSubject<Void>()
         let _allowContactsTappedInput = PublishSubject<Void>()
+        let _backButtonTappedInput = PublishSubject<Void>()
         
         //MARK: - Observers
+        self.viewDidLoadInput = _viewDidLoadInput.asObserver()
         self.allowContactsTappedInput = _allowContactsTappedInput.asObserver()
+        self.backButtonTappedInput = _backButtonTappedInput.asObserver()
+        
+        let viewDidLoadObservable = _viewDidLoadInput.asObservable()
+        let backButtonTappedObservable = _backButtonTappedInput.asObservable()
+        
+        //MARK: - Outputs
+        let header = "Please Enable Contacts"
+        let body = "This will allow you to find your friends on the app."
+        self.mainText = viewDidLoadObservable
+            .map { _ in (header: header, body: body) }
+            .asDriver(onErrorJustReturn: (header: "", body: ""))
       
         //MARK: - Routing
         let authStatusObservable = _allowContactsTappedInput.asObservable()
@@ -62,6 +82,11 @@ final class AllowContactsViewModel: AllowContactsViewModelInputs, AllowContactsV
             .mapToVoid()
             .do(onNext: router.toNameInput)
             .drive()
+            .disposed(by: disposeBag)
+        
+        backButtonTappedObservable
+            .do(onNext: router.toPreviousVc)
+            .subscribe()
             .disposed(by: disposeBag)
     }
     

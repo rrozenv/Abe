@@ -5,6 +5,7 @@ import UIKit
 protocol EnableContactsRoutingLogic {
     func toRoot()
     func toNameInput()
+    func toPreviousVc()
 }
 
 final class EnableContactsRouter: EnableContactsRoutingLogic {
@@ -28,6 +29,10 @@ final class EnableContactsRouter: EnableContactsRoutingLogic {
         let viewModel = UserDetailsViewModel(router: router)
         vc.viewModel = viewModel
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func toPreviousVc() {
+        navigationController?.popViewController(animated: true)
     }
     
 }
