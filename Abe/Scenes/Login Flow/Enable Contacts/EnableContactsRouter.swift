@@ -24,10 +24,11 @@ final class EnableContactsRouter: EnableContactsRoutingLogic {
     }
     
     func toNameInput() {
-        let vc = UserDetailsViewController()
+        var vc = UserDetailsViewController()
         let router = UserDetailsRouter(navigationController: navigationController!)
         let viewModel = UserDetailsViewModel(router: router)
-        vc.viewModel = viewModel
+        vc.setViewModelBinding(model: viewModel)
+        viewModel.inputs.viewDidLoadInput.onNext(())
         navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -20,8 +20,10 @@ final class OnboardingView: UIView {
     init(numberOfButtons: Int) {
         super.init(frame: .zero)
         self.backgroundColor = UIColor.clear
-        setupButtonStackView(numberOfItems: numberOfButtons)
-        setupDividerView()
+        if numberOfButtons > 0 {
+            setupButtonStackView(numberOfItems: numberOfButtons)
+        }
+        setupDividerView(numberOfButtons: numberOfButtons)
         setupLabelsStackView()
     }
     
@@ -67,7 +69,7 @@ extension OnboardingView {
         }
     }
     
-    private func setupDividerView() {
+    private func setupDividerView(numberOfButtons: Int) {
         dividerView = UIView()
         dividerView.backgroundColor = Palette.faintGrey.color
         
@@ -75,7 +77,11 @@ extension OnboardingView {
         dividerView.snp.makeConstraints { (make) in
             make.height.equalTo(2)
             make.left.right.equalTo(self)
-            make.bottom.equalTo(buttonStackView.snp.top).offset(-22)
+            if numberOfButtons > 0 {
+                make.bottom.equalTo(buttonStackView.snp.top).offset(-22)
+            } else {
+                make.bottom.equalTo(self)
+            }
         }
     }
     
