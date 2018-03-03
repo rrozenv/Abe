@@ -54,6 +54,7 @@ final class UserDetailsViewModel: UserDetailsViewModelType, UserDetailsViewModel
         let firstNameObservable = _firstNameTextInput.asObservable().startWith("")
         let lastNameObservable = _lastNameTextInput.asObservable().startWith("")
         let nextTappedObservable = _nextButtonTappedInput.asObservable()
+        let fullNameObservable = Observable.combineLatest(firstNameObservable, lastNameObservable) { (first: $0, last: $1) }
         
         //MARK: - Outputs
         let header = "What’s your full name?"
@@ -70,6 +71,9 @@ final class UserDetailsViewModel: UserDetailsViewModelType, UserDetailsViewModel
         
         //MARK: - Routing
         nextTappedObservable
+            .withLatestFrom(fullNameObservable)
+            .do(onNext: { UserDefaultsManager.saveSignUpName(name: ($0.first, $0.last)) })
+            .mapToVoid()
             .do(onNext: router.toPhoneInput)
             .subscribe()
             .disposed(by: disposeBag)

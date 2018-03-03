@@ -54,11 +54,15 @@ final class OnboardingPageViewController: UIViewController {
             )
         }
     }
+
+}
+
+extension OnboardingPageViewController {
     
     private func setPageViewControllerScrollEnabled(_ enabled: Bool) {
         self.pageViewController.dataSource = enabled == false ? nil : self.dataSource
     }
-
+    
     private func setupPageController() {
         pageViewController = UIPageViewController(transitionStyle: .scroll,
                                                   navigationOrientation: .horizontal,
@@ -119,11 +123,11 @@ final class OnboardingPageViewController: UIViewController {
 }
 
 extension OnboardingPageViewController: UIPageViewControllerDelegate {
+    
     func pageViewController(_ pageViewController: UIPageViewController,
                             didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
-        
     }
     
     func pageViewController(
@@ -134,9 +138,11 @@ extension OnboardingPageViewController: UIPageViewControllerDelegate {
               else { return }
         self.transitionTo(viewController: vc)
     }
+    
 }
 
 extension OnboardingPageViewController: OnboardingViewControllerDelegate {
+    
     func didTapNextButton() {
         guard let currentViewController = dataSource.controllerFor(index: currentPageIndex),
               let nextVc = dataSource.pageViewController(pageViewController, viewControllerAfter: currentViewController) else {
@@ -145,4 +151,5 @@ extension OnboardingPageViewController: OnboardingViewControllerDelegate {
         }
         self.transitionTo(viewController: nextVc)
     }
+    
 }

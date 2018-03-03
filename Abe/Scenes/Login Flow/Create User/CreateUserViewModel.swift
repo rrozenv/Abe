@@ -95,11 +95,16 @@ final class CreateUserViewModel: CreateUserViewModelType, CreateUserViewModelInp
 //                    .trackActivity(activityIndicator)
 //            }
 //            .do(onNext: {
+//                print("current sync id: \(SyncUser.current!.identity!)")
 //                print("Found \($0.count) users")
-//                let user = $0.filter { $0.id == "f3256ae7afe6eb8c90683ccd6a68121f" }.first
+//                $0.forEach({
+//                    print("UserId: \($0.id)")
+//                })
+//                let user = $0.filter { $0.id == SyncUser.current!.identity! }.first
 //                print("I found user \(String(describing: user?.name))")
 //            })
-//            .map { $0.filter { $0.id == "f3256ae7afe6eb8c90683ccd6a68121f" }.first }
+//            .map { $0.filter { $0.id == SyncUser.current!.identity! }.first }
+//            .unwrap()
         
         let newUser = realmSyncUserObservable.elements()
             .filter { _ in !isLogin }

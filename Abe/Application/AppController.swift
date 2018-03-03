@@ -121,7 +121,7 @@ extension AppController {
 //            })
 //            .subscribe()
 //            .disposed(by: disposeBag)
-
+   
         if let currentUser = self.fetchCurrentUser() {
             self.currentUser.value = currentUser
             self.actingVC = createHomeViewController()

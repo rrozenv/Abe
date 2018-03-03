@@ -17,8 +17,9 @@ struct UserService {
     
     func fetchUserFor(key: String) -> Observable<User?> {
         let result = withRealm("getting user") { realm -> Observable<User?> in
+            print("sync identity: \(key)")
             let user = realm.objects(User.self)
-                .filter(NSPredicate(format: "id = %@", key))
+                .filter { $0.id == key }
                 .first
             return .just(user)
         }
