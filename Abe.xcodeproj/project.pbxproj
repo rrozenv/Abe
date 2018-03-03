@@ -127,6 +127,10 @@
 		98D38E2320408BE4008AFA94 /* FilterOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D38E2220408BE4008AFA94 /* FilterOption.swift */; };
 		98D38E252040D337008AFA94 /* WebLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D38E242040D337008AFA94 /* WebLinkViewController.swift */; };
 		98D38E272040D391008AFA94 /* WebLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D38E262040D391008AFA94 /* WebLinkViewModel.swift */; };
+		98D96948204B20150004A4B0 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D96947204B20150004A4B0 /* OnboardingPageViewController.swift */; };
+		98D9694E204B204D0004A4B0 /* OnbooardingPageDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D9694D204B204D0004A4B0 /* OnbooardingPageDataSource.swift */; };
+		98D96951204B24530004A4B0 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D96950204B24530004A4B0 /* OnboardingViewController.swift */; };
+		98D96953204B245F0004A4B0 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D96952204B245F0004A4B0 /* OnboardingViewModel.swift */; };
 		98E58F93202A8936003554A1 /* CustomNavigatonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */; };
 		98F22D4B2036398D00C886F1 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F22D4A2036398D00C886F1 /* UserService.swift */; };
 		98F671FD1FFEA208001DE88E /* PhoneEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */; };
@@ -301,6 +305,10 @@
 		98D38E2220408BE4008AFA94 /* FilterOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterOption.swift; sourceTree = "<group>"; };
 		98D38E242040D337008AFA94 /* WebLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkViewController.swift; sourceTree = "<group>"; };
 		98D38E262040D391008AFA94 /* WebLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebLinkViewModel.swift; sourceTree = "<group>"; };
+		98D96947204B20150004A4B0 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
+		98D9694D204B204D0004A4B0 /* OnbooardingPageDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbooardingPageDataSource.swift; sourceTree = "<group>"; };
+		98D96950204B24530004A4B0 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		98D96952204B245F0004A4B0 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		98E58F92202A8936003554A1 /* CustomNavigatonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigatonBar.swift; sourceTree = "<group>"; };
 		98F22D4A2036398D00C886F1 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		98F671FC1FFEA208001DE88E /* PhoneEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneEntryViewController.swift; sourceTree = "<group>"; };
@@ -653,6 +661,8 @@
 		984F379820070D5600C62E6E /* Login Flow */ = {
 			isa = PBXGroup;
 			children = (
+				98D9694F204B227D0004A4B0 /* Onboarding */,
+				98D96946204B1FEC0004A4B0 /* Onboarding Page Controller */,
 				983297B3202F69F80043E3B0 /* Signup & Login */,
 				983297B1202F698F0043E3B0 /* Phone Input */,
 				983297B2202F69A10043E3B0 /* Create User */,
@@ -840,6 +850,24 @@
 				98D38E262040D391008AFA94 /* WebLinkViewModel.swift */,
 			);
 			path = "Web View";
+			sourceTree = "<group>";
+		};
+		98D96946204B1FEC0004A4B0 /* Onboarding Page Controller */ = {
+			isa = PBXGroup;
+			children = (
+				98D96947204B20150004A4B0 /* OnboardingPageViewController.swift */,
+				98D9694D204B204D0004A4B0 /* OnbooardingPageDataSource.swift */,
+			);
+			path = "Onboarding Page Controller";
+			sourceTree = "<group>";
+		};
+		98D9694F204B227D0004A4B0 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				98D96950204B24530004A4B0 /* OnboardingViewController.swift */,
+				98D96952204B245F0004A4B0 /* OnboardingViewModel.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		98F671FB1FFEA1ED001DE88E /* Phone Entry */ = {
@@ -1192,9 +1220,11 @@
 				9883ED611FE6F810002E538E /* PromptReply.swift in Sources */,
 				9867685B201294B700D0421C /* PromptHeaderView.swift in Sources */,
 				9806B9122007DDCB000CB497 /* ImageSearchCollectionCell.swift in Sources */,
+				98D9694E204B204D0004A4B0 /* OnbooardingPageDataSource.swift in Sources */,
 				983297B9202F6A720043E3B0 /* SignupLoginRouter.swift in Sources */,
 				98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */,
 				98F672011FFEA236001DE88E /* PhoneEntryRouter.swift in Sources */,
+				98D96953204B245F0004A4B0 /* OnboardingViewModel.swift in Sources */,
 				981545D320102E9B0001F675 /* GiphyAPI.swift in Sources */,
 				988658FA1FE807B400FEB703 /* Contact.swift in Sources */,
 				980DE5B01FE5B47D0087C6C3 /* User.swift in Sources */,
@@ -1240,6 +1270,7 @@
 				98365FDA201AB2F9008E58F6 /* PageReferenceView.swift in Sources */,
 				98443D15200BFDC200F13562 /* ReplyVisibilityDataSource.swift in Sources */,
 				982CF8512013C98800EEB278 /* RateReplyViewController.swift in Sources */,
+				98D96951204B24530004A4B0 /* OnboardingViewController.swift in Sources */,
 				98FEE7DB1FE4D22E00CD80A8 /* SignupRouter.swift in Sources */,
 				98FA2D7B202B935B00901E0E /* PhoneInputViewController.swift in Sources */,
 				9806B9142007DE5C000CB497 /* ImageSearchViewModel.swift in Sources */,
@@ -1278,6 +1309,7 @@
 				98429E35203E25C5000B7A26 /* Visibility.swift in Sources */,
 				983297B0202F69580043E3B0 /* CreateUserRouter.swift in Sources */,
 				980974BC2017D53A00FBCE9B /* GuessAndWagerValidationRouter.swift in Sources */,
+				98D96948204B20150004A4B0 /* OnboardingPageViewController.swift in Sources */,
 				9883ED631FE6FB3D002E538E /* UserDefaultsManager.swift in Sources */,
 				988658F41FE8045A00FEB703 /* ViewModelType.swift in Sources */,
 				98D26EE9201550F200B0A72E /* GuessReplyAuthorRouter.swift in Sources */,

@@ -6,6 +6,7 @@ protocol SignupLoginRoutingLogic {
     func toRoot()
     func toSignupFlow()
     func toLoginFlow()
+    func toOnboardingFlow()
 }
 
 final class SignupLoginRouter: SignupLoginRoutingLogic {
@@ -38,6 +39,11 @@ final class SignupLoginRouter: SignupLoginRoutingLogic {
         let vc = PhoneInputViewController(isLogin: true)
         let router = PhoneEntryRouter(navigationController: navigationController!)
         vc.router = router
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func toOnboardingFlow() {
+        let vc = OnboardingPageViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 

@@ -39,16 +39,6 @@ extension OnboardingView {
         return buttons[index]
     }
     
-    func styleHeaderLabel(font: FontBook, size: CGFloat, color: UIColor) {
-        headerLabel.font = font.of(size: size)
-        headerLabel.backgroundColor = color
-    }
-    
-    func styleBodyLabel(font: FontBook, size: CGFloat, color: UIColor) {
-        bodyLabel.font = font.of(size: size)
-        bodyLabel.backgroundColor = color
-    }
-    
     func styleDividerView(color: UIColor, size: CGSize?) {
         dividerView.backgroundColor = color
         guard let size = size else { return }
@@ -132,6 +122,15 @@ extension OnboardingView {
             make.bottom.equalTo(dividerView.snp.top).offset(-14)
             make.left.right.top.equalTo(self)
         }
+    }
+    
+}
+
+extension UILabel {
+    
+    func style(font: FontBook, size: CGFloat, color: UIColor) {
+        self.font = font.of(size: size)
+        self.textColor = color
     }
     
 }

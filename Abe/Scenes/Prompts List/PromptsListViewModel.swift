@@ -19,6 +19,7 @@ protocol PromptListViewModelInputs {
 
 protocol PromptListViewModelOutputs {
     var promptsToDisplay: Driver<[Prompt]> { get }
+    var selectedPrompt: Driver<Prompt> { get }
     var activityIndicator: Driver<Bool> { get }
     var errorTracker: Driver<Error> { get }
     var promptsChangeSet: Observable<PromptChangeSet> { get }
@@ -44,12 +45,14 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
     var outputs: PromptListViewModelOutputs { return self }
     let activityIndicator: Driver<Bool>
     let promptsToDisplay: Driver<[Prompt]>
+    let selectedPrompt: Driver<Prompt>
     let errorTracker: Driver<Error>
     let promptsChangeSet: Observable<PromptChangeSet>
 
 //MARK: - Init
-    init?(promptService: PromptService = PromptService(),
-          router: PromptsRoutingLogic) {
+    init?(promptService: PromptService = PromptService()
+          //router: PromptsRoutingLogic
+          ) {
         
         guard let user = AppController.shared.currentUser.value else {
             NotificationCenter.default.post(name: Notification.Name.logout, object: nil)
@@ -98,10 +101,9 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
             }
         
 //MARK: - Routing
-        selectedPromptObservable
-            .do(onNext: router.toPrompt)
-            .subscribe()
-            .disposed(by: disposeBag)
+        self.selectedPrompt = selectedPromptObservable
+            .asDriverOnErrorJustComplete()
+        
     }
     
 }

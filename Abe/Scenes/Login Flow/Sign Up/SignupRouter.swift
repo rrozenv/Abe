@@ -27,8 +27,8 @@ class SignupRouter: SignupRoutingLogic {
     func toHome() {
         var promptsVc = PromptsListViewController()
         let navVc = UINavigationController()
-        let router = PromptsRouter(navigationController: navVc)
-        let vm = PromptListViewModel(router: router)
+        //let router = PromptsRouter(navigationController: navVc)
+        let vm = PromptListViewModel()
         promptsVc.setViewModelBinding(model: vm!)
         window.rootViewController = navVc
         //router.toPrompts()

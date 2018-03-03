@@ -16,11 +16,11 @@ class PromptsListViewController: UIViewController, BindableType {
     private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     
     static func configuredWith(visibility: Visibility,
-                               navVc: UINavigationController,
+                               //navVc: UINavigationController,
                                contentOffset: CGFloat) -> PromptsListViewController {
         var vc = PromptsListViewController(topContentOffset: contentOffset)
-        let router = PromptsRouter(navigationController: navVc)
-        let viewModel = PromptListViewModel(router: router)
+        //let router = PromptsRouter(navigationController: navVc)
+        let viewModel = PromptListViewModel()
         vc.setViewModelBinding(model: viewModel!)
         vc.viewModel.inputs.visWhenViewLoadsInput.onNext(visibility)
         vc.topTableContentOffset = contentOffset
@@ -116,6 +116,18 @@ class PromptsListViewController: UIViewController, BindableType {
                 else { self?.activityIndicator.stopAnimating() }
             })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.selectedPrompt
+            .drive(onNext: { [weak self] in
+                let router = PromptDetailRouter(navigationController: (self?.navigationController)!)
+                var vc = RepliesViewController()
+                let vm = RepliesViewModel(router: router, prompt: $0)
+                vc.setViewModelBinding(model: vm!)
+                self?.navigationController?.navigationBar.isHidden = true
+                self?.navigationController?.pushViewController(vc, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
     }
     
 }

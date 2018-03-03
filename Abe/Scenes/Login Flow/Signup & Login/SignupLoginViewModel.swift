@@ -8,6 +8,7 @@ protocol SignupLoginViewModelInputs {
     var viewDidLoadInput: AnyObserver<Void> { get }
     var signupButtonTappedInput: AnyObserver<Void> { get }
     var loginButtonTappedInput: AnyObserver<Void> { get }
+    var learnMoreTappedInput: AnyObserver<Void> { get }
 }
 
 protocol SignupLoginViewModelOutputs {
@@ -27,6 +28,7 @@ final class SignupLoginViewModel: SignupLoginViewModelType, SignupLoginViewModel
     let viewDidLoadInput: AnyObserver<Void>
     let signupButtonTappedInput: AnyObserver<Void>
     let loginButtonTappedInput: AnyObserver<Void>
+    let learnMoreTappedInput: AnyObserver<Void>
 
 //MARK: - Outputs
     var outputs: SignupLoginViewModelOutputs { return self }
@@ -39,11 +41,13 @@ final class SignupLoginViewModel: SignupLoginViewModelType, SignupLoginViewModel
         let _viewDidLoadInput = PublishSubject<Void>()
         let _signupTappedInput = PublishSubject<Void>()
         let _loginTappedInput = PublishSubject<Void>()
+        let _learnMoreTappedInput = PublishSubject<Void>()
         
 //MARK: - Observers
         self.viewDidLoadInput = _viewDidLoadInput.asObserver()
         self.loginButtonTappedInput = _loginTappedInput.asObserver()
         self.signupButtonTappedInput = _signupTappedInput.asObserver()
+        self.learnMoreTappedInput = _learnMoreTappedInput.asObserver()
         
 //MARK: - Outputs
         let headerText = "Welcome to Outpost!"
@@ -60,6 +64,11 @@ final class SignupLoginViewModel: SignupLoginViewModelType, SignupLoginViewModel
         
         _loginTappedInput.asObservable()
             .do(onNext: router.toLoginFlow)
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+        _learnMoreTappedInput.asObservable()
+            .do(onNext: router.toOnboardingFlow)
             .subscribe()
             .disposed(by: disposeBag)
     }

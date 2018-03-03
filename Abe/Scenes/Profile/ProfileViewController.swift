@@ -92,7 +92,6 @@ final class ProfileViewController: UIViewController {
     private func configurePagerDataSource(_ visibilites: [Visibility]) {
         let headerHeight = profileHeaderView.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
         self.dataSource = PromptPagesDataSource(visibilites: visibilites,
-                                                navVc: self.navigationController!,
                                                 contentOffset: headerHeight + 60.0)
         self.pageViewController.dataSource = self.dataSource
         DispatchQueue.main.async {
