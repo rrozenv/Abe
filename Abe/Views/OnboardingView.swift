@@ -4,13 +4,13 @@ import UIKit
 
 final class OnboardingView: UIView {
     
+    var headerLabel: UILabel!
+    var bodyLabel: UILabel!
+    
     private var buttonStackView: UIStackView!
     private var dividerView: UIView!
     private var labelsStackView: UIStackView!
     private var buttons = [UIButton]()
-    
-    var headerLabel: UILabel!
-    var bodyLabel: UILabel!
     
     //MARK: Initalizer Setup
     required init?(coder aDecoder: NSCoder) {
@@ -20,9 +20,7 @@ final class OnboardingView: UIView {
     init(numberOfButtons: Int) {
         super.init(frame: .zero)
         self.backgroundColor = UIColor.clear
-        if numberOfButtons > 0 {
-            setupButtonStackView(numberOfItems: numberOfButtons)
-        }
+        if numberOfButtons > 0 { setupButtonStackView(numberOfItems: numberOfButtons) }
         setupDividerView(numberOfButtons: numberOfButtons)
         setupLabelsStackView()
     }
@@ -39,6 +37,32 @@ extension OnboardingView {
     func button(at index: Int) -> UIButton {
         guard index < buttons.count else { fatalError() }
         return buttons[index]
+    }
+    
+    func styleHeaderLabel(font: FontBook, size: CGFloat, color: UIColor) {
+        headerLabel.font = font.of(size: size)
+        headerLabel.backgroundColor = color
+    }
+    
+    func styleBodyLabel(font: FontBook, size: CGFloat, color: UIColor) {
+        bodyLabel.font = font.of(size: size)
+        bodyLabel.backgroundColor = color
+    }
+    
+    func styleDividerView(color: UIColor, size: CGSize?) {
+        dividerView.backgroundColor = color
+        guard let size = size else { return }
+        dividerView.snp.updateConstraints { (make) in
+            make.height.equalTo(size.height)
+            make.height.equalTo(size.width)
+        }
+    }
+    
+    func resizeButton(size: CGSize) {
+        button(at: 0).snp.updateConstraints { (make) in
+            make.height.equalTo(size.height)
+            make.height.equalTo(size.width)
+        }
     }
     
 }
@@ -64,7 +88,8 @@ extension OnboardingView {
         let height = numberOfItems > 1 ? (50.0 * CGFloat(numberOfItems)) + spacing : (50.0 * CGFloat(numberOfItems))
         self.addSubview(buttonStackView)
         buttonStackView.snp.makeConstraints { (make) in
-            make.bottom.left.right.equalTo(self)
+            make.bottom.left.equalTo(self)
+            make.width.equalTo(self)
             make.height.equalTo(height)
         }
     }
@@ -76,7 +101,8 @@ extension OnboardingView {
         self.addSubview(dividerView)
         dividerView.snp.makeConstraints { (make) in
             make.height.equalTo(2)
-            make.left.right.equalTo(self)
+            make.width.equalTo(self)
+            make.left.equalTo(self)
             if numberOfButtons > 0 {
                 make.bottom.equalTo(buttonStackView.snp.top).offset(-22)
             } else {
@@ -106,6 +132,47 @@ extension OnboardingView {
             make.bottom.equalTo(dividerView.snp.top).offset(-14)
             make.left.right.top.equalTo(self)
         }
+    }
+    
+}
+
+extension UIButton {
+    
+    func style(title: String?, font: FontBook?, fontSize: CGFloat?, backColor: UIColor?, titleColor: UIColor) {
+        self.setTitle(title, for: .normal)
+        self.titleLabel?.font = font?.of(size: fontSize ?? 12)
+        self.backgroundColor = backColor
+        self.setTitleColor(titleColor, for: .normal)
+    }
+    
+}
+
+
+extension UITextField {
+    
+    func style(placeHolder: String?, font: FontBook?, fontSize: CGFloat?, backColor: UIColor?, titleColor: UIColor) {
+        self.placeholder = placeHolder
+        self.backgroundColor = backColor
+        self.font = font?.of(size: fontSize ?? 12)
+        self.textColor = titleColor
+    }
+    
+}
+
+class PaddedTextField: UITextField {
+    
+    let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
+    
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+    
+    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
+    }
+    
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return UIEdgeInsetsInsetRect(bounds, padding)
     }
     
 }

@@ -19,7 +19,7 @@ protocol PromptListViewModelInputs {
 
 protocol PromptListViewModelOutputs {
     var promptsToDisplay: Driver<[Prompt]> { get }
-    //var activityIndicator: Driver<Bool> { get }
+    var activityIndicator: Driver<Bool> { get }
     var errorTracker: Driver<Error> { get }
     var promptsChangeSet: Observable<PromptChangeSet> { get }
 }
@@ -42,7 +42,7 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
     
 //MARK: - Outputs
     var outputs: PromptListViewModelOutputs { return self }
-    //let activityIndicator: Driver<Bool>
+    let activityIndicator: Driver<Bool>
     let promptsToDisplay: Driver<[Prompt]>
     let errorTracker: Driver<Error>
     let promptsChangeSet: Observable<PromptChangeSet>
@@ -59,7 +59,7 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
         let currentUser = Variable<User>(user)
         let activityIndicator = ActivityIndicator()
         let errorTracker = ErrorTracker()
-        //self.activityIndicator = activityIndicator.asDriver()
+        self.activityIndicator = activityIndicator.asDriver()
         self.errorTracker = errorTracker.asDriver()
         
 //MARK: - Subjects
@@ -84,7 +84,7 @@ final class PromptListViewModel: PromptListViewModelType, PromptListViewModelInp
             .flatMapLatest {
                 promptService
                     .fetchPromptsWith(predicate: $0)
-                    //.trackActivity(activityIndicator)
+                    .trackActivity(activityIndicator)
                     .trackError(errorTracker)
             }
             .asDriver(onErrorJustReturn: [])

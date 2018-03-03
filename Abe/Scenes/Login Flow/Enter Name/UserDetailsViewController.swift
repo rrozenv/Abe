@@ -10,8 +10,8 @@ class UserDetailsViewController: UIViewController, BindableType {
     var viewModel: UserDetailsViewModel!
     
     private var onboardingView: OnboardingView!
-    fileprivate var firstNameTextField: UITextField!
-    fileprivate var lastNameTextField: UITextField!
+    fileprivate var firstNameTextField: PaddedTextField!
+    fileprivate var lastNameTextField: PaddedTextField!
     fileprivate var nextButton: UIButton!
     
     override func viewDidLoad() {
@@ -21,6 +21,11 @@ class UserDetailsViewController: UIViewController, BindableType {
         setupTitleTextView()
         setupBodyTextView()
         setupNextButton()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        firstNameTextField.becomeFirstResponder()
     }
     
     override var inputAccessoryView: UIView? { get { return nextButton } }
@@ -78,14 +83,15 @@ extension UserDetailsViewController {
     }
     
     fileprivate func setupTitleTextView() {
-        firstNameTextField = UITextField()
-        firstNameTextField.placeholder = "First Name..."
-        firstNameTextField.backgroundColor = Palette.faintGrey.color
+        firstNameTextField = PaddedTextField()
+        firstNameTextField.style(placeHolder: "First Name...",
+                                 font: FontBook.AvenirMedium,
+                                 fontSize: 14,
+                                 backColor: Palette.faintGrey.color,
+                                 titleColor: .black)
+        
         firstNameTextField.layer.cornerRadius = 2.0
         firstNameTextField.layer.masksToBounds = true
-        firstNameTextField.font = FontBook.AvenirMedium.of(size: 14)
-        firstNameTextField.textColor = UIColor.black
-        firstNameTextField.becomeFirstResponder()
         
         view.addSubview(firstNameTextField)
         firstNameTextField.snp.makeConstraints { (make) in
@@ -97,7 +103,7 @@ extension UserDetailsViewController {
     }
     
     fileprivate func setupBodyTextView() {
-        lastNameTextField = UITextField()
+        lastNameTextField = PaddedTextField()
         lastNameTextField.placeholder = "Last Name..."
         lastNameTextField.backgroundColor = Palette.faintGrey.color
         lastNameTextField.layer.cornerRadius = 2.0

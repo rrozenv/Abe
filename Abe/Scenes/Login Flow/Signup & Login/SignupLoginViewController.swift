@@ -68,14 +68,29 @@ final class SignupLoginViewController: UIViewController, BindableType {
     
     private func setupOnboardingView() {
         onboardingView = OnboardingView(numberOfButtons: 2)
+        onboardingView.styleHeaderLabel(font: FontBook.AvenirBlack,
+                                        size: 14,
+                                        color: .black)
         
-        onboardingView.button(at: 0).backgroundColor = Palette.brightYellow.color
-        onboardingView.button(at: 0).setTitle("Learn More", for: .normal)
-        onboardingView.button(at: 0).setTitleColor(Palette.darkYellow.color, for: .normal)
+        onboardingView.button(at: 1).style(title: "Learn More",
+                                           font: FontBook.AvenirHeavy,
+                                           fontSize: 13,
+                                           backColor: Palette.brightYellow.color,
+                                           titleColor: Palette.darkYellow.color)
         
-        onboardingView.button(at: 1).backgroundColor = Palette.red.color
-        onboardingView.button(at: 1).setTitle("Signup", for: .normal)
-        onboardingView.button(at: 1).setTitleColor(UIColor.white, for: .normal)
+        onboardingView.button(at: 1).style(title: "Signup",
+                                           font: FontBook.AvenirHeavy,
+                                           fontSize: 13,
+                                           backColor: Palette.red.color,
+                                           titleColor: .white)
+        
+//        onboardingView.button(at: 0).backgroundColor = Palette.brightYellow.color
+//        onboardingView.button(at: 0).setTitle("Learn More", for: .normal)
+//        onboardingView.button(at: 0).setTitleColor(Palette.darkYellow.color, for: .normal)
+//
+//        onboardingView.button(at: 1).backgroundColor = Palette.red.color
+//        onboardingView.button(at: 1).setTitle("Signup", for: .normal)
+//        onboardingView.button(at: 1).setTitleColor(UIColor.white, for: .normal)
         
         view.addSubview(onboardingView)
         onboardingView.snp.makeConstraints { (make) in
