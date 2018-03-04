@@ -88,19 +88,40 @@ final class ImageSearchViewController: UIViewController {
     
 }
 
+extension ImageSearchViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard dataSource.shouldLoadMoreResults(indexPath) else { return }
+        viewModel.inputs.fetchImagesOffsetInput.onNext(searchOffsetCount)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+       guard let cell = collectionView.cellForItem(at: indexPath) as? ImageSearchCollectionCell else { return }
+       cell.endAnimation()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let image = self.dataSource.imageAtIndexPath(indexPath) else { return }
+        viewModel.inputs.didSelectImage.onNext(image)
+    }
+    
+}
 
 extension ImageSearchViewController {
     
     private func setupSearchBarView() {
         searchBarView = SearchBarView()
-        searchBarView.style(placeHolder: "Search GIFS...", backColor: Palette.faintGrey.color, searchIcon: #imageLiteral(resourceName: "IC_CheckMark"), clearIcon: #imageLiteral(resourceName: "IC_RedCancelCircle"))
+        searchBarView.style(placeHolder: "Search GIFS...",
+                            backColor: Palette.faintGrey.color,
+                            searchIcon: #imageLiteral(resourceName: "IC_Search"),
+                            clearIcon: #imageLiteral(resourceName: "IC_ClearSearch"))
         
         view.addSubview(searchBarView)
         searchBarView.snp.makeConstraints { (make) in
-            make.width.equalTo(view).multipliedBy(0.84)
+            make.width.equalTo(view).multipliedBy(0.86)
             make.height.equalTo(view).multipliedBy(0.07)
             make.centerX.equalTo(view)
-            make.top.equalTo(backButton.snp.bottom).offset(10)
+            make.top.equalTo(backButton.snp.bottom)
         }
     }
     
@@ -122,11 +143,7 @@ extension ImageSearchViewController {
         }
     }
     
-}
-
-extension ImageSearchViewController {
-    
-    fileprivate func setupCollectionView() {
+    private func setupCollectionView() {
         collectionView = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: ImageSearchCollectionViewLayout(topInset: 0))
         collectionView.backgroundColor = UIColor.white
         collectionView.showsVerticalScrollIndicator = false
@@ -140,25 +157,6 @@ extension ImageSearchViewController {
             make.top.equalTo(searchBarView.snp.bottom).offset(10)
             make.left.right.bottom.equalTo(view)
         }
-    }
-    
-}
-
-extension ImageSearchViewController: UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard dataSource.shouldLoadMoreResults(indexPath) else { return }
-        viewModel.inputs.fetchImagesOffsetInput.onNext(searchOffsetCount)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-       guard let cell = collectionView.cellForItem(at: indexPath) as? ImageSearchCollectionCell else { return }
-       cell.endAnimation()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let image = self.dataSource.imageAtIndexPath(indexPath) else { return }
-        viewModel.inputs.didSelectImage.onNext(image)
     }
     
 }

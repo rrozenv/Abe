@@ -32,7 +32,7 @@ final class SearchBarView: UIView {
 extension SearchBarView {
     
     private func setupSearchTextfield() {
-        searchTextField = PaddedTextField(padding: 20)
+        searchTextField = PaddedTextField(padding: 38)
         searchTextField.layer.cornerRadius = 2.0
         searchTextField.layer.masksToBounds = true
         searchTextField.font = FontBook.AvenirMedium.of(size: 14)
@@ -49,9 +49,9 @@ extension SearchBarView {
         
         self.addSubview(searchIconImageView)
         searchIconImageView.snp.makeConstraints { (make) in
-            make.left.equalTo(searchTextField).offset(10)
-            make.width.height.equalTo(20)
-            make.centerY.equalTo(searchTextField)
+            make.left.equalTo(searchTextField).offset(16)
+            make.width.height.equalTo(14)
+            make.centerY.equalTo(searchTextField).offset(-1)
         }
     }
     
