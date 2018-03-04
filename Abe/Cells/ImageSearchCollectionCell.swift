@@ -55,14 +55,12 @@ class ImageSearchCollectionCell: UICollectionViewCell, ValueCell {
     }
     
     func configureWith(value: ImageRepresentable) {
-//        if let url = URL(string: value.webformatURL) {
-//            imageView.kf.indicatorType = .activity
-//            UIView.animate(withDuration: 0.5, animations: {
-//                self.imageView.kf.setImage(with: url)
-//            })
-//        }
-        guard let url = URL(string: value.webformatURL) else { return }
-        imageView.animate(withGIFURL: url)
+       guard let url = URL(string: value.webformatURL) else { return }
+        imageView.kf.indicatorType = .activity
+        UIView.animate(withDuration: 0.2, animations: { self.imageView.kf.setImage(with: url) })
+        
+//        guard let url = URL(string: value.webformatURL) else { return }
+//        imageView.animate(withGIFURL: url)
 //        imageView.prepareForAnimation(withGIFURL: url)
 //        imageView.startAnimating()
     }

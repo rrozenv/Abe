@@ -83,7 +83,7 @@ extension UserDetailsViewController {
     }
     
     fileprivate func setupTitleTextView() {
-        firstNameTextField = PaddedTextField()
+        firstNameTextField = PaddedTextField(padding: 5)
         firstNameTextField.style(placeHolder: "First Name...",
                                  font: FontBook.AvenirMedium,
                                  fontSize: 14,
@@ -103,7 +103,7 @@ extension UserDetailsViewController {
     }
     
     fileprivate func setupBodyTextView() {
-        lastNameTextField = PaddedTextField()
+        lastNameTextField = PaddedTextField(padding: 5)
         lastNameTextField.placeholder = "Last Name..."
         lastNameTextField.backgroundColor = Palette.faintGrey.color
         lastNameTextField.layer.cornerRadius = 2.0

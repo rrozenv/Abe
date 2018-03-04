@@ -51,7 +51,7 @@ final class CreatePromptRouter: CreatePromptRoutingLogic {
                 .drive(createPromptViewModel!.imageDelegateInput)
                 .disposed(by: viewModel.disposeBag)
         }
-        navigationController?.isNavigationBarHidden = false
+        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -109,6 +109,7 @@
 		98921BB61FE735AA006CCCF6 /* ReplyOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */; };
 		98921BB81FE735B8006CCCF6 /* ReplyOptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */; };
 		98921BBA1FE735C4006CCCF6 /* ReplyOptionsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */; };
+		98923394204C799000296599 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98923393204C799000296599 /* SearchBarView.swift */; };
 		9893171D1FE6EF4000E2979F /* RealmRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9893171C1FE6EF4000E2979F /* RealmRepresentable.swift */; };
 		989317241FE6F3E400E2979F /* PromptDetailRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317211FE6F3E300E2979F /* PromptDetailRouter.swift */; };
 		989317251FE6F3E400E2979F /* PromptDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 989317221FE6F3E300E2979F /* PromptDetailViewController.swift */; };
@@ -287,6 +288,7 @@
 		98921BB51FE735AA006CCCF6 /* ReplyOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsViewController.swift; sourceTree = "<group>"; };
 		98921BB71FE735B8006CCCF6 /* ReplyOptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsViewModel.swift; sourceTree = "<group>"; };
 		98921BB91FE735C4006CCCF6 /* ReplyOptionsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyOptionsRouter.swift; sourceTree = "<group>"; };
+		98923393204C799000296599 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		9893171C1FE6EF4000E2979F /* RealmRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRepresentable.swift; sourceTree = "<group>"; };
 		989317211FE6F3E300E2979F /* PromptDetailRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptDetailRouter.swift; sourceTree = "<group>"; };
 		989317221FE6F3E300E2979F /* PromptDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromptDetailViewController.swift; sourceTree = "<group>"; };
@@ -802,6 +804,7 @@
 				986768552012922C00D0421C /* WebLinkActionButtonsView.swift */,
 				9828ABCB200E9B3500A3A9D1 /* WebLinkView.swift */,
 				989FB6D82048B82300A16DF5 /* OnboardingView.swift */,
+				98923393204C799000296599 /* SearchBarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1214,6 +1217,7 @@
 				980974AD2017C52900FBCE9B /* InputWagerViewController.swift in Sources */,
 				980DE5A81FE5A3B50087C6C3 /* ErrorTracker.swift in Sources */,
 				98FEE77F1FE4BAD300CD80A8 /* AppDelegate.swift in Sources */,
+				98923394204C799000296599 /* SearchBarView.swift in Sources */,
 				9854D2422000186F00D7B7EB /* PromptSummarySectionHeaderView.swift in Sources */,
 				98D38E272040D391008AFA94 /* WebLinkViewModel.swift in Sources */,
 				9883A8BC203BB98C00D2E423 /* CommentForRatingViewController.swift in Sources */,

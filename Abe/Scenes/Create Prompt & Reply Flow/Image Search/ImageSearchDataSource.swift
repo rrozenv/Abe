@@ -8,14 +8,7 @@ struct ImageSearchEmptyStateViewModel {
 
 final class ImageSearchDataSource: ValueCellDataSource {
     
-    //MARK: - Before User Replied
-//    func loadBeforeUserRepliedState() {
-//        self.clearValues(section: 0)
-//        let emptyStateViewModel = ImageSearchEmptyStateViewModel(mainText: "Enter Search")
-//        self.set(values: [emptyStateViewModel],
-//                 cellClass: RepliesEmptyCell.self,
-//                 inSection: 0)
-//    }
+    private var displayedImages = [ImageRepresentable]()
     
     //MARK: - Locked Replies Tab
     func load(images: [ImageRepresentable]) {
@@ -25,10 +18,23 @@ final class ImageSearchDataSource: ValueCellDataSource {
 //                     cellClass: ImageSearchCollectionCell.self,
 //                     inSection: 0)
 //        } else {
+            self.displayedImages = images
             self.set(values: images,
                      cellClass: ImageSearchCollectionCell.self,
                      inSection: 0)
 //        }
+    }
+    
+    func loadPaginated(images: [ImageRepresentable]) {
+        let allImages = displayedImages + images
+        self.displayedImages = allImages
+        self.set(values: allImages,
+                 cellClass: ImageSearchCollectionCell.self,
+                 inSection: 0)
+    }
+    
+    func shouldLoadMoreResults(_ indexPath: IndexPath) -> Bool {
+        return indexPath.item == self.displayedImages.count - 1
     }
     
     //MARK: - Read Current Value Methods

@@ -160,7 +160,16 @@ extension UITextField {
 
 class PaddedTextField: UITextField {
     
-    let padding = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 5)
+    var padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+    
+    init(padding: CGFloat) {
+        super.init(frame: .zero)
+        self.padding = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         return UIEdgeInsetsInsetRect(bounds, padding)
