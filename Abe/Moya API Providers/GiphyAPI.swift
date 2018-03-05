@@ -10,7 +10,7 @@ enum GifAPI {
         return String(base.hashValue + path.hashValue)
     }
     
-    case search(query: String)
+    case search(query: String, offset: Int)
 }
 
 extension GifAPI: TargetType {
@@ -41,10 +41,11 @@ extension GifAPI: TargetType {
     // 6:
     var parameters: [String: Any]? {
         switch self {
-        case .search(query: let query):
+        case .search(query: let query, offset: let offset):
             var parameters = [String: Any]()
             parameters["q"] = "\(query)"
             parameters["api_key"] = Secrets.API_Key
+            parameters["offset"] = offset
             return parameters
         }
     }

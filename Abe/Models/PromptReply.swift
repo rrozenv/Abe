@@ -11,6 +11,7 @@ class PromptReply: Object {
     @objc dynamic var createdAt = Date()
     let scores = List<ReplyScore>()
     let visibleOnlyToPhoneNumbers = List<String>()
+    let visibleOnlyToContactNumbers = List<StringObject>()
     
     override static func primaryKey() -> String? {
         return "id"
@@ -59,10 +60,15 @@ class PromptReply: Object {
         return visibleOnlyToPhoneNumbers.contains(currentUser.phoneNumber)
     }
     
-    func fetchCastedScoreIfExists(for userId: String) -> (score: ReplyScore?, reply: PromptReply) {
+    func fetchCastedScoreIfExists(for user: User) -> (score: ReplyScore?, reply: PromptReply) {
         let score = self.scores
-            .filter(NSPredicate(format: "userId = %@", userId)).first
+            .filter(NSPredicate(format: "user.id = %@", user.id)).first
         return (score, self)
+    }
+    
+    func ratingCastedBy(user: User) -> ReplyScore? {
+        return self.scores
+            .filter(NSPredicate(format: "user.id = %@", user.id)).first
     }
     
     func doesScoreExistFor(userId: String) -> Bool {
@@ -87,6 +93,7 @@ class ReplyScore: Object {
     @objc dynamic var id: String = UUID().uuidString
     @objc dynamic var replyId: String = ""
     @objc dynamic var userId: String = ""
+    @objc dynamic var comment: String = ""
     @objc dynamic var score: Int = 0
     @objc dynamic var user: User?
     
@@ -101,11 +108,16 @@ class ReplyScore: Object {
         self.score = score
     }
     
-    convenience init(user: User, replyId: String, score: Int) {
+    convenience init(user: User,
+                     replyId: String,
+                     score: Int,
+                     comment: String) {
         self.init()
         self.user = user
+        self.userId = user.id
         self.replyId = replyId
         self.score = score
+        self.comment = comment
     }
     
     static func valueDict(user: User, replyId: String, score: String) -> [String: Any] {

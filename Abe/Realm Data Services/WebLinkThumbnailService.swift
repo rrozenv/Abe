@@ -12,13 +12,14 @@ struct WebLinkThumbnailService {
    
     let linkPreview = SwiftLinkPreview()
     
-    func fetchThumbnailFor(url: String) -> Observable<WebLinkThumbnail> {
+    func fetchThumbnailFor(url: String) -> Observable<WebLinkThumbnail?> {
         return Observable.create { (observer) -> Disposable in
             self.linkPreview.preview(url,
                          onSuccess: { (response) in
                             if let thumbnail = WebLinkThumbnail(dictionary: response) {
                                 observer.onNext(thumbnail)
                             } else {
+                                observer.onNext(nil)
                                 observer.onError(WebLinkThumbnailServiceError.missingInfo)
                             }
                             observer.onCompleted()

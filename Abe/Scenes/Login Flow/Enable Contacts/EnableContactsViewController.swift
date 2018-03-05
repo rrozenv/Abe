@@ -4,41 +4,45 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class EnableContactsViewController: UIViewController {
+final class EnableContactsViewController: UIViewController, BindableType {
     
     var disposeBag = DisposeBag()
-    var viewModel: EnableContactsViewModel!
+    var viewModel: AllowContactsViewModel!
     
-    fileprivate var enableButton: UIButton!
+    private var enableButton: UIButton!
+    private var onboardingView: OnboardingView!
+    private var backButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
-        setupEnableButton()
-        bindViewModel()
+        setupBackButton()
+        setupOnboardingView()
     }
     
     func bindViewModel() {
-        let input = EnableContactsViewModel.Input(allowContactsTapped: enableButton.rx.tap.asDriver())
-        
-        let output = viewModel.transform(input: input)
-        
-        output.didSaveContacts
-            .drive()
+        //MARK: - Inputs
+        onboardingView.button(at: 0).rx.tap.asObservable()
+            .bind(to: viewModel.inputs.allowContactsTappedInput)
             .disposed(by: disposeBag)
-    
-        output.loading
+        
+        backButton.rx.tap
+            .bind(to: viewModel.inputs.backButtonTappedInput)
+            .disposed(by: disposeBag)
+        
+        //MARK: - Outputs
+        viewModel.outputs.mainText
             .drive(onNext: { [weak self] in
-                self?.view.backgroundColor = $0 ? UIColor.green : UIColor.white
+                self?.onboardingView.headerLabel.text = $0.header
+                self?.onboardingView.bodyLabel.text = $0.body
             })
             .disposed(by: disposeBag)
         
-        output.errors
+        viewModel.outputs.errorTracker
             .drive(onNext: { [weak self] error in
                 self?.showError(error)
             })
             .disposed(by: disposeBag)
-        
     }
     
 }
@@ -61,6 +65,38 @@ extension EnableContactsViewController {
             make.center.equalTo(view.snp.center)
             make.height.equalTo(50)
             make.height.equalTo(200)
+        }
+    }
+    
+    private func setupOnboardingView() {
+        onboardingView = OnboardingView(numberOfButtons: 1)
+        
+        onboardingView.button(at: 0).backgroundColor = Palette.brightYellow.color
+        onboardingView.button(at: 0).setTitle("Enable Contacts", for: .normal)
+        onboardingView.button(at: 0).setTitleColor(Palette.darkYellow.color, for: .normal)
+        
+        view.addSubview(onboardingView)
+        onboardingView.snp.makeConstraints { (make) in
+            make.width.equalTo(view).multipliedBy(0.74)
+            make.center.equalTo(view)
+        }
+    }
+    
+    private func setupBackButton() {
+        backButton = UIButton.backButton(image: #imageLiteral(resourceName: "IC_BackArrow_Black"))
+        
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
+            make.left.equalTo(view.snp.left)
+            if #available(iOS 11.0, *) {
+                if UIDevice.iPhoneX {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-44)
+                } else {
+                    make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-20)
+                }
+            } else {
+                make.top.equalTo(view.snp.top)
+            }
         }
     }
     

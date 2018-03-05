@@ -4,41 +4,79 @@ import RxSwift
 import RxCocoa
 import RealmSwift
 
-final class UserDetailsViewModel: ViewModelType {
+protocol UserDetailsViewModelInputs {
+    var viewDidLoadInput: AnyObserver<Void> { get }
+    var firstNameTextInput: AnyObserver<String> { get }
+    var lastNameTextInput:  AnyObserver<String> { get }
+    var nextButtonTappedInput:  AnyObserver<Void> { get }
+}
+
+protocol UserDetailsViewModelOuputs {
+    var inputIsValid: Driver<Bool> { get }
+    var mainText: Driver<(header: String, body: String)> { get }
+}
+
+protocol UserDetailsViewModelType {
+    var inputs: UserDetailsViewModelInputs { get }
+    var outputs: UserDetailsViewModelOuputs { get }
+}
+
+final class UserDetailsViewModel: UserDetailsViewModelType, UserDetailsViewModelInputs, UserDetailsViewModelOuputs {
+
+    let disposeBag = DisposeBag()
     
-    struct Input {
-        let firstName: Driver<String>
-        let lastName: Driver<String>
-        let nextTapped: Driver<Void>
-    }
+    var inputs: UserDetailsViewModelInputs { return self }
+    let viewDidLoadInput: AnyObserver<Void>
+    let firstNameTextInput: AnyObserver<String>
+    let lastNameTextInput:  AnyObserver<String>
+    let nextButtonTappedInput:  AnyObserver<Void>
     
-    struct Output {
-        let inputIsValid: Driver<Bool>
-        let routeToNextVc: Driver<Void>
-    }
-    
-    private let router: UserDetailsRoutingLogic
+    var outputs: UserDetailsViewModelOuputs { return self }
+    let inputIsValid: Driver<Bool>
+    let mainText: Driver<(header: String, body: String)>
     
     init(router: UserDetailsRoutingLogic) {
-        self.router = router
-    }
-    
-    func transform(input: Input) -> Output {
         
-        let _combinedInput = Driver
-            .combineLatest(input.firstName, input.lastName) { (first: $0, last: $1) }
+        //MARK: - Subjects
+        let _viewDidLoadInput = PublishSubject<Void>()
+        let _firstNameTextInput = PublishSubject<String>()
+        let _lastNameTextInput = PublishSubject<String>()
+        let _nextButtonTappedInput = PublishSubject<Void>()
         
-        let inputIsValid = _combinedInput
-            .map { $0.first.count > 3 && $0.last.count > 3 }
-    
-        let routeToNextVc = input.nextTapped
-            .withLatestFrom(_combinedInput)
-            .do(onNext: { UserDefaultsManager.saveSignUpName(name: $0) })
+        //MARK: - Observers
+        self.viewDidLoadInput = _viewDidLoadInput.asObserver()
+        self.firstNameTextInput = _firstNameTextInput.asObserver()
+        self.lastNameTextInput = _lastNameTextInput.asObserver()
+        self.nextButtonTappedInput = _nextButtonTappedInput.asObserver()
+        
+        //MARK: - Observables
+        let viewDidLoadObservable = _viewDidLoadInput.asObservable()
+        let firstNameObservable = _firstNameTextInput.asObservable().startWith("")
+        let lastNameObservable = _lastNameTextInput.asObservable().startWith("")
+        let nextTappedObservable = _nextButtonTappedInput.asObservable()
+        let fullNameObservable = Observable.combineLatest(firstNameObservable, lastNameObservable) { (first: $0, last: $1) }
+        
+        //MARK: - Outputs
+        let header = "What’s your full name?"
+        let body = "You will always be in charge of who to share your identitiy with."
+        self.mainText = viewDidLoadObservable
+            .map { _ in (header: header, body: body) }
+            .asDriver(onErrorJustReturn: (header: "", body: ""))
+        
+        self.inputIsValid = Observable
+            .combineLatest(firstNameObservable,
+                           lastNameObservable,
+                           resultSelector: { $0.count > 0 && $1.count > 0 })
+            .asDriver(onErrorJustReturn: false)
+        
+        //MARK: - Routing
+        nextTappedObservable
+            .withLatestFrom(fullNameObservable)
+            .do(onNext: { UserDefaultsManager.saveSignUpName(name: ($0.first, $0.last)) })
             .mapToVoid()
-            .do(onNext: router.toPhoneEntry)
-        
-        return Output(inputIsValid: inputIsValid,
-                      routeToNextVc: routeToNextVc)
+            .do(onNext: router.toPhoneInput)
+            .subscribe()
+            .disposed(by: disposeBag)
     }
     
 }

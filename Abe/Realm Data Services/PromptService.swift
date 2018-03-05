@@ -54,6 +54,16 @@ struct PromptService: PromptServiceType {
         return result ?? .error(PromptServiceError.creationFailed)
     }
     
+    func save(_ prompt: Prompt) -> Observable<Prompt> {
+        let result = withRealm("creating") { realm -> Observable<Prompt> in
+            try realm.write {
+                realm.add(prompt)
+            }
+            return .just(prompt)
+        }
+        return result ?? .error(PromptServiceError.creationFailed)
+    }
+    
     @discardableResult
     func delete(prompt: Prompt) -> Observable<Void> {
         let result = withRealm("deleting") { realm-> Observable<Void> in
@@ -87,99 +97,49 @@ struct PromptService: PromptServiceType {
         return result ?? .empty()
     }
     
-}
+    func fetchPromptsWith(predicate: NSPredicate) -> Observable<[Prompt]> {
+        let result = withRealm("getting replies") { realm -> Observable<[Prompt]> in
+            let prompts = realm
+                .objects(Prompt.self).sorted(byKeyPath: "createdAt",
+                                             ascending: false)
+                .filter(predicate)
+                .toArray()
 
-
-struct UserService {
-    
-    fileprivate func withRealm<T>(_ operation: String, action: (Realm) throws -> T) -> T? {
-        do {
-            let realm = try Realm(configuration: RealmConfig.common.configuration)
-            return try action(realm)
-        } catch let err {
-            print("Failed \(operation) realm with error: \(err)")
-            return nil
-        }
-    }
-    
-    func createUser(syncUser: SyncUser,
-                    name: String,
-                    email: String,
-                    phoneNumber: String) -> Observable<User> {
-        let result = withRealm("creating") { realm -> Observable<User> in
-            let user = User(syncUserId: syncUser.identity!,
-                            name: name,
-                            phoneNumber: phoneNumber)
-            try realm.write {
-                realm.add(user)
-            }
-            return .just(user)
-        }
-        return result ?? .error(PromptServiceError.creationFailed)
-    }
-
-    func fetchUserFor(key: String) -> Observable<User> {
-        let result = withRealm("getting tasks") { realm -> Observable<User> in
-            guard let user = realm.object(ofType: User.self, forPrimaryKey: key) else { return .empty() }
-            return .just(user)
+            return .just(prompts)
         }
         return result ?? .empty()
     }
     
-    func fetchUser(key: String) -> User? {
-        print(key)
-        let realm = try! Realm(configuration: RealmConfig.common.configuration)
-        let user = realm.objects(User.self)
-            .filter(NSPredicate(format: "id = %@", key))
-            .first
-        return user
-    }
-    
-    func fetchAll() -> Observable<Results<User>> {
-        let result = withRealm("getting prompts") { realm -> Observable<Results<User>> in
-            //let threadSafeRealm = try! Realm(configuration: RealmConfig.common.configuration)
-            let users = realm.objects(User.self)
-            return Observable.collection(from: users)
+    func fetchAll() -> Observable<[Prompt]> {
+        let result = withRealm("getting replies") { realm -> Observable<[Prompt]> in
+            let prompts = realm
+                .objects(Prompt.self).sorted(byKeyPath: "createdAt",
+                                             ascending: false)
+                .toArray()
+            
+            return .just(prompts)
         }
         return result ?? .empty()
     }
     
-    func add(userFriends: [User],
-             to currentUser: User) -> Observable<([User], User)> {
-        let result = withRealm("updating title") { realm -> Observable<([User], User)> in
-//            let threadSafeRealm = try! Realm(configuration: RealmConfig.common.configuration)
-//            let user = threadSafeRealm.object(ofType: User.self, forPrimaryKey: currentUser.id)
-            try realm.write {
-                currentUser.registeredContacts.append(objectsIn: userFriends)
-            }
-            return .just((userFriends, currentUser))
+    func changeSet() -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> {
+        let result = withRealm("getting replies") { realm -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> in
+            let objects = realm.objects(Prompt.self)
+            return Observable.changeset(from: objects)
         }
-        return result ?? .error(ReplyServiceError.creationFailed)
+        return result ?? .empty()
     }
     
-    func updateCoinsFor(user: User, wager: Int, shouldAdd: Bool) -> Observable<(user: User, wager: Int, isCorrect: Bool)> {
-        let result = withRealm("updating title") { realm -> Observable<(user: User, wager: Int, isCorrect: Bool)> in
-            try realm.write {
-                if shouldAdd { user.coins += wager }
-                else { user.coins -= wager }
-            }
-            return .just((user, wager, shouldAdd))
+    func changeSetFor(predicate: NSPredicate) -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> {
+        let result = withRealm("getting replies") { realm -> Observable<(AnyRealmCollection<Prompt>, RealmChangeset?)> in
+            let objects = realm.objects(Prompt.self).filter(predicate)
+            return Observable.changeset(from: objects)
         }
-        return result ?? .error(ReplyServiceError.creationFailed)
+        return result ?? .empty()
     }
-    
-    
-    
-//    func registedContactsFor(user: User, allUsers: Results<User>) -> Observable<[User]> {
-//        return self.contacts.flatMap { (contact) -> User? in
-//            guard let index = allUsers.index(where: { (user) -> Bool in
-//                return contact.numbers.contains(user.phoneNumber)
-//            }) else { return nil }
-//            return allUsers[index]
-//        }
-//    }
     
 }
+
 
 enum ReplyServiceError: Error {
     case creationFailed

@@ -1,94 +1,167 @@
 
 import Foundation
 import RxSwift
-import RealmSwift
-import RxDataSources
-import Action
-import RxRealm
-import RxRealmDataSources
-//import NSObject_Rx
-
-import RxSwift
 import RxCocoa
 
-class PromptsListViewController: UIViewController {
-    private let disposeBag = DisposeBag()
+class PromptsListViewController: UIViewController, BindableType {
     
-    var viewModel: PromptsListViewModel!
-    var tableView: UITableView!
-    var createPromptButton: UIBarButtonItem!
+    let disposeBag = DisposeBag()
+    let dataSource = PromptListDataSource()
+    var viewModel: PromptListViewModel!
+    var topTableContentOffset: CGFloat = 0
+    
+    private var tabOptionsView: TabOptionsView!
+    private var createPromptButton: UIBarButtonItem!
+    private var tableView: UITableView!
+    private var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    
+    static func configuredWith(visibility: Visibility,
+                               //navVc: UINavigationController,
+                               contentOffset: CGFloat) -> PromptsListViewController {
+        var vc = PromptsListViewController(topContentOffset: contentOffset)
+        //let router = PromptsRouter(navigationController: navVc)
+        let viewModel = PromptListViewModel()
+        vc.setViewModelBinding(model: viewModel!)
+        vc.viewModel.inputs.visWhenViewLoadsInput.onNext(visibility)
+        vc.topTableContentOffset = contentOffset
+        return vc
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)!
+    }
+    
+    override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: Bundle!) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    init(topContentOffset: CGFloat) {
+        self.topTableContentOffset = topContentOffset
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    override func loadView() {
+        super.loadView()
+        view.backgroundColor = UIColor.white
+        setupTableView(topOffset: self.topTableContentOffset)
+        setupActivityIndicator()
+        setupStatusBarBackgroundView()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
-        setupCreatePromptButton()
-        bindViewModel()
     }
     
-    private func bindViewModel() {
-        assert(viewModel != nil)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    deinit { print("rate reply deinit") }
+    
+    func bindViewModel() {
+        //MARK: - Input
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        
+        tableView.rx.itemSelected.asObservable()
+            .map { [weak self] in self?.dataSource.promptAtIndexPath($0) }.unwrap()
+            .bind(to: viewModel.inputs.promptSelectedInput)
+            .disposed(by: disposeBag)
 
-        let pull = tableView.refreshControl!.rx
-            .controlEvent(.valueChanged)
-            .asDriver()
-        
-        let input =
-            PromptsListViewModel
-            .Input(createPostTrigger: createPromptButton.rx.tap.asDriver(),
-                   selection: tableView.rx.realmModelSelected(Prompt.self).asDriver())
-        
         //MARK: - Output
-        let output = viewModel.transform(input: input)
-        
-        let dataSource = RxTableViewRealmDataSource<Prompt>(cellIdentifier: PromptTableCell.reuseIdentifier, cellType: PromptTableCell.self) {cell, indexPath, prompt in
-            cell.configure(with: prompt)
-        }
-        
-        output.posts
-            .bind(to: tableView.rx.realmChanges(dataSource))
+        viewModel.outputs.promptsToDisplay
+            .drive(onNext: { [weak self] in
+                self?.dataSource.load(prompts: $0)
+                self?.tableView.reloadData()
+                
+                guard $0.isNotEmpty else { return }
+                self?.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            })
             .disposed(by: disposeBag)
+        
+        viewModel.outputs.promptsChangeSet
+            .subscribe(onNext: { [weak self] results, changes in
+                if let changes = changes {
+                    //let initialOffset = self?.tableView.contentOffset.y
+                    //let section = PromptListDataSource.Section.publicOnly.rawValue
+                    let newPrompts = changes.inserted.map { results[$0] }
+                    if newPrompts.count > 0 {
+                        self?.dataSource.add(prompts: newPrompts)
+                        self?.tableView.reloadData()
+                    }
+                    
+                    let updatedPrompts = changes.updated.map { (prompt: results[$0], index: $0) }
+                    if updatedPrompts.count > 0 {
+                        updatedPrompts.forEach {
+                            self?.dataSource.updatePrompt($0.prompt, at: IndexPath(row: $0.index, section: 0))
+                        }
+                        self?.tableView.reloadData()
+                    }
+                    
+                    //self?.tableView.scrollToRow(at: IndexPath(row: prompts.count, section: 1), at: .top, animated: false)
+                    //self?.tableView.contentOffset.y += initialOffset ?? 0
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.errorTracker
+            .drive(onNext: { [weak self] (error) in
+                self?.showError(error)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.activityIndicator
+            .drive(onNext: { [weak self] in
+                if $0 { self?.activityIndicator.startAnimating() }
+                else { self?.activityIndicator.stopAnimating() }
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.selectedPrompt
+            .drive(onNext: { [weak self] in
+                let router = PromptDetailRouter(navigationController: (self?.navigationController)!)
+                var vc = RepliesViewController()
+                let vm = RepliesViewModel(router: router, prompt: $0)
+                vc.setViewModelBinding(model: vm!)
+                self?.navigationController?.navigationBar.isHidden = true
+                self?.navigationController?.pushViewController(vc, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+    }
+    
+}
 
-        pull.drive(onNext: { [weak self] in
-            self?.tableView.reloadData()
-            self?.tableView.refreshControl?.endRefreshing()
-        })
-        .disposed(by: disposeBag)
-        
-        output.fetching
-            .drive(tableView.refreshControl!.rx.isRefreshing)
-            .disposed(by: disposeBag)
-        
-        output.createPrompt
-            .drive()
-            .disposed(by: disposeBag)
-        
-        output.selectedPrompt
-            .drive()
-            .disposed(by: disposeBag)
-        
-        output.error
-            .drive()
-            .disposed(by: disposeBag)
-
+extension PromptsListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNonzeroMagnitude
     }
     
 }
 
 extension PromptsListViewController {
     
-    fileprivate func setupCreatePromptButton() {
-        createPromptButton = UIBarButtonItem(title: "Create", style: .done, target: nil, action: nil)
-        self.navigationItem.rightBarButtonItem = createPromptButton
+    fileprivate func showError(_ error: Error) {
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
-    fileprivate func setupTableView() {
+    fileprivate func setupTableView(topOffset: CGFloat) {
         //MARK: - tableView Properties
-        tableView = UITableView(frame: CGRect.zero, style: .grouped)
-        tableView.register(PromptTableCell.self, forCellReuseIdentifier: PromptTableCell.reuseIdentifier)
+        tableView = UITableView(frame: CGRect.zero, style: .plain)
+        tableView.register(PromptTableCell.self, forCellReuseIdentifier: PromptTableCell.defaultReusableId)
         tableView.estimatedRowHeight = 200
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
-        tableView.refreshControl = UIRefreshControl()
+        tableView.contentInset = UIEdgeInsetsMake(self.topTableContentOffset, 0, 0, 0)
+        //tableView.refreshControl = UIRefreshControl()
+        tableView.dataSource = dataSource
         
         //MARK: - tableView Constraints
         view.addSubview(tableView)
@@ -97,8 +170,22 @@ extension PromptsListViewController {
         }
     }
     
+    private func setupActivityIndicator() {
+        activityIndicator.hidesWhenStopped = true
+        
+        view.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { (make) in
+            make.center.equalTo(view.snp.center)
+        }
+    }
+    
+    private func setupStatusBarBackgroundView() {
+        let statusBarView = UIView(frame: UIApplication.shared.statusBarFrame)
+        statusBarView.backgroundColor = UIColor.white
+        view.addSubview(statusBarView)
+    }
+    
 }
-
 
 
 

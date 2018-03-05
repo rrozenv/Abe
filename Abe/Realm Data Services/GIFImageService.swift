@@ -16,9 +16,9 @@ struct ImageService<T: TargetType> {
 
 extension ImageService where T == GifAPI {
     
-    func fetchGIFS(query: String) -> Observable<[ImageRepresentable]?> {
+    func fetchGIFS(query: String, offset: Int) -> Observable<[ImageRepresentable]?> {
         return provider.rx
-            .request(.search(query: query))
+            .request(.search(query: query, offset: offset))
             .filter(statusCodes: 200...300).asObservable()
             .mapJSON()
             .map { GIF.allForQuery(json: $0) }

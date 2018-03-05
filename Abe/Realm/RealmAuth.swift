@@ -60,6 +60,23 @@ final class RealmAuth {
         }
     }
     
+    class func authorizeWith(accessToken: String) -> Observable<SyncUser> {
+        let credentials = SyncCredentials.facebook(token: accessToken)
+        print("Got access token \(accessToken)")
+        return Observable.create { observer in
+            SyncUser.logIn(with: credentials, server: Constants.syncAuthURL, onCompletion: { (syncUser, error) in
+                if let user = syncUser {
+                    observer.onNext(user)
+                    observer.onCompleted()
+                }
+                if let error = error {
+                    observer.onError(error)
+                }
+            })
+            return Disposables.create()
+        }
+    }
+    
     class func initializeCommonRealm(completion: @escaping (Bool) -> Void) {
         Realm.asyncOpen(configuration: RealmConfig.common.configuration, callback: { (realm, error) in
             if let realm = realm {

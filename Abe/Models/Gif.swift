@@ -48,15 +48,15 @@ extension GIF {
 
 extension GIF {
     
-    static func GIFResource(for query: String) -> Resource<[GIF]> {
-        return Resource<[GIF]>(target: GifAPI.search(query: query)) { json -> [GIF]? in
-            guard let jsonDict = json as? JSONDictionary else { return nil }
-            guard let dictionaries = jsonDict["data"] as? [JSONDictionary] else { return nil }
-            return dictionaries.flatMap({ (dictionary) -> GIF? in
-                return GIF(dictionary: dictionary)
-            })
-        }
-    }
+//    static func GIFResource(for query: String) -> Resource<[GIF]> {
+//        return Resource<[GIF]>(target: GifAPI.search(query: query)) { json -> [GIF]? in
+//            guard let jsonDict = json as? JSONDictionary else { return nil }
+//            guard let dictionaries = jsonDict["data"] as? [JSONDictionary] else { return nil }
+//            return dictionaries.flatMap({ (dictionary) -> GIF? in
+//                return GIF(dictionary: dictionary)
+//            })
+//        }
+//    }
     
 }
 
