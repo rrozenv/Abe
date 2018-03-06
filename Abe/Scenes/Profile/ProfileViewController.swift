@@ -55,6 +55,20 @@ final class ProfileViewController: UIViewController {
             .disposed(by: disposeBag)
         
         //MARK: - Outputs
+        profileHeaderView.imageButton.rx.tap
+            .subscribe(onNext: { [unowned self] in
+                CameraHandler.shared.displayActionSheet(sourcVc: self,
+                                                        imagePickedDelegate: self.viewModel)
+            })
+            .disposed(by: disposeBag)
+        
+        viewModel.outputs.newProfileImage
+            .drive(onNext: { [weak self] in
+                self?.profileHeaderView.userImageView.image = $0
+                guard let userPromptsVc = self?.dataSource.controllerFor(index: 0) as? PromptsListViewController else { return }
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.currentUser
             .drive(onNext: { [weak self] in
                 self?.profileHeaderView.populateInfoWith(currentUser: $0)

@@ -47,6 +47,15 @@ final class AddWebLinkViewController: UIViewController, BindableType {
         super.viewDidLoad()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        searchTextField.resignFirstResponder()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     deinit { print("Add Web Link deinit") }
     
     func bindViewModel() {

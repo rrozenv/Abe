@@ -52,6 +52,10 @@ class CreatePromptViewController: UIViewController, BindableType {
         titleTextView.resignFirstResponder()
         bodyTextView.resignFirstResponder()
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
 
     override var inputAccessoryView: UIView? { get { return optionsBarView } }
     override var canBecomeFirstResponder: Bool { return true }

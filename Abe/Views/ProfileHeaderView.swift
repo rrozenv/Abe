@@ -6,6 +6,7 @@ final class ProfileHeaderView: UIView {
     
     var containerView: UIView!
     var userImageView: UIImageView!
+    var imageButton: UIButton!
     var nameLabel: UILabel!
     var nameSubLabel: UILabel!
     
@@ -17,9 +18,13 @@ final class ProfileHeaderView: UIView {
         super.init(frame: .zero)
         setupContainerView()
         setupStackView()
+        setupImageButton()
     }
     
     func populateInfoWith(currentUser: User) {
+        if let imageData = currentUser.avatarImageData {
+            userImageView.image = UIImage(data: imageData)
+        }
         nameLabel.text = currentUser.name
         nameSubLabel.text = String(currentUser.coins)
     }
@@ -62,6 +67,16 @@ final class ProfileHeaderView: UIView {
             make.top.equalTo(containerView).offset(16)
             make.bottom.equalTo(containerView).offset(-16)
             make.centerX.equalTo(containerView)
+        }
+    }
+    
+    private func setupImageButton() {
+        imageButton = UIButton()
+        imageButton.backgroundColor = UIColor.clear
+        
+        containerView.addSubview(imageButton)
+        imageButton.snp.makeConstraints { (make) in
+            make.edges.equalTo(userImageView)
         }
     }
     

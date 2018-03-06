@@ -106,8 +106,6 @@ final class RepliesViewModel: RepliesViewModelType, RepliesViewModelInputs, Repl
         let didUserReplyObservable = viewWillAppearObservable
             .map { _ in currentUser.value.didReply(to: prompt) }
         
-
-        
 //        tabSelectedObservable
 //            .filter { $0 == .locked && currentUser.value.didReply(to: prompt) }
 //            .map { $0.publicRepliesByCurrentUsersFriendsPredicate(currentUser: user) }

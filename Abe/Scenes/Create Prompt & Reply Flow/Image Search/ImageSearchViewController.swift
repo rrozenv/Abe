@@ -29,6 +29,15 @@ final class ImageSearchViewController: UIViewController {
         bindViewModel()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        searchBarView.searchTextField.resignFirstResponder()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     deinit { print("Search Controller deinit") }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -150,11 +159,12 @@ extension ImageSearchViewController {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.delegate = self
         collectionView.dataSource = self.dataSource
+        collectionView.keyboardDismissMode = .onDrag
         collectionView.register(ImageSearchCollectionCell.self, forCellWithReuseIdentifier: ImageSearchCollectionCell.defaultReusableId)
         
         self.view.addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in
-            make.top.equalTo(searchBarView.snp.bottom).offset(10)
+            make.top.equalTo(searchBarView.snp.bottom).offset(16)
             make.left.right.bottom.equalTo(view)
         }
     }

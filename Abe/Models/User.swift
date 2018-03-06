@@ -14,6 +14,7 @@ class User: Object {
     @objc dynamic var email: String = ""
     @objc dynamic var phoneNumber: String = ""
     @objc dynamic var coins: Int = 0
+    @objc dynamic var avatarImageData: Data?
     let contacts = List<Contact>()
     let registeredContacts = List<User>()
     let prompts = List<Prompt>()

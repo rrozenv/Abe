@@ -81,7 +81,24 @@ class ReplyVisibilityViewController: UIViewController, BindableType {
             .bind(to: viewModel.inputs.backButtonTappedInput)
             .disposed(by: disposeBag)
         
+        contactsTableHeaderView.searchBarView.searchTextField.rx.text.orEmpty
+            .debounce(0.5, scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .bind(to: viewModel.inputs.searchTextInput)
+            .disposed(by: disposeBag)
+        
         //MARK: - Output
+        contactsTableHeaderView.searchBarView.clearButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                self?.contactsTableHeaderView.searchBarView.searchTextField.text = nil
+                self?.contactsTableHeaderView.searchBarView.clearButton.isHidden = true
+                self?.dataSource.resetSearchFilter()
+                self?.updateContactsHeaderView()
+                self?.contactsTableHeaderView.actionButton.isHidden = false
+                self?.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
+        
         viewModel.outputs.currentIndividualNumbers
             .drive(onNext: {
                 $0.forEach { print($0) }
@@ -164,18 +181,18 @@ extension ReplyVisibilityViewController: UITableViewDelegate {
     
 }
 
-extension ReplyVisibilityViewController: UISearchBarDelegate {
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard let searchText = searchBar.text else { return }
-        viewModel.inputs.searchTextInput.onNext(searchText)
-    }
-    
-//    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchText == "" { self.updateContactsHeaderView() }
+//extension ReplyVisibilityViewController: UISearchBarDelegate {
+//
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        guard let searchText = searchBar.text else { return }
+//        viewModel.inputs.searchTextInput.onNext(searchText)
 //    }
-
-}
+//
+////    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+////        if searchText == "" { self.updateContactsHeaderView() }
+////    }
+//
+//}
 
 extension ReplyVisibilityViewController {
     
@@ -253,7 +270,7 @@ extension ReplyVisibilityViewController {
         contactsTableHeaderView = ContactsTableHeaderView()
         contactsTableHeaderView.actionButton.setTitle("SELECT ALL", for: .normal)
         contactsTableHeaderView.titleLabel.text = "SELECT FRIENDS"
-        contactsTableHeaderView.searchBar.delegate = self
+        //contactsTableHeaderView.searchBar.delegate = self
     }
     
     private func setupBackButton() {

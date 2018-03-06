@@ -40,12 +40,15 @@ final class PromptTableCell: UITableViewCell, ValueCell {
     }
     
     func configureWith(value: Prompt) {
+        guard let user = value.user else { return }
         promptView.headerView.titleLabel.text = value.title
-        promptView.userImageNameReplyView.nameLabel.text = value.user?.name
+        promptView.userImageNameReplyView.nameLabel.text = user.name
         promptView.userImageNameReplyView.nameSubLabel.text = "\(value.replies.count) replies"
         if let url = URL(string: value.imageURL) {
-            print(url)
             promptView.headerView.imageView.kf.setImage(with: url)
+        }
+        if let avatarData = user.avatarImageData {
+            promptView.userImageNameReplyView.userImageView.image = UIImage(data: avatarData)
         }
     }
     

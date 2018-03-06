@@ -45,6 +45,7 @@
 		982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */; };
 		982CF8552013D58B00EEB278 /* RateReplyDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */; };
 		982CF8572013D69800EEB278 /* RateReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982CF8562013D69800EEB278 /* RateReplyCell.swift */; };
+		982D60B3204E287300214F27 /* CameraLibraryHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982D60B2204E287300214F27 /* CameraLibraryHandler.swift */; };
 		983297B0202F69580043E3B0 /* CreateUserRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983297AF202F69580043E3B0 /* CreateUserRouter.swift */; };
 		983297B5202F6A590043E3B0 /* SignupLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983297B4202F6A590043E3B0 /* SignupLoginViewController.swift */; };
 		983297B7202F6A670043E3B0 /* SignupLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 983297B6202F6A670043E3B0 /* SignupLoginViewModel.swift */; };
@@ -224,6 +225,7 @@
 		982CF8522013C99A00EEB278 /* RateReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyViewModel.swift; sourceTree = "<group>"; };
 		982CF8542013D58B00EEB278 /* RateReplyDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyDataSource.swift; sourceTree = "<group>"; };
 		982CF8562013D69800EEB278 /* RateReplyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateReplyCell.swift; sourceTree = "<group>"; };
+		982D60B2204E287300214F27 /* CameraLibraryHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLibraryHandler.swift; sourceTree = "<group>"; };
 		983297AF202F69580043E3B0 /* CreateUserRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserRouter.swift; sourceTree = "<group>"; };
 		983297B4202F6A590043E3B0 /* SignupLoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupLoginViewController.swift; sourceTree = "<group>"; };
 		983297B6202F6A670043E3B0 /* SignupLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupLoginViewModel.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				980DE5A31FE589310087C6C3 /* Observable+Ext.swift */,
 				980DE5A71FE5A3B50087C6C3 /* ActivityIndicator.swift */,
 				980DE5A61FE5A3B40087C6C3 /* ErrorTracker.swift */,
+				982D60B2204E287300214F27 /* CameraLibraryHandler.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -1286,6 +1289,7 @@
 				982CF8532013C99A00EEB278 /* RateReplyViewModel.swift in Sources */,
 				983297B5202F6A590043E3B0 /* SignupLoginViewController.swift in Sources */,
 				980DE5A91FE5A3B50087C6C3 /* ActivityIndicator.swift in Sources */,
+				982D60B3204E287300214F27 /* CameraLibraryHandler.swift in Sources */,
 				985B14C0202646BD0017306E /* PromptPageViewController.swift in Sources */,
 				98FEE7B31FE4BBC000CD80A8 /* RealmInstance.swift in Sources */,
 				980974B32017C59B00FBCE9B /* InputWagerRouter.swift in Sources */,

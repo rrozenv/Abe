@@ -60,6 +60,7 @@ final class ContactsTableHeaderView: UIView {
     var containerView: UIView!
     var actionButton: UIButton!
     var titleLabel: UILabel!
+    var searchBarView: SearchBarView!
     var searchBar: UISearchBar!
     var dividerView: UIView!
     
@@ -71,7 +72,8 @@ final class ContactsTableHeaderView: UIView {
     init() {
         super.init(frame: .zero)
         setupContainerView()
-        setupSearchBar()
+        setupSearchBarView()
+        //setupSearchBar()
         setupActionButton()
         setupTitleLabel()
         setupDividerView()
@@ -84,6 +86,22 @@ final class ContactsTableHeaderView: UIView {
         self.addSubview(containerView)
         containerView.snp.makeConstraints { (make) in
             make.edges.equalTo(self)
+        }
+    }
+    
+    private func setupSearchBarView() {
+        searchBarView = SearchBarView()
+        searchBarView.style(placeHolder: "Search Friends...",
+                            backColor: Palette.faintGrey.color,
+                            searchIcon: #imageLiteral(resourceName: "IC_Search"),
+                            clearIcon: #imageLiteral(resourceName: "IC_ClearSearch"))
+        
+        containerView.addSubview(searchBarView)
+        searchBarView.snp.makeConstraints { (make) in
+            make.top.equalTo(containerView).offset(10)
+            make.left.equalTo(containerView).offset(18)
+            make.right.equalTo(containerView).offset(-18)
+            make.height.equalTo(50)
         }
     }
     
@@ -112,7 +130,7 @@ final class ContactsTableHeaderView: UIView {
         
         containerView.addSubview(actionButton)
         actionButton.snp.makeConstraints { (make) in
-            make.top.equalTo(searchBar.snp.bottom)
+            make.top.equalTo(searchBarView.snp.bottom)
             make.right.equalTo(containerView).offset(-26)
             make.bottom.equalTo(containerView)
             make.width.equalTo(120)

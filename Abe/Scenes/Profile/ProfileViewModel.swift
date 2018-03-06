@@ -2,6 +2,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import UIKit
 
 protocol ProfileViewModelInputs {
     var viewDidLoadInput: AnyObserver<Void> { get }
@@ -15,6 +16,7 @@ protocol ProfileViewModelOutputs {
     var configurePagerDataSource: Driver<[Visibility]> { get }
     var navigateToVisibility: Driver<Visibility> { get }
     var currentUser: Driver<User> { get }
+    var newProfileImage: Driver<UIImage> { get }
 }
 
 protocol ProfileViewModelType {
@@ -22,7 +24,7 @@ protocol ProfileViewModelType {
     var outputs: ProfileViewModelOutputs { get }
 }
 
-final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, ProfileViewModelOutputs {
+final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, ProfileViewModelOutputs, PhotoLibraryImagePickedDelegate {
     
     let disposeBag = DisposeBag()
     
@@ -33,15 +35,17 @@ final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, Prof
     let didTransitionToPageInput: AnyObserver<Bool>
     let tabVisSelectedInput: AnyObserver<Visibility>
     let cancelTappedInput: AnyObserver<Void>
+    let selectedImage: AnyObserver<UIImage>
 
     //MARK: - Outputs
     var outputs: ProfileViewModelOutputs { return self }
     let configurePagerDataSource: Driver<[Visibility]>
     let navigateToVisibility: Driver<Visibility>
     let currentUser: Driver<User>
+    let newProfileImage: Driver<UIImage>
     
     //MARK: - Init
-    init?(router: ProfileRoutingLogic) {
+    init?(router: ProfileRoutingLogic, userService: UserService = UserService()) {
         guard let user = AppController.shared.currentUser.value else {
             NotificationCenter.default.post(name: Notification.Name.logout, object: nil)
             return nil
@@ -55,6 +59,7 @@ final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, Prof
         let _didTransitionToPageInput = PublishSubject<Bool>()
         let _tabVisSelectedInput = PublishSubject<Visibility>()
         let _cancelTappedInput = PublishSubject<Void>()
+        let _selectedProfileImage = PublishSubject<UIImage>()
         
         //MARK: - Observers
         self.viewDidLoadInput = _viewDidLoadInput.asObserver()
@@ -62,6 +67,7 @@ final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, Prof
         self.didTransitionToPageInput = _didTransitionToPageInput.asObserver()
         self.tabVisSelectedInput = _tabVisSelectedInput.asObserver()
         self.cancelTappedInput = _cancelTappedInput.asObserver()
+        self.selectedImage = _selectedProfileImage.asObserver()
         
         //MARK: - First Level Observables
         //let viewDidLoadObservable = _viewDidLoadInput.asObservable()
@@ -69,6 +75,7 @@ final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, Prof
         let didTransitionToPageObservable = _didTransitionToPageInput.asObservable()
         let tabSelectedObservable = _tabVisSelectedInput.asObservable()
         let cancelTappedObservable = _cancelTappedInput.asObservable()
+        let selectedProfileImageObservable = _selectedProfileImage.asObservable().share()
         
         let visibilityToShowObservabele = Observable.of(
             didTransitionToPageObservable
@@ -81,6 +88,15 @@ final class ProfileViewModel: ProfileViewModelType, ProfileViewModelInputs, Prof
         self.configurePagerDataSource = Driver.of(profileVisibilites)
         self.navigateToVisibility = visibilityToShowObservabele.asDriverOnErrorJustComplete()
         self.currentUser = Driver.of(currentUser.value)
+        self.newProfileImage = selectedProfileImageObservable
+            .asDriverOnErrorJustComplete()
+        
+        selectedProfileImageObservable
+            .map { UIImageJPEGRepresentation($0, 0.8) }.unwrap()
+            .flatMap { userService.update(imageData: $0, for: user) }
+            .do(onNext: { AppController.shared.currentUser.value = $0 })
+            .subscribe()
+            .disposed(by: disposeBag)
         
         cancelTappedObservable
             .do(onNext: router.toHome)

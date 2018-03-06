@@ -61,7 +61,15 @@ struct UserService {
         return user
     }
     
-    
+    func update(imageData: Data, for user: User) -> Observable<User> {
+        let result = withRealm("updating title") { realm -> Observable<User> in
+            try realm.write {
+                user.avatarImageData = imageData
+            }
+            return .just(user)
+        }
+        return result ?? .error(ReplyServiceError.creationFailed)
+    }
     
     func add(userFriends: [User],
              to currentUser: User) -> Observable<([User], User)> {
